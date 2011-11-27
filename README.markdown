@@ -1,4 +1,4 @@
-I can't get em-postgresql-adapter to work as expected.
+It's working now
 
     be thin start -e production
 
@@ -7,7 +7,4 @@ I can't get em-postgresql-adapter to work as expected.
 
 
     Concurrency Level:      5
-    Time taken for tests:   5.120 seconds
-    
-    
-What's missing ?
+    Time taken for tests:   1.093 seconds
