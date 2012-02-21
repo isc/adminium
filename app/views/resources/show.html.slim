@@ -1,0 +1,6 @@
+h2= "Showing #{@item.class.name} ##{params[:id]}"
+table.table
+  - @item.attributes.each do |key, value|
+    li
+      div= key
+      div= value

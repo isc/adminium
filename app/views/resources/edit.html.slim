@@ -1,0 +1,8 @@
+h2= "Editing #{@item.class.name} ##{params[:id]}"
+
+form action=resource_path(@item, table:params[:table]) method="POST"
+  = hidden_field_tag '_method', 'PUT'
+  - @item.class.columns.each do |column|
+    .control-group
+      = render partial:column.type.to_s, locals:{value:@item.send(column.name), name:column.name}
+  button.btn.btn-primary type="submit" Save changes

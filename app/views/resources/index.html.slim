@@ -1,0 +1,19 @@
+h2= "Listing #{params[:table]}"
+
+table.table-striped.table-bordered.table
+  thead
+    tr
+      - @items.first.attributes.keys.each do |key|
+        th= header_link key
+      th
+  tbody
+    - @items.each do |item|
+      tr
+        - item.attributes.values.each do |value|
+          td= value
+        td
+          = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(item.id, table:params[:table])
+          = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(item.id, table:params[:table])
+        
+    
+= paginate @items
