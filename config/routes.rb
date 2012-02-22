@@ -12,7 +12,7 @@ MtCrap::Application.routes.draw do
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
   resources :resources do
-    get ':table/page/:page', :action => :index, :on => :collection
+    get ':table/(page/:page)', :action => :index, :on => :collection, :as => 'f'
   end
 
   namespace :heroku do

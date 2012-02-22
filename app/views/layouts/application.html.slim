@@ -44,7 +44,7 @@ html lang="en"
             ul.nav.nav-list
               li.nav-header Sidebar
               - Generic.tables.each do |table|
-                li class="#{'active' if params[:table] == table}" = link_to table.humanize, resources_url(table: table, page: 1)
+                li class="#{'active' if params[:table] == table}" = link_to table.humanize, f_resources_url(table: table)
         .span9
           = yield
 
