@@ -1,0 +1,16 @@
+{
+  "id": "admin-addon",
+  "api": {
+    "config_vars": [ "ADMIN_ADDON_URL" ],
+    "password": "ARuxKq0aRSaXVyoD",
+    "sso_salt": "iOy1l96mXADxSETP",
+    "production": {
+      "base_url": "https://admin-addon.herokuapp.com/heroku/resources",
+      "sso_url": "https://admin-addon.herokuapp.com/sso/login"
+    },
+    "test": {
+      "base_url": "http://admin-addon.dev/heroku/resources",
+      "sso_url": "http://admin-addon.dev/sso/login"
+    }
+  }
+}

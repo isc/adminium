@@ -3,8 +3,8 @@ class Heroku::ResourcesController < ApplicationController
   before_filter :basic_auth, :except => :show
   
   def create
-    app = Account.create params
-    render :json => { :id => app.api_key, :config => { "DBINSIGHTS_URL" => account_url(app) } }
+    app = Account.create params.reject {|k,v| ![:heroku_id, :plan, :callback_url].include?(k)}
+    render :json => { :id => app.api_key, :config => { "ADMIN_ADDON_URL" => account_url(app) } }
   end
   
   def destroy

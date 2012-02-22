@@ -29,6 +29,10 @@ gem 'simple_form'
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
 
+group :development do
+  gem 'kensa'
+end
+
 group :production do
   gem 'thin'
 end
