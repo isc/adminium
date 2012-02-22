@@ -11,13 +11,15 @@ MtCrap::Application.routes.draw do
   # This route can be invoked with purchase_url(:id => product.id)
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
-  resources :resources
-  
+  resources :resources do
+    get ':table/page/:page', :action => :index, :on => :collection
+  end
+
   namespace :heroku do
     resources :resources, :only => [:create, :destroy, :update, :show]
   end
-  
-  
+
+
   # Sample resource route with options:
   #   resources :products do
   #     member do
@@ -53,7 +55,7 @@ MtCrap::Application.routes.draw do
 
   # You can have the root of your site routed with "root"
   # just remember to delete public/index.html.
-  # root :to => 'welcome#index'
+  # root :to => 'resources#index'
 
   # See how all your routes lay out with "rake routes"
 

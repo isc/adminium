@@ -1,19 +1,29 @@
-h2= "Listing #{params[:table]}"
+h2
+  = "Listing #{params[:table].humanize.downcase} "
+  small= page_entries_info(@items, :entry_name => '').html_safe
 
 table.table-striped.table-bordered.table
   thead
     tr
-      - @items.first.attributes.keys.each do |key|
-        th= header_link key
+      - clazz.columns.each do |column|
+        th= header_link column.name
       th
   tbody
     - @items.each do |item|
       tr
         - item.attributes.values.each do |value|
-          td= value
+            td class=value.class.to_s.parameterize
+              - if value.is_a? String
+                - if value.empty?
+                  'empty string'
+                - else
+                  = value.truncate(100)
+              - else
+                = value
         td
           = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(item.id, table:params[:table])
           = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(item.id, table:params[:table])
-        
-    
+
+
 = paginate @items
+

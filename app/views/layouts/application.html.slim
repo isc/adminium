@@ -44,10 +44,10 @@ html lang="en"
             ul.nav.nav-list
               li.nav-header Sidebar
               - Generic.tables.each do |table|
-                li class="#{'active' if params[:table] == table}" = link_to table, resources_path(table: table)
+                li class="#{'active' if params[:table] == table}" = link_to table.humanize, resources_url(table: table, page: 1)
         .span9
           = yield
-    
+
       footer
         p &copy; Company 2012
     /!
