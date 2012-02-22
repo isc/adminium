@@ -1,6 +1,5 @@
 class ResourcesController < ApplicationController
 
-  before_filter :connect_to_db
   before_filter :fetch_item, :only => [:show, :edit, :update]
   helper_method :clazz
 
@@ -21,9 +20,6 @@ class ResourcesController < ApplicationController
   end
 
   private
-  def connect_to_db
-    Generic.connect_and_domain_discovery "postgresql://skillstar@localhost/tlfjrails_development"
-  end
 
   def fetch_item
     @item = clazz.find params[:id]

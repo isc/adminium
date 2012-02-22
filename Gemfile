@@ -24,6 +24,7 @@ gem 'jquery-rails'
 gem 'slim-rails'
 gem 'kaminari'
 gem "twitter-bootstrap-rails", "~> 2.0.1.0"
+gem 'simple_form'
 
 # To use ActiveModel has_secure_password
 # gem 'bcrypt-ruby', '~> 3.0.0'
@@ -36,3 +37,7 @@ group :test do
   # Pretty printed test output
   gem 'turn', '0.8.2', :require => false
 end
+
+gem 'heroku-nav', :require => 'heroku/nav'
+gem 'rest-client'
+gem 'attr_encrypted', :git => 'git://github.com/hron/attr_encrypted.git', :branch => 'issue-2-ruby19-compatibility'
