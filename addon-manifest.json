@@ -1,16 +1,16 @@
 {
-  "id": "admin-addon",
+  "id": "adminium",
   "api": {
-    "config_vars": [ "ADMIN_ADDON_URL" ],
+    "config_vars": [ "ADMINIUM_URL" ],
     "password": "ARuxKq0aRSaXVyoD",
     "sso_salt": "iOy1l96mXADxSETP",
     "production": {
-      "base_url": "https://admin-addon.herokuapp.com/heroku/resources",
-      "sso_url": "https://admin-addon.herokuapp.com/sso/login"
+      "base_url": "https://adminium.herokuapp.com/heroku/resources",
+      "sso_url": "https://adminium.herokuapp.com/sso/login"
     },
     "test": {
-      "base_url": "http://admin-addon.dev/heroku/resources",
-      "sso_url": "http://admin-addon.dev/sso/login"
+      "base_url": "http://adminium.dev/heroku/resources",
+      "sso_url": "http://adminium.dev/sso/login"
     }
   }
 }

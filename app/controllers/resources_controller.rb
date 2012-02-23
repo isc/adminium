@@ -15,7 +15,7 @@ class ResourcesController < ApplicationController
   end
 
   def update
-    @item.update_attributes params
+    @item.update_attributes params[@item.class.name.downcase]
     redirect_to action:'show', id:@item.id, table:params[:table]
   end
 

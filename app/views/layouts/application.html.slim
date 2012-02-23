@@ -29,7 +29,7 @@ html lang="en"
             span.i-bar
             span.i-bar
             span.i-bar
-          a.brand href="#"MtCrap
+          a.brand href="#"Adminium
           .container-fluid.nav-collapse
             ul.nav
               li= link_to 'Edit Account', edit_account_path
@@ -45,7 +45,7 @@ html lang="en"
               li.nav-header Sidebar
               - if @tables
                 - @tables.each do |table|
-                  li class="#{'active' if params[:table] == table}" = link_to table.humanize, f_resources_url(table: table)
+                  li class="#{'active' if params[:table] == table}" = link_to table.humanize, resources_url(table: table)
         .span9
           = yield
 

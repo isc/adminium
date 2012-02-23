@@ -1,2 +1,2 @@
-HEROKU_API_USER = 'admin-addon'
+HEROKU_API_USER = 'adminium'
 HEROKU_API_PASS = 'ARuxKq0aRSaXVyoD'
