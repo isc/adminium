@@ -11,7 +11,9 @@ MtCrap::Application.routes.draw do
   # This route can be invoked with purchase_url(:id => product.id)
 
   # Sample resource route (maps HTTP verbs to controller actions automatically):
-  resources :resources, :path => "/resources/:table"
+  resources :resources, :path => "/resources/:table" do
+    get ':table/page/:page', :action => :index, :on => :collection
+  end
   resources :docs, :only => [:index, :show]
   resource :account, :only => [:edit, :update]
 

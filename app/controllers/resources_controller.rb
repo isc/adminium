@@ -4,7 +4,7 @@ class ResourcesController < ApplicationController
   helper_method :clazz
 
   def index
-    @items = clazz.page(params[:page]).per(20)
+    @items = clazz.page(params[:page]).per(10)
     @items = @items.order(params[:order]) if params[:order].present?
   end
 
