@@ -39,8 +39,8 @@ table.table-striped.table-bordered.table
               - else
                 = value
         td
-          = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(item.id, table:params[:table])
-          = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(item.id, table:params[:table])
+          = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item.id)
+          = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item.id)
 
 
 = paginate @items

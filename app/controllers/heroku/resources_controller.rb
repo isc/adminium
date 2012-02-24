@@ -4,7 +4,7 @@ class Heroku::ResourcesController < ApplicationController
   
   def create
     app = Account.create params.reject {|k,v| ![:heroku_id, :plan, :callback_url].include?(k)}
-    render :json => { :id => app.api_key, :config => { "ADMIN_ADDON_URL" => account_url(app) } }
+    render :json => { :id => app.api_key, :config => { "ADMINIUM_URL" => account_url(app) } }
   end
   
   def destroy
