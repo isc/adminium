@@ -6,6 +6,9 @@ gem 'rails', '3.2.1'
 # gem 'rails',     :git => 'git://github.com/rails/rails.git'
 
 gem 'pg'
+gem "hiredis", "~> 0.3.1"
+gem 'em-redis'
+gem "redis"#, "~> 2.2.2", :require => ["redis/connection/synchrony", "redis"]
 gem 'em-postgresql-adapter', :git => 'git://github.com/leftbee/em-postgresql-adapter.git'
 gem 'rack-fiber_pool',  :require => 'rack/fiber_pool'
 gem 'em-synchrony', :git     => 'git://github.com/igrigorik/em-synchrony.git',
@@ -31,6 +34,8 @@ gem 'simple_form'
 
 group :development do
   gem 'kensa'
+  gem 'heroku'
+  gem 'taps'
 end
 
 group :production do
@@ -44,4 +49,5 @@ end
 
 gem 'heroku-nav', :require => 'heroku/nav'
 gem 'rest-client'
+
 gem 'attr_encrypted', :git => 'git://github.com/hron/attr_encrypted.git', :branch => 'issue-2-ruby19-compatibility'

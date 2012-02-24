@@ -5,7 +5,12 @@ class Generic
   cattr_accessor :models
   cattr_reader :current_adapter
 
+
+
   class Base < ActiveRecord::Base
+
+    extend Settings
+
     def self.abstract_class?
       true
     end
@@ -30,7 +35,7 @@ class Generic
       discover_associations
     end
   end
-  
+
   def self.discover_models
     if models.present?
       constants.each {|const| remove_const const unless const == :Base }
@@ -42,7 +47,7 @@ class Generic
       res
     end
   end
-  
+
   def self.discover_associations
     models.each do |klass|
       begin
@@ -60,7 +65,7 @@ class Generic
       end
     end
   end
-  
+
   def self.tables
     Base.connection.tables.sort
   end
@@ -70,13 +75,13 @@ class Generic
   rescue NameError
     raise "Couldn't get class for table #{table_name}, current constants : #{Generic.constants.inspect}"
   end
-  
+
   def self.json_diagram
     diagram = DbInsightsModelDiagram.new
     diagram.process_classes models
     diagram.to_json
   end
-  
+
   def self.build_connection_from_db_url db_url
     begin
       uri = URI.parse db_url
@@ -94,15 +99,15 @@ class Generic
     params.each {|k, v| connection[k] = v.first }
     connection
   end
-  
+
   def self.postgresql?
     current_adapter == 'postgresql'
   end
-  
+
   def self.mysql?
     current_adapter == 'mysql2'
   end
-  
+
   def self.reset_current_db_url
     @@current_db_url = nil
   end

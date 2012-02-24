@@ -41,8 +41,9 @@ html lang="en"
       .row-fluid
         .span3
           .well.sidebar-nav
+            input#search_sidebar type="search"
             ul.nav.nav-list
-              li.nav-header Sidebar
+              li.nav-header Tables
               - if @tables
                 - @tables.each do |table|
                   li class="#{'active' if params[:table] == table}" = link_to table.humanize, f_resources_url(table: table)

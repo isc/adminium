@@ -2,11 +2,29 @@ h2
   = "Listing #{params[:table].humanize.downcase} "
   small= page_entries_info(@items, :entry_name => '').html_safe
 
+ul.nav.nav-tabs
+  li.active
+    a href="#listing" data-toggle="tab" Listing
+  li
+    a href="#settings" data-toggle="tab" Settings
+.tab-contents
+  = form_tag setting_path(:id => params[:table]), :method => :put do
+    ul#settings.tab-pane.span3.well
+      - columns=(clazz.settings.column_names + clazz.columns.map(&:name)).uniq.compact
+      - columns.each do |name|
+        li.setting_attribute
+          input type='checkbox' name="columns[#{name}]" id=name checked=(clazz.settings.column_names.include?(name) ? 'checked' : nil)
+          label for=name.parameterize
+            = name
+    div.span7.well
+    div.span7.well
+      input#save_settings.btn(type='submit' value='Save setttings')
+
 table.table-striped.table-bordered.table
   thead
     tr
-      - clazz.columns.each do |column|
-        th= header_link column.name
+      - clazz.settings.column_names.each do |name|
+        th= header_link name
       th
   tbody
     - @items.each do |item|
@@ -26,4 +44,3 @@ table.table-striped.table-bordered.table
 
 
 = paginate @items
-

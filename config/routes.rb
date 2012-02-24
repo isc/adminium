@@ -14,6 +14,8 @@ MtCrap::Application.routes.draw do
   resources :resources do
     get ':table/(page/:page)', :action => :index, :on => :collection, :as => 'f'
   end
+  resources :settings
+
   resources :docs, :only => [:index, :show]
   resource :account, :only => [:edit, :update]
 
