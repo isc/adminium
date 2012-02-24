@@ -33,15 +33,13 @@ html lang="en"
           .container-fluid.nav-collapse
             ul.nav
               li= link_to 'Edit Account', edit_account_path
-              li= link_to "Link 2", "/path2"
-              li= link_to "Link 3", "/path3"
 
     .container-fluid
 
       .row-fluid
         .span3
           .well.sidebar-nav
-            input#search_sidebar type="search"
+            input.search-query type="search"
             ul.nav.nav-list
               li.nav-header Tables
               - if @tables
