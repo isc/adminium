@@ -1,6 +1,7 @@
 h2= "Editing #{@item.class.name} ##{params[:id]}"
 
-= simple_form_for @item, :url => resource_path(@item, table:params[:table]) do |f|
-  - @item.class.column_names.each do |column|
-    = f.input column
-  = f.submit :class => 'btn-primary'
+= simple_form_for @item, :url => resource_path(@item, table:params[:table]), :html => {:class => 'form-horizontal'} do |f|
+  - @item.class.columns.each do |column|
+    = f.input column.name, :readonly => column.primary
+  .form-actions
+    = f.submit :class => 'btn-primary'
