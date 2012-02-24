@@ -7,6 +7,8 @@ module Settings
 
   class Base
 
+    DEFAULT_PER_PAGE = 25
+
     def initialize(clazz)
       @clazz = clazz
       load
@@ -30,6 +32,14 @@ module Settings
       @columns = columns.map do |column|
         {'name' => column}
       end
+    end
+
+    def per_page= per_page
+      @per_page = per_page.to_i
+    end
+
+    def per_page
+      @per_page ||= DEFAULT_PER_PAGE
     end
 
     def column_names

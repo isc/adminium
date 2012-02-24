@@ -9,4 +9,4 @@ jQuery ->
   $(".navbar").scrollspy()
   $(".tab").tab "show"
   $(".tooltip").tooltip()
-  $(".typeahead").typeahead() 
+  $(".typeahead").typeahead()

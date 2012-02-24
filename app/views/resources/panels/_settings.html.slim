@@ -1,0 +1,16 @@
+#settings.tab-pane(style='display:none')
+= form_tag setting_path(:id => params[:table]), :method => :put do
+  ul.span3.well
+    - columns=(clazz.settings.column_names + clazz.columns.map(&:name)).uniq.compact
+    - columns.each do |name|
+      li.setting_attribute(style="position:relative")
+        input type='checkbox' name="columns[#{name}]" id=name checked=(clazz.settings.column_names.include?(name) ? 'checked' : nil)
+        label for=name.parameterize
+          = name
+        i.icon-resize-vertical(style="position:absolute;top:5px;right:5px")
+  div.span7.well
+    ' items per page
+    input.span2 type="number" step=25 min=25 max=250 name="per_page" value=clazz.settings.per_page
+
+  div.span7.well
+    input#save_settings.btn(type='submit' value='Save setttings')

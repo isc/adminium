@@ -8,17 +8,7 @@ ul.nav.nav-tabs
   li
     a href="#settings" data-toggle="tab" Settings
 .tab-contents
-  = form_tag setting_path(:id => params[:table]), :method => :put do
-    ul#settings.tab-pane.span3.well
-      - columns=(clazz.settings.column_names + clazz.columns.map(&:name)).uniq.compact
-      - columns.each do |name|
-        li.setting_attribute
-          input type='checkbox' name="columns[#{name}]" id=name checked=(clazz.settings.column_names.include?(name) ? 'checked' : nil)
-          label for=name.parameterize
-            = name
-    div.span7.well
-    div.span7.well
-      input#save_settings.btn(type='submit' value='Save setttings')
+  = render :partial => "/resources/panels/settings"
 
 table.table-striped.table-bordered.table
   thead
