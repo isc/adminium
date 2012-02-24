@@ -3,4 +3,4 @@ h2= "Editing #{@item.class.name} ##{params[:id]}"
 = simple_form_for @item, :url => resource_path(@item, table:params[:table]) do |f|
   - @item.class.column_names.each do |column|
     = f.input column
-  = f.submit :class => 'btn btn-primary'
+  = f.submit :class => 'btn-primary'
