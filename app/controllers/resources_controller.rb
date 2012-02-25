@@ -4,7 +4,13 @@ class ResourcesController < ApplicationController
   helper_method :clazz
 
   def index
-    @items = clazz.select(clazz.settings.column_names.join(", ")).page(params[:page]).per(clazz.settings.per_page)
+    @items = clazz.select(clazz.settings.column_names.map{|c|c=='new' ? "'new'" : c}.join(", "))
+    # WIP
+    #clazz.settings.filters.each do |filter|
+    #  @items = @items.where("#{filter['column']} like ?", "%#{filter['operand']}%")
+    #end
+
+    @items = @items.page(params[:page]).per(clazz.settings.per_page)
     @items = @items.order(params[:order]) if params[:order].present?
   end
 

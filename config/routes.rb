@@ -14,7 +14,9 @@ MtCrap::Application.routes.draw do
   resources :resources, :path => "/resources/:table" do
     get ':table/page/:page', :action => :index, :on => :collection
   end
+
   resources :settings
+  match "/settings/new_filter" => 'settings#new_filter'
 
   resources :docs, :only => [:index, :show]
   resource :account, :only => [:edit, :update]

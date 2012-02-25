@@ -9,6 +9,9 @@ module Settings
 
     DEFAULT_PER_PAGE = 25
 
+    attr_accessor :filters
+
+
     def initialize(clazz)
       @clazz = clazz
       load
@@ -22,10 +25,11 @@ module Settings
         datas = JSON.parse(value).symbolize_keys!
         @columns = datas[:columns]
       end
+      @filters = datas[:filters] || []
     end
 
     def save
-      REDIS.set "#{@clazz.original_name}:settings", {:columns => @columns}.to_json
+      REDIS.set "#{@clazz.original_name}:settings", {:columns => @columns, :filters => @filters}.to_json
     end
 
     def columns= columns
