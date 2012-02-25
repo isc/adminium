@@ -9,6 +9,7 @@ class Account < ActiveRecord::Base
   # likely because of the transactions being used in tests
   # and the fact that this validation causes a new connection to be established
   validate :db_url_validation unless Rails.env.test?
+  validates_format_of :db_url, :with => /^((mysql2?)|(postgres(ql)?)):\/\/.*/
 
   attr_encryptor :db_url, :key => (ENV['ENCRYPTION_KEY'] || 'shablagoo')
 

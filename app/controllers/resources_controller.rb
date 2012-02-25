@@ -19,6 +19,19 @@ class ResourcesController < ApplicationController
 
   def edit
   end
+  
+  def new
+    @item = clazz.new
+  end
+  
+  def create
+    @item = clazz.new params[@item.class.name.downcase]
+    if @item.save
+      redirect_to resource_path(params[:table], @item.id), :success => 'So cool'
+    else
+      render :new
+    end
+  end
 
   def update
     @item.update_attributes params[@item.class.name.downcase]

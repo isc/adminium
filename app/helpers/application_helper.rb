@@ -13,7 +13,7 @@ module ApplicationHelper
     else
       [key, 'icon-chevron-down']
     end
-    res = content_tag 'i', '', :class => icon
+    res = content_tag 'i', '', class: icon
     res << (link_to key.humanize, resources_path(table:params[:table], order:order))
   end
   

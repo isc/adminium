@@ -1,14 +1,18 @@
-h2
-  = "Listing #{params[:table].humanize.downcase} "
-  small= page_entries_info(@items, :entry_name => '').html_safe
+.page-header
+  h2
+    = "Listing #{params[:table].humanize.downcase} "
+    small= page_entries_info(@items, :entry_name => '').html_safe
 
 ul.nav.nav-tabs
   li.active
     a href="#listing" data-toggle="tab" Listing
   li
     a href="#settings" data-toggle="tab" Settings
+
 .tab-content
-  = render :partial => "/resources/panels/settings"
+  li
+    = link_to 'Add new', new_resource_path(table:params[:table])
+    = render :partial => "/resources/panels/settings"
 #listing
   table.table-striped.table-bordered.table
     thead
