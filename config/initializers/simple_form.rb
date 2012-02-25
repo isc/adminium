@@ -28,13 +28,13 @@ SimpleForm.setup do |config|
     # extensions by default, you can change `b.optional` to `b.use`.
 
     # Calculates maxlength from length validations for string inputs
-    b.optional :maxlength
+    b.use :maxlength
 
     # Calculates pattern from format validations for string inputs
-    b.optional :pattern
+    b.use :pattern
 
     # Calculates min and max from length validations for numeric inputs
-    b.optional :min_max
+    b.use :min_max
 
     # Calculates readonly automatically from readonly attributes
     b.optional :readonly
@@ -46,8 +46,9 @@ SimpleForm.setup do |config|
   end
 
   config.wrappers :bootstrap, :tag => 'div', :class => 'control-group', :error_class => 'error' do |b|
-    b.use :placeholder
-    b.use :label
+    [:placeholder, :label, :html5, :pattern, :min_max, :maxlength].each do |extension|
+      b.use extension
+    end
     b.wrapper :tag => 'div', :class => 'controls' do |ba|
       ba.use :input
       ba.use :error, :wrap_with => { :tag => 'span', :class => 'help-inline' }
@@ -143,7 +144,7 @@ SimpleForm.setup do |config|
 
   # Tell browsers whether to use default HTML5 validations (novalidate option).
   # Default is enabled.
-  config.browser_validations = false
+  config.browser_validations = true
 
   # Collection of methods to detect if a file type was given.
   # config.file_methods = [ :mounted_as, :file?, :public_filename ]
