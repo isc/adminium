@@ -31,7 +31,10 @@ ul.nav.nav-tabs
                   - else
                     = value.truncate(100)
                 - else
-                  = value
+                  - if value.is_a?(ActiveSupport::TimeWithZone)
+                    = l(value, :format => Settings::Global.datetime_format.to_sym)
+                  - else
+                    = value
           td
             = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item.id)
             = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item.id)

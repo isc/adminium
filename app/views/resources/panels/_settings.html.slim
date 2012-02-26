@@ -20,8 +20,8 @@
       select#new_filter.span3(data-table=params[:table])
        - clazz.columns.each do |column|
          option(value=column.name)= column.name
-      ul.filters
+      ul.filters.form-inline
         - clazz.settings.filters.each do |filter|
-          li= render :partial => "/settings/filters/#{filter['type']}", :locals => {:filter => filter}
+          li= render :partial => "/settings/filter", :locals => {:filter => filter}
     div.span7.well
       input#save_settings.btn(type='submit' value='Save setttings')

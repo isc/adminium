@@ -1,12 +1,3 @@
-- g = rand(1000)
-input(type="hidden" name="filters[#{g}][column]" value=filter["column"])
-input(type="hidden" name="filters[#{g}][type]" value='string')
-label
-  = filter["column"]
 select.span3(name="filters[#{g}][operator]")
   - options = [["contains", 'like'], ["is exactly", "is"], ["starts with", "starts_with"], ["ends with", "ends_with"], ["present", "present"], ["blank", "blank"]]
-  = options_for_select(options, filter["operator"])
-
-= text_field_tag "filters[#{g}][operand]", filter['operand']
-span.btn
-  i.icon-trash
+  = options_for_select(options, operator)

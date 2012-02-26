@@ -1,1 +1,2 @@
-' datetime
+select.span2(name="filters[#{g}][operator]")
+  = options_for_select(DATETIME_OPERATORS.map{|o| [o.humanize, o]}, operator)

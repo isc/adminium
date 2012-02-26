@@ -16,7 +16,7 @@ MtCrap::Application.routes.draw do
   end
 
   resources :settings
-  match "/settings/new_filter" => 'settings#new_filter'
+  resources :general_settings, :only => [:edit, :update]
 
   resources :docs, :only => [:index, :show]
   resource :account, :only => [:edit, :update]

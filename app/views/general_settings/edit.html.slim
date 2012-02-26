@@ -1,0 +1,30 @@
+h1 General Settings
+
+
+= form_tag general_setting_path(:id=>1), :method => :put, :class => 'form-horizontal' do
+  fieldset
+    legend Listing
+    .control-group
+      label.control-label per page
+      .controls
+        input type="number" value=Settings::Global.per_page name="settings[per_page]"
+        p.help-block number of rows displayed per page by default
+  fieldset
+    legend Types
+    .control-group
+      label.control-label DateTime format
+      .controls
+        - d = Time.now
+        - formats = [:long, :default, :short]
+        select name='settings[datetime_format]'
+          = options_for_select(formats.map{|f|[l(d, :format => f),f.to_s]}, Settings::Global.datetime_format)
+      label.control-label Date
+      .controls
+        - d = Date.today
+        - formats = [:long, :default, :short]
+        select name='settings[date_format]'
+          = options_for_select(formats.map{|f|[l(d, :format => f),f.to_s]}, Settings::Global.date_format)
+  .form-actions
+    input.btn.btn-primary type="submit" value="save changes"
+    '
+    a.btn cancel
