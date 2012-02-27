@@ -5,4 +5,6 @@ if Rails.env.development?
   rescue
     puts "Failed to set FIXED_ACCOUNT const"
   end
+else
+  FIXED_ACCOUNT = nil
 end
