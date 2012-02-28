@@ -5,11 +5,9 @@ class ResourcesController < ApplicationController
 
   def index
     @items = clazz.select(clazz.settings.column_names.map{|c|c=='new' ? "'new'" : c}.join(", "))
-    # WIP
     clazz.settings.filters.each do |filter|
       @items = build_statement(@items, filter)
     end
-
     @items = @items.page(params[:page]).per(clazz.settings.per_page)
     @items = @items.order(params[:order]) if params[:order].present?
   end
