@@ -1,4 +1,4 @@
-class AccountsController < ApplicationController
+class Heroku::AccountsController < ApplicationController
   
   skip_filter :connect_to_db
   
