@@ -1,6 +1,6 @@
 class Account < ActiveRecord::Base
 
-  attr_accessible :db_url, :heroku_id, :callback_url, :name, :owner_email
+  attr_accessible :db_url, :plan, :heroku_id, :callback_url, :name, :owner_email
 
   before_create :generate_api_key
   before_save :fill_adapter
