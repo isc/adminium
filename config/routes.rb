@@ -16,7 +16,7 @@ MtCrap::Application.routes.draw do
   end
 
   resources :settings
-  resources :general_settings, :only => [:edit, :update]
+  resource :general_settings, :only => [:edit, :update]
 
   resources :docs, :only => [:index, :show]
   resource :account, :only => [:edit, :update]

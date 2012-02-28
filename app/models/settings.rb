@@ -11,9 +11,7 @@ module Settings
 
     def self.load
       value = REDIS.get "global_settings"
-      unless value.nil?
-        @globals = JSON.parse(value).symbolize_keys!
-      end
+      @globals = value.nil? ? {} : JSON.parse(value).symbolize_keys!
       @globals.reverse_merge! :per_page => DEFAULT_PER_PAGE, :date_format => :long, :datetime_format => :long
     end
 
