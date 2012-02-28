@@ -14,8 +14,12 @@ class ApplicationController < ActionController::Base
     if session[:user]
       account = Account.find session[:user]
       if account.db_url.present?
-        Generic.connect_and_domain_discovery account.db_url
-        @tables = Generic.tables
+        begin
+          Generic.connect_and_domain_discovery account
+          @tables = Generic.tables
+        rescue
+          p $!
+        end
       else
         redirect_to doc_url(:id => 'missing_db_url')
       end

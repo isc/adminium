@@ -14,7 +14,7 @@ module ApplicationHelper
       [key, 'icon-chevron-down']
     end
     res = content_tag 'i', '', class: icon
-    res << (link_to key.humanize, resources_path(table:params[:table], order:order))
+    res << (link_to key.humanize, resources_path(params[:table], order:order))
   end
   
   def display_value value

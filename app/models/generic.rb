@@ -5,10 +5,8 @@ class Generic
   cattr_accessor :models
   cattr_reader :current_adapter
 
-
-
   class Base < ActiveRecord::Base
-
+    cattr_accessor :account_id
     extend Settings
 
     def self.abstract_class?
@@ -17,15 +15,17 @@ class Generic
     def self.original_name
       name.split('::').last
     end
-    set_inheritance_column { }
+    def self.inheritance_column
+    end
   end
 
-  def self.connect_and_domain_discovery db_url
+  def self.connect_and_domain_discovery account
     @@current_db_url ||= nil
-    return if @@current_db_url == db_url
-    connection = Generic.build_connection_from_db_url db_url
+    @@account_id = account.id
+    return if @@current_db_url == account.db_url
+    connection = Generic.build_connection_from_db_url account.db_url
     Generic.discover_classes_and_associations! connection
-    @@current_db_url = db_url
+    @@current_db_url = account.db_url
   end
 
   def self.discover_classes_and_associations! connection_specification
@@ -43,6 +43,7 @@ class Generic
     end
     self.models = tables.map do |table|
       res = const_set table.classify, Class.new(Base)
+      res.account_id = @@account_id
       res.table_name = table
       res
     end
@@ -74,12 +75,6 @@ class Generic
     const_get table_name.classify
   rescue NameError
     raise "Couldn't get class for table #{table_name}, current constants : #{Generic.constants.inspect}"
-  end
-
-  def self.json_diagram
-    diagram = DbInsightsModelDiagram.new
-    diagram.process_classes models
-    diagram.to_json
   end
 
   def self.build_connection_from_db_url db_url

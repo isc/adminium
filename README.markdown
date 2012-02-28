@@ -1,10 +1,9 @@
-It's working now
-
-    be thin start -e production
-
-
-    ab -c 5 -n 5 http://127.0.0.1:3000/queries/long/1
-
-
-    Concurrency Level:      5
-    Time taken for tests:   1.093 seconds
+Gerer les tables sans colonne id
+Gerer les tables avec une colonne new
+configurer des validations par table/colonne
+améliorer la navigation des tables
+on peut pas creer un objet sur la table schema_migrations
+configuration des champs pour le formulaire
+faire un truc plus propre pour les infos du manifest
+attr_accessible avec role pour proteger plan sur account
+thread safety pour generic.rb

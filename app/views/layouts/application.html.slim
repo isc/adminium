@@ -45,7 +45,7 @@ html lang="en"
               li.nav-header Tables
               - if @tables
                 - @tables.each do |table|
-                  li class="#{'active' if params[:table] == table}" = link_to table.humanize, resources_path(table: table)
+                  li class="#{'active' if params[:table] == table}" = link_to table.humanize, resources_path(table)
         .span9
           = yield
 

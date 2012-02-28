@@ -14,4 +14,4 @@ h3= "Showing #{@item.class.name.split('::').last} ##{params[:id]}"
           dd= link_to "#{name} ##{object.id}", resource_path(object.class.table_name, object.id)
         - else
           dt= assoc.macro
-          dd= link_to name, resources_path(table:name)
+          dd= link_to name, resources_path(name)
