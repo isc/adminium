@@ -23,6 +23,7 @@ MtCrap::Application.routes.draw do
 
   namespace :heroku do
     resources :resources, :only => [:create, :destroy, :update, :show]
+    resources :accounts, :only => [:update]
   end
 
 
