@@ -1,5 +1,6 @@
 class Heroku::ResourcesController < ApplicationController
-  
+
+  skip_filter :connect_to_db
   before_filter :basic_auth, :except => :show
   
   def create
@@ -33,7 +34,6 @@ class Heroku::ResourcesController < ApplicationController
   private
   def basic_auth
     authenticate_or_request_with_http_basic do |user, pass|
-      logger.warn "authenticate_or_request_with_http_basic: user: #{user}, pass:#{pass}"
       user == HEROKU_API_USER && pass == HEROKU_API_PASS
     end
   end
