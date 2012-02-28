@@ -17,4 +17,21 @@ module ApplicationHelper
     res << (link_to key.humanize, resources_path(table:params[:table], order:order))
   end
   
+  def display_value value
+    case value
+    when String
+      if value.empty?
+        'empty string'
+      else
+        value.truncate(100)
+      end
+    when ActiveSupport::TimeWithZone
+      l(value, :format => Settings::Global.datetime_format.to_sym)
+    when Fixnum, BigDecimal
+      number_with_delimiter value
+    else
+      value
+    end
+  end
+  
 end
