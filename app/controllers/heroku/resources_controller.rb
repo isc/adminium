@@ -1,10 +1,11 @@
 class Heroku::ResourcesController < ApplicationController
-  
-  before_filter :basic_auth, :except => :show
+
+  skip_filter :connect_to_db
+  before_filter :basic_auth, :except => :sso_login
   
   def create
-    app = Account.create params.reject {|k,v| ![:heroku_id, :plan, :callback_url].include?(k)}
-    render :json => { :id => app.api_key, :config => { "ADMINIUM_URL" => account_url(app) } }
+    account = Account.create params.reject {|k,v| ![:heroku_id, :plan, :callback_url].include?(k)}
+    render :json => { :id => account.api_key, :config => { 'ADMINIUM_URL' => heroku_account_url(account) } }
   end
   
   def destroy
@@ -18,8 +19,8 @@ class Heroku::ResourcesController < ApplicationController
     render :text => 'ok'
   end
   
-  def show
-    token = "#{params[:id]}:nAHbKM0QP8eL8KIR:#{params[:timestamp]}"
+  def sso_login
+    token = "#{params[:id]}:iOy1l96mXADxSETP:#{params[:timestamp]}"
     token = Digest::SHA1.hexdigest(token).to_s
     if token != params[:token] || (params[:timestamp].to_i < (Time.now - 2*60).to_i)
       render :text => 'bad token', :status => 403 and return
@@ -33,6 +34,7 @@ class Heroku::ResourcesController < ApplicationController
   private
   def basic_auth
     authenticate_or_request_with_http_basic do |user, pass|
+      logger.warn "user #{user}, pass : #{pass}"
       user == HEROKU_API_USER && pass == HEROKU_API_PASS
     end
   end

@@ -1,5 +1,5 @@
 - columns=(clazz.settings.column_names + clazz.columns.map(&:name)).uniq.compact
-#settings.tab-panes
+#settings.tab-pane
   = form_tag setting_path(:id => params[:table]), :method => :put do
     .well.span3
       h5 displayed columns
@@ -24,4 +24,4 @@
         - clazz.settings.filters.each do |filter|
           li= render :partial => "/settings/filter", :locals => {:filter => filter}
     div.span7.well
-      input#save_settings.btn(type='submit' value='Save setttings')
+      input#save_settings.btn(type='submit' value='Save settings')

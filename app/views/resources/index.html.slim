@@ -3,42 +3,32 @@
     = "Listing #{params[:table].humanize.downcase} "
     small= page_entries_info(@items, :entry_name => '').html_safe
 
-ul.nav.nav-tabs
-  li.active
-    a href="#listing" data-toggle="tab" Listing
-  li
-    a href="#settings" data-toggle="tab" Settings
+.tabbable
+  ul.nav.nav-tabs
+    li.active
+      a href="#listing" data-toggle="tab" Listing
+    li
+      a href="#settings" data-toggle="tab" Settings
+    li
+      = link_to 'Add new', new_resource_path(table:params[:table])
 
-.tab-content
-  li
-    = link_to 'Add new', new_resource_path(table:params[:table])
+  .tab-content
+    #listing.tab-pane.active
+      table.table-striped.table-bordered.table
+        thead
+          tr
+            - clazz.settings.column_names.each do |name|
+              th= header_link name
+            th
+        tbody
+          - @items.each do |item|
+            tr
+              - item.attributes.values.each do |value|
+                  td class=value.class.to_s.parameterize
+                    = display_value value
+              td
+                = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item.id)
+                = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item.id)
+      = paginate @items
+
     = render :partial => "/resources/panels/settings"
-#listing
-  table.table-striped.table-bordered.table
-    thead
-      tr
-        - clazz.settings.column_names.each do |name|
-          th= header_link name
-        th
-    tbody
-      - @items.each do |item|
-        tr
-          - item.attributes.values.each do |value|
-              td class=value.class.to_s.parameterize
-                  - if value.is_a? String
-                    - if value.empty?
-                      ''empty string'
-                    - else
-                      = value.truncate(100)
-                  - elsif value.is_a? ActiveSupport::TimeWithZone
-                    = l(value, :format => Settings::Global.datetime_format.to_sym)
-                  - elsif [Fixnum, BigDecimal].include? value.class
-                    = number_with_delimiter value
-                  - else
-                    = value
-          td
-            = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item.id)
-            = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item.id)
-
-
-= paginate @items

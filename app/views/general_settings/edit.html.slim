@@ -1,7 +1,6 @@
 h1 General Settings
 
-
-= form_tag general_setting_path(:id=>1), :method => :put, :class => 'form-horizontal' do
+= form_tag general_settings_path, :method => :put, :class => 'form-horizontal' do
   fieldset
     legend Listing
     .control-group
@@ -25,6 +24,6 @@ h1 General Settings
         select name='settings[date_format]'
           = options_for_select(formats.map{|f|[l(d, :format => f),f.to_s]}, Settings::Global.date_format)
   .form-actions
-    input.btn.btn-primary type="submit" value="save changes"
+    input.btn.btn-primary type="submit" value="Save Changes"
     '
-    a.btn cancel
+    a.btn Cancel

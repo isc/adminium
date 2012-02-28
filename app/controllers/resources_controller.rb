@@ -4,7 +4,7 @@ class ResourcesController < ApplicationController
   helper_method :clazz
 
   def index
-    @items = clazz.select(clazz.settings.column_names.map{|c|c=='new' ? "'new'" : c}.join(", "))
+    @items = clazz.select(clazz.settings.column_names.map{|c|c=='new' ? "`new`" : c}.join(", "))
     clazz.settings.filters.each do |filter|
       @items = build_statement(@items, filter)
     end

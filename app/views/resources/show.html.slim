@@ -1,6 +1,17 @@
-h2= "Showing #{@item.class.name} ##{params[:id]}"
-table.table
-  - @item.attributes.each do |key, value|
-    li
-      div= key
-      div= value
+h3= "Showing #{@item.class.name.split('::').last} ##{params[:id]}"
+.row-fluid
+  .span6
+    dl
+      - @item.attributes.each do |key, value|
+        dt= key
+        dd= display_value value
+  .span6
+    dl
+      - @item.reflections.each do |name, assoc|
+        - if assoc.macro == :belongs_to
+          - object = @item.send name
+          dt= assoc.macro
+          dd= link_to "#{name} ##{object.id}", resource_path(object.class.table_name, object.id)
+        - else
+          dt= assoc.macro
+          dd= link_to name, resources_path(name)

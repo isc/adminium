@@ -11,9 +11,7 @@ module Settings
 
     def self.load
       value = REDIS.get "global_settings"
-      unless value.nil?
-        @globals = JSON.parse(value).symbolize_keys!
-      end
+      @globals = value.nil? ? {} : JSON.parse(value).symbolize_keys!
       @globals.reverse_merge! :per_page => DEFAULT_PER_PAGE, :date_format => :long, :datetime_format => :long
     end
 
@@ -43,7 +41,7 @@ module Settings
 
     def load
       @globals = Global.load
-      value = REDIS.get "#{@clazz.original_name}:settings"
+      value = REDIS.get settings_key
       if value.nil?
         self.columns = @clazz.columns.map(&:name)
       else
@@ -58,7 +56,11 @@ module Settings
     def save
       settings = {:columns => @columns, :filters => @filters}
       settings.merge :per_page => @per_page if @globals[:per_page] != @per_page
-      REDIS.set "#{@clazz.original_name}:settings", settings.to_json
+      REDIS.set settings_key, settings.to_json
+    end
+    
+    def settings_key
+      "account:#{@clazz.account_id}:#{@clazz.original_name}:settings"
     end
 
     def columns= columns
