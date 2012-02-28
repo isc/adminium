@@ -33,6 +33,7 @@ class Heroku::ResourcesController < ApplicationController
   private
   def basic_auth
     authenticate_or_request_with_http_basic do |user, pass|
+      logger.warn "authenticate_or_request_with_http_basic: user: #{user}, pass:#{pass}"
       user == HEROKU_API_USER && pass == HEROKU_API_PASS
     end
   end
