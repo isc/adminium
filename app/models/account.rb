@@ -25,6 +25,10 @@ class Account < ActiveRecord::Base
     end
   end
 
+  def valid_db_url?
+    db_url.present?
+  end
+
   private
 
   def generate_api_key
