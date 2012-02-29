@@ -19,7 +19,7 @@ class Account < ActiveRecord::Base
 
   def self.fetch_missing_names_and_emails
     name_nil.find_each do |account|
-      res = RestClient.get "https://#{HEROKU_API_USER}:#{HEROKU_API_PASS}@api.heroku.com/vendor/apps/#{account.callback_url.split('/').last}"
+      res = RestClient.get "https://#{HEROKU_MANIFEST['id']}:#{HEROKU_MANIFEST['api']['password']}@api.heroku.com/vendor/apps/#{account.callback_url.split('/').last}"
       res = JSON.parse res
       account.update_attributes :name => res['name'], :owner_email => res['owner_email']
     end

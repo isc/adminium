@@ -1,2 +1,1 @@
-HEROKU_API_USER = 'adminium'
-HEROKU_API_PASS = 'ARuxKq0aRSaXVyoD'
+HEROKU_MANIFEST = JSON.parse File.read('addon-manifest.json')

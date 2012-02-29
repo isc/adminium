@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
 
-  before_filter :fetch_item, :only => [:show, :edit, :update]
+  before_filter :fetch_item, :only => [:show, :edit, :update, :destroy]
   helper_method :clazz
 
   def index
@@ -23,7 +23,7 @@ class ResourcesController < ApplicationController
   end
 
   def create
-    @item = clazz.new params[@item.class.name.downcase]
+    @item = clazz.new item_params
     if @item.save
       redirect_to resource_path(params[:table], @item.id), :success => 'So cool'
     else
@@ -32,8 +32,13 @@ class ResourcesController < ApplicationController
   end
 
   def update
-    @item.update_attributes params[@item.class.name.downcase]
+    @item.update_attributes item_params
     redirect_to action:'show', id:@item.id, table:params[:table]
+  end
+  
+  def destroy
+    @item.destroy
+    redirect_to action:'index'
   end
 
   private
@@ -44,6 +49,10 @@ class ResourcesController < ApplicationController
 
   def clazz
     @clazz ||= Generic.table(params[:table])
+  end
+  
+  def item_params
+    params[@clazz.name.underscore.gsub('/', '_')]
   end
 
   def build_statement scope, filter

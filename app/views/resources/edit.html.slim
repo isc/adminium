@@ -1,4 +1,6 @@
-.page-header
-  h2 Editing #{@item.class.name.split('::').last} ##{params[:id]}
-
+h3= "#{@item.class.name.split('::').last} ##{params[:id]}"
+ul.nav.nav-tabs
+  li= link_to 'Show', resource_path(@item.class.table_name, @item)
+  li.active
+    a Edit
 = render 'resources/form'
