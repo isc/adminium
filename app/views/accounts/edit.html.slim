@@ -1,7 +1,6 @@
 .page-header
-  h2 Edit account
+  h3 Edit account
 
 = simple_form_for @account, html: {class: 'form-horizontal'} do |f|
-  = f.input :db_url, required: true, input_html: {title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database'}
-  .form-actions
-    = f.button :submit, class: 'btn-primary'
+  = f.input :db_url, required: true, input_html: {title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database', class: 'span8'}
+  .form-actions= f.button :submit, class: 'btn-primary'

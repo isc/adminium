@@ -1,4 +1,6 @@
-h3= "#{@item.class.name.split('::').last} ##{params[:id]}"
+.page-header
+  a.btn.pull-right data-toggle="modal" href="#settings" Settings
+  h3= "#{@item.class.name.split('::').last} ##{params[:id]}"
 ul.nav.nav-tabs
   li.active
     a Show
@@ -8,7 +10,7 @@ ul.nav.nav-tabs
     dl
       - @item.attributes.each do |key, value|
         dt= key
-        dd= display_value value
+        dd class=value.class.name.parameterize = display_value value
   .span6
     dl
       - @item.reflections.each do |name, assoc|

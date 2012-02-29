@@ -1,4 +1,6 @@
-h3= "#{@item.class.name.split('::').last} ##{params[:id]}"
+.page-header
+  a.btn.pull-right data-toggle="modal" href="#settings" Settings
+  h3= "#{@item.class.name.split('::').last} ##{params[:id]}"
 ul.nav.nav-tabs
   li= link_to 'Show', resource_path(@item.class.table_name, @item)
   li.active

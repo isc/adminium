@@ -9,3 +9,4 @@ thread safety pour generic.rb
 support pour l'édition des associations
 configurer le default order sur une table
 mettre un calendar pour les champs date
+reference data

@@ -1,4 +1,4 @@
-- columns=(clazz.settings.column_names + clazz.columns.map(&:name)).uniq.compact
+- columns = (clazz.settings.column_names + clazz.columns.map(&:name)).uniq.compact
 #settings.modal.hide
   .modal-header
     a.close data-dismiss="modal" ×
@@ -29,4 +29,4 @@
             - clazz.settings.filters.each do |filter|
               li= render :partial => "/settings/filter", :locals => {:filter => filter}
     .modal-footer.row
-      input#save_settings.btn(type='submit' value='Save settings')
+      input#save_settings.btn.btn-primary(type='submit' value='Save settings')

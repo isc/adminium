@@ -1,10 +1,11 @@
-h1 General Settings
+.page-header
+  h3 General Settings
 
 = form_tag general_settings_path, :method => :put, :class => 'form-horizontal' do
   fieldset
     legend Listing
     .control-group
-      label.control-label per page
+      label.control-label Per page
       .controls
         input type="number" value=Settings::Global.per_page name="settings[per_page]"
         p.help-block number of rows displayed per page by default
@@ -17,6 +18,7 @@ h1 General Settings
         - formats = [:long, :default, :short]
         select name='settings[datetime_format]'
           = options_for_select(formats.map{|f|[l(d, :format => f),f.to_s]}, Settings::Global.datetime_format)
+    .control-group
       label.control-label Date
       .controls
         - d = Date.today
