@@ -1,6 +1,6 @@
 class ResourcesController < ApplicationController
 
-  before_filter :fetch_item, :only => [:show, :edit, :update]
+  before_filter :fetch_item, :only => [:show, :edit, :update, :destroy]
   helper_method :clazz
 
   def index
@@ -36,6 +36,11 @@ class ResourcesController < ApplicationController
   def update
     @item.update_attributes item_params
     redirect_to action:'show', id:@item.id, table:params[:table]
+  end
+  
+  def destroy
+    @item.destroy
+    redirect_to action:'index'
   end
 
   private

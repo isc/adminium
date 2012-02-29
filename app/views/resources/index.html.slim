@@ -29,6 +29,7 @@
               td
                 = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item.id)
                 = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item.id)
+                = link_to content_tag('i', nil, class:'icon-trash'), resource_path(params[:table], item.id), :method => :delete, :confirm => 'You sure?'
       = paginate @items
 
     = render :partial => "/resources/panels/settings"
