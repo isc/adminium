@@ -27,7 +27,7 @@ class ResourcesController < ApplicationController
   def create
     @item = clazz.new item_params
     if @item.save
-      redirect_to resource_path(params[:table], @item.id), :success => 'So cool'
+      redirect_to resource_path(params[:table], @item.id), :flash => {:success => "#{object_name} successfully created."}
     else
       render :new
     end
@@ -35,12 +35,12 @@ class ResourcesController < ApplicationController
 
   def update
     @item.update_attributes item_params
-    redirect_to action:'show', id:@item.id, table:params[:table]
+    redirect_to resource_path(params[:table], @item.id), :flash => {:success => "#{object_name} successfully updated."}
   end
   
   def destroy
     @item.destroy
-    redirect_to action:'index'
+    redirect_to resources_path, :flash => {:success => "#{object_name} successfully destroyed."}
   end
 
   private
@@ -55,6 +55,10 @@ class ResourcesController < ApplicationController
   
   def item_params
     params[@clazz.name.underscore.gsub('/', '_')]
+  end
+  
+  def object_name
+    "#{@clazz.name.split('::').last.humanize} ##{@item.id}"
   end
 
   def build_statement scope, filter

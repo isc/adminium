@@ -41,6 +41,10 @@ html lang="en"
                 - @tables.each do |table|
                   li class="#{'active' if params[:table] == table}" = link_to table.humanize, resources_path(table)
         .span9
+          - flash.each do |k, v|
+            .alert class="alert-#{k}"
+              a.close data-dismiss="alert" href="#" &times;
+              = v
           = yield
 
       footer

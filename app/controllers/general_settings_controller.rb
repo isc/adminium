@@ -5,7 +5,7 @@ class GeneralSettingsController < ApplicationController
 
   def update
     Settings::Global.update params[:settings]
-    redirect_to :back
+    redirect_to :back, :flash => {:success => 'Settings successully saved'}
   end
 
 end

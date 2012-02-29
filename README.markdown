@@ -10,3 +10,5 @@ support pour l'édition des associations
 configurer le default order sur une table
 mettre un calendar pour les champs date
 reference data
+disable completement des tables
+i18n
