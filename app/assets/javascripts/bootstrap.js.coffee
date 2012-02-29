@@ -4,7 +4,7 @@ jQuery ->
   $(".carousel").carousel()
   $(".collapse").collapse()
   $(".dropdown-toggle").dropdown()
-  $(".modal").modal()
+  # $(".modal").modal()
   $("a[rel]").popover()
   $(".navbar").scrollspy()
   $(".tab").tab "show"

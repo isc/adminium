@@ -1,0 +1,32 @@
+- columns=(clazz.settings.column_names + clazz.columns.map(&:name)).uniq.compact
+#settings.modal.hide
+  .modal-header
+    a.close data-dismiss="modal" ×
+    h3 Listing settings
+  = form_tag setting_path(:id => params[:table]), :method => :put do
+    .modal-body
+      .well.span10
+        h5 Displayed columns
+        ul
+          - columns.each do |name|
+            li.setting_attribute(style="position:relative")
+              input type='checkbox' name="columns[#{name}]" id=name checked=(clazz.settings.column_names.include?(name) ? 'checked' : nil)
+              label for=name.parameterize
+                = name
+              i.icon-eye-open(style="position:absolute;top:5px;right:20px" data-attribute-name=name)
+              i.icon-resize-vertical(style="position:absolute;top:5px;right:5px")
+      .row
+        .span7.well
+          ' Items per page
+          input.span2 type="number" step=25 min=25 max=250 name="per_page" value=clazz.settings.per_page
+
+        .span7.well
+          ' Add a filter :
+          select#new_filter.span3(data-table=params[:table])
+           - clazz.columns.each do |column|
+             option(value=column.name)= column.name
+          ul.filters.form-inline
+            - clazz.settings.filters.each do |filter|
+              li= render :partial => "/settings/filter", :locals => {:filter => filter}
+    .modal-footer.row
+      input#save_settings.btn(type='submit' value='Save settings')

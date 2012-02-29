@@ -1,35 +1,33 @@
 .page-header
+  a.btn.pull-right data-toggle="modal" href="#settings" Settings
   h3
     = "Listing #{params[:table].humanize.downcase} "
     small= page_entries_info(@items, :entry_name => '').html_safe
+  
+ul.nav.nav-tabs
+  li.active
+    a href="#listing" Listing
+  li
+    = link_to 'Add new', new_resource_path(table:params[:table])
+  / li
+  /   a href="#settings" Settings
 
-.tabbable
-  ul.nav.nav-tabs
-    li.active
-      a href="#listing" data-toggle="tab" Listing
-    li
-      = link_to 'Add new', new_resource_path(table:params[:table])
-    li
-      a href="#settings" data-toggle="tab" Settings
+table.table-striped.table-bordered.table
+  thead
+    tr
+      - clazz.settings.column_names.each do |name|
+        th= header_link name
+      th
+  tbody
+    - @items.each do |item|
+      tr
+        - item.attributes.values.each do |value|
+            td class=value.class.to_s.parameterize
+              = display_value value
+        td
+          = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item.id)
+          = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item.id)
+          = link_to content_tag('i', nil, class:'icon-trash'), resource_path(params[:table], item.id), :method => :delete, :confirm => 'You sure?'
+= paginate @items
 
-  .tab-content
-    #listing.tab-pane.active
-      table.table-striped.table-bordered.table
-        thead
-          tr
-            - clazz.settings.column_names.each do |name|
-              th= header_link name
-            th
-        tbody
-          - @items.each do |item|
-            tr
-              - item.attributes.values.each do |value|
-                  td class=value.class.to_s.parameterize
-                    = display_value value
-              td
-                = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item.id)
-                = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item.id)
-                = link_to content_tag('i', nil, class:'icon-trash'), resource_path(params[:table], item.id), :method => :delete, :confirm => 'You sure?'
-      = paginate @items
-
-    = render :partial => "/resources/panels/settings"
+= render :partial => "/resources/panels/settings"
