@@ -20,7 +20,7 @@ class Heroku::ResourcesController < ApplicationController
   end
   
   def sso_login
-    token = "#{params[:id]}:iOy1l96mXADxSETP:#{params[:timestamp]}"
+    token = "#{params[:id]}:#{HEROKU_MANIFEST['api']['sso_salt']}:#{params[:timestamp]}"
     token = Digest::SHA1.hexdigest(token).to_s
     if token != params[:token] || (params[:timestamp].to_i < (Time.now - 2*60).to_i)
       render :text => 'bad token', :status => 403 and return
@@ -35,7 +35,7 @@ class Heroku::ResourcesController < ApplicationController
   def basic_auth
     authenticate_or_request_with_http_basic do |user, pass|
       logger.warn "user #{user}, pass : #{pass}"
-      user == HEROKU_API_USER && pass == HEROKU_API_PASS
+      user == HEROKU_MANIFEST['id'] && pass == HEROKU_MANIFEST['api']['password']
     end
   end
   
