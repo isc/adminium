@@ -80,7 +80,7 @@ class Generic
   def table table_name
     account_module.const_get table_name.classify
   rescue NameError
-    raise "Couldn't get class for table #{table_name}, current constants : #{constants.inspect}"
+    raise "Couldn't get class for table #{table_name}, current constants : #{account_module.constants.inspect}"
   end
 
   def build_connection_from_db_url db_url

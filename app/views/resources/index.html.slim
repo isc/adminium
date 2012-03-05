@@ -11,7 +11,7 @@ ul.nav.nav-tabs
 table.table-striped.table-bordered.table
   thead
     tr
-      - clazz.settings.column_names.each do |name|
+      - clazz.settings.columns[:listing].each do |name|
         th= header_link name
       th
   tbody

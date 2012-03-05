@@ -2,7 +2,10 @@ class SettingsController < ApplicationController
 
   def update
     settings = @generic.table(params[:id]).settings
-    settings.columns = params[:columns].keys
+    [:listing, :form, :show].each do |type|
+      param_key = "#{type}_columns".to_sym
+      settings.columns[type] = params[param_key].keys if params[param_key]
+    end
     settings.filters = params[:filters].values if params.has_key?(:filters)
     settings.per_page = params[:per_page]
     settings.save

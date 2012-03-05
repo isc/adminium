@@ -2,7 +2,6 @@ module Settings
 
   def settings
     @settings ||= Base.new(self)
-    return @settings
   end
 
   class Global
@@ -29,12 +28,9 @@ module Settings
 
   class Base
 
-    
-
     attr_accessor :filters
 
-
-    def initialize(clazz)
+    def initialize clazz
       @clazz = clazz
       load
     end
@@ -43,10 +39,10 @@ module Settings
       @globals = Global.load
       value = REDIS.get settings_key
       if value.nil?
-        self.columns = @clazz.columns.map(&:name)
+        @columns = {:listing => @clazz.column_names, :form => @clazz.column_names, :show => @clazz.column_names}
       else
         datas = JSON.parse(value).symbolize_keys!
-        @columns = datas[:columns]
+        @columns = datas[:columns].symbolize_keys!
         @filters = datas[:filters]
         @per_page = datas[:per_page] || @globals[:per_page]
       end
@@ -63,12 +59,6 @@ module Settings
       "account:#{@clazz.account_id}:#{@clazz.original_name}:settings"
     end
 
-    def columns= columns
-      @columns = columns.map do |column|
-        {'name' => column}
-      end
-    end
-
     def per_page= per_page
       @per_page = per_page.to_i
     end
@@ -77,12 +67,9 @@ module Settings
       @per_page ||= @globals[:per_page]
     end
 
-    def column_names
-      @columns.map do |column|
-        column['name']
-      end
+    def columns type = nil
+      type ? @columns[type] : @columns
     end
-
 
   end
 
