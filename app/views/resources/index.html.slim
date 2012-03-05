@@ -3,15 +3,11 @@
   h3
     = "Listing #{params[:table].humanize.downcase} "
     small= page_entries_info(@items, :entry_name => '').html_safe
-  
 ul.nav.nav-tabs
   li.active
     a href="#listing" Listing
   li
     = link_to 'Add new', new_resource_path(table:params[:table])
-  / li
-  /   a href="#settings" Settings
-
 table.table-striped.table-bordered.table
   thead
     tr
@@ -22,12 +18,10 @@ table.table-striped.table-bordered.table
     - @items.each do |item|
       tr
         - item.attributes.values.each do |value|
-            td class=value.class.to_s.parameterize
-              = display_value value
+            td class=value.class.to_s.parameterize = display_value value
         td
           = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item.id)
           = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item.id)
           = link_to content_tag('i', nil, class:'icon-trash'), resource_path(params[:table], item.id), :method => :delete, :confirm => 'You sure?'
 = paginate @items
-
 = render :partial => "/resources/panels/settings"

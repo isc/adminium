@@ -1,10 +1,10 @@
 .page-header
+  a.btn.pull-right data-toggle="modal" href="#settings" Settings
   h3 New #{@item.class.name.split('::').last}
-
 .tabbable
   ul.nav.nav-tabs
     li= link_to 'Listing', resources_path(params[:table])
     li.active
       a Add new
-
 = render 'resources/form'
+= render 'resources/panels/form_settings'

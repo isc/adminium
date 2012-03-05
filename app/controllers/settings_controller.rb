@@ -12,7 +12,7 @@ class SettingsController < ApplicationController
 
   def show
     @column = Generic.table(params[:id]).columns.detect{|c|c.name == params[:column_name]}
-    render :partial => "/settings/filter", :locals => {:filter => {'column' => @column.name, 'type' => @column.type}}
+    render :partial => "/settings/filter", locals: {filter: {'column' => @column.name, 'type' => @column.type}}
   end
 
 end
