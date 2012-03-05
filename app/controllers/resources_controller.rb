@@ -50,7 +50,7 @@ class ResourcesController < ApplicationController
   end
 
   def clazz
-    @clazz ||= Generic.table(params[:table])
+    @clazz ||= @generic.table(params[:table])
   end
   
   def item_params

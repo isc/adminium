@@ -37,9 +37,8 @@ class Account < ActiveRecord::Base
 
   def db_url_validation
     return unless db_url.present?
-    Generic.connect_and_domain_discovery db_url
+    Generic.new self
   rescue PGError, Mysql2::Error => e
-    Generic.reset_current_db_url
     errors[:base] = e.message
   end
 

@@ -2,8 +2,8 @@ require 'cgi'
 require 'uri'
 
 class Generic
-  cattr_accessor :models
-  cattr_reader :current_adapter
+  attr_accessor :models
+  attr_reader :current_adapter
 
   class Base < ActiveRecord::Base
     cattr_accessor :account_id
@@ -19,43 +19,49 @@ class Generic
     end
   end
 
-  def self.connect_and_domain_discovery account
-    @@current_db_url ||= nil
-    @@account_id = account.id
-    return if @@current_db_url == account.db_url
-    connection = Generic.build_connection_from_db_url account.db_url
-    Generic.discover_classes_and_associations! connection
-    @@current_db_url = account.db_url
+  def initialize account
+    @account_id = account.id
+    connection = build_connection_from_db_url account.db_url
+    discover_classes_and_associations! connection
   end
 
-  def self.discover_classes_and_associations! connection_specification
-    ActiveSupport::Notifications.instrument(:classes_and_associations_discovery, :at => Time.now) do
-      Base.establish_connection connection_specification
-      discover_models
-      discover_associations
-    end
+  def account_module
+    return @account_module if @account_module
+    module_name = "Account#{@account_id}"
+    @account_module = self.class.const_get module_name
+  rescue NameError
+    @account_module = self.class.const_set module_name, Module.new
   end
 
-  def self.discover_models
+  def discover_classes_and_associations! connection_specification
+    Base.establish_connection connection_specification
+    discover_models
+    discover_associations
+  end
+
+  def discover_models
     if models.present?
-      constants.each {|const| remove_const const unless const == :Base }
+      account_module.constants.each {|const| account_module.remove_const const unless const == :Base }
       models.clear # need to explicitly clear in case the filling goes wrong
     end
     self.models = tables.map do |table|
-      res = const_set table.classify, Class.new(Base)
-      res.account_id = @@account_id
+      res = account_module.const_set table.classify, Class.new(Base)
+      res.account_id = @account_id
       res.table_name = table
+      def res.abstract_class?
+        false
+      end
       res
     end
   end
 
-  def self.discover_associations
+  def discover_associations
     models.each do |klass|
       begin
         owners = klass.column_names.find_all {|c| c.ends_with? '_id'}.map {|c| c.gsub(/_id$/, '')}
         owners.each do |owner|
           begin
-            const_get(owner.classify).has_many klass.table_name.to_sym
+            account_module.const_get(owner.classify).has_many klass.table_name.to_sym
             klass.belongs_to owner.to_sym
           rescue NameError => e
             Rails.logger.warn "Failed for #{klass.table_name} belongs_to #{owner} : #{e.message}"
@@ -67,44 +73,34 @@ class Generic
     end
   end
 
-  def self.tables
+  def tables
     Base.connection.tables.sort
   end
 
-  def self.table table_name
-    const_get table_name.classify
+  def table table_name
+    account_module.const_get table_name.classify
   rescue NameError
-    raise "Couldn't get class for table #{table_name}, current constants : #{Generic.constants.inspect}"
+    raise "Couldn't get class for table #{table_name}, current constants : #{constants.inspect}"
   end
 
-  def self.build_connection_from_db_url db_url
-    begin
-      uri = URI.parse db_url
-    rescue URI::InvalidURIError
-      raise "Invalid DATABASE_URL"
-    end
-    connection = {
-      :adapter => uri.scheme, :username => uri.user, :password => uri.password,
-      :host => uri.host, :port => uri.port, :database => (uri.path || "").split("/")[1]
-    }
+  def build_connection_from_db_url db_url
+    uri = URI.parse db_url
+    connection = { adapter: uri.scheme, username: uri.user, password: uri.password,
+      host: uri.host, port: uri.port, database: (uri.path || "").split("/")[1] }
     connection[:adapter] = 'postgresql' if connection[:adapter] == 'postgres'
     connection[:adapter] = 'mysql2' if connection[:adapter] == 'mysql'
-    @@current_adapter = connection[:adapter]
+    @current_adapter = connection[:adapter]
     params = CGI.parse(uri.query || '')
     params.each {|k, v| connection[k] = v.first }
     connection
   end
 
-  def self.postgresql?
+  def postgresql?
     current_adapter == 'postgresql'
   end
 
-  def self.mysql?
+  def mysql?
     current_adapter == 'mysql2'
-  end
-
-  def self.reset_current_db_url
-    @@current_db_url = nil
   end
 
 end
