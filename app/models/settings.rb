@@ -6,21 +6,25 @@ module Settings
   end
 
   class Global
-    
+
     DEFAULT_PER_PAGE = 25
 
-    def self.load
-      value = REDIS.get "global_settings"
+    def initialize account_id
+      @account_id = account_id
+      value = REDIS.get global_key_settings(@account_id)
       @globals = value.nil? ? {} : JSON.parse(value).symbolize_keys!
       @globals.reverse_merge! :per_page => DEFAULT_PER_PAGE, :date_format => :long, :datetime_format => :long
     end
 
-    def self.update settings
-      REDIS.set "global_settings", settings.to_json
+    def global_key_settings
+      "account:#{@account_id}:global_settings"
     end
 
-    def self.method_missing name, *args, &block
-      load
+    def update settings
+      REDIS.set global_key_settings(@account_id), settings.to_json
+    end
+
+    def method_missing name, *args, &block
       return @globals[name] unless @globals[name].nil?
       super
     end
@@ -29,7 +33,7 @@ module Settings
 
   class Base
 
-    
+
 
     attr_accessor :filters
 
@@ -40,7 +44,7 @@ module Settings
     end
 
     def load
-      @globals = Global.load
+      @globals = Global.new @clazz.account_id
       value = REDIS.get settings_key
       if value.nil?
         self.columns = @clazz.columns.map(&:name)
@@ -58,9 +62,9 @@ module Settings
       settings.merge :per_page => @per_page if @globals[:per_page] != @per_page
       REDIS.set settings_key, settings.to_json
     end
-    
+
     def settings_key
-      "account:#{@clazz.account_id}:#{@clazz.original_name}:settings"
+      "account:#{@clazz.account_id}:settings:#{@clazz.original_name}"
     end
 
     def columns= columns

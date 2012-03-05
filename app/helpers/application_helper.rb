@@ -6,7 +6,7 @@ module ApplicationHelper
   when :alert then 'warning'
   end
   end
-  
+
   def header_link key
     order, icon = if params[:order] == key
       ["#{key} desc", 'icon-chevron-up']
@@ -16,7 +16,7 @@ module ApplicationHelper
     res = content_tag 'i', '', class: icon
     res << (link_to key.humanize, resources_path(params[:table], order:order))
   end
-  
+
   def display_value value
     case value
     when String
@@ -26,12 +26,12 @@ module ApplicationHelper
         value.truncate(100)
       end
     when ActiveSupport::TimeWithZone
-      l(value, :format => Settings::Global.datetime_format.to_sym)
+      l(value, :format => global_settings.datetime_format.to_sym)
     when Fixnum, BigDecimal
       number_with_delimiter value
     else
       value
     end
   end
-  
+
 end

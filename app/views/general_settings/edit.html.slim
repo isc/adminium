@@ -6,7 +6,7 @@ h1 General Settings
     .control-group
       label.control-label per page
       .controls
-        input type="number" value=Settings::Global.per_page name="settings[per_page]"
+        input type="number" value=global_settings.per_page name="settings[per_page]"
         p.help-block number of rows displayed per page by default
   fieldset
     legend Types
@@ -16,13 +16,13 @@ h1 General Settings
         - d = Time.now
         - formats = [:long, :default, :short]
         select name='settings[datetime_format]'
-          = options_for_select(formats.map{|f|[l(d, :format => f),f.to_s]}, Settings::Global.datetime_format)
+          = options_for_select(formats.map{|f|[l(d, :format => f),f.to_s]}, global_settings.datetime_format)
       label.control-label Date
       .controls
         - d = Date.today
         - formats = [:long, :default, :short]
         select name='settings[date_format]'
-          = options_for_select(formats.map{|f|[l(d, :format => f),f.to_s]}, Settings::Global.date_format)
+          = options_for_select(formats.map{|f|[l(d, :format => f),f.to_s]}, global_settings.date_format)
   .form-actions
     input.btn.btn-primary type="submit" value="Save Changes"
     '

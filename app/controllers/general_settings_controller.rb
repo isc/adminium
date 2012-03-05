@@ -4,7 +4,7 @@ class GeneralSettingsController < ApplicationController
   end
 
   def update
-    Settings::Global.update params[:settings]
+    global_settings.update params[:settings]
     redirect_to :back
   end
 
