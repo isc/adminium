@@ -5,7 +5,7 @@ configurer des validations par table/colonne
 améliorer la navigation des tables
 attr_accessible avec role pour proteger plan sur account
 support pour l'édition des associations
-mettre un calendar pour les champs date
+liens vers association belongs_to dans le listing
 reference data
 disable completement des tables
 i18n
