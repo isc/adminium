@@ -28,7 +28,7 @@ module Settings
 
   class Base
 
-    attr_accessor :filters
+    attr_accessor :filters, :default_order
 
     def initialize clazz
       @clazz = clazz
@@ -44,13 +44,14 @@ module Settings
         datas = JSON.parse(value).symbolize_keys!
         @columns = datas[:columns].symbolize_keys!
         @filters = datas[:filters]
+        @default_order = datas[:default_order] || @clazz.column_names.first
         @per_page = datas[:per_page] || @globals[:per_page]
       end
       @filters ||= []
     end
 
     def save
-      settings = {:columns => @columns, :filters => @filters}
+      settings = {:columns => @columns, :filters => @filters, :default_order => @default_order}
       settings.merge :per_page => @per_page if @globals[:per_page] != @per_page
       REDIS.set settings_key, settings.to_json
     end

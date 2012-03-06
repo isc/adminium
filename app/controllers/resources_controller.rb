@@ -9,9 +9,8 @@ class ResourcesController < ApplicationController
     clazz.settings.filters.each do |filter|
       @items = build_statement(@items, filter)
     end
-
     @items = @items.page(params[:page]).per(clazz.settings.per_page)
-    @items = @items.order(params[:order]) if params[:order].present?
+    @items = @items.order(params[:order].present? ? params[:order] : clazz.settings.default_order)
   end
 
   def show

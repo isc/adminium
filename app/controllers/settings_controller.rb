@@ -8,6 +8,7 @@ class SettingsController < ApplicationController
     end
     settings.filters = params[:filters].values if params.has_key?(:filters)
     settings.per_page = params[:per_page]
+    settings.default_order = params[:default_order].join(' ')
     settings.save
     redirect_to :back, flash: {success: 'Settings successfully saved.'}
   end

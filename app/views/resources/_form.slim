@@ -2,4 +2,4 @@
   - @item.class.settings.columns[:form].each do |name|
     = f.input name, readonly: @item.class.columns.detect{|c|c.name == name}.primary
   .form-actions
-    = f.submit class: 'btn-primary'
+    = f.submit class: 'btn-primary', disable_with: 'Sending...'

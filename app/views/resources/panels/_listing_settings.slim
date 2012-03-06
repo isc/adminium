@@ -2,15 +2,18 @@
   .modal-header
     a.close data-dismiss="modal" ×
     h3 Listing settings
-  = form_tag setting_path(:id => params[:table]), :method => :put do
+  = form_tag setting_path(:id => params[:table]), :method => :put, :class => 'form-horizontal' do
     .modal-body
       .well.span10
         h5 Displayed columns
         = render :partial => 'resources/panels/column_listing', locals: {clazz: clazz, type: :listing}
       .row
         .span7.well
-          ' Items per page
-          input.span2 type="number" step=25 min=25 max=250 name="per_page" value=clazz.settings.per_page
+          = label_tag :per_page, 'Items per page'
+          input.span2#per_page type="number" step=25 min=25 max=250 name="per_page" value=clazz.settings.per_page
+          = label_tag 'default_order[]', 'Default order'
+          = select_tag 'default_order[]', options_from_collection_for_select(clazz.columns, :name, :name)
+          = select_tag 'default_order[]', options_for_select(%w(asc desc))
         .span7.well
           ' Add a filter :
           select#new_filter.span3 data-table=params[:table]
