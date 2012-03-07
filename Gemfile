@@ -41,6 +41,7 @@ end
 
 group :production do
   gem 'thin'
+  gem 'airbrake'
 end
 
 group :test do
