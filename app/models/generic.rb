@@ -78,9 +78,11 @@ class Generic
   end
 
   def table table_name
-    account_module.const_get table_name.classify
-  rescue NameError
-    raise "Couldn't get class for table #{table_name}, current constants : #{account_module.constants.inspect}"
+    if account_module.constants.include? table_name.classify.to_sym
+      account_module.const_get table_name.classify
+    else
+      raise TableNotFoundException.new(table_name)
+    end
   end
 
   def build_connection_from_db_url db_url
@@ -101,6 +103,13 @@ class Generic
 
   def mysql?
     current_adapter == 'mysql2'
+  end
+  
+  class TableNotFoundException < Exception
+    attr_reader :table_name
+    def initialize table_name
+      @table_name = table_name
+    end
   end
 
 end
