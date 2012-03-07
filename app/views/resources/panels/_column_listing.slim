@@ -1,0 +1,9 @@
+- checked_columns = clazz.settings.columns[type]
+- columns = (checked_columns + clazz.column_names).uniq.compact
+ul
+  - columns.each do |name|
+    li.setting_attribute
+      input type='checkbox' name="#{type}_columns[#{name}]" id=name checked=('checked' if checked_columns.include?(name))
+      label for=name.parameterize = name
+      i.icon-eye-open style="position:absolute;top:5px;right:20px" data-attribute-name=name
+      i.icon-resize-vertical style="position:absolute;top:5px;right:5px"

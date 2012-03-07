@@ -4,12 +4,13 @@ class ResourcesController < ApplicationController
   helper_method :clazz
 
   def index
-    @items = clazz.select(clazz.settings.column_names.map{|c|c=='new' ? "`new`" : c}.join(", "))
+    @items = clazz.select(clazz.settings.columns[:listing].join(", "))
     clazz.settings.filters.each do |filter|
       @items = build_statement(@items, filter)
     end
     @items = @items.page(params[:page]).per(clazz.settings.per_page)
-    @items = @items.order(params[:order]) if params[:order].present?
+    @items = @items.where(params[:where]) if params[:where]
+    @items = @items.order(params[:order].present? ? params[:order] : clazz.settings.default_order)
   end
 
   def show
@@ -35,7 +36,7 @@ class ResourcesController < ApplicationController
     @item.update_attributes item_params
     redirect_to resource_path(params[:table], @item.id), :flash => {:success => "#{object_name} successfully updated."}
   end
-  
+
   def destroy
     @item.destroy
     redirect_to resources_path, :flash => {:success => "#{object_name} successfully destroyed."}
@@ -48,15 +49,15 @@ class ResourcesController < ApplicationController
   end
 
   def clazz
-    @clazz ||= Generic.table(params[:table])
+    @clazz ||= @generic.table(params[:table])
   end
-  
+
   def item_params
     params[@clazz.name.underscore.gsub('/', '_')]
   end
-  
+
   def object_name
-    "#{@clazz.name.split('::').last.humanize} ##{@item.id}"
+    "#{@clazz.original_name.humanize} ##{@item.id}"
   end
 
   def build_statement scope, filter

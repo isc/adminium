@@ -1,6 +1,6 @@
 .page-header
   a.btn.pull-right data-toggle="modal" href="#settings" Settings
-  h3= "#{@item.class.name.split('::').last} ##{params[:id]}"
+  h3= "#{@item.class.original_name} ##{params[:id]}"
 ul.nav.nav-tabs
   li.active
     a Show
@@ -8,8 +8,9 @@ ul.nav.nav-tabs
 .row-fluid
   .span6
     dl
-      - @item.attributes.each do |key, value|
-        dt= key
+      - @item.class.settings.columns[:show].each do |name|
+        - value = @item[name]
+        dt= name
         dd class=value.class.name.parameterize = display_value value
   .span6
     dl
@@ -20,4 +21,6 @@ ul.nav.nav-tabs
           dd= link_to "#{name} ##{object.id}", resource_path(object.class.table_name, object.id)
         - else
           dt= assoc.macro
-          dd= link_to name, resources_path(name)
+          dd= link_to name, resources_path(name, :where => {"#{@item.class.original_name.underscore}_id" => @item.id})
+
+= render 'resources/panels/show_settings'

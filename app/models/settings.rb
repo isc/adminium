@@ -2,7 +2,6 @@ module Settings
 
   def settings
     @settings ||= Base.new(self)
-    return @settings
   end
 
   class Global
@@ -33,12 +32,9 @@ module Settings
 
   class Base
 
+    attr_accessor :filters, :default_order
 
-
-    attr_accessor :filters
-
-
-    def initialize(clazz)
+    def initialize clazz
       @clazz = clazz
       load
     end
@@ -47,30 +43,25 @@ module Settings
       @globals = Global.new @clazz.account_id
       value = REDIS.get settings_key
       if value.nil?
-        self.columns = @clazz.columns.map(&:name)
+        @columns = {:listing => @clazz.column_names, :form => @clazz.column_names, :show => @clazz.column_names}
       else
         datas = JSON.parse(value).symbolize_keys!
-        @columns = datas[:columns]
+        @columns = datas[:columns].symbolize_keys!
         @filters = datas[:filters]
+        @default_order = datas[:default_order] || @clazz.column_names.first
         @per_page = datas[:per_page] || @globals[:per_page]
       end
       @filters ||= []
     end
 
     def save
-      settings = {:columns => @columns, :filters => @filters}
+      settings = {:columns => @columns, :filters => @filters, :default_order => @default_order}
       settings.merge :per_page => @per_page if @globals[:per_page] != @per_page
       REDIS.set settings_key, settings.to_json
     end
 
     def settings_key
       "account:#{@clazz.account_id}:settings:#{@clazz.original_name}"
-    end
-
-    def columns= columns
-      @columns = columns.map do |column|
-        {'name' => column}
-      end
     end
 
     def per_page= per_page
@@ -81,12 +72,9 @@ module Settings
       @per_page ||= @globals.per_page
     end
 
-    def column_names
-      @columns.map do |column|
-        column['name']
-      end
+    def columns type = nil
+      type ? @columns[type] : @columns
     end
-
 
   end
 

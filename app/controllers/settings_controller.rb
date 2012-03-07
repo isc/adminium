@@ -1,18 +1,21 @@
 class SettingsController < ApplicationController
 
   def update
-    settings = Generic.table(params[:id]).settings
-    settings.columns = params[:columns].keys
-    params[:filters] ||= {}
-    settings.filters = params[:filters].values
+    settings = @generic.table(params[:id]).settings
+    [:listing, :form, :show].each do |type|
+      param_key = "#{type}_columns".to_sym
+      settings.columns[type] = params[param_key].keys if params[param_key]
+    end
+    settings.filters = params[:filters].values if params.has_key?(:filters)
     settings.per_page = params[:per_page]
+    settings.default_order = params[:default_order].join(' ') if params[:default_order].present?
     settings.save
-    redirect_to :back
+    redirect_to :back, flash: {success: 'Settings successfully saved.'}
   end
 
   def show
-    @column = Generic.table(params[:id]).columns.detect{|c|c.name == params[:column_name]}
-    render :partial => "/settings/filter", locals: {filter: {'column' => @column.name, 'type' => @column.type}}
+    @column = @generic.table(params[:id]).columns.detect{|c|c.name == params[:column_name]}
+    render partial: '/settings/filter', locals: {filter: {'column' => @column.name, 'type' => @column.type}}
   end
 
 end

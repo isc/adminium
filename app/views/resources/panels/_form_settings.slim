@@ -2,5 +2,9 @@
   .modal-header
     a.close data-dismiss="modal" ×
     h3 Form settings
-  .modal-body
-  .modal-footer
+  = form_tag setting_path(:id => params[:table]), :method => :put do
+    .modal-body
+      h5 Form fields
+      = render :partial => 'resources/panels/column_listing', locals: {clazz: clazz, type: :form}
+    .modal-footer
+      input#save_settings.btn.btn-primary type='submit' value='Save settings'

@@ -1,0 +1,10 @@
+#settings.modal.hide
+  .modal-header
+    a.close data-dismiss="modal" ×
+    h3 Show settings
+  = form_tag setting_path(:id => params[:table]), :method => :put do
+    .modal-body
+      h5 Display fields
+      = render :partial => 'resources/panels/column_listing', locals: {clazz: clazz, type: :show}
+    .modal-footer
+      input#save_settings.btn.btn-primary type='submit' value='Save settings'

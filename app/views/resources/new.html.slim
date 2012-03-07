@@ -1,6 +1,6 @@
 .page-header
   a.btn.pull-right data-toggle="modal" href="#settings" Settings
-  h3 New #{@item.class.name.split('::').last}
+  h3 New #{@item.class.original_name}
 .tabbable
   ul.nav.nav-tabs
     li= link_to 'Listing', resources_path(params[:table])
