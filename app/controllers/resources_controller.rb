@@ -17,9 +17,11 @@ class ResourcesController < ApplicationController
   end
 
   def edit
+    @form_url = resource_path(@item, table: params[:table])
   end
 
   def new
+    @form_url = resources_path(params[:table])
     @item = clazz.new
   end
 

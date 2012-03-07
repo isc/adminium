@@ -1,4 +1,4 @@
-= simple_form_for @item, url: resource_path(params[:table], @item.id), html: {class: 'form-horizontal'} do |f|
+= simple_form_for @item, url: @form_url, html: {class: 'form-horizontal'} do |f|
   - @item.class.settings.columns[:form].each do |name|
     = f.input name, readonly: @item.class.columns.detect{|c|c.name == name}.primary
   .form-actions
