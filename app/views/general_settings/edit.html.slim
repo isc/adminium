@@ -16,16 +16,16 @@
       label.control-label DateTime format
       .controls
         - d = Time.now
-        - formats = [:long, :default, :short]
+        - formats = configatron.settings.datetime
         select name='settings[datetime_format]'
-          = options_for_select(formats.map{|f|[l(d, :format => f),f.to_s]}, global_settings.datetime_format)
+          = options_for_select(formats.map{|f|[display_datetime(d, f),f.to_s]}, global_settings.datetime_format)
     .control-group
       label.control-label Date
       .controls
         - d = Date.today
-        - formats = [:long, :default, :short]
+        - formats = configatron.settings.date
         select name='settings[date_format]'
-          = options_for_select(formats.map{|f|[l(d, :format => f),f.to_s]}, global_settings.date_format)
+          = options_for_select(formats.map{|f|[display_datetime(d, f),f.to_s]}, global_settings.date_format)
   .form-actions
     input.btn.btn-primary type="submit" value="Save Changes"
     '

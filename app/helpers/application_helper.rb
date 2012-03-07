@@ -26,11 +26,21 @@ module ApplicationHelper
         value.truncate(100)
       end
     when ActiveSupport::TimeWithZone
-      l(value, :format => global_settings.datetime_format.to_sym)
+      display_datetime(value)
     when Fixnum, BigDecimal
       number_with_delimiter value
     else
       value
+    end
+  end
+
+  def display_datetime(value, format=nil)
+    return if nil
+    format ||= global_settings.datetime_format
+    if format.to_sym == :time_ago_in_words
+      time_ago_in_words(value) + ' ago'
+    else
+      l(value, :format => format.to_sym)
     end
   end
 

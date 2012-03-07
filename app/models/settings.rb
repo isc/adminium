@@ -7,13 +7,13 @@ module Settings
 
   class Global
 
-    DEFAULT_PER_PAGE = 25
+    DEFAULTS = {:per_page => 25, :date_format => :long, :datetime_format => :long}
 
     def initialize account_id
       @account_id = account_id
-      value = REDIS.get global_key_settings(@account_id)
-      @globals = value.nil? ? {} : JSON.parse(value).symbolize_keys!
-      @globals.reverse_merge! :per_page => DEFAULT_PER_PAGE, :date_format => :long, :datetime_format => :long
+      value = REDIS.get global_key_settings
+      @globals = value.nil? ? {} : JSON.parse(value)
+      @globals.reverse_merge!(DEFAULTS).symbolize_keys!
     end
 
     def global_key_settings
@@ -21,11 +21,11 @@ module Settings
     end
 
     def update settings
-      REDIS.set global_key_settings(@account_id), settings.to_json
+      REDIS.set global_key_settings, settings.to_json
     end
 
     def method_missing name, *args, &block
-      return @globals[name] unless @globals[name].nil?
+      return @globals[name] if @globals.has_key? name
       super
     end
 
@@ -78,7 +78,7 @@ module Settings
     end
 
     def per_page
-      @per_page ||= @globals[:per_page]
+      @per_page ||= @globals.per_page
     end
 
     def column_names

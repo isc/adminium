@@ -14,6 +14,7 @@ gem 'rack-fiber_pool',  :require => 'rack/fiber_pool'
 gem 'em-synchrony', :git     => 'git://github.com/igrigorik/em-synchrony.git',
                     :require => ['em-synchrony',
                                  'em-synchrony/activerecord']
+gem 'configatron'
 
 # Gems used only for assets and not required
 # in production environments by default.
