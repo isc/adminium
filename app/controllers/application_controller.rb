@@ -26,7 +26,7 @@ class ApplicationController < ActionController::Base
     if @account
       if @account.db_url.present?
         begin
-          @generic = Generic.new account
+          @generic = Generic.new @account
           @tables = @generic.tables
         rescue
           p $!
