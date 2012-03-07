@@ -13,7 +13,7 @@ class Generic
       true
     end
     def self.original_name
-      name.split('::').last
+      name.demodulize
     end
     def self.inheritance_column
     end

@@ -10,6 +10,7 @@ class ResourcesController < ApplicationController
       @items = build_statement(@items, filter)
     end
     @items = @items.page(params[:page]).per(clazz.settings.per_page)
+    @items = @items.where(params[:where]) if params[:where]
     @items = @items.order(params[:order].present? ? params[:order] : clazz.settings.default_order)
   end
 
@@ -57,7 +58,7 @@ class ResourcesController < ApplicationController
   end
   
   def object_name
-    "#{@clazz.name.split('::').last.humanize} ##{@item.id}"
+    "#{@clazz.original_name.humanize} ##{@item.id}"
   end
 
   def build_statement scope, filter
