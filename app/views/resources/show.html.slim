@@ -21,6 +21,7 @@ ul.nav.nav-tabs
           dd= link_to "#{name} ##{object.id}", resource_path(object.class.table_name, object.id)
         - else
           dt= assoc.macro
-          dd= link_to name, resources_path(name, :where => {"#{@item.class.original_name.underscore}_id" => @item.id})
+          - count = @item.send(name).count
+          dd= link_to "#{name} (#{count})", resources_path(name, :where => {"#{@item.class.original_name.underscore}_id" => @item.id})
 
 = render 'resources/panels/show_settings'
