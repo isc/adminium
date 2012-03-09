@@ -1,9 +1,11 @@
-global settings un peu moins global
 Gerer les tables sans colonne id
 configurer des validations par table/colonne
 attr_accessible avec role pour proteger plan sur account
 support pour l'édition des associations
-liens vers association belongs_to dans le listing
+associations dans le listing
+colonnes calculees
+recherche
+conf des associations
 reference data
 disable completement des tables
 i18n

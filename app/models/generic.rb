@@ -51,6 +51,7 @@ class Generic
       def res.abstract_class?
         false
       end
+      res.primary_key = res.column_names.first if res.primary_key.nil?
       res
     end
   end

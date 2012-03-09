@@ -3,6 +3,8 @@
   h3
     = "Listing #{params[:table].humanize.downcase} "
     small= page_entries_info(@items, :entry_name => '').html_safe
+form.pull-right.index-search
+  input.search-query name="search" value=params[:search]
 ul.nav.nav-tabs
   li.active
     a href="#listing" Listing
@@ -20,8 +22,8 @@ table.table-striped.table-bordered.table
         - item.attributes.values.each do |value|
             td class=value.class.to_s.parameterize = display_value value
         td
-          = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item.id)
-          = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item.id)
-          = link_to content_tag('i', nil, class:'icon-trash'), resource_path(params[:table], item.id), :method => :delete, :confirm => 'You sure?'
+          = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item)
+          = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item)
+          = link_to content_tag('i', nil, class:'icon-trash'), resource_path(params[:table], item), :method => :delete, :confirm => 'You sure?'
 = paginate @items
 = render :partial => "/resources/panels/listing_settings"

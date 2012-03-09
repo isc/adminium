@@ -9,7 +9,8 @@ class ResourcesController < ApplicationController
       @items = build_statement(@items, filter)
     end
     @items = @items.page(params[:page]).per(clazz.settings.per_page)
-    @items = @items.where(params[:where]) if params[:where]
+    @items = @items.where(params[:where]) if params[:where].present?
+    apply_search if params[:search].present?
     @items = @items.order(params[:order].present? ? params[:order] : clazz.settings.default_order)
   end
 
@@ -28,7 +29,7 @@ class ResourcesController < ApplicationController
   def create
     @item = clazz.new item_params
     if @item.save
-      redirect_to resource_path(params[:table], @item.id), :flash => {:success => "#{object_name} successfully created."}
+      redirect_to resource_path(params[:table], @item), :flash => {:success => "#{object_name} successfully created."}
     else
       render :new
     end
@@ -36,7 +37,7 @@ class ResourcesController < ApplicationController
 
   def update
     @item.update_attributes item_params
-    redirect_to resource_path(params[:table], @item.id), :flash => {:success => "#{object_name} successfully updated."}
+    redirect_to resource_path(params[:table], @item), :flash => {:success => "#{object_name} successfully updated."}
   end
 
   def destroy
@@ -60,6 +61,14 @@ class ResourcesController < ApplicationController
 
   def object_name
     "#{@clazz.original_name.humanize} ##{@item.id}"
+  end
+  
+  def apply_search
+    search_columns = @clazz.settings.columns[:search] || @clazz.columns.find_all {|c|c.type == :string}.map(&:name)
+    query = search_columns.map do |column|
+      "upper(#{column}) like ?"
+    end.join ' or '
+    @items = @items.where([query, ["#{params[:search]}%".upcase] * search_columns.size].flatten)
   end
 
   def build_statement scope, filter
