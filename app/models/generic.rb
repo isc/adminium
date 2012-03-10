@@ -32,6 +32,10 @@ class Generic
   rescue NameError
     @account_module = self.class.const_set module_name, Module.new
   end
+  
+  def cleanup
+    self.class.send :remove_const, @account_module.name.demodulize if @account_module
+  end
 
   def discover_classes_and_associations! connection_specification
     Base.establish_connection connection_specification

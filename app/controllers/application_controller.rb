@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   before_filter :fixed_account
   before_filter :fetch_account
   before_filter :connect_to_db
+  after_filter :cleanup_generic
 
   helper_method :global_settings
 
@@ -36,6 +37,10 @@ class ApplicationController < ActionController::Base
   
   def table_not_found exception
     redirect_to edit_account_path, :flash => {:error => "The table <b>#{exception.table_name}</b> cannot be found.".html_safe}
+  end
+  
+  def cleanup_generic
+    @generic.try :cleanup
   end
 
 end
