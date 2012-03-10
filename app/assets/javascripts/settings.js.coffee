@@ -1,4 +1,4 @@
-jQuery ->
+$ ->
   $('#settings ul').sortable()
   $("ul.filters span.btn").live 'click', ->
     $(this).parent('li').remove()

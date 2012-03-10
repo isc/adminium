@@ -43,7 +43,8 @@ module Settings
       @globals = Global.new @clazz.account_id
       value = REDIS.get settings_key
       if value.nil?
-        @columns = {:listing => @clazz.column_names, :form => @clazz.column_names, :show => @clazz.column_names}
+        @columns = {listing: @clazz.column_names, show: @clazz.column_names,
+          form: (@clazz.column_names - %w(created_at updated_at id))}
       else
         datas = JSON.parse(value).symbolize_keys!
         @columns = datas[:columns].symbolize_keys!
@@ -55,7 +56,7 @@ module Settings
     end
 
     def save
-      settings = {:columns => @columns, :filters => @filters, :default_order => @default_order}
+      settings = {columns: @columns, filters: @filters, default_order: @default_order}
       settings.merge :per_page => @per_page if @globals.per_page != @per_page
       REDIS.set settings_key, settings.to_json
     end

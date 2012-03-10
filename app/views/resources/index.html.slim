@@ -3,7 +3,18 @@
   h3
     = "Listing #{params[:table].humanize.downcase} "
     small= page_entries_info(@items, :entry_name => '').html_safe
+  - if params[:search]
+    span.label.label-info
+      == "search for <i>#{params[:search]}</i>"
+      span.remove data-param="search=#{params[:search]}" x
+  - if params[:where]
+    - params[:where].each do |k, v|
+      span.label.label-warning
+        == "where #{k} is <i>#{v}</i>"
+        span.remove data-param="where[#{k}]=#{v}" x
 form.pull-right.index-search
+  - request.query_string.to_s.split('&').each do |param|
+    input type="hidden" name=CGI.unescape(param.split('=').first) value=param.split('=').last
   input.search-query name="search" value=params[:search]
 ul.nav.nav-tabs
   li.active
