@@ -1,1 +1,1 @@
-web: bundle exec thin start -e production -p $PORT
+web: bundle exec zbatery -c config/zbatery.conf -E production -p $PORT

@@ -7,13 +7,7 @@ gem 'rails', '3.2.2'
 
 gem 'pg'
 gem "hiredis", "~> 0.3.1"
-gem 'em-redis'
 gem "redis"#, "~> 2.2.2", :require => ["redis/connection/synchrony", "redis"]
-gem 'em-postgresql-adapter', :git => 'git://github.com/leftbee/em-postgresql-adapter.git'
-gem 'rack-fiber_pool',  :require => 'rack/fiber_pool'
-gem 'em-synchrony', :git     => 'git://github.com/igrigorik/em-synchrony.git',
-                    :require => ['em-synchrony',
-                                 'em-synchrony/activerecord']
 gem 'configatron'
 
 # Gems used only for assets and not required
@@ -40,7 +34,7 @@ group :development do
 end
 
 group :production do
-  gem 'thin'
+  gem 'zbatery'
   # gem 'airbrake'
 end
 
