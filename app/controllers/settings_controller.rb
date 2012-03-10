@@ -2,9 +2,9 @@ class SettingsController < ApplicationController
 
   def update
     settings = @generic.table(params[:id]).settings
-    [:listing, :form, :show].each do |type|
+    [:listing, :form, :show, :search].each do |type|
       param_key = "#{type}_columns".to_sym
-      settings.columns[type] = params[param_key].keys if params[param_key]
+      settings.columns[type] = params[param_key].keys.delete_if{|e|e == '_'} if params[param_key]
     end
     settings.filters = params[:filters].values if params.has_key?(:filters)
     settings.per_page = params[:per_page]

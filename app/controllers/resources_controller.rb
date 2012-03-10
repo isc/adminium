@@ -60,15 +60,15 @@ class ResourcesController < ApplicationController
   end
 
   def object_name
-    "#{@clazz.original_name.humanize} ##{@item.id}"
+    "#{@clazz.original_name.humanize} ##{@item[@clazz.primary_key]}"
   end
   
   def apply_search
-    search_columns = @clazz.settings.columns[:search] || @clazz.columns.find_all {|c|c.type == :string}.map(&:name)
-    query = search_columns.map do |column|
+    columns = @clazz.settings.columns[:search]
+    query = columns.map do |column|
       "upper(#{column}) like ?"
     end.join ' or '
-    @items = @items.where([query, ["#{params[:search]}%".upcase] * search_columns.size].flatten)
+    @items = @items.where([query, ["#{params[:search]}%".upcase] * columns.size].flatten)
   end
 
   def build_statement scope, filter

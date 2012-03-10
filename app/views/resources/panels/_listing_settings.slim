@@ -1,26 +1,54 @@
-#settings.modal.hide
-  .modal-header
-    a.close data-dismiss="modal" ×
-    h3 Listing settings
+#settings.modal.hide.fade
   = form_tag setting_path(:id => params[:table]), :method => :put, :class => 'form-horizontal' do
+    .modal-header
+      a.close data-dismiss="modal" ×
+      h3 Listing settings
     .modal-body
-      .well.span10
-        h5 Displayed columns
-        = render :partial => 'resources/panels/column_listing', locals: {clazz: clazz, type: :listing}
-      .row
-        .span7.well
-          = label_tag :per_page, 'Items per page'
-          input.span2#per_page type="number" step=25 min=25 max=250 name="per_page" value=clazz.settings.per_page
-          = label_tag 'default_order[]', 'Default order'
-          = select_tag 'default_order[]', options_from_collection_for_select(clazz.columns, :name, :name)
-          = select_tag 'default_order[]', options_for_select(%w(asc desc))
-        .span7.well
-          ' Add a filter :
-          select#new_filter.span3 data-table=params[:table]
-           - clazz.columns.each do |column|
-             option value=column.name = column.name
-          ul.filters.form-inline
-            - clazz.settings.filters.each do |filter|
-              li= render :partial => '/settings/filter', locals: {filter: filter}
-    .modal-footer.row
+      .accordion#settings-accordion
+        .accordion-group
+          .accordion-heading
+            a.accordion-toggle data-toggle="collapse" data-parent="#settings-accordion" href="#displayed_columns" Displayed columns
+          .accordion-body.collapse#displayed_columns
+            = render :partial => 'resources/panels/column_listing', locals: {clazz: clazz, type: :listing}
+        
+        .accordion-group
+          .accordion-heading
+            a.accordion-toggle data-toggle="collapse" data-parent="#settings-accordion" href="#search_columns" Searchable columns
+          .accordion-body.collapse#search_columns
+            ul
+              input type="hidden" name="search_columns[_]"
+              - clazz.settings.columns_options(:search).each do |name, checked|
+                li.setting_attribute
+                  - input_name = "search_columns[#{name}]"
+                  input type='checkbox' name=input_name id=input_name.parameterize checked=checked
+                  label for=input_name.parameterize = name
+        
+        .accordion-group
+          .accordion-heading
+            a.accordion-toggle data-toggle="collapse" data-parent="#settings-accordion" href="#misc" Miscellaneous
+          .accordion-body.collapse#misc
+            .control-group
+              = label_tag :per_page, 'Items per page'
+              .controls
+                input.span2#per_page type="number" step=25 min=25 max=250 name="per_page" value=clazz.settings.per_page
+            .control-group
+              = label_tag 'default_order[]', 'Default order'
+              .controls
+                = select_tag 'default_order[]', options_from_collection_for_select(clazz.columns, :name, :name)
+                = select_tag 'default_order[]', options_for_select(%w(asc desc))
+
+        .accordion-group
+          .accordion-heading
+            a.accordion-toggle data-toggle="collapse" data-parent="#settings-accordion" href="#filters" Filters
+          .accordion-body.collapse#filters
+            .control-group
+              = label_tag :new_filter, 'Add a filter'
+              .controls
+                select#new_filter.span3 data-table=params[:table]
+                 - clazz.columns.each do |column|
+                   option value=column.name = column.name
+                ul.filters.form-inline
+                  - clazz.settings.filters.each do |filter|
+                    li= render :partial => '/settings/filter', locals: {filter: filter}
+    .modal-footer
       input#save_settings.btn.btn-primary type='submit' value='Save settings'

@@ -21,12 +21,18 @@ form.index-search {
 .page-header span.label {
   margin-right:10px;
   span.remove {
-    background-color:black;
+    background-color:gray;
     cursor:pointer;
     margin-left:4px;
     padding:1px 2px;
     margin-right:-3px;
-    border-radius:3px;
+    border-radius:0 3px 3px 0;
     padding-bottom:2px;
+    &:hover {
+      background-color:black;
+    }
   }
+}
+.modal form {
+  margin-bottom:0;
 }

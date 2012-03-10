@@ -1,5 +1,5 @@
 = simple_form_for @item, url: @form_url, html: {class: 'form-horizontal'} do |f|
   - @item.class.settings.columns[:form].each do |name|
-    = f.input name, readonly: @item.class.columns.detect{|c|c.name == name}.primary
+    = f.input name, readonly: (@item.class.columns.detect{|c|c.name == name}.primary || @item.class.primary_key == name)
   .form-actions
     = f.submit class: 'btn-primary', disable_with: 'Sending...'

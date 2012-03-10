@@ -12,10 +12,11 @@
       span.label.label-warning
         == "where #{k} is <i>#{v}</i>"
         span.remove data-param="where[#{k}]=#{v}" x
-form.pull-right.index-search
-  - request.query_string.to_s.split('&').each do |param|
-    input type="hidden" name=CGI.unescape(param.split('=').first) value=param.split('=').last
-  input.search-query name="search" value=params[:search]
+- if clazz.settings.columns[:search].any?
+  form.pull-right.index-search
+    - request.query_string.to_s.split('&').each do |param|
+      input type="hidden" name=CGI.unescape(param.split('=').first) value=param.split('=').last
+    input.search-query name="search" value=params[:search] placeholder=clazz.settings.columns[:search].join(', ')
 ul.nav.nav-tabs
   li.active
     a href="#listing" Listing
@@ -28,13 +29,17 @@ table.table-striped.table-bordered.table
         th= header_link name
       th
   tbody
-    - @items.each do |item|
+    - if @items.any?
+      - @items.each do |item|
+        tr
+          - item.attributes.values.each do |value|
+              td class=value.class.to_s.parameterize = display_value value
+          td
+            = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item)
+            = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item)
+            = link_to content_tag('i', nil, class:'icon-trash'), resource_path(params[:table], item), :method => :delete, :confirm => 'You sure?'
+    - else
       tr
-        - item.attributes.values.each do |value|
-            td class=value.class.to_s.parameterize = display_value value
-        td
-          = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item)
-          = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item)
-          = link_to content_tag('i', nil, class:'icon-trash'), resource_path(params[:table], item), :method => :delete, :confirm => 'You sure?'
+        td colspan=(clazz.settings.columns[:listing].size + 1) No results.
 = paginate @items
 = render :partial => "/resources/panels/listing_settings"

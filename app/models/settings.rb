@@ -43,8 +43,7 @@ module Settings
       @globals = Global.new @clazz.account_id
       value = REDIS.get settings_key
       if value.nil?
-        @columns = {listing: @clazz.column_names, show: @clazz.column_names,
-          form: (@clazz.column_names - %w(created_at updated_at id))}
+        @columns = {}
       else
         datas = JSON.parse(value).symbolize_keys!
         @columns = datas[:columns].symbolize_keys!
@@ -52,6 +51,7 @@ module Settings
         @default_order = datas[:default_order] || @clazz.column_names.first
         @per_page = datas[:per_page] || @globals.per_page
       end
+      set_missing_columns_conf
       @filters ||= []
     end
 
@@ -76,7 +76,27 @@ module Settings
     def columns type = nil
       type ? @columns[type] : @columns
     end
+    
+    def columns_options type
+      column_names =  (type == :search) ? string_column_names : @clazz.column_names
+      options = column_names.map {|name| [name, @columns[type].include?(name)]}
+      checked, non_checked = options.partition {|name, checked| checked }
+      checked + non_checked
+    end
 
+    def string_column_names
+      @clazz.columns.find_all{|c|c.type == :string}.map(&:name)
+    end
+    
+    def set_missing_columns_conf
+      [:listing, :show, :form, :form, :search].each do |type|
+        next if @columns[type]
+        @columns[type] = 
+        {listing: @clazz.column_names, show: @clazz.column_names,
+          form: (@clazz.column_names - %w(created_at updated_at id)), :search => string_column_names}[type]
+      end
+    end
+    
   end
 
 end
