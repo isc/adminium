@@ -26,6 +26,7 @@ MtCrap::Application.routes.draw do
     resources :accounts, :only => [:update]
   end
   match 'sso/login' => 'heroku/resources#sso_login'
+  match 'test/threads' => 'resources#test_threads'
 
 
   # Sample resource route with options:

@@ -2,6 +2,7 @@ class ResourcesController < ApplicationController
 
   before_filter :fetch_item, :only => [:show, :edit, :update, :destroy]
   helper_method :clazz
+  skip_filter :connect_to_db, :only => :test_threads
 
   def index
     @items = clazz.select(clazz.settings.columns[:listing].join(", "))
@@ -43,6 +44,11 @@ class ResourcesController < ApplicationController
   def destroy
     @item.destroy
     redirect_to resources_path, :flash => {:success => "#{object_name} successfully destroyed."}
+  end
+  
+  def test_threads
+    Account.find_by_sql 'select pg_sleep(4)'
+    render :text => 'ok'
   end
 
   private
