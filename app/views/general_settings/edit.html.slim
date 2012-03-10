@@ -20,7 +20,7 @@
         select name='settings[datetime_format]'
           = options_for_select(formats.map{|f|[display_datetime(d, f),f.to_s]}, global_settings.datetime_format)
     .control-group
-      label.control-label Date
+      label.control-label Date format
       .controls
         - d = Date.today
         - formats = configatron.settings.date
