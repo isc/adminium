@@ -34,7 +34,8 @@ group :development do
 end
 
 group :production do
-  gem 'zbatery'
+  gem 'puma'
+  # gem 'zbatery'
   # gem 'airbrake'
 end
 
