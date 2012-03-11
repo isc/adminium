@@ -16,7 +16,7 @@
   form.pull-right.index-search
     - request.query_string.to_s.split('&').each do |param|
       input type="hidden" name=CGI.unescape(param.split('=').first) value=param.split('=').last
-    input.search-query name="search" value=params[:search] placeholder=clazz.settings.columns[:search].join(', ')
+    input.search-query name="search" value=params[:search] placeholder=clazz.settings.columns[:search].map(&:humanize).join(', ').downcase 
 ul.nav.nav-tabs
   li.active
     a href="#listing" Listing
@@ -33,7 +33,7 @@ table.table-striped.table-bordered.table
       - @items.each do |item|
         tr
           - item.attributes.values.each do |value|
-              td class=value.class.to_s.parameterize = display_value value
+              td class=value.class.to_s.parameterize == display_value value
           td
             = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item)
             = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item)

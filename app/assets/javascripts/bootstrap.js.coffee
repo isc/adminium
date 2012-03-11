@@ -3,11 +3,12 @@ jQuery ->
   $(".tabs").button()
   $(".carousel").carousel()
   $(".dropdown-toggle").dropdown()
-  $("a[rel]").popover()
   $(".navbar").scrollspy()
   $(".tab").tab "show"
   $(".tooltip").tooltip()
   $(".typeahead").typeahead()
+  
+  $("a.text-more").popover()
   $('.datepicker').datepicker onClose: (dateText, inst) ->
     console.log inst
     $("##{inst.id}_1i").val(inst.selectedYear)

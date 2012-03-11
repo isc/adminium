@@ -11,7 +11,7 @@ ul.nav.nav-tabs
       - @item.class.settings.columns[:show].each do |name|
         - value = @item[name]
         dt= name
-        dd class=value.class.name.parameterize = display_value value
+        dd class=value.class.name.parameterize == display_value value
   .span6
     dl
       - @item.reflections.each do |name, assoc|

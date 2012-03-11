@@ -23,7 +23,11 @@ module ApplicationHelper
       if value.empty?
         'empty string'
       else
-        value.truncate(100)
+        if value.length > 100
+          value.truncate(100) + content_tag(:a, content_tag(:i, nil, class:'icon-plus-sign'), data: {content:value}, class: 'text-more')
+        else
+          value
+        end
       end
     when ActiveSupport::TimeWithZone
       display_datetime(value)

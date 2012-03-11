@@ -31,6 +31,8 @@ group :development do
   gem 'kensa'
   gem 'heroku'
   gem 'taps'
+  gem 'populator'
+  gem 'faker'
 end
 
 group :production do

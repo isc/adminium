@@ -69,6 +69,8 @@ GEM
     factory_girl_rails (1.7.0)
       factory_girl (~> 2.6.0)
       railties (>= 3.0.0)
+    faker (1.0.1)
+      i18n (~> 0.4)
     ffi (1.0.11)
     heroku (2.20.1)
       launchy (>= 0.3.2)
@@ -116,6 +118,7 @@ GEM
     nokogiri (1.5.0)
     pg (0.13.1)
     polyglot (0.3.3)
+    populator (1.0.0)
     puma (0.9.5)
       rack (>= 1.2, < 2.0)
     rack (1.4.1)
@@ -216,6 +219,7 @@ DEPENDENCIES
   coffee-rails (~> 3.2.1)
   configatron
   factory_girl_rails
+  faker
   heroku
   heroku-nav
   hiredis (~> 0.3.1)
@@ -224,6 +228,7 @@ DEPENDENCIES
   kensa
   launchy
   pg
+  populator
   puma
   rails (= 3.2.2)
   redis
