@@ -12,6 +12,7 @@ mass editing
 renommage de colonnes
 audit with papertrail
 export csv/xml/json
+serialized columns conf
 
 TODOS:
 attr_accessible avec role pour proteger plan sur account
