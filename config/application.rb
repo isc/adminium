@@ -46,6 +46,7 @@ module MtCrap
     config.assets.version = '1.0'
     
     config.middleware.use Heroku::Nav::Provider
+    config.middleware.use Rack::ContentLength
     
     config.assets.initialize_on_precompile = false
   end
