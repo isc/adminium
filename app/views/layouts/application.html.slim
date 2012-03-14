@@ -10,6 +10,7 @@ html lang="en"
       = javascript_include_tag "http://html5shim.googlecode.com/svn/trunk/html5.js"
     /! Le styles
     = stylesheet_link_tag    "application"
+    meta name="viewport" content="width=device-width, initial-scale=1.0"
     / Le fav and touch icons
     link href="images/favicon.ico" rel="shortcut icon"
     link href="images/apple-touch-icon.png" rel="apple-touch-icon"
@@ -21,14 +22,22 @@ html lang="en"
       .navbar-inner
         .container-fluid
           a.btn.btn-navbar data-target=".nav-collapse" data-toggle="collapse"
-            span.i-bar
-            span.i-bar
-            span.i-bar
+            span.icon-bar
+            span.icon-bar
+            span.icon-bar
           a.brand href="/" Adminium
           .container-fluid.nav-collapse
             ul.nav
               li class=active_or_not('accounts') = link_to 'Edit Account', edit_account_path
               li class=active_or_not('general_settings') = link_to 'General Settings', edit_general_settings_path
+            - if session[:account].nil?
+              ul.nav.pull-right
+                li= link_to 'Sign in', '/auth/google'
+            - if session[:user]
+              ul.nav.pull-right
+                li
+                  a Signed in as #{current_user.name} to #{current_account.name}
+                li= link_to 'Sign out', signout_path
 
     .container-fluid
       .row-fluid

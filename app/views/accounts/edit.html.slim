@@ -4,3 +4,16 @@
 = simple_form_for @account, html: {class: 'form-horizontal'} do |f|
   = f.input :db_url, required: true, input_html: {title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database', class: 'span8'}
   .form-actions= f.button :submit, class: 'btn-primary'
+
+h3 Collaborators
+.alert You can use a Google account to log in to this account and authorize collaborators to log in as well.
+.well
+  ul.unstyled#collaborators data-delete-url="#{collaborator_path(':id')}"
+    = content_tag_for :li, @account.collaborators do |collaborator|
+      = collaborator.email
+      '
+      = link_to content_tag(:i, nil, class: 'icon-remove-sign'), collaborator, method: :delete, remote: true
+  = form_for @account.collaborators.build, remote: true, html: {class: 'form-inline'} do |f|
+    = f.text_field :email, placeholder: 'google account email', type: 'email', required: true
+    '
+    = submit_tag 'Add collaborator', :class => 'btn btn-primary', :disable_with => 'Sending...'

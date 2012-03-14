@@ -26,7 +26,7 @@ class Heroku::ResourcesController < ApplicationController
       render :text => 'bad token', :status => 403 and return
     end
     app = Account.find_by_api_key! params[:id]
-    session[:user] = app.id
+    session[:account] = app.id
     cookies['heroku-nav-data'] = params['nav-data']
     redirect_to root_url
   end

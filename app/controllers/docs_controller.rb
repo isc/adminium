@@ -1,5 +1,6 @@
 class DocsController < ApplicationController
   
+  skip_filter :require_authentication
   skip_filter :connect_to_db
   
   def index
