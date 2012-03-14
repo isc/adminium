@@ -50,4 +50,3 @@ module MtCrap
     config.assets.initialize_on_precompile = false
   end
 end
-Slim::Engine.set_default_options :pretty => true
