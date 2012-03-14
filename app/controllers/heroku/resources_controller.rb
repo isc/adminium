@@ -1,6 +1,6 @@
 class Heroku::ResourcesController < ApplicationController
 
-  skip_filter :connect_to_db
+  skip_filter :connect_to_db, :require_authentication
   before_filter :basic_auth, :except => :sso_login
   
   def create
