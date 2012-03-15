@@ -17,10 +17,23 @@ module ApplicationHelper
     res << (link_to key.humanize, resources_path(params[:table], order:order))
   end
 
+  def display_attribute wrapper_tag, item, key, value
+    if key =~ /_id$/ && item.class.reflections.keys.find {|assoc| assoc.to_s == key.gsub(/_id$/, '') }
+      assoc_name = key.gsub /_id$/, ''
+      content = link_to "#{assoc_name.humanize} ##{value}", resource_path(item.class.reflections[assoc_name.to_sym].table_name, value)
+      css_class = 'foreignkey'
+    else
+      css_class, content = display_value value
+    end
+    content_tag wrapper_tag, content, class: css_class
+  end
+  
   def display_value value
-    case value
+    css_class = value.class.to_s.parameterize
+    content = case value
     when String
       if value.empty?
+        css_class = 'emptystring'
         'empty string'
       else
         if value.length > 100
@@ -30,12 +43,15 @@ module ApplicationHelper
         end
       end
     when ActiveSupport::TimeWithZone
-      display_datetime(value)
+      display_datetime value
     when Fixnum, BigDecimal
       number_with_delimiter value
+    when nil
+      'null'
     else
       value
     end
+    [css_class, content]
   end
 
   def display_datetime(value, format=nil)
