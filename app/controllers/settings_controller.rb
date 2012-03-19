@@ -2,7 +2,7 @@ class SettingsController < ApplicationController
 
   def update
     settings = @generic.table(params[:id]).settings
-    [:listing, :form, :show, :search].each do |type|
+    [:listing, :form, :show, :search, :serialized].each do |type|
       param_key = "#{type}_columns".to_sym
       settings.columns[type] = params[param_key].keys.delete_if{|e|e == '_'} if params[param_key]
     end

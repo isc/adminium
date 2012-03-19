@@ -38,5 +38,13 @@
                   li= render partial: '/settings/filter', locals: {filter: filter}
         = accordion.pane 'Enum values' do
           = render partial: 'resources/panels/enum_values'
+        = accordion.pane 'Serialized columns' do
+          ul
+            input type="hidden" name="serialized_columns[_]"
+            - clazz.settings.columns_options(:serialized).each do |name, checked|
+              li.setting_attribute
+                - input_name = "serialized_columns[#{name}]"
+                input type='checkbox' name=input_name id=input_name.parameterize checked=checked
+                label for=input_name.parameterize = name
     .modal-footer
       input#save_settings.btn.btn-primary type='submit' value='Save settings'

@@ -81,7 +81,14 @@ module Settings
     
     def columns_options type, opts = {}
       return @columns[type] if opts[:only_checked]
-      column_names =  (type == :search) ? string_column_names : @clazz.column_names
+      case type
+      when :search
+        column_names = string_column_names
+      when :serialized
+        column_names = string_or_text_column_names
+      else
+        column_names = @clazz.column_names
+      end
       options = column_names.map {|name| [name, @columns[type].include?(name)]}
       checked, non_checked = options.partition {|name, checked| checked }
       checked + non_checked
@@ -91,12 +98,17 @@ module Settings
       @clazz.columns.find_all{|c|c.type == :string}.map(&:name)
     end
     
+    def string_or_text_column_names
+      @clazz.columns.find_all{|c|[:string, :text].include? c.type}.map(&:name)
+    end
+    
     def set_missing_columns_conf
-      [:listing, :show, :form, :form, :search].each do |type|
+      [:listing, :show, :form, :form, :search, :serialized].each do |type|
         next if @columns[type]
         @columns[type] = 
         {listing: @clazz.column_names, show: @clazz.column_names,
-          form: (@clazz.column_names - %w(created_at updated_at id)), search: string_column_names}[type]
+          form: (@clazz.column_names - %w(created_at updated_at id)),
+          search: string_column_names, serialized: []}[type]
       end
     end
     

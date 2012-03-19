@@ -26,6 +26,8 @@ module ApplicationHelper
       content = link_to (enum_values.invert[value] || value), resources_path(item.class.table_name, where: {key => value}),
         :class => 'label label-info'
       css_class = 'enum'
+    elsif item.class.settings.columns[:serialized].include? key
+      css_class, content = 'serialized', content_tag(:pre, value.inspect, :class => 'sh_ruby')
     else
       css_class, content = display_value value, key
     end
@@ -40,11 +42,7 @@ module ApplicationHelper
         css_class = 'emptystring'
         'empty string'
       else
-        if value.length > 100
-          (h(value.truncate(100)) + content_tag(:a, content_tag(:i, nil, class:'icon-plus-sign'), data: {content:html_escape(value), title:key}, class: 'text-more')).html_safe
-        else
-          value
-        end
+        truncate_with_popover value, key
       end
     when ActiveSupport::TimeWithZone
       display_datetime value
@@ -56,6 +54,16 @@ module ApplicationHelper
       value.to_s
     end
     [css_class, content]
+  end
+
+  def truncate_with_popover value, key
+    if value.length > 100
+      popover = content_tag :a, content_tag(:i, nil, class:'icon-plus-sign'),
+        data: {content:content_tag(:div, value), title:key}, class: 'text-more'
+      (h(value.truncate(100)) + popover).html_safe
+    else
+      value
+    end
   end
 
   def display_datetime(value, format=nil)

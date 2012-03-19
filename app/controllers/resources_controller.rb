@@ -1,5 +1,6 @@
 class ResourcesController < ApplicationController
 
+  before_filter :apply_serialized_columns, only: [:index, :show]
   before_filter :fetch_item, only: [:show, :edit, :update, :destroy]
   helper_method :clazz
   skip_filter :connect_to_db, only: :test_threads
@@ -75,6 +76,12 @@ class ResourcesController < ApplicationController
       "upper(#{column}) like ?"
     end.join ' or '
     @items = @items.where([query, ["#{params[:search]}%".upcase] * columns.size].flatten)
+  end
+  
+  def apply_serialized_columns
+    clazz.settings.columns[:serialized].each do |column|
+      clazz.serialize column
+    end
   end
 
   def build_statement scope, filter
