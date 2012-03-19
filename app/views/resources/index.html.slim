@@ -4,7 +4,7 @@
     = "Listing #{params[:table].humanize.downcase} "
     small= page_entries_info(@items, entry_name: '').html_safe
   - if params[:search]
-    span.label.label-info
+    span.label.label-success
       == "search for <i>#{params[:search]}</i>"
       span.remove data-param="search=#{params[:search]}" x
   - if params[:where]

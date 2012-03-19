@@ -4,7 +4,7 @@ MtCrap::Application.routes.draw do
   match '/signout' => 'sessions#destroy', :as => :signout
 
   resources :resources, :path => "/resources/:table" do
-    get ':table/page/:page', :action => :index, :on => :collection
+    get 'page/:page', :action => :index, :on => :collection
   end
 
   resources :settings do
