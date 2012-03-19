@@ -23,7 +23,9 @@ module ApplicationHelper
       content = link_to "#{assoc_name.humanize} ##{value}", resource_path(item.class.reflections[assoc_name.to_sym].table_name, value)
       css_class = 'foreignkey'
     elsif enum_values = item.class.settings.enum_values_for(key)
-      css_class, content = 'enum', (content_tag :span, (enum_values.invert[value] || value), :class => 'label label-info')
+      content = link_to (enum_values.invert[value] || value), resources_path(item.class.table_name, where: {key => value}),
+        :class => 'label label-info'
+      css_class = 'enum'
     else
       css_class, content = display_value value, key
     end

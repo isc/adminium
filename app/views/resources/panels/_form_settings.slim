@@ -24,6 +24,8 @@
           .control-group
             .controls
               a.btn Add
+        = accordion.pane 'Enum values' do
+          = render partial: 'resources/panels/enum_values'
             
     .modal-footer
       input#save_settings.btn.btn-primary type='submit' value='Save settings'

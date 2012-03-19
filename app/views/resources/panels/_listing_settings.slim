@@ -37,21 +37,6 @@
                 - clazz.settings.filters.each do |filter|
                   li= render partial: '/settings/filter', locals: {filter: filter}
         = accordion.pane 'Enum values' do
-          table.table
-            thead
-              tr
-                th Column
-                th Values
-            - clazz.settings.enum_values.each do |enum_value|
-              tr
-                td= enum_value['column_name']
-                td= enum_value['values']
-          .params.hide
-            - clazz.settings.enum_values.each do |enum_value|
-              = hidden_field_tag 'enum_values[][column_name]', enum_value['column_name']
-              = hidden_field_tag 'enum_values[][values]', enum_value['values']
-          .controls= select_tag 'enum_value_column_name', options_from_collection_for_select(clazz.columns, :name, :name), :include_blank => true, :data => {:values_url => values_setting_path(clazz.table_name)}
-          .controls= text_area_tag 'enum_value_values'
-          button.btn Add
+          = render partial: 'resources/panels/enum_values'
     .modal-footer
       input#save_settings.btn.btn-primary type='submit' value='Save settings'

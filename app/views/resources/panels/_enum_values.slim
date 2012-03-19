@@ -1,0 +1,19 @@
+table.table
+  thead
+    tr
+      th Column
+      th Values
+      th
+  - clazz.settings.enum_values.each do |enum_value|
+    tr
+      td= enum_value['column_name']
+      td= enum_value['values']
+      td
+        i.icon-remove-sign.remove
+.params.hide
+  - clazz.settings.enum_values.each do |enum_value|
+    = hidden_field_tag 'enum_values[][column_name]', enum_value['column_name']
+    = hidden_field_tag 'enum_values[][values]', enum_value['values']
+.controls= select_tag 'enum_value_column_name', options_from_collection_for_select(clazz.columns, :name, :name), :include_blank => true, :data => {:values_url => values_setting_path(clazz.table_name)}
+.controls= text_area_tag 'enum_value_values'
+.btn Add

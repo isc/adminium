@@ -4,7 +4,7 @@ support pour l'édition des associations
 associations has_many dans le listing
 colonnes calculees
 conf des associations
-enum values editing / removing
+enum values editing
 disable completement des tables
 i18n
 in-place editing dans le listing (deja les booleens comme typus puis les textes et numbers why not)

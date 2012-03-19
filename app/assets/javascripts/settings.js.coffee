@@ -22,10 +22,17 @@ setupEnumValues = ->
     $.getJSON $(this).data('values-url'), column_name:this.value, (data) ->
       text = ("#{value}: " for value in data).join("\n")
       $('#enum_value_values').val(text)
-  $('#enum-values_pane button').click ->
+  $('#enum-values_pane .btn').click ->
     [column, values] = [$('#enum_value_column_name').val(), $('#enum_value_values').val()]
-    $('<tr>').append($('<td>').text(column)).append($('<td>').text(values)).appendTo('#enum-values_pane table')
+    $('<tr>')
+      .append($('<td>').text(column)).append($('<td>').text(values))
+      .append($('<td>').append($('<i>').addClass('icon-remove-sign remove')))
+      .appendTo('#enum-values_pane table')
     $('#enum-values_pane .params')
       .append($('<input type="hidden">').attr(name:'enum_values[][column_name]', value:column))
       .append($('<input type="hidden">').attr(name:'enum_values[][values]', value:values))
-    false
+  $('#enum-values_pane .remove').live 'click', ->
+    index = $(this).closest('tr').index()
+    $(this).closest('tr').remove()
+    input = $('#enum-values_pane .params input').eq(index * 2)
+    input.add(input.next()).remove()
