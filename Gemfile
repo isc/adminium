@@ -15,6 +15,7 @@ gem 'heroku-nav', :require => 'heroku/nav'
 gem 'rest-client'
 gem 'attr_encrypted', :git => 'git://github.com/hron/attr_encrypted.git', :branch => 'issue-2-ruby19-compatibility'
 gem 'airbrake'
+gem 'bootstrap-components-helpers', :git => 'git://gist.github.com/2117187.git'
 
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'

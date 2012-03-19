@@ -13,6 +13,9 @@ MtCrap::Application.routes.draw do
   resource :general_settings, :only => [:edit, :update]
 
   resources :docs, :only => [:index, :show]
+  resource :sessions, :only => [] do
+    get :switch_account
+  end
   resource :account, :only => [:edit, :update]
   resources :collaborators, :only => [:create, :destroy]
 

@@ -15,6 +15,12 @@ class SessionsController < ApplicationController
     end
   end
 
+  def switch_account
+    account_id = params[:account_id].to_i
+    session[:account] = account_id if current_user.accounts.map(&:id).include? account_id
+    redirect_to root_url
+  end
+
   def destroy
     session[:user] = session[:account] = nil
     redirect_to root_url, notice: 'Signed out!'

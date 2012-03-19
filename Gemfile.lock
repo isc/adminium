@@ -1,4 +1,10 @@
 GIT
+  remote: git://gist.github.com/2117187.git
+  revision: 0670ee8ec2998ac7c468236c3449ba9c9279b575
+  specs:
+    bootstrap-components-helpers (0.0.1)
+
+GIT
   remote: git://github.com/hron/attr_encrypted.git
   revision: 5fe537c771f58d41f357cf973535bb293ad42339
   branch: issue-2-ruby19-compatibility
@@ -229,6 +235,7 @@ PLATFORMS
 DEPENDENCIES
   airbrake
   attr_encrypted!
+  bootstrap-components-helpers!
   capybara
   coffee-rails (~> 3.2.1)
   configatron
