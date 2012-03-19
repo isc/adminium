@@ -21,6 +21,9 @@ ul.nav.nav-tabs
           dd= link_to "#{name} ##{object[object.class.primary_key]}", resource_path(object.class.table_name, object)
         - else
           - count = @item.send(name).count
-          dd= link_to "#{name} (#{count})", resources_path(name, :where => {assoc.foreign_key => @item[@item.class.primary_key]})
+          dd
+            = link_to "#{name}", resources_path(name, where: {assoc.foreign_key => @item[@item.class.primary_key]})
+            '
+            span.badge.badge-info = count
 
 = render 'resources/panels/show_settings'

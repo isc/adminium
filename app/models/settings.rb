@@ -6,7 +6,7 @@ module Settings
 
   class Global
 
-    DEFAULTS = {:per_page => 25, :date_format => :long, :datetime_format => :long}
+    DEFAULTS = {per_page: 25, date_format: :long, datetime_format: :long}
 
     def initialize account_id
       @account_id = account_id
@@ -32,7 +32,7 @@ module Settings
 
   class Base
 
-    attr_accessor :filters, :default_order
+    attr_accessor :filters, :default_order, :enum_values
 
     def initialize clazz
       @clazz = clazz
@@ -43,21 +43,23 @@ module Settings
       @globals = Global.new @clazz.account_id
       value = REDIS.get settings_key
       if value.nil?
-        @columns = {}
+        @columns, @enum_values = {}, []
       else
         datas = JSON.parse(value).symbolize_keys!
         @columns = datas[:columns].symbolize_keys!
         @filters = datas[:filters]
-        @default_order = datas[:default_order] || @clazz.column_names.first
+        @default_order = datas[:default_order]
         @per_page = datas[:per_page] || @globals.per_page
+        @enum_values = datas[:enum_values] || []
       end
+      @default_order ||= @clazz.column_names.first
       set_missing_columns_conf
       @filters ||= []
     end
 
     def save
-      settings = {columns: @columns, filters: @filters, default_order: @default_order}
-      settings.merge :per_page => @per_page if @globals.per_page != @per_page
+      settings = {columns: @columns, filters: @filters, default_order: @default_order, enum_values: @enum_values}
+      settings.merge per_page: @per_page if @globals.per_page != @per_page
       REDIS.set settings_key, settings.to_json
     end
 
@@ -77,7 +79,8 @@ module Settings
       type ? @columns[type] : @columns
     end
     
-    def columns_options type
+    def columns_options type, opts = {}
+      return @columns[type] if opts[:only_checked]
       column_names =  (type == :search) ? string_column_names : @clazz.column_names
       options = column_names.map {|name| [name, @columns[type].include?(name)]}
       checked, non_checked = options.partition {|name, checked| checked }
@@ -93,8 +96,13 @@ module Settings
         next if @columns[type]
         @columns[type] = 
         {listing: @clazz.column_names, show: @clazz.column_names,
-          form: (@clazz.column_names - %w(created_at updated_at id)), :search => string_column_names}[type]
+          form: (@clazz.column_names - %w(created_at updated_at id)), search: string_column_names}[type]
       end
+    end
+    
+    def enum_values_for column_name
+      return unless enum_value = @enum_values.detect {|enum_value| enum_value['column_name'] == column_name}
+      Hash[enum_value['values'].split("\n").map {|val|val.split(':').map(&:strip).reverse}]
     end
     
   end

@@ -1,8 +1,8 @@
 class ResourcesController < ApplicationController
 
-  before_filter :fetch_item, :only => [:show, :edit, :update, :destroy]
+  before_filter :fetch_item, only: [:show, :edit, :update, :destroy]
   helper_method :clazz
-  skip_filter :connect_to_db, :only => :test_threads
+  skip_filter :connect_to_db, only: :test_threads
 
   def index
     @items = clazz.select(clazz.settings.columns[:listing].join(", "))
@@ -30,7 +30,7 @@ class ResourcesController < ApplicationController
   def create
     @item = clazz.new item_params
     if @item.save
-      redirect_to resource_path(params[:table], @item), :flash => {:success => "#{object_name} successfully created."}
+      redirect_to resource_path(params[:table], @item), flash: {success: "#{object_name} successfully created."}
     else
       render :new
     end
@@ -38,17 +38,17 @@ class ResourcesController < ApplicationController
 
   def update
     @item.update_attributes item_params
-    redirect_to resource_path(params[:table], @item), :flash => {:success => "#{object_name} successfully updated."}
+    redirect_to resource_path(params[:table], @item), flash: {success: "#{object_name} successfully updated."}
   end
 
   def destroy
     @item.destroy
-    redirect_to resources_path, :flash => {:success => "#{object_name} successfully destroyed."}
+    redirect_to resources_path, flash: {success: "#{object_name} successfully destroyed."}
   end
   
   def test_threads
     Account.find_by_sql 'select pg_sleep(4)'
-    render :text => 'ok'
+    render text: 'ok'
   end
 
   private

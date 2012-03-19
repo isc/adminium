@@ -10,19 +10,19 @@ class Account < ActiveRecord::Base
   # likely because of the transactions being used in tests
   # and the fact that this validation causes a new connection to be established
   validate :db_url_validation unless Rails.env.test?
-  validates_format_of :db_url, :with => /^((mysql2?)|(postgres(ql)?)):\/\/.*/, :allow_blank => true
+  validates_format_of :db_url, with: /^((mysql2?)|(postgres(ql)?)):\/\/.*/, allow_blank: true
 
-  attr_encryptor :db_url, :key => (ENV['ENCRYPTION_KEY'] || 'shablagoo')
+  attr_encryptor :db_url, key: (ENV['ENCRYPTION_KEY'] || 'shablagoo')
 
   def to_param
     api_key
   end
 
   def self.fetch_missing_names_and_emails
-    where(:name => nil).find_each do |account|
+    where(name: nil).find_each do |account|
       res = RestClient.get "https://#{HEROKU_MANIFEST['id']}:#{HEROKU_MANIFEST['api']['password']}@api.heroku.com/vendor/apps/#{account.callback_url.split('/').last}"
       res = JSON.parse res
-      account.update_attributes :name => res['name'], :owner_email => res['owner_email']
+      account.update_attributes name: res['name'], owner_email: res['owner_email']
     end
   end
 

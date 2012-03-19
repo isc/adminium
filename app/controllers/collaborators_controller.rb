@@ -5,12 +5,12 @@ class CollaboratorsController < ApplicationController
   
   def create
     collaborator = current_account.collaborators.create params[:collaborator]
-    respond_with collaborator, :location => edit_account_url
+    respond_with collaborator, location: edit_account_url
   end
   
   def destroy
     current_account.collaborators.destroy params[:id]
-    render :nothing => true
+    render nothing: true
   end
   
 end

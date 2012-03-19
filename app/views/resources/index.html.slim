@@ -2,7 +2,7 @@
   a.btn.pull-right data-toggle="modal" href="#settings" Settings
   h3
     = "Listing #{params[:table].humanize.downcase} "
-    small= page_entries_info(@items, :entry_name => '').html_safe
+    small= page_entries_info(@items, entry_name: '').html_safe
   - if params[:search]
     span.label.label-info
       == "search for <i>#{params[:search]}</i>"
@@ -37,9 +37,9 @@ table.table-striped.table-bordered.table
           td
             = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item)
             = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item)
-            = link_to content_tag('i', nil, class:'icon-trash'), resource_path(params[:table], item), :method => :delete, :confirm => 'You sure?'
+            = link_to content_tag('i', nil, class:'icon-trash'), resource_path(params[:table], item), method: :delete, confirm: 'You sure?'
     - else
       tr
         td colspan=(clazz.settings.columns[:listing].size + 1) No results.
 = paginate @items
-= render :partial => "/resources/panels/listing_settings"
+= render partial: '/resources/panels/listing_settings'

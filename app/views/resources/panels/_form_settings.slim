@@ -2,9 +2,28 @@
   .modal-header
     a.close data-dismiss="modal" ×
     h3 Form settings
-  = form_tag setting_path(:id => params[:table]), :method => :put do
+  = form_tag setting_path(id: params[:table]), method: :put, class: 'form-horizontal' do
     .modal-body
-      h5 Form fields
-      = render :partial => 'resources/panels/column_listing', locals: {clazz: clazz, type: :form}
+      = accordion do |accordion|
+        = accordion.pane 'Form fields' do
+          = render partial: 'resources/panels/column_listing', locals: {clazz: clazz, type: :form}
+        = accordion.pane 'Validations' do
+          ul
+          .control-group
+            label Validator
+            .controls
+              select
+                - %w(validates_presence_of).each do |validator|
+                  option value=validator = validator.humanize
+          .control-group
+            label Column
+            .controls
+              select
+                - clazz.settings.columns_options(:form, only_checked: true).each do |name|
+                  option value=name = name
+          .control-group
+            .controls
+              a.btn Add
+            
     .modal-footer
       input#save_settings.btn.btn-primary type='submit' value='Save settings'

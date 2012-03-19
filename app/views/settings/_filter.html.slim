@@ -3,7 +3,7 @@ input(type="hidden" name="filters[#{g}][column]" value=filter["column"])
 input(type="hidden" name="filters[#{g}][type]" value=filter['type'])
 label
   = filter["column"]
-= render :partial => "/settings/filters/#{filter['type']}", :locals => {:g => g, :operator => filter["operator"]}
+= render partial: "/settings/filters/#{filter['type']}", locals: {g: g, operator: filter["operator"]}
 = text_field_tag "filters[#{g}][operand]", filter['operand']
 span.btn
   i.icon-trash

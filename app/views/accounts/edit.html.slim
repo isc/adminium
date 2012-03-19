@@ -16,4 +16,4 @@ h3 Collaborators
   = form_for @account.collaborators.build, remote: true, html: {class: 'form-inline'} do |f|
     = f.text_field :email, placeholder: 'google account email', type: 'email', required: true
     '
-    = submit_tag 'Add collaborator', :class => 'btn btn-primary', :disable_with => 'Sending...'
+    = submit_tag 'Add collaborator', class: 'btn btn-primary', disable_with: 'Sending...'

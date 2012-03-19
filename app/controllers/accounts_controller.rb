@@ -8,7 +8,7 @@ class AccountsController < ApplicationController
   
   def update
     if current_account.update_attributes params[:account]
-      redirect_to edit_account_path, :notice => 'Changes saved.'
+      redirect_to edit_account_path, notice: 'Changes saved.'
     else
       render :edit
     end

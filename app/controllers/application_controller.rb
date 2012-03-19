@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
-  rescue_from Generic::TableNotFoundException, :with => :table_not_found
+  rescue_from Generic::TableNotFoundException, with: :table_not_found
   before_filter :fixed_account
   before_filter :require_authentication
   before_filter :connect_to_db
@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
   end
   
   def table_not_found exception
-    redirect_to edit_account_path, :flash => {:error => "The table <b>#{exception.table_name}</b> cannot be found.".html_safe}
+    redirect_to edit_account_path, flash: {error: "The table <b>#{exception.table_name}</b> cannot be found.".html_safe}
   end
   
   def cleanup_generic

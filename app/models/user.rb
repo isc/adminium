@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   
   has_many :collaborators
-  has_many :accounts, :through => :collaborators
+  has_many :accounts, through: :collaborators
   
   after_create :match_collaborators
   
@@ -15,7 +15,7 @@ class User < ActiveRecord::Base
   end
   
   def match_collaborators
-    Collaborator.where(:email => email).update_all :user_id => id
+    Collaborator.where(email: email).update_all user_id: id
   end
   
 end

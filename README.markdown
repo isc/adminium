@@ -1,10 +1,10 @@
 FEATURES:
 configurer des validations par table/colonne
 support pour l'édition des associations
-associations dans le listing
+associations has_many dans le listing
 colonnes calculees
 conf des associations
-reference data
+enum values editing / removing
 disable completement des tables
 i18n
 in-place editing dans le listing (deja les booleens comme typus puis les textes et numbers why not)

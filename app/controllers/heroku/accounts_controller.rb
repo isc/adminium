@@ -6,9 +6,9 @@ class Heroku::AccountsController < ApplicationController
     account = Account.find_by_api_key! params[:id]
     account.update_attributes params[:account]
     if account.valid_db_url?
-      render :text => 'OK'
+      render text: 'OK'
     else
-      render :text => 'KO'
+      render text: 'KO'
     end
   end
   

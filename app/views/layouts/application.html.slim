@@ -26,7 +26,7 @@ html lang="en"
           .container-fluid.nav-collapse
             ul.nav
               li class=active_or_not('accounts') = link_to 'Edit Account', edit_account_path
-              li class=active_or_not('general_settings') = link_to 'General Settings', edit_general_settings_path
+              li class=active_or_not('general_settings') = link_to 'Settings', edit_general_settings_path
             - if session[:account].nil?
               ul.nav.pull-right
                 li= link_to 'Sign in', '/auth/google'
@@ -40,7 +40,7 @@ html lang="en"
       .row-fluid
         .span3
           .well.sidebar-nav
-            input.search-query.span10 type="search"
+            input.search-query type="search"
             ul.nav.nav-list
               li.nav-header Tables
               - if @tables

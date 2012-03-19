@@ -7,7 +7,9 @@ MtCrap::Application.routes.draw do
     get ':table/page/:page', :action => :index, :on => :collection
   end
 
-  resources :settings
+  resources :settings do
+    get :values, :on => :member
+  end
   resource :general_settings, :only => [:edit, :update]
 
   resources :docs, :only => [:index, :show]

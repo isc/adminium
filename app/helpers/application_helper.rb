@@ -22,13 +22,15 @@ module ApplicationHelper
       assoc_name = key.gsub /_id$/, ''
       content = link_to "#{assoc_name.humanize} ##{value}", resource_path(item.class.reflections[assoc_name.to_sym].table_name, value)
       css_class = 'foreignkey'
+    elsif enum_values = item.class.settings.enum_values_for(key)
+      css_class, content = 'enum', (content_tag :span, (enum_values.invert[value] || value), :class => 'label label-info')
     else
-      css_class, content = display_value value
+      css_class, content = display_value value, key
     end
     content_tag wrapper_tag, content, class: css_class
   end
   
-  def display_value value
+  def display_value value, key
     css_class = value.class.to_s.parameterize
     content = case value
     when String
@@ -37,7 +39,7 @@ module ApplicationHelper
         'empty string'
       else
         if value.length > 100
-          value.truncate(100) + content_tag(:a, content_tag(:i, nil, class:'icon-plus-sign'), data: {content:value}, class: 'text-more')
+          (h(value.truncate(100)) + content_tag(:a, content_tag(:i, nil, class:'icon-plus-sign'), data: {content:html_escape(value), title:key}, class: 'text-more')).html_safe
         else
           value
         end
@@ -49,7 +51,7 @@ module ApplicationHelper
     when nil
       'null'
     else
-      value
+      value.to_s
     end
     [css_class, content]
   end
@@ -60,7 +62,7 @@ module ApplicationHelper
     if format.to_sym == :time_ago_in_words
       time_ago_in_words(value) + ' ago'
     else
-      l(value, :format => format.to_sym)
+      l(value, format: format.to_sym)
     end
   end
 
