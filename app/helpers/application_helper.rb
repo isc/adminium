@@ -59,7 +59,7 @@ module ApplicationHelper
   def truncate_with_popover value, key
     if value.length > 100
       popover = content_tag :a, content_tag(:i, nil, class:'icon-plus-sign'),
-        data: {content:content_tag(:div, value), title:key}, class: 'text-more'
+        data: {content:h(value), title:key}, class: 'text-more'
       (h(value.truncate(100)) + popover).html_safe
     else
       value

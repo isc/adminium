@@ -117,6 +117,10 @@ module Settings
       Hash[enum_value['values'].split("\n").map {|val|val.split(':').map(&:strip).reverse}]
     end
     
+    def possible_enum_columns
+      @clazz.columns.find_all {|c| !c.primary}
+    end
+    
   end
 
 end
