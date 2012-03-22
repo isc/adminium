@@ -9,7 +9,8 @@ class SettingsController < ApplicationController
     settings.filters = params[:filters].values if params.has_key?(:filters)
     settings.per_page = params[:per_page]
     settings.default_order = params[:default_order].join(' ') if params[:default_order].present?
-    settings.enum_values = params[:enum_values] if params[:enum_values].present?
+    settings.enum_values = params[:enum_values].delete_if {|e|e.empty?} if params[:enum_values].present?
+    settings.validations = params[:validations].delete_if {|e|e.empty?} if params[:validations].present?
     settings.save
     redirect_to :back, flash: {success: 'Settings successfully saved.'}
   end

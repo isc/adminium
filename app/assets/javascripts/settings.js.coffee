@@ -10,29 +10,38 @@ $ ->
   setupValidations()
   setupEnumValues()
   
-  
+addToHiddenParams = (pane_id, group, params) ->
+  div = $("#{pane_id} .params")
+  for key, value of params
+    div.append($('<input type="hidden">').attr(name:"#{group}[][#{key}]", value:value))
+
+addToTable = (pane_id, cells) ->
+  tr = $('<tr>').appendTo("#{pane_id} table")
+  $('<td>').text(cell).appendTo tr for cell in cells
+  $('<td>').append($('<i>').addClass('icon-remove-sign remove')).appendTo tr
+
+setupRemoval = (pane_id) ->
+  $("#{pane_id} .remove").live 'click', ->
+    index = $(this).closest('tr').index()
+    $(this).closest('tr').remove()
+    input = $("#{pane_id} .params input").eq(index * 2)
+    input.add(input.next()).remove()
+
 setupValidations = ->
-  $('#validations a.btn').click ->
-    val = $('#validations select:eq(0)').val()
-    text = "#{$('#validations select:eq(0) option:selected').text()} #{$('#validations select:eq(1) option:selected').text()}"
-    $('<li>').text(text).appendTo('#validations ul')
+  setupRemoval '#validations_pane'
+  $('#validations_pane a.btn').click ->
+    validator = $('#validations_pane select:eq(0) option:selected')
+    column_name = $('#validations_pane select:eq(1) option:selected')
+    addToTable '#validations_pane', [validator.text(), column_name.text()]
+    addToHiddenParams '#validations_pane', 'validations', validator:validator.val(), column_name:column_name.val()
     
 setupEnumValues = ->
+  setupRemoval '#enum-values_pane'
   $('#enum_value_column_name').change ->
     $.getJSON $(this).data('values-url'), column_name:this.value, (data) ->
       text = ("#{value}: " for value in data).join("\n")
       $('#enum_value_values').val(text)
   $('#enum-values_pane .btn').click ->
     [column, values] = [$('#enum_value_column_name').val(), $('#enum_value_values').val()]
-    $('<tr>')
-      .append($('<td>').text(column)).append($('<td>').text(values))
-      .append($('<td>').append($('<i>').addClass('icon-remove-sign remove')))
-      .appendTo('#enum-values_pane table')
-    $('#enum-values_pane .params')
-      .append($('<input type="hidden">').attr(name:'enum_values[][column_name]', value:column))
-      .append($('<input type="hidden">').attr(name:'enum_values[][values]', value:values))
-  $('#enum-values_pane .remove').live 'click', ->
-    index = $(this).closest('tr').index()
-    $(this).closest('tr').remove()
-    input = $('#enum-values_pane .params input').eq(index * 2)
-    input.add(input.next()).remove()
+    addToTable '#enum-values_pane', [column, values]
+    addToHiddenParams '#enum-values_pane', 'enum_values', column_name:column, values:values

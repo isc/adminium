@@ -8,22 +8,7 @@
         = accordion.pane 'Form fields' do
           = render partial: 'resources/panels/column_listing', locals: {clazz: clazz, type: :form}
         = accordion.pane 'Validations' do
-          ul
-          .control-group
-            label Validator
-            .controls
-              select
-                - %w(validates_presence_of).each do |validator|
-                  option value=validator = validator.humanize
-          .control-group
-            label Column
-            .controls
-              select
-                - clazz.settings.columns_options(:form, only_checked: true).each do |name|
-                  option value=name = name
-          .control-group
-            .controls
-              a.btn Add
+          = render partial: 'resources/panels/validations'
         = accordion.pane 'Enum values' do
           = render partial: 'resources/panels/enum_values'
             

@@ -4,12 +4,14 @@ table.table
       th Column
       th Values
       th
-  - clazz.settings.enum_values.each do |enum_value|
-    tr
-      td= enum_value['column_name']
-      td= enum_value['values']
-      td
-        i.icon-remove-sign.remove
+  tbody
+    - clazz.settings.enum_values.each do |enum_value|
+      tr
+        td= enum_value['column_name']
+        td= enum_value['values']
+        td
+          i.icon-remove-sign.remove
+input type="hidden" name="enum_values[]"
 .params.hide
   - clazz.settings.enum_values.each do |enum_value|
     = hidden_field_tag 'enum_values[][column_name]', enum_value['column_name']

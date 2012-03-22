@@ -32,7 +32,7 @@ module Settings
 
   class Base
 
-    attr_accessor :filters, :default_order, :enum_values
+    attr_accessor :filters, :default_order, :enum_values, :validations
 
     def initialize clazz
       @clazz = clazz
@@ -43,7 +43,7 @@ module Settings
       @globals = Global.new @clazz.account_id
       value = REDIS.get settings_key
       if value.nil?
-        @columns, @enum_values = {}, []
+        @columns, @enum_values, @validations = {}, [], []
       else
         datas = JSON.parse(value).symbolize_keys!
         @columns = datas[:columns].symbolize_keys!
@@ -51,6 +51,7 @@ module Settings
         @default_order = datas[:default_order]
         @per_page = datas[:per_page] || @globals.per_page
         @enum_values = datas[:enum_values] || []
+        @validations = datas[:validations] || []
       end
       @default_order ||= @clazz.column_names.first
       set_missing_columns_conf
@@ -58,7 +59,8 @@ module Settings
     end
 
     def save
-      settings = {columns: @columns, filters: @filters, default_order: @default_order, enum_values: @enum_values}
+      settings = {columns: @columns, filters: @filters, validations: @validations,
+        default_order: @default_order, enum_values: @enum_values}
       settings.merge per_page: @per_page if @globals.per_page != @per_page
       REDIS.set settings_key, settings.to_json
     end

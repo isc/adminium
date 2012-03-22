@@ -1,6 +1,7 @@
 class ResourcesController < ApplicationController
 
   before_filter :apply_serialized_columns, only: [:index, :show]
+  before_filter :apply_validations, only: [:create, :update, :new, :edit]
   before_filter :fetch_item, only: [:show, :edit, :update, :destroy]
   helper_method :clazz
   skip_filter :connect_to_db, only: :test_threads
@@ -33,13 +34,18 @@ class ResourcesController < ApplicationController
     if @item.save
       redirect_to resource_path(params[:table], @item), flash: {success: "#{object_name} successfully created."}
     else
+      @form_url = resources_path(params[:table])
       render :new
     end
   end
 
   def update
-    @item.update_attributes item_params
-    redirect_to resource_path(params[:table], @item), flash: {success: "#{object_name} successfully updated."}
+    if @item.update_attributes item_params
+      redirect_to resource_path(params[:table], @item), flash: {success: "#{object_name} successfully updated."}
+    else
+      @form_url = resource_path(@item, table: params[:table])
+      render :edit
+    end
   end
 
   def destroy
@@ -81,6 +87,12 @@ class ResourcesController < ApplicationController
   def apply_serialized_columns
     clazz.settings.columns[:serialized].each do |column|
       clazz.serialize column
+    end
+  end
+  
+  def apply_validations
+    clazz.settings.validations.each do |validation|
+      clazz.send validation['validator'], validation['column_name']
     end
   end
 
