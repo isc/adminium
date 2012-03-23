@@ -15,7 +15,7 @@ table.table
   label Validator
   .controls
     select
-      - %w(validates_presence_of).each do |validator|
+      - %w(validates_presence_of validates_uniqueness_of).each do |validator|
         option value=validator = validator.humanize
 input type="hidden" name="validations[]"
 .params.hide

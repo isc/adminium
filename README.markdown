@@ -1,5 +1,5 @@
 FEATURES:
-validations autre que validates presence of
+validations avec arguments
 support pour l'édition des associations
 associations has_many dans le listing
 colonnes calculees
