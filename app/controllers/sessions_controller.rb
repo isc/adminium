@@ -11,7 +11,7 @@ class SessionsController < ApplicationController
       session[:user] = user.id
       redirect_to root_url, notice: "Signed in as #{user.name} to #{current_account.name}."
     else
-      redirect_to root_url, notice: 'Your google account is not associated to any DbInsights account.'
+      redirect_to root_url, notice: 'Your google account is not associated to any Adminium account.'
     end
   end
 

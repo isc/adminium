@@ -18,7 +18,7 @@ module ApplicationHelper
   end
 
   def display_attribute wrapper_tag, item, key, value
-    if key =~ /_id$/ && item.class.reflections.keys.find {|assoc| assoc.to_s == key.gsub(/_id$/, '') }
+    if value && key =~ /_id$/ && item.class.reflections.keys.find {|assoc| assoc.to_s == key.gsub(/_id$/, '') }
       assoc_name = key.gsub /_id$/, ''
       content = link_to "#{assoc_name.humanize} ##{value}", resource_path(item.class.reflections[assoc_name.to_sym].table_name, value)
       css_class = 'foreignkey'
