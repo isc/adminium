@@ -4,6 +4,7 @@ class Heroku::ResourcesController < ApplicationController
   before_filter :basic_auth, except: :sso_login
   
   def create
+    Rails.logger.warn "Params on heroku create : #{params.inspect}"
     account = Account.create params[:resource].reject {|k,v| ![:heroku_id, :plan, :callback_url].include?(k)}
     render json: { id: account.api_key, config: { 'ADMINIUM_URL' => heroku_account_url(account) } }
   end

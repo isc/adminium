@@ -19,8 +19,11 @@ i18n
 TODOS:
 fetching account infos (name, email) is broken
 attr_accessible avec role pour proteger plan sur account
+account deprovision ; pour le moment ca supprime la row, on la garde ? que fait-on des collaborators associés ? des données stockées dans redis ?
+
 
 BUGS:
 bug dans les params sur un enchainement de plusieurs searches
 
 potential optimisation : https://github.com/bgipsy/column_queries
+
