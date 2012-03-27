@@ -26,7 +26,10 @@
               = select_tag 'default_order[]', \
                 options_from_collection_for_select(clazz.columns, :name, :name, clazz.settings.default_order.split(' ').first)
               = select_tag 'default_order[]', options_for_select(%w(asc desc), clazz.settings.default_order.split(' ').second)
-        = accordion.pane 'Filters' do
+
+        - total_filters = clazz.settings.filters.length.zero? ? "" : "<span class='label'>#{clazz.settings.filters.length} </span>"
+        =
+        = accordion.pane "Filters #{total_filters}".html_safe do
           .control-group
             = label_tag :new_filter, 'Add a filter on column'
             select#new_filter.span2 data-table=params[:table]
