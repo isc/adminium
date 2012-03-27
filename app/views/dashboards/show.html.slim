@@ -1,0 +1,18 @@
+.page-header
+  h2 Dashboard
+dl
+  dt Database size
+  dd= number_to_human_size @db_size
+table.table.table-striped
+  thead
+    th Table
+    th Full table size
+    th Table size
+    th Record count
+  tbody
+    - @table_sizes.each do |table, fulltblsize, tblsize, record_count|
+      tr
+        td= link_to table, resources_path(table)
+        td= number_to_human_size fulltblsize
+        td= number_to_human_size tblsize
+        td= number_with_delimiter record_count

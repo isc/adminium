@@ -1,6 +1,6 @@
 FEATURES:
+dashboard v0
 validations avec arguments
-support pour l'édition des associations
 associations has_many dans le listing
 colonnes calculees
 conf des associations / foreign_keys
@@ -11,10 +11,13 @@ improve search (regexp, fulltext ?)
 in-place editing dans le listing (deja les booleens comme typus puis les textes et numbers why not)
 mass editing
 renommage de colonnes
+support pour l'édition des associations has many
 audit with papertrail
 export csv/xml/json
 keyboard navigation (ala commit list sur github)
 i18n
+support pour les images
+mysql compat
 
 TODOS:
 fetching account infos (name, email) is broken

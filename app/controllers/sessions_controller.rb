@@ -18,7 +18,7 @@ class SessionsController < ApplicationController
   def switch_account
     account_id = params[:account_id].to_i
     session[:account] = account_id if current_user.accounts.map(&:id).include? account_id
-    redirect_to root_url
+    redirect_to dashboard_url
   end
 
   def destroy

@@ -17,6 +17,10 @@ class Generic
     end
     def self.inheritance_column
     end
+    
+    def self.foreign_key? column_name
+      column_name.ends_with?('_id') && reflections.keys.find {|assoc| assoc.to_s == column_name.gsub(/_id$/, '') }
+    end
   end
 
   def initialize account

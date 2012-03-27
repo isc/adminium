@@ -1,12 +1,12 @@
 jQuery ->
-  $(".alert-message").alert()
-  $(".tabs").button()
-  $(".carousel").carousel()
-  $(".dropdown-toggle").dropdown()
-  $(".navbar").scrollspy()
-  $(".tab").tab "show"
-  $(".tooltip").tooltip()
-  $(".typeahead").typeahead()
+  # $(".alert-message").alert()
+  # $(".tabs").button()
+  # $(".carousel").carousel()
+  # $(".dropdown-toggle").dropdown()
+  # $(".navbar").scrollspy()
+  # $(".tab").tab "show"
+  # $(".tooltip").tooltip()
+  # $(".typeahead").typeahead()
   
   $("a.text-more").popover()
   $('.datepicker').datepicker onClose: (dateText, inst) ->

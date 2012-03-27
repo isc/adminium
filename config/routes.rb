@@ -17,6 +17,7 @@ MtCrap::Application.routes.draw do
     get :switch_account
   end
   resource :account, :only => [:edit, :update]
+  resource :dashboard
   resources :collaborators, :only => [:create, :destroy]
 
   namespace :heroku do
@@ -26,35 +27,6 @@ MtCrap::Application.routes.draw do
   match 'sso/login' => 'heroku/resources#sso_login'
   match 'test/threads' => 'resources#test_threads'
 
-  # Sample resource route with options:
-  #   resources :products do
-  #     member do
-  #       get 'short'
-  #       post 'toggle'
-  #     end
-  #
-  #     collection do
-  #       get 'sold'
-  #     end
-  #   end
-
-  # Sample resource route with more complex sub-resources
-  #   resources :products do
-  #     resources :comments
-  #     resources :sales do
-  #       get 'recent', :on => :collection
-  #     end
-  #   end
-
-  # Sample resource route within a namespace:
-  #   namespace :admin do
-  #     # Directs /admin/products/* to Admin::ProductsController
-  #     # (app/controllers/admin/products_controller.rb)
-  #     resources :products
-  #   end
-
-  # You can have the root of your site routed with "root"
-  # just remember to delete public/index.html.
-  root :to => 'docs#index'
+  root :to => 'dashboards#show'
 
 end

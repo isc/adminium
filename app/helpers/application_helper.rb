@@ -14,11 +14,11 @@ module ApplicationHelper
     icon = 'icon-chevron-down' if params[:order] == "#{key} desc"
     res = content_tag('i', '', class: icon, style:"position:absolute")
     style = icon.present? ? "margin-left:20px" : ""
-    res << (link_to key.humanize, resources_path(params[:table], order:order), style:style)
+    res << (link_to key.humanize, params.merge(order:order), style:style)
   end
 
   def display_attribute wrapper_tag, item, key, value
-    if value && key =~ /_id$/ && item.class.reflections.keys.find {|assoc| assoc.to_s == key.gsub(/_id$/, '') }
+    if value && item.class.foreign_key?(key)
       assoc_name = key.gsub /_id$/, ''
       content = link_to "#{assoc_name.humanize} ##{value}", resource_path(item.class.reflections[assoc_name.to_sym].table_name, value)
       css_class = 'foreignkey'

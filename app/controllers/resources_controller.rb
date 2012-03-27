@@ -81,7 +81,7 @@ class ResourcesController < ApplicationController
     query = columns.map do |column|
       "upper(#{column}) like ?"
     end.join ' or '
-    @items = @items.where([query, ["#{params[:search]}%".upcase] * columns.size].flatten)
+    @items = @items.where([query, ["%#{params[:search]}%".upcase] * columns.size].flatten)
   end
 
   def apply_serialized_columns
