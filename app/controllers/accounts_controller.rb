@@ -1,6 +1,6 @@
 class AccountsController < ApplicationController
   
-  skip_filter :connect_to_db
+  skip_filter :connect_to_db, :unless => :valid_db_url?
   
   def edit
     @account = current_account
@@ -12,6 +12,11 @@ class AccountsController < ApplicationController
     else
       render :edit
     end
+  end
+  
+  private
+  def valid_db_url?
+    current_account.valid_db_url?
   end
 
 end
