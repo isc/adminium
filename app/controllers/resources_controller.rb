@@ -14,7 +14,8 @@ class ResourcesController < ApplicationController
     @items = @items.page(params[:page]).per(clazz.settings.per_page)
     @items = @items.where(params[:where]) if params[:where].present?
     apply_search if params[:search].present?
-    @items = @items.order(params[:order].present? ? params[:order] : clazz.settings.default_order)
+    params[:order] ||= clazz.settings.default_order
+    @items = @items.order(params[:order])
   end
 
   def show
