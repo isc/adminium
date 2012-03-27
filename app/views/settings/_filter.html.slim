@@ -4,6 +4,6 @@ input(type="hidden" name="filters[#{g}][type]" value=filter['type'])
 label
   = filter["column"]
 = render partial: "/settings/filters/#{filter['type']}", locals: {g: g, operator: filter["operator"]}
-= text_field_tag "filters[#{g}][operand]", filter['operand']
+= text_field_tag "filters[#{g}][operand]", filter['operand'], class: 'span2'
 span.btn
   i.icon-trash

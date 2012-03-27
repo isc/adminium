@@ -16,7 +16,7 @@
   form.pull-right.index-search
     - request.query_string.to_s.split('&').each do |param|
       input type="hidden" name=CGI.unescape(param.split('=').first) value=param.split('=').last
-    input.search-query name="search" value=params[:search] placeholder=clazz.settings.columns[:search].map(&:humanize).join(', ').downcase 
+    input.search-query name="search" value=params[:search] placeholder=clazz.settings.columns[:search].map(&:humanize).join(', ').downcase
 ul.nav.nav-tabs
   li.active
     a href="#listing" Listing
@@ -26,7 +26,8 @@ table.table-striped.table-bordered.table
   thead
     tr
       - clazz.settings.columns[:listing].each do |name|
-        th= header_link name
+        th style="width:200px; overflow:hidden"
+          = header_link name
       th
   tbody
     - if @items.any?
@@ -34,7 +35,7 @@ table.table-striped.table-bordered.table
         tr
           - item.attributes.each do |key, value|
               == display_attribute :td, item, key, value
-          td
+          td style="width:200px; overflow:hidden"
             = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item)
             = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item)
             = link_to content_tag('i', nil, class:'icon-trash'), resource_path(params[:table], item), method: :delete, confirm: 'You sure?'

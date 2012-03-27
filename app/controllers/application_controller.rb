@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   private
 
   def fixed_account
-    # session[:account] = FIXED_ACCOUNT if session[:account].nil? && FIXED_ACCOUNT.present?
+    session[:account] = FIXED_ACCOUNT if session[:account].nil? && FIXED_ACCOUNT.present?
   end
 
   def global_settings
@@ -30,19 +30,19 @@ class ApplicationController < ActionController::Base
       redirect_to doc_url(:missing_db_url)
     end
   end
-  
+
   def current_account
     @account ||= Account.find session[:account]
   end
-  
+
   def current_user
     @user ||= User.find session[:user]
   end
-  
+
   def table_not_found exception
     redirect_to edit_account_path, flash: {error: "The table <b>#{exception.table_name}</b> cannot be found.".html_safe}
   end
-  
+
   def cleanup_generic
     @generic.try :cleanup
   end

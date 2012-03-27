@@ -28,14 +28,15 @@
               = select_tag 'default_order[]', options_for_select(%w(asc desc), clazz.settings.default_order.split(' ').second)
         = accordion.pane 'Filters' do
           .control-group
-            = label_tag :new_filter, 'Add a filter'
-            .controls
-              select#new_filter.span3 data-table=params[:table]
-               - clazz.columns.each do |column|
-                 option value=column.name = column.name
-              ul.filters.form-inline
-                - clazz.settings.filters.each do |filter|
-                  li= render partial: '/settings/filter', locals: {filter: filter}
+            = label_tag :new_filter, 'Add a filter on column'
+            select#new_filter.span2 data-table=params[:table]
+              option value='' disabled='disabled' = "choose a column"
+              - clazz.columns.each do |column|
+                option value=column.name = column.name
+
+            ul.filters.form-inline
+              - clazz.settings.filters.each do |filter|
+                li= render partial: '/settings/filter', locals: {filter: filter}
         = accordion.pane 'Enum values' do
           = render partial: 'resources/panels/enum_values'
         = accordion.pane 'Serialized columns' do

@@ -52,7 +52,7 @@ class ResourcesController < ApplicationController
     @item.destroy
     redirect_to resources_path, flash: {success: "#{object_name} successfully destroyed."}
   end
-  
+
   def test_threads
     Account.find_by_sql 'select pg_sleep(4)'
     render text: 'ok'
@@ -75,7 +75,7 @@ class ResourcesController < ApplicationController
   def object_name
     "#{@clazz.original_name.humanize} ##{@item[@clazz.primary_key]}"
   end
-  
+
   def apply_search
     columns = @clazz.settings.columns[:search]
     query = columns.map do |column|
@@ -83,13 +83,13 @@ class ResourcesController < ApplicationController
     end.join ' or '
     @items = @items.where([query, ["#{params[:search]}%".upcase] * columns.size].flatten)
   end
-  
+
   def apply_serialized_columns
     clazz.settings.columns[:serialized].each do |column|
       clazz.serialize column
     end
   end
-  
+
   def apply_validations
     clazz.settings.validations.each do |validation|
       clazz.send validation['validator'], validation['column_name']

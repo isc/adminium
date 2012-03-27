@@ -8,13 +8,13 @@ module ApplicationHelper
   end
 
   def header_link key
-    order, icon = if params[:order] == key
-      ["#{key} desc", 'icon-chevron-up']
-    else
-      [key, 'icon-chevron-down']
-    end
-    res = content_tag 'i', '', class: icon
-    res << (link_to key.humanize, resources_path(params[:table], order:order))
+    params[:order] ||= 'id'
+    order, icon = [key, '']
+    order, icon = ["#{key} desc", 'icon-chevron-up'] if params[:order] == key
+    icon = 'icon-chevron-down' if params[:order] == "#{key} desc"
+    res = content_tag('i', '', class: icon, style:"position:absolute")
+    style = icon.present? ? "margin-left:20px" : ""
+    res << (link_to key.humanize, resources_path(params[:table], order:order), style:style)
   end
 
   def display_attribute wrapper_tag, item, key, value
@@ -23,7 +23,7 @@ module ApplicationHelper
       content = link_to "#{assoc_name.humanize} ##{value}", resource_path(item.class.reflections[assoc_name.to_sym].table_name, value)
       css_class = 'foreignkey'
     elsif enum_values = item.class.settings.enum_values_for(key)
-      content = link_to (enum_values.invert[value] || value), resources_path(item.class.table_name, where: {key => value}),
+      content = link_to (enum_values.invert[value.to_s] || value), resources_path(item.class.table_name, where: {key => value}),
         :class => 'label label-info'
       css_class = 'enum'
     elsif item.class.settings.columns[:serialized].include? key
@@ -33,7 +33,7 @@ module ApplicationHelper
     end
     content_tag wrapper_tag, content, class: css_class
   end
-  
+
   def display_value value, key
     css_class = value.class.to_s.parameterize
     content = case value
