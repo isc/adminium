@@ -12,7 +12,12 @@ MtCrap::Application.routes.draw do
   end
   resource :general_settings, :only => [:edit, :update]
 
-  resources :docs, :only => [:index, :show]
+  resources :docs, :only => [:index, :show] do
+    collection do
+      get :start_demo
+      get :stop_demo
+    end
+  end
   resource :sessions, :only => [] do
     get :switch_account
   end

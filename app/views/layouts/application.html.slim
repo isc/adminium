@@ -31,6 +31,12 @@ html lang="en"
             - if session[:account].nil?
               ul.nav.pull-right
                 li= link_to 'Sign in', '/auth/google'
+            - if session[:account] == ENV['DEMO_ACCOUNT_ID']
+              ul.nav.pull-right.demo-account
+                li
+                  a Demo account
+                - if session[:account_before_demo]
+                  li= link_to 'Back to my account', stop_demo_docs_path
             - if session[:user]
               ul.nav.pull-right
                 li.dropdown
