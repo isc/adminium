@@ -7,7 +7,7 @@ class ResourcesController < ApplicationController
   skip_filter :connect_to_db, only: :test_threads
 
   def index
-    @items = clazz.select(clazz.settings.columns[:listing].join(", "))
+    @items = clazz.scoped #select(clazz.settings.columns[:listing].join(", "))
     clazz.settings.filters.each do |filter|
       @items = build_statement(@items, filter)
     end

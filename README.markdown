@@ -1,5 +1,4 @@
 FEATURES:
-dashboard v0
 validations avec arguments
 associations has_many dans le listing
 colonnes calculees
@@ -18,6 +17,8 @@ keyboard navigation (ala commit list sur github)
 i18n
 support pour les images
 mysql compat
+decouverte des associations par foreign keys
+optim de la clause select sql (jarter les text / binaries non selectionnes par les settings)
 
 TODOS:
 fetching account infos (name, email) is broken

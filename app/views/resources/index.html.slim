@@ -33,8 +33,8 @@ table.table-striped.table-bordered.table
     - if @items.any?
       - @items.each do |item|
         tr
-          - item.attributes.each do |key, value|
-              == display_attribute :td, item, key, value
+          - clazz.settings.columns[:listing].each do |name|
+              == display_attribute :td, item, name
           td
             = link_to content_tag('i', nil, class:'icon-eye-open'), resource_path(params[:table], item)
             = link_to content_tag('i', nil, class:'icon-pencil'), edit_resource_path(params[:table], item)

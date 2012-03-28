@@ -9,16 +9,18 @@ ul.nav.nav-tabs
   .span6
     dl
       - @item.class.settings.columns[:show].each do |name|
-        - value = @item[name]
         dt= name
-        == display_attribute :dd, @item, name, value
+        == display_attribute :dd, @item, name
   .span6
     dl
       - @item.reflections.each do |name, assoc|
         dt= assoc.macro
         - if assoc.belongs_to?
-          - object = @item.send name
-          dd= link_to "#{name} ##{object[object.class.primary_key]}", resource_path(object.class.table_name, object)
+          - foreign_key_value = @item[assoc.foreign_key]
+          - if foreign_key_value
+            dd= display_belongs_to @item, assoc.foreign_key, foreign_key_value
+          - else
+            dd.nilclass null
         - else
           - count = @item.send(name).count
           dd
