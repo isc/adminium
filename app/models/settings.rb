@@ -53,7 +53,7 @@ module Settings
         @enum_values = datas[:enum_values] || []
         @validations = datas[:validations] || []
       end
-      @default_order ||= @clazz.column_names.first
+      @default_order ||= "#{@clazz.primary_key} desc"
       set_missing_columns_conf
       @filters ||= []
     end
@@ -80,7 +80,7 @@ module Settings
     def columns type = nil
       type ? @columns[type] : @columns
     end
-    
+
     def columns_options type, opts = {}
       return @columns[type] if opts[:only_checked]
       case type
@@ -99,30 +99,30 @@ module Settings
     def string_column_names
       @clazz.columns.find_all{|c|c.type == :string}.map(&:name)
     end
-    
+
     def string_or_text_column_names
       @clazz.columns.find_all{|c|[:string, :text].include? c.type}.map(&:name)
     end
-    
+
     def set_missing_columns_conf
       [:listing, :show, :form, :form, :search, :serialized].each do |type|
         next if @columns[type]
-        @columns[type] = 
+        @columns[type] =
         {listing: @clazz.column_names, show: @clazz.column_names,
           form: (@clazz.column_names - %w(created_at updated_at id)),
           search: string_column_names, serialized: []}[type]
       end
     end
-    
+
     def enum_values_for column_name
       return unless enum_value = @enum_values.detect {|enum_value| enum_value['column_name'] == column_name}
       Hash[enum_value['values'].split("\n").map {|val|val.split(':').map(&:strip).reverse}]
     end
-    
+
     def possible_enum_columns
       @clazz.columns.find_all {|c| !c.primary}
     end
-    
+
   end
 
 end
