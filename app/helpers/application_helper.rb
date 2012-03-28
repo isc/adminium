@@ -87,7 +87,7 @@ module ApplicationHelper
     format ||= global_settings.datetime_format
     if format.to_sym == :time_ago_in_words
       str = time_ago_in_words(value) + ' ago'
-      content_tag('span', str, title: l(value, format: :long))
+      content_tag('span', str, title: l(value, format: :long), rel: 'tooltip')
     else
       l(value, format: format.to_sym)
     end
