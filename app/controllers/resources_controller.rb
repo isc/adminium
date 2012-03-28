@@ -51,7 +51,7 @@ class ResourcesController < ApplicationController
 
   def destroy
     @item.destroy
-    redirect_to resources_path, flash: {success: "#{object_name} successfully destroyed."}
+    redirect_to :back, flash: {success: "#{object_name} successfully destroyed."}
   end
 
   def test_threads
