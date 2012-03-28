@@ -77,3 +77,4 @@ html lang="en"
         p &copy; Adminium 2012
     = javascript_include_tag 'application'
     = render :partial => "/layouts/ga"
+    = render :partial => '/layouts/uservoice' unless Rails.env.development?
