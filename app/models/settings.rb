@@ -32,7 +32,7 @@ module Settings
 
   class Base
 
-    attr_accessor :filters, :default_order, :enum_values, :validations
+    attr_accessor :filters, :default_order, :enum_values, :validations, :label_column
 
     def initialize clazz
       @clazz = clazz
@@ -52,6 +52,7 @@ module Settings
         @per_page = datas[:per_page] || @globals.per_page
         @enum_values = datas[:enum_values] || []
         @validations = datas[:validations] || []
+        @label_column = datas[:label_column]
       end
       @default_order ||= "#{@clazz.primary_key} desc"
       set_missing_columns_conf
@@ -60,7 +61,7 @@ module Settings
 
     def save
       settings = {columns: @columns, filters: @filters, validations: @validations,
-        default_order: @default_order, enum_values: @enum_values}
+        default_order: @default_order, enum_values: @enum_values, label_column: @label_column}
       settings.merge! per_page: @per_page if @globals.per_page != @per_page
       REDIS.set settings_key, settings.to_json
     end

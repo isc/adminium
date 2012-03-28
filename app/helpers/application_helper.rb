@@ -34,15 +34,20 @@ module ApplicationHelper
     content_tag wrapper_tag, content, class: css_class
   end
   
+  # FIXME n+1 queries perf issue with label_column option
   def display_belongs_to item, key, value
     assoc_name = key.gsub /_id$/, ''
     reflection = item.class.reflections[assoc_name.to_sym]
     if reflection.options[:polymorphic]
       assoc_type = item.send key.gsub(/_id/, '_type')
-      link_to "#{assoc_type} ##{value}", resource_path(assoc_type.tableize, value)
+      class_name, path = assoc_type, resource_path(assoc_type.tableize, value)
     else
-      link_to "#{assoc_name.humanize} ##{value}", resource_path(reflection.table_name, value)
+      class_name, path = assoc_name.classify, resource_path(reflection.table_name, value)
     end
+    foreign_class = @generic.table(class_name.tableize)
+    label_column = foreign_class.settings.label_column
+    label = label_column.present? ? foreign_class.find(value)[label_column] : "#{class_name} ##{value}"
+    link_to label, path
   end
   
   def display_value value, key
