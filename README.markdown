@@ -13,12 +13,14 @@ renommage de colonnes
 support pour l'édition des associations has many
 audit with papertrail
 export csv/xml/json
+  -> inclure des champs des modeles lies dans l'export
 keyboard navigation (ala commit list sur github)
 i18n
 support pour les images
 mysql compat
 decouverte des associations par foreign keys
 optim de la clause select sql (jarter les text / binaries non selectionnes par les settings)
+sortable table for dashboard
 
 TODOS:
 fetching account infos (name, email) is broken
@@ -30,4 +32,3 @@ BUGS:
 bug dans les params sur un enchainement de plusieurs searches
 
 potential optimisation : https://github.com/bgipsy/column_queries
-

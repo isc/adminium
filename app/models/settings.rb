@@ -106,11 +106,14 @@ module Settings
     
     def set_missing_columns_conf
       [:listing, :show, :form, :form, :search, :serialized].each do |type|
-        next if @columns[type]
-        @columns[type] = 
-        {listing: @clazz.column_names, show: @clazz.column_names,
-          form: (@clazz.column_names - %w(created_at updated_at id)),
-          search: string_column_names, serialized: []}[type]
+        if @columns[type]
+          @columns[type].delete_if {|name| !@clazz.column_names.include? name }
+        else
+          @columns[type] = 
+          {listing: @clazz.column_names, show: @clazz.column_names,
+            form: (@clazz.column_names - %w(created_at updated_at id)),
+            search: string_column_names, serialized: []}[type]
+        end
       end
     end
     

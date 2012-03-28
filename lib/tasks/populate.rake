@@ -10,9 +10,9 @@ task :populate => :environment do
   end
   [User, Comment, Post].each(&:delete_all)
   User.populate 80 do |user|
-    user.pseudo Faker::Name.name
-    user.first_name Faker::Name.first_name
-    user.last_name Faker::Name.last_name
+    user.pseudo = Faker::Name.name
+    user.first_name = Faker::Name.first_name
+    user.last_name = Faker::Name.last_name
   end
   Post.populate 100 do |post|
     post.title = Faker::Lorem.sentence

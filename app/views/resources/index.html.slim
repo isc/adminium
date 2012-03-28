@@ -28,7 +28,7 @@ table.table-striped.table-bordered.table
       - clazz.settings.columns[:listing].each do |name|
         th
           = header_link name
-      th
+      th Actions
   tbody
     - if @items.any?
       - @items.each do |item|
