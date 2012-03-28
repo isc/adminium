@@ -61,7 +61,7 @@ module Settings
     def save
       settings = {columns: @columns, filters: @filters, validations: @validations,
         default_order: @default_order, enum_values: @enum_values}
-      settings.merge per_page: @per_page if @globals.per_page != @per_page
+      settings.merge! per_page: @per_page if @globals.per_page != @per_page
       REDIS.set settings_key, settings.to_json
     end
 
