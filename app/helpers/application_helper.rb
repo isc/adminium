@@ -1,20 +1,11 @@
 module ApplicationHelper
+
   def flash_class(level)
     case level
     when :notice then 'info'
     when :error then 'error'
     when :alert then 'warning'
     end
-  end
-
-  def header_link key
-    params[:order] ||= 'id'
-    order, icon = [key, '']
-    order, icon = ["#{key} desc", 'icon-chevron-up'] if params[:order] == key
-    icon = 'icon-chevron-down' if params[:order] == "#{key} desc"
-    res = content_tag('i', '', class: icon, style:"position:absolute")
-    style = icon.present? ? "margin-left:20px" : ""
-    res << (link_to key.humanize, params.merge(order:order), style:style)
   end
 
   def display_attribute wrapper_tag, item, key
@@ -33,7 +24,7 @@ module ApplicationHelper
     end
     content_tag wrapper_tag, content, class: css_class
   end
-  
+
   # FIXME n+1 queries perf issue with label_column option
   def display_belongs_to item, key, value
     assoc_name = key.gsub /_id$/, ''
@@ -49,7 +40,7 @@ module ApplicationHelper
     label = label_column.present? ? foreign_class.find(value)[label_column] : "#{class_name} ##{value}"
     link_to label, path
   end
-  
+
   def display_value value, key
     css_class = value.class.to_s.parameterize
     content = case value

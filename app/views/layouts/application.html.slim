@@ -31,6 +31,8 @@ html lang="en"
             - if session[:account].nil?
               ul.nav.pull-right
                 li= link_to 'Sign in', '/auth/google'
+            form#search-table.navbar-search action=resources_path('')
+              input.search-query type="search" name="table" data-provide="typeahead" data-source="#{@tables.inspect}" autocomplete="off" placeholder="go to table (press s)"
             - if session[:account] == ENV['DEMO_ACCOUNT_ID']
               ul.nav.pull-right.demo-account
                 li
@@ -58,15 +60,7 @@ html lang="en"
 
     .container-fluid
       .row-fluid
-        .span3
-          .well.sidebar-nav
-            input.search-query type="search"
-            ul.nav.nav-list
-              li.nav-header Tables
-              - if @tables
-                - @tables.each do |table|
-                  li class="#{'active' if params[:table] == table}" = link_to table.humanize, resources_path(table)
-        .span9
+        .span12
           - flash.each do |k, v|
             .alert class="alert-#{k}"
               a.close data-dismiss="alert" href="#" &times;

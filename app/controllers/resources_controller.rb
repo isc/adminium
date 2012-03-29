@@ -6,16 +6,22 @@ class ResourcesController < ApplicationController
   helper_method :clazz
   skip_filter :connect_to_db, only: :test_threads
 
+  respond_to :json, :html, :xml, :csv, :only => :index
+
   def index
     @items = clazz.scoped #select(clazz.settings.columns[:listing].join(", "))
     clazz.settings.filters.each do |filter|
       @items = build_statement(@items, filter)
     end
-    @items = @items.page(params[:page]).per(clazz.settings.per_page)
     @items = @items.where(params[:where]) if params[:where].present?
     apply_search if params[:search].present?
     params[:order] ||= clazz.settings.default_order
     @items = @items.order(params[:order])
+    respond_with(@items) do |format|
+      format.html do
+        @items = @items.page(params[:page]).per(clazz.settings.per_page)
+      end
+    end
   end
 
   def show
