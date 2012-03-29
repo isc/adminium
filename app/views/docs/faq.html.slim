@@ -1,0 +1,8 @@
+.page-header
+  h1 FAQ
+
+= accordion :open => true do |accordion|
+  = accordion.pane "How similar / different is it from gems such as rails_admin or active_admin ?" do
+    p It is similar in purpose to rails_admin and active_admin.
+    p It is however different in how it operates and thus allows different things. Rails admin and active admin are gems to be used with a Rails 3 application whereas Adminium is an Heroku add-on which can be used with any Heroku application, no matter the Rails version, the framework or even the language.
+    p It also differs in the way it is configured ; rails / active admin use DSLs and thus require to write code and deploy the application to modify the configuration of the admin, whereas all the configuration in Adminium is done via the interface independently of the lifecycle of the target application and also allowing non technical users to be in charge of it.
