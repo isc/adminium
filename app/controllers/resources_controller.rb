@@ -9,7 +9,7 @@ class ResourcesController < ApplicationController
   respond_to :json, :html, :xml, :csv, :only => :index
 
   def index
-    @items = clazz.select(clazz.settings.columns[:listing].join(", "))
+    @items = clazz.scoped #select(clazz.settings.columns[:listing].join(", "))
     clazz.settings.filters.each do |filter|
       @items = build_statement(@items, filter)
     end
@@ -57,7 +57,7 @@ class ResourcesController < ApplicationController
 
   def destroy
     @item.destroy
-    redirect_to resources_path, flash: {success: "#{object_name} successfully destroyed."}
+    redirect_to :back, flash: {success: "#{object_name} successfully destroyed."}
   end
 
   def test_threads

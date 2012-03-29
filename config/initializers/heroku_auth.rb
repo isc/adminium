@@ -1,1 +1,1 @@
-HEROKU_MANIFEST = JSON.parse File.read('addon-manifest.json')
+HEROKU_MANIFEST = JSON.parse File.read(File.join(Rails.root, 'addon-manifest.json'))

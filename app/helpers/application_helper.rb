@@ -1,17 +1,17 @@
 module ApplicationHelper
 
   def flash_class(level)
-  case level
-  when :notice then 'info'
-  when :error then 'error'
-  when :alert then 'warning'
-  end
+    case level
+    when :notice then 'info'
+    when :error then 'error'
+    when :alert then 'warning'
+    end
   end
 
-  def display_attribute wrapper_tag, item, key, value
+  def display_attribute wrapper_tag, item, key
+    value = item[key]
     if value && item.class.foreign_key?(key)
-      assoc_name = key.gsub /_id$/, ''
-      content = link_to "#{assoc_name.humanize} ##{value}", resource_path(item.class.reflections[assoc_name.to_sym].table_name, value)
+      content = display_belongs_to item, key, value
       css_class = 'foreignkey'
     elsif enum_values = item.class.settings.enum_values_for(key)
       content = link_to (enum_values.invert[value.to_s] || value), resources_path(item.class.table_name, where: {key => value}),
@@ -23,6 +23,22 @@ module ApplicationHelper
       css_class, content = display_value value, key
     end
     content_tag wrapper_tag, content, class: css_class
+  end
+
+  # FIXME n+1 queries perf issue with label_column option
+  def display_belongs_to item, key, value
+    assoc_name = key.gsub /_id$/, ''
+    reflection = item.class.reflections[assoc_name.to_sym]
+    if reflection.options[:polymorphic]
+      assoc_type = item.send key.gsub(/_id/, '_type')
+      class_name, path = assoc_type, resource_path(assoc_type.tableize, value)
+    else
+      class_name, path = assoc_name.classify, resource_path(reflection.table_name, value)
+    end
+    foreign_class = @generic.table(class_name.tableize)
+    label_column = foreign_class.settings.label_column
+    label = label_column.present? ? foreign_class.find(value)[label_column] : "#{class_name} ##{value}"
+    link_to label, path
   end
 
   def display_value value, key
@@ -62,7 +78,7 @@ module ApplicationHelper
     format ||= global_settings.datetime_format
     if format.to_sym == :time_ago_in_words
       str = time_ago_in_words(value) + ' ago'
-      content_tag('span', str, title: l(value, format: :long))
+      content_tag('span', str, title: l(value, format: :long), rel: 'tooltip')
     else
       l(value, format: format.to_sym)
     end

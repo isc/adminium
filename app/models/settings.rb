@@ -32,7 +32,7 @@ module Settings
 
   class Base
 
-    attr_accessor :filters, :default_order, :enum_values, :validations
+    attr_accessor :filters, :default_order, :enum_values, :validations, :label_column
 
     def initialize clazz
       @clazz = clazz
@@ -52,6 +52,7 @@ module Settings
         @per_page = datas[:per_page] || @globals.per_page
         @enum_values = datas[:enum_values] || []
         @validations = datas[:validations] || []
+        @label_column = datas[:label_column]
       end
       @default_order ||= "#{@clazz.primary_key} desc"
       set_missing_columns_conf
@@ -60,7 +61,7 @@ module Settings
 
     def save
       settings = {columns: @columns, filters: @filters, validations: @validations,
-        default_order: @default_order, enum_values: @enum_values}
+        default_order: @default_order, enum_values: @enum_values, label_column: @label_column}
       settings.merge! per_page: @per_page if @globals.per_page != @per_page
       REDIS.set settings_key, settings.to_json
     end
@@ -106,11 +107,14 @@ module Settings
 
     def set_missing_columns_conf
       [:listing, :show, :form, :form, :search, :serialized].each do |type|
-        next if @columns[type]
-        @columns[type] =
-        {listing: @clazz.column_names, show: @clazz.column_names,
-          form: (@clazz.column_names - %w(created_at updated_at id)),
-          search: string_column_names, serialized: []}[type]
+        if @columns[type]
+          @columns[type].delete_if {|name| !@clazz.column_names.include? name }
+        else
+          @columns[type] =
+          {listing: @clazz.column_names, show: @clazz.column_names,
+            form: (@clazz.column_names - %w(created_at updated_at id)),
+            search: string_column_names, serialized: []}[type]
+        end
       end
     end
 

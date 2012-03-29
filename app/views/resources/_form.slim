@@ -1,9 +1,13 @@
 = simple_form_for @item, url: @form_url, html: {class: 'form-horizontal'}, defaults: {input_html: {class: 'span6'}} do |f|
   - @item.class.settings.columns[:form].each do |name|
     - if  enum_value = @item.class.settings.enum_values_for(name)
-      = f.input name, :as => :select, :collection => enum_value
+      = f.input name, as: :select, collection: enum_value
     - elsif @item.class.foreign_key? name
-      = f.association name.gsub(/_id$/, '').to_sym
+      - assoc_name = name.gsub(/_id$/, '').to_sym
+      - if @item.reflections[assoc_name].options[:polymorphic]
+        = f.input name
+      - else
+        = f.association assoc_name
     - else
       = f.input name, readonly: (@item.class.columns.detect{|c|c.name == name}.primary || @item.class.primary_key == name)
   .form-actions

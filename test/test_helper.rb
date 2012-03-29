@@ -4,12 +4,22 @@ require 'rails/test_help'
 require 'fixtures/test_database_schema.rb'
 require 'capybara/rails'
 
-class ActiveSupport::TestCase
-  # Setup all fixtures in test/fixtures/*.(yml|csv) for all tests in alphabetical order.
-  #
-  # Note: You'll currently still have to declare fixtures explicitly in integration tests
-  # -- they do not yet inherit this setting
-  fixtures :all
+require 'rack_session_access/capybara'
 
-  # Add more helper methods to be used by all tests here...
+class ActiveSupport::TestCase
+  self.use_transactional_fixtures = false
+  teardown do
+    REDIS.flushdb
+  end
+end
+
+class ActionDispatch::IntegrationTest
+  include Capybara::DSL
+  
+  def login account = nil
+    account ||= Factory :account
+    page.set_rack_session :account => account.id
+    account
+  end
+  
 end

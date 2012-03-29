@@ -46,7 +46,6 @@ GEM
     airbrake (3.0.9)
       activesupport
       builder
-    ansi (1.4.2)
     arel (3.0.2)
     builder (3.0.0)
     capybara (1.1.2)
@@ -146,6 +145,9 @@ GEM
       rack
     rack-test (0.6.1)
       rack (>= 1.0)
+    rack_session_access (0.0.2)
+      builder (>= 2.0.0)
+      rack (>= 1.0.0)
     rails (3.2.2)
       actionmailer (= 3.2.2)
       actionpack (= 3.2.2)
@@ -215,8 +217,6 @@ GEM
     treetop (1.4.10)
       polyglot
       polyglot (>= 0.3.1)
-    turn (0.8.2)
-      ansi (>= 1.2.2)
     twitter-bootstrap-rails (2.0.4)
       actionpack (>= 3.1)
       less-rails (~> 2.1.8)
@@ -252,6 +252,7 @@ DEPENDENCIES
   pg
   populator
   puma
+  rack_session_access
   rails (= 3.2.2)
   redis (>= 2.2.0)
   rest-client
@@ -259,6 +260,5 @@ DEPENDENCIES
   simple_form
   slim-rails
   taps
-  turn (= 0.8.2)
   twitter-bootstrap-rails (~> 2.0.4)
   uglifier (>= 1.0.3)

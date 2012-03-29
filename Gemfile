@@ -37,8 +37,8 @@ group :production do
 end
 
 group :test do
-  gem 'turn', '0.8.2', :require => false
   gem 'capybara'
   gem 'launchy'
   gem 'factory_girl_rails'
+  gem 'rack_session_access'
 end

@@ -1,11 +1,11 @@
 conn_spec = ActiveRecord::Base.configurations['fixture']
 ActiveRecord::Base.establish_connection conn_spec
 ActiveRecord::Schema.verbose = false
-version = 1
+version = 3
 if ActiveRecord::Migrator.current_version != version
-  db_name = conn_spec['database']
-  ActiveRecord::Base.connection.drop_database db_name
-  ActiveRecord::Base.connection.create_database db_name
+  ActiveRecord::Base.connection.tables.each do |table|
+    ActiveRecord::Base.connection.drop_table table
+  end
   ActiveRecord::Schema.define(:version => version) do
     create_table :users do |t|
       t.string :pseudo, :first_name, :last_name
@@ -20,9 +20,10 @@ if ActiveRecord::Migrator.current_version != version
       t.timestamps
     end
     create_table :comments do |t|
-      t.text :body
-      t.integer :user_id, :post_id
-      t.boolean :published
+      t.string :title, :default => "" 
+      t.text :comment
+      t.references :commentable, :polymorphic => true
+      t.references :user
       t.timestamps
     end
     create_table :user_profiles do |t|

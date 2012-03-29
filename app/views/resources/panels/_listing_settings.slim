@@ -15,20 +15,8 @@
                 - input_name = "search_columns[#{name}]"
                 input type='checkbox' name=input_name id=input_name.parameterize checked=checked
                 label for=input_name.parameterize = name
-        = accordion.pane 'Miscellaneous' do
-          .control-group
-            = label_tag :per_page, 'Items per page'
-            .controls
-              input.span2#per_page type="number" step=25 min=25 max=250 name="per_page" value=clazz.settings.per_page
-          .control-group
-            = label_tag 'default_order[]', 'Default order'
-            .controls
-              = select_tag 'default_order[]', \
-                options_from_collection_for_select(clazz.columns, :name, :name, clazz.settings.default_order.split(' ').first)
-              = select_tag 'default_order[]', options_for_select(%w(asc desc), clazz.settings.default_order.split(' ').second)
 
         - total_filters = clazz.settings.filters.length.zero? ? "" : "<span class='label'>#{clazz.settings.filters.length} </span>"
-        =
         = accordion.pane "Filters #{total_filters}".html_safe do
           .control-group
             = label_tag :new_filter, 'Add a filter on column'
@@ -50,5 +38,7 @@
                 - input_name = "serialized_columns[#{name}]"
                 input type='checkbox' name=input_name id=input_name.parameterize checked=checked
                 label for=input_name.parameterize = name
+        = accordion.pane 'Miscellaneous' do
+          = render partial: 'resources/panels/misc'
     .modal-footer
       input#save_settings.btn.btn-primary type='submit' value='Save settings'

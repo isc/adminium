@@ -38,4 +38,6 @@ MtCrap::Application.configure do
   config.active_support.deprecation = :stderr
   # Raise exception on mass assignment protection for Active Record models
   config.active_record.mass_assignment_sanitizer = :strict
+  config.assets.prefix = "/capybara_test_assets"
+  config.middleware.use RackSessionAccess::Middleware
 end
