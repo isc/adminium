@@ -2,7 +2,9 @@
   a.btn.pull-right data-toggle="modal" href="#settings" Settings
   h3
     = "Listing #{params[:table].humanize.downcase} "
-    small= page_entries_info(@items, entry_name: '').html_safe
+    small
+      = page_entries_info(@items, entry_name: '').html_safe
+
   - if params[:search]
     span.label.label-success
       == "search for <i>#{params[:search]}</i>"
@@ -22,6 +24,8 @@ ul.nav.nav-tabs
     a href="#listing" Listing
   li
     = link_to 'Add new', new_resource_path(table:params[:table])
+  li
+    a data-toggle="modal" href="#export" Export
 table.table-striped.table-bordered.table
   thead
     tr
@@ -44,3 +48,4 @@ table.table-striped.table-bordered.table
         td colspan=(clazz.settings.columns[:listing].size + 1) No results.
 = paginate @items
 = render partial: '/resources/panels/listing_settings'
+= render partial: '/resources/panels/export'

@@ -17,7 +17,7 @@ class Generic
     end
     def self.inheritance_column
     end
-    
+
     def self.foreign_key? column_name
       column_name.ends_with?('_id') && reflections.keys.find {|assoc| assoc.to_s == column_name.gsub(/_id$/, '') }
     end
@@ -36,7 +36,7 @@ class Generic
   rescue NameError
     @account_module = self.class.const_set module_name, Module.new
   end
-  
+
   def cleanup
     self.class.send :remove_const, @account_module.name.demodulize if @account_module
   end
@@ -113,7 +113,7 @@ class Generic
   def mysql?
     current_adapter == 'mysql2'
   end
-  
+
   class TableNotFoundException < Exception
     attr_reader :table_name
     def initialize table_name
