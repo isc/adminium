@@ -2,7 +2,7 @@
   header.jumbotron.subhead
     ul.breadcrumb
       li
-        = params[:table].humanize
+        = link_to params[:table].humanize, resources_path(params[:table])
         span.divider |
       li
         = page_entries_info(@items, entry_name: '').html_safe
@@ -11,11 +11,6 @@
         = link_to 'Add new', new_resource_path(table:params[:table])
         span.divider |
       li
-        form.bulk-destroy.hide action=bulk_destroy_resources_path(params[:table]) method="POST"
-          button.btn(title='Delete selected rows' rel='tooltip' data-placement="bottom")
-            i.icon-trash
-          span.divider |
-      li
         a data-toggle="modal" href="#export" Export
       - if clazz.settings.columns[:search].any?
         li
@@ -23,6 +18,10 @@
             - request.query_string.to_s.split('&').each do |param|
               input type="hidden" name=CGI.unescape(param.split('=').first) value=param.split('=').last
             input.search-query name="search" value=params[:search] placeholder="search on #{clazz.settings.columns[:search].map(&:humanize).join(', ').downcase}"
+      li
+        form.bulk-destroy.hide action=bulk_destroy_resources_path(params[:table]) method="POST"
+          button.btn title='Delete selected rows' rel='tooltip' data-placement="bottom"
+            i.icon-trash
       li.pull-right
         a data-toggle="modal" href="#settings" Settings
 

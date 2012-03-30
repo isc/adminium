@@ -9,7 +9,6 @@ CRUD conf on tables (disable add or delete for instance)
 improve search (regexp, fulltext ?)
 in-place editing dans le listing (deja les booleens comme typus puis les textes et numbers why not)
 mass editing
-bulk destroy
 renommage de colonnes
 support pour l'édition des associations has many
 audit with papertrail
@@ -31,5 +30,6 @@ account deprovision ; pour le moment ca supprime la row, on la garde ? que fait-
 
 BUGS:
 bug dans les params sur un enchainement de plusieurs searches
+serialized columns containing smth else than a basic type
 
 potential optimisation : https://github.com/bgipsy/column_queries

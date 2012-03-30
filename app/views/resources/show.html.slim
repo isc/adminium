@@ -1,10 +1,15 @@
-.page-header
-  a.btn.pull-right data-toggle="modal" href="#settings" Settings
-  h3= "#{@item.class.original_name} ##{@item[@item.class.primary_key]}"
-ul.nav.nav-tabs
-  li.active
-    a Show
-  li= link_to 'Edit', edit_resource_path(@item.class.table_name, @item)
+- content_for :subnav do
+  header.jumbotron.subhead
+    ul.breadcrumb
+      li
+        = link_to params[:table].humanize, resources_path(params[:table])
+        span.divider |
+      li
+        = "#{@item.class.original_name} ##{@item[@item.class.primary_key]}"
+        span.divider |
+      li= link_to 'Edit', edit_resource_path(@item.class.table_name, @item)
+      li.pull-right
+        a data-toggle="modal" href="#settings" Settings
 .row-fluid
   .span6
     dl

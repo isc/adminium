@@ -1,10 +1,13 @@
-.page-header
-  a.btn.pull-right data-toggle="modal" href="#settings" Settings
-  h3 New #{@item.class.original_name}
-.tabbable
-  ul.nav.nav-tabs
-    li= link_to 'Listing', resources_path(params[:table])
-    li.active
-      a Add new
+- content_for :subnav do
+  header.jumbotron.subhead
+    ul.breadcrumb
+      li
+        = link_to params[:table].humanize, resources_path(params[:table])
+        span.divider |
+      li
+        ' New #{@item.class.original_name}
+      li.pull-right
+        a data-toggle="modal" href="#settings" Settings
+
 = render 'resources/form'
 = render 'resources/panels/form_settings'
