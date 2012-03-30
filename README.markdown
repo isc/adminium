@@ -31,5 +31,7 @@ account deprovision ; pour le moment ca supprime la row, on la garde ? que fait-
 BUGS:
 bug dans les params sur un enchainement de plusieurs searches
 serialized columns containing smth else than a basic type
+subnav disappears after a certain amount of scrolling on a long page
+subnav flickers on a page slightly too long for the screen 
 
 potential optimisation : https://github.com/bgipsy/column_queries
