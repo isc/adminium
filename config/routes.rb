@@ -5,6 +5,7 @@ MtCrap::Application.routes.draw do
 
   resources :resources, :path => "/resources/:table" do
     get 'page/:page', :action => :index, :on => :collection
+    post :bulk_destroy, :on => :collection
   end
 
   resources :settings do

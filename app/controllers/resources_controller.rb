@@ -59,6 +59,11 @@ class ResourcesController < ApplicationController
     @item.destroy
     redirect_to :back, flash: {success: "#{object_name} successfully destroyed."}
   end
+  
+  def bulk_destroy
+    clazz.destroy params[:item_ids]
+    redirect_to :back, flash: {success: "#{params[:item_ids].size} #{class_name.pluralize} successfully destroyed."}
+  end
 
   def test_threads
     Account.find_by_sql 'select pg_sleep(4)'
@@ -76,15 +81,19 @@ class ResourcesController < ApplicationController
   end
 
   def item_params
-    params[@clazz.name.underscore.gsub('/', '_')]
+    params[clazz.name.underscore.gsub('/', '_')]
   end
 
   def object_name
-    "#{@clazz.original_name.humanize} ##{@item[@clazz.primary_key]}"
+    "#{class_name} ##{@item[clazz.primary_key]}"
+  end
+  
+  def class_name
+    clazz.original_name.humanize
   end
 
   def apply_search
-    columns = @clazz.settings.columns[:search]
+    columns = clazz.settings.columns[:search]
     query = columns.map do |column|
       "upper(#{column}) like ?"
     end.join ' or '

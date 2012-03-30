@@ -1,5 +1,5 @@
 .page-header
-  a.btn.pull-right data-toggle="modal" href="#settings" Settings
+  a.pull-right.btn data-toggle="modal" href="#settings" Settings
   h3
     = "Listing #{params[:table].humanize.downcase} "
     small
@@ -14,11 +14,15 @@
       span.label.label-warning
         == "where #{k} is <i>#{v}</i>"
         span.remove data-param="where[#{k}]=#{v}" x
-- if clazz.settings.columns[:search].any?
-  form.pull-right.index-search
-    - request.query_string.to_s.split('&').each do |param|
-      input type="hidden" name=CGI.unescape(param.split('=').first) value=param.split('=').last
-    input.search-query name="search" value=params[:search] placeholder=clazz.settings.columns[:search].map(&:humanize).join(', ').downcase
+.pull-right
+  form.bulk-destroy.hide action=bulk_destroy_resources_path(params[:table]) method="POST"
+    button.btn
+      i.icon-trash
+  - if clazz.settings.columns[:search].any?
+    form.index-search
+      - request.query_string.to_s.split('&').each do |param|
+        input type="hidden" name=CGI.unescape(param.split('=').first) value=param.split('=').last
+      input.search-query name="search" value=params[:search] placeholder=clazz.settings.columns[:search].map(&:humanize).join(', ').downcase
 ul.nav.nav-tabs
   li.active
     a href="#listing" Listing
@@ -26,9 +30,11 @@ ul.nav.nav-tabs
     = link_to 'Add new', new_resource_path(table:params[:table])
   li
     a data-toggle="modal" href="#export" Export
-table.table-striped.table-bordered.table
+table.table-striped.table-bordered.table.items-list
   thead
     tr
+      th
+        input type="checkbox"
       - clazz.settings.columns[:listing].each do |name|
         th
           = header_link name
@@ -36,7 +42,9 @@ table.table-striped.table-bordered.table
   tbody
     - if @items.any?
       - @items.each do |item|
-        tr
+        tr data-item-id=item.id
+          td
+            input type="checkbox"
           - clazz.settings.columns[:listing].each do |name|
               == display_attribute :td, item, name
           td

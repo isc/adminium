@@ -73,7 +73,7 @@ class Generic
             if tables.include? owner.tableize
               account_module.const_get(owner.classify).has_many klass.table_name.to_sym
               klass.belongs_to owner.to_sym
-            elsif klass.column_names.find {|c| c == "#{owner}_type"}
+            elsif klass.column_names.include? "#{owner}_type"
               klass.belongs_to owner.to_sym, polymorphic: true
             end
           rescue NameError => e
