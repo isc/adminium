@@ -56,9 +56,9 @@ html lang="en"
                       li= link_to "Switch to <b>#{account.name}</b>".html_safe, switch_account_sessions_path(:account_id => account.id)
                     li.divider
                     li= link_to 'Sign out', signout_path
-
-
     .container-fluid
+      - subnav = yield :subnav
+      = subnav unless subnav.nil?
       .row-fluid
         .span12
           - flash.each do |k, v|

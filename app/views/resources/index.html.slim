@@ -1,10 +1,27 @@
-.page-header
-  a.btn.pull-right data-toggle="modal" href="#settings" Settings
-  h3
-    = "Listing #{params[:table].humanize.downcase} "
-    small
-      = page_entries_info(@items, entry_name: '').html_safe
+- content_for :subnav do
+  header.jumbotron.subhead
+    ul.breadcrumb
+      li
+        = params[:table].humanize
+        span.divider |
+      li
+        = page_entries_info(@items, entry_name: '').html_safe
+        span.divider |
+      li
+        = link_to 'Add new', new_resource_path(table:params[:table])
+        span.divider |
+      li
+        a data-toggle="modal" href="#export" Export
+      - if clazz.settings.columns[:search].any?
+        li.longitem
+          form.subnav-search
+            - request.query_string.to_s.split('&').each do |param|
+              input type="hidden" name=CGI.unescape(param.split('=').first) value=param.split('=').last
+            input.search-query name="search" value=params[:search] placeholder="search on #{clazz.settings.columns[:search].map(&:humanize).join(', ').downcase}"
+      li.pull-right
+        a data-toggle="modal" href="#settings" Settings
 
+.page-header
   - if params[:search]
     span.label.label-success
       == "search for <i>#{params[:search]}</i>"
@@ -14,18 +31,6 @@
       span.label.label-warning
         == "where #{k} is <i>#{v}</i>"
         span.remove data-param="where[#{k}]=#{v}" x
-- if clazz.settings.columns[:search].any?
-  form.pull-right.index-search
-    - request.query_string.to_s.split('&').each do |param|
-      input type="hidden" name=CGI.unescape(param.split('=').first) value=param.split('=').last
-    input.search-query name="search" value=params[:search] placeholder=clazz.settings.columns[:search].map(&:humanize).join(', ').downcase
-ul.nav.nav-tabs
-  li.active
-    a href="#listing" Listing
-  li
-    = link_to 'Add new', new_resource_path(table:params[:table])
-  li
-    a data-toggle="modal" href="#export" Export
 table.table-striped.table-bordered.table
   thead
     tr

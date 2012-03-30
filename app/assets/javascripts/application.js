@@ -10,4 +10,5 @@
 //= require jquery-ui-1.8.17.custom
 //= require sh_main.min
 //= require sh_ruby.min
+//= require jquery-scrollspy
 //= require_tree .

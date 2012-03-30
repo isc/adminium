@@ -3,7 +3,6 @@ jQuery ->
   # $(".tabs").button()
   # $(".carousel").carousel()
   # $(".dropdown-toggle").dropdown()
-  # $(".navbar").scrollspy()
   # $(".tab").tab "show"
   # $(".tooltip").tooltip()
   # $(".typeahead").typeahead()
