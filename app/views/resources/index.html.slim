@@ -11,9 +11,14 @@
         = link_to 'Add new', new_resource_path(table:params[:table])
         span.divider |
       li
+        form.bulk-destroy.hide action=bulk_destroy_resources_path(params[:table]) method="POST"
+          button.btn(title='Delete selected rows' rel='tooltip' data-placement="bottom")
+            i.icon-trash
+          span.divider |
+      li
         a data-toggle="modal" href="#export" Export
       - if clazz.settings.columns[:search].any?
-        li.longitem
+        li
           form.subnav-search
             - request.query_string.to_s.split('&').each do |param|
               input type="hidden" name=CGI.unescape(param.split('=').first) value=param.split('=').last
@@ -31,9 +36,12 @@
       span.label.label-warning
         == "where #{k} is <i>#{v}</i>"
         span.remove data-param="where[#{k}]=#{v}" x
-table.table-striped.table-bordered.table
+
+table.table-striped.table-bordered.table.items-list
   thead
     tr
+      th
+        input type="checkbox"
       - clazz.settings.columns[:listing].each do |name|
         th
           = header_link name
@@ -41,7 +49,9 @@ table.table-striped.table-bordered.table
   tbody
     - if @items.any?
       - @items.each do |item|
-        tr
+        tr data-item-id=item.id
+          td
+            input type="checkbox"
           - clazz.settings.columns[:listing].each do |name|
               == display_attribute :td, item, name
           td
