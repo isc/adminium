@@ -26,23 +26,9 @@ html lang="en"
           .container-fluid.nav-collapse
             form#search-table.navbar-search action=resources_path('')
               input.search-query type="search" data-provide="typeahead" data-source="#{@tables.inspect}" autocomplete="off" placeholder="go to table (press s)"
-            - if session[:account].nil?
-              ul.nav.pull-right
-                li= link_to 'Sign in', '/auth/google'
-            - if session[:account] == ENV['DEMO_ACCOUNT_ID']
-              ul.nav.pull-right.demo-account
-                li
-                  a Demo account
-                - if session[:account_before_demo]
-                  li= link_to 'Back to my account', stop_demo_docs_path
             ul.nav.pull-right
-              li.dropdown
-                a.dropdown-toggle data-toggle="dropdown" href="#"
-                  i.icon-cog.icon-white
-                ul.dropdown-menu
-                  li class=active_or_not('accounts') = link_to 'Edit Account', edit_account_path
-                  li class=active_or_not('general_settings') = link_to 'Settings', edit_general_settings_path
-                  li class=active_or_not('docs') = link_to 'Docs', docs_path
+              - if session[:account].nil?
+                li= link_to 'Sign in', '/auth/google'
               - if session[:user]
                 li.dropdown
                   a.dropdown-toggle data-toggle="dropdown" href="#"
@@ -59,6 +45,20 @@ html lang="en"
                       li= link_to "Switch to <b>#{account.name}</b>".html_safe, switch_account_sessions_path(:account_id => account.id)
                     li.divider
                     li= link_to 'Sign out', signout_path
+              li.dropdown
+                a.dropdown-toggle data-toggle="dropdown" href="#"
+                  i.icon-cog.icon-white
+                ul.dropdown-menu
+                  li class=active_or_not('accounts') = link_to 'Edit Account', edit_account_path
+                  li class=active_or_not('general_settings') = link_to 'Settings', edit_general_settings_path
+                  li class=active_or_not('docs') = link_to 'Docs', docs_path
+            - if session[:account] == ENV['DEMO_ACCOUNT_ID']
+              ul.nav.pull-right.demo-account
+                li
+                  a Demo account
+                - if session[:account_before_demo]
+                  li= link_to 'Back to my account', stop_demo_docs_path
+
     .container-fluid
       - subnav = yield :subnav
       = subnav unless subnav.nil?
