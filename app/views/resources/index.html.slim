@@ -3,7 +3,7 @@
     ul.breadcrumb
       li
         = link_to params[:table].humanize, resources_path(params[:table])
-        span.divider |
+        span.divider >
       li
         = page_entries_info(@items, entry_name: '').html_safe
         span.divider |

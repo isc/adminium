@@ -3,7 +3,7 @@
     ul.breadcrumb
       li
         = link_to params[:table].humanize, resources_path(params[:table])
-        span.divider |
+        span.divider >
       li
         = "#{@item.class.original_name} ##{@item[@item.class.primary_key]}"
         span.divider |
