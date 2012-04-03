@@ -123,6 +123,7 @@ GEM
       nokogiri (>= 1.2.1)
     mime-types (1.17.2)
     multi_json (1.1.0)
+    mysql2 (0.3.11)
     nokogiri (1.5.0)
     omniauth (1.0.2)
       hashie (~> 1.2)
@@ -248,6 +249,7 @@ DEPENDENCIES
   kaminari
   kensa
   launchy
+  mysql2
   omniauth-openid
   pg
   populator
