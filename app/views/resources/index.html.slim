@@ -59,7 +59,7 @@ table.table-striped.table-bordered.table.items-list
             = link_to content_tag('i', nil, class:'icon-trash'), resource_path(params[:table], item), method: :delete, confirm: 'You sure?'
     - else
       tr
-        td colspan=(clazz.settings.columns[:listing].size + 1) No results.
+        td colspan=(clazz.settings.columns[:listing].size + 2) No results.
 = paginate @items
 = render partial: '/resources/panels/listing_settings'
 = render partial: '/resources/panels/export'
