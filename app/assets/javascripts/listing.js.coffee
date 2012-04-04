@@ -10,6 +10,9 @@ class BulkDestroy
       for item in items
         item_id = $(item).closest('tr').data('item-id')
         $('<input>').attr('type': 'hidden', 'name': 'item_ids[]').val(item_id).appendTo(@form)
+    $(".click_checkbox").click (e) =>
+      $(e.target).find("input[type=checkbox]").click()
+      e.stopPropagation()
     $('.items-list thead input[type=checkbox]').click (e) =>
       if e.target.checked
         $(@checkbox_selector).attr('checked', 'checked')

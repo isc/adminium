@@ -49,7 +49,7 @@ table.table-striped.table-bordered.table.items-list
     - if @items.any?
       - @items.each do |item|
         tr data-item-id=item.id
-          td
+          td.click_checkbox
             input type="checkbox"
           - clazz.settings.columns[:listing].each do |name|
               == display_attribute :td, item, name
