@@ -37,7 +37,7 @@ module ApplicationHelper
     end
     foreign_class = @generic.table(class_name.tableize)
     label_column = foreign_class.settings.label_column
-    label = label_column.present? ? foreign_class.find(value)[label_column] : "#{class_name} ##{value}"
+    label = label_column.present? ? foreign_class.find(value).adminium_label : "#{class_name} ##{value}"
     link_to label, path
   end
 

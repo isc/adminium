@@ -6,7 +6,7 @@ class Generic
   attr_reader :current_adapter
 
   class Base < ActiveRecord::Base
-    cattr_accessor :account_id
+    cattr_accessor :adminium_account_id
     extend Settings
 
 
@@ -29,6 +29,13 @@ class Generic
 
     def self.foreign_key? column_name
       column_name.ends_with?('_id') && reflections.keys.find {|assoc| assoc.to_s == column_name.gsub(/_id$/, '') }
+    end
+    
+    def adminium_label
+      if (label_column = self.class.settings.label_column)
+        label = self[label_column]
+      end
+      label || "#{self.class.original_name.humanize} ##{self[self.class.primary_key]}"
     end
   end
 
@@ -63,7 +70,7 @@ class Generic
     end
     self.models = tables.map do |table|
       res = account_module.const_set table.classify, Class.new(Base)
-      res.account_id = @account_id
+      res.adminium_account_id = @account_id
       res.table_name = table
       def res.abstract_class?
         false

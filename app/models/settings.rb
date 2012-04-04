@@ -40,7 +40,7 @@ module Settings
     end
 
     def load
-      @globals = Global.new @clazz.account_id
+      @globals = Global.new @clazz.adminium_account_id
       value = REDIS.get settings_key
       if value.nil?
         @columns, @enum_values, @validations = {}, [], []
@@ -67,7 +67,7 @@ module Settings
     end
 
     def settings_key
-      "account:#{@clazz.account_id}:settings:#{@clazz.original_name}"
+      "account:#{@clazz.adminium_account_id}:settings:#{@clazz.original_name}"
     end
 
     def per_page= per_page
