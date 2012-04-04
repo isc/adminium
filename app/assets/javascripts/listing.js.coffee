@@ -13,6 +13,7 @@ class BulkDestroy
     $(".click_checkbox").click (e) =>
       $(e.target).find("input[type=checkbox]").click()
       e.stopPropagation()
+      @formVisibility()
     $('.items-list thead input[type=checkbox]').click (e) =>
       if e.target.checked
         $(@checkbox_selector).attr('checked', 'checked')
