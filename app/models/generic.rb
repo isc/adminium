@@ -9,15 +9,6 @@ class Generic
     cattr_accessor :account_id
     extend Settings
 
-
-
-    def self.instance_method_already_implemented?(method)
-      super
-    rescue ActiveRecord::DangerousAttributeError
-      false
-    end
-
-
     def self.abstract_class?
       true
     end
@@ -29,6 +20,13 @@ class Generic
 
     def self.foreign_key? column_name
       column_name.ends_with?('_id') && reflections.keys.find {|assoc| assoc.to_s == column_name.gsub(/_id$/, '') }
+    end
+
+    # fix to allow column names like save, changes
+    def self.instance_method_already_implemented?(method)
+      super
+    rescue ActiveRecord::DangerousAttributeError
+      false
     end
   end
 

@@ -36,3 +36,4 @@ edit form, pour le compte dbinsights, l'édition d'une query, le select du belon
 bug mystique ; de temps en temps je me retrouve avec 0 dans les settings / miscellaneous / per page, alors que j'ai meme pas ouvert le pane mais resultat ca empeche de save settings.
 
 potential optimisation : https://github.com/bgipsy/column_queries
+pour les dangerousattributes, ils sont readonly
