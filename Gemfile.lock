@@ -67,6 +67,7 @@ GEM
     commonjs (0.2.4)
     configatron (2.9.0)
       yamler (>= 0.1.0)
+    country_select (0.0.2)
     encryptor (1.1.3)
     erubis (2.7.0)
     execjs (1.3.0)
@@ -240,6 +241,7 @@ DEPENDENCIES
   capybara
   coffee-rails (~> 3.2.1)
   configatron
+  country_select
   factory_girl_rails
   faker
   heroku
