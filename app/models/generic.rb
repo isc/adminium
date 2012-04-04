@@ -9,6 +9,15 @@ class Generic
     cattr_accessor :account_id
     extend Settings
 
+
+
+    def self.instance_method_already_implemented?(method)
+      super
+    rescue ActiveRecord::DangerousAttributeError
+      false
+    end
+
+
     def self.abstract_class?
       true
     end
