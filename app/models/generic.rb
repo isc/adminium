@@ -9,15 +9,6 @@ class Generic
     cattr_accessor :adminium_account_id
     extend Settings
 
-
-
-    def self.instance_method_already_implemented?(method)
-      super
-    rescue ActiveRecord::DangerousAttributeError
-      false
-    end
-
-
     def self.abstract_class?
       true
     end
@@ -36,6 +27,14 @@ class Generic
         label = self[label_column]
       end
       label || "#{self.class.original_name.humanize} ##{self[self.class.primary_key]}"
+    end
+
+    # workaround to allow column names like save, changes.
+    # can't edit those columns though
+    def self.instance_method_already_implemented?(method)
+      super
+    rescue ActiveRecord::DangerousAttributeError
+      false
     end
   end
 
