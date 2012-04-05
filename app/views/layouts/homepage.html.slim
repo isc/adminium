@@ -1,0 +1,35 @@
+doctype html
+html lang="en"
+  head
+    meta charset="utf-8"
+    title= content_for?(:title) ? yield(:title) : 'Adminium'
+    = csrf_meta_tags
+    /[if lt IE 9]
+      = javascript_include_tag "https://html5shim.googlecode.com/svn/trunk/html5.js"
+    = stylesheet_link_tag "application"
+    meta name="description" content="Administration interface for your database as a service"
+    meta name="keywords" content="Adminium, database, administration, interface, export, heroku, add-on"
+    meta name="viewport" content="width=device-width, initial-scale=1.0"
+    link href="images/favicon.ico" rel="shortcut icon"
+
+  body
+    .navbar
+      .navbar-inner
+        .container-fluid
+          a.brand.brand-top-left href="/" Adminium
+          .nav-collapse
+            = render 'layouts/menu'
+
+    .container-fluid
+      .row-fluid#content_wrapper
+        - flash.each do |k, v|
+          .alert class="alert-#{k}"
+            a.close data-dismiss="alert" href="#" &times;
+            = v
+        = yield
+      footer
+        p &copy; Adminium 2012
+    = javascript_include_tag 'application'
+    - unless Rails.env.development?
+      = render 'layouts/ga'
+      = render 'layouts/uservoice'

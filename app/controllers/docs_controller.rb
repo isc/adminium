@@ -5,6 +5,10 @@ class DocsController < ApplicationController
   
   def index
   end
+
+  def homepage
+    render :layout => 'homepage'
+  end
   
   def show
     render params[:id]

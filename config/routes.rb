@@ -33,6 +33,6 @@ MtCrap::Application.routes.draw do
   match 'sso/login' => 'heroku/resources#sso_login'
   match 'test/threads' => 'resources#test_threads'
 
-  root :to => 'dashboards#show'
+  root :to => 'docs#homepage'
 
 end

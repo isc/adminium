@@ -1,0 +1,48 @@
+.hero-unit
+  .row-fluid
+    .span7
+      h1 The Gmail interface to your data
+      p Adminium connects to your database and provides you with a full fledged administration interface without the need to touch your application code.
+
+      .centered
+        a.btn.btn-large.btn-primary(href="#{start_demo_docs_path}") Check out the sandbox account
+    .span5
+      #home-carousel.carousel
+        .carousel-inner
+          .active.item
+            = image_tag 'http://placehold.it/420x250'
+            .carousel-caption
+              h4 Filters and search
+              p
+                | You can configure filters for complex queries on a table and you can also configure which fields should be searchable on a table.
+          .item
+            = image_tag 'http://placehold.it/420x250'
+            .carousel-caption
+              h4 Table relationships navigation
+              p The relationships between your tables are automatically discovered so you can easily navigate from one row to the other.
+          .item
+            = image_tag 'http://placehold.it/420x250'
+            .carousel-caption
+              h4 Enum values
+              p
+                | You can map values from your database to human-readable labels for better rendering and easier filtering.
+        a.carousel-control.left href="#home-carousel" data-slide="prev" &lsaquo;
+        a.carousel-control.right href="#home-carousel" data-slide="next" &rsaquo;
+.row-fluid
+  .span4
+    h3.centered No extra work
+    p Adminium is a database administration interface as a service.
+    p 
+      | You don't have to configure anything by code. Just setup your database connection and you're good to go. The various views and options can be configured through the interface itself.
+    p You can literally be up and running in a few minutes.
+  .span4
+    h3.centered Support for PostgreSQL and MySQL
+    .centered
+      = image_tag 'logos/postgresql.png', :class => 'postgresql-logo'
+      = image_tag 'logos/mysql.png', :class => 'mysql-logo'
+    
+  .span4
+    h3.centered Available as a Heroku Add-on
+    p.centered= image_tag 'logos/heroku.png'
+    .centered
+      a.btn.btn-warning href="https://addons.heroku.com/adminium" Install the add-on

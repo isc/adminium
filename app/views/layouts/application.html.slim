@@ -7,8 +7,10 @@ html lang="en"
 
     /[if lt IE 9]
       = javascript_include_tag "http://html5shim.googlecode.com/svn/trunk/html5.js"
-    = stylesheet_link_tag    "application"
+    = stylesheet_link_tag 'application'
     meta name="viewport" content="width=device-width, initial-scale=1.0"
+    meta name="description" content="Administration interface for your database as a service"
+    meta name="keywords" content="Adminium, database, administration, interface, export, heroku, add-on"
     link href="/images/favicon.ico" rel="shortcut icon"
     link href="images/apple-touch-icon.png" rel="apple-touch-icon"
     link href="images/apple-touch-icon-72x72.png" rel="apple-touch-icon" sizes="72x72"
@@ -26,39 +28,7 @@ html lang="en"
           .container-fluid.nav-collapse
             form#search-table.navbar-search action=resources_path('')
               input.search-query type="search" data-provide="typeahead" data-source="#{@tables.inspect}" autocomplete="off" placeholder="go to table (press s)"
-            ul.nav.pull-right
-              - if session[:account].nil?
-                li= link_to 'Sign in', '/auth/google'
-              - if session[:user]
-                li.dropdown
-                  a.dropdown-toggle data-toggle="dropdown" href="#"
-                    ' Signed in as
-                    b = current_user.name
-                    '  to
-                    b = current_account.name
-                    '
-                    b.caret
-                  ul.dropdown-menu.accounts-menu
-                    li= link_to "Dashboard for <b>#{current_account.name}</b>".html_safe, dashboard_path
-                    - current_user.accounts.each do |account|
-                      - next if account == current_account
-                      li= link_to "Switch to <b>#{account.name}</b>".html_safe, switch_account_sessions_path(:account_id => account.id)
-                    li.divider
-                    li= link_to 'Sign out', signout_path
-              li.dropdown
-                a.dropdown-toggle data-toggle="dropdown" href="#"
-                  i.icon-cog.icon-white
-                ul.dropdown-menu
-                  li class=active_or_not('accounts') = link_to 'Edit Account', edit_account_path
-                  li class=active_or_not('general_settings') = link_to 'Settings', edit_general_settings_path
-                  li class=active_or_not('docs') = link_to 'Docs', docs_path
-            - if session[:account] == ENV['DEMO_ACCOUNT_ID']
-              ul.nav.pull-right.demo-account
-                li
-                  a Demo account
-                - if session[:account_before_demo]
-                  li= link_to 'Back to my account', stop_demo_docs_path
-
+            = render 'layouts/menu'
     .container-fluid
       - subnav = yield :subnav
       = subnav unless subnav.nil?

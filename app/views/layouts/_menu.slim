@@ -1,0 +1,33 @@
+ul.nav.pull-right
+  - if session[:account].nil?
+    li= link_to 'Sign in', '/auth/google'
+  - if session[:user]
+    li.dropdown
+      a.dropdown-toggle data-toggle="dropdown" href="#"
+        ' Signed in as
+        b = current_user.name
+        '  to
+        b = current_account.name
+        '
+        b.caret
+      ul.dropdown-menu.accounts-menu
+        li= link_to "Dashboard for <b>#{current_account.name}</b>".html_safe, dashboard_path
+        - current_user.accounts.each do |account|
+          - next if account == current_account
+          li= link_to "Switch to <b>#{account.name}</b>".html_safe, switch_account_sessions_path(:account_id => account.id)
+        li.divider
+        li= link_to 'Sign out', signout_path
+  li.dropdown
+    a.dropdown-toggle data-toggle="dropdown" href="#"
+      i.icon-cog.icon-white
+    ul.dropdown-menu
+      - if session[:account]
+        li class=active_or_not('accounts') = link_to 'Edit Account', edit_account_path
+        li class=active_or_not('general_settings') = link_to 'Settings', edit_general_settings_path
+      li class=active_or_not('docs') = link_to 'Docs', docs_path
+- if session[:account] == ENV['DEMO_ACCOUNT_ID']
+  ul.nav.pull-right.demo-account
+    li
+      a Demo account
+    - if session[:account_before_demo]
+      li= link_to 'Back to my account', stop_demo_docs_path
