@@ -6,6 +6,6 @@
     .modal-body
       = accordion do |accordion|
         - accordion.pane 'Display fields' do
-          = render partial: 'resources/panels/column_listing', locals: {clazz: clazz, type: :show}
+          = render partial: 'resources/panels/column_listing', locals: {clazz: clazz, type: :show, sortable: true}
     .modal-footer
       input#save_settings.btn.btn-primary type='submit' value='Save settings'

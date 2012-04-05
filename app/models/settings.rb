@@ -144,7 +144,7 @@ module Settings
     end
 
     def possible_enum_columns
-      @clazz.columns.find_all {|c| !c.primary}
+      @clazz.columns.find_all {|c| !c.primary && ![:date, :datetime].include?(c.type)}
     end
 
   end
