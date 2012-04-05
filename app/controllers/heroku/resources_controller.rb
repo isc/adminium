@@ -28,7 +28,7 @@ class Heroku::ResourcesController < ApplicationController
     app = Account.find_by_api_key! params[:id]
     session[:account] = app.id
     cookies['heroku-nav-data'] = params['nav-data']
-    redirect_to root_url
+    redirect_to dashboard_url
   end
   
   private
