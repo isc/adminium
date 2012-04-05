@@ -32,17 +32,21 @@
   .span4
     h3.centered No extra work
     p Adminium is a database administration interface as a service.
-    p 
+    p
       | You don't have to configure anything by code. Just setup your database connection and you're good to go. The various views and options can be configured through the interface itself.
     p You can literally be up and running in a few minutes.
   .span4
-    h3.centered Support for PostgreSQL and MySQL
+    h4.centered Support for PostgreSQL and MySQL
     .centered
       = image_tag 'logos/postgresql.png', :class => 'postgresql-logo'
       = image_tag 'logos/mysql.png', :class => 'mysql-logo'
-    
+
   .span4
-    h3.centered Available as a Heroku Add-on
+    h3.centered Available as a Heroku Add-on *
     p.centered= image_tag 'logos/heroku.png'
     .centered
       a.btn.btn-warning href="https://addons.heroku.com/adminium" Install the add-on
+    p.centered
+      '* We're currently in Heroku's private beta program, so follow us on Twitter to to get the news
+    p.centered
+      = render :partial => "twitter_widget"
