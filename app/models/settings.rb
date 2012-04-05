@@ -86,7 +86,7 @@ module Settings
       return @columns[type] if opts[:only_checked]
       case type
       when :search
-        column_names = string_column_names
+        column_names = searchable_column_names
       when :serialized
         column_names = string_or_text_column_names
       else
@@ -101,8 +101,28 @@ module Settings
       @clazz.columns.find_all{|c|c.type == :string}.map(&:name)
     end
 
+    def column_type(column_name)
+      @clazz.columns.detect{|c|c.name == column_name}.try(:type)
+    end
+
+    def is_string_column?(column_name)
+      column_type(column_name) == :string
+    end
+
+    def is_number_column?(column_name)
+      [:integer, :decimal].include? column_type(column_name)
+    end
+
     def string_or_text_column_names
-      @clazz.columns.find_all{|c|[:string, :text].include? c.type}.map(&:name)
+      find_all_columns_for_types(:string, :text).map(&:name)
+    end
+
+    def find_all_columns_for_types *types
+      @clazz.columns.find_all{|c| types.include? c.type}
+    end
+
+    def searchable_column_names
+      find_all_columns_for_types(:string, :text, :integer, :decimal).map(&:name)
     end
 
     def set_missing_columns_conf
@@ -113,7 +133,7 @@ module Settings
           @columns[type] =
           {listing: @clazz.column_names, show: @clazz.column_names,
             form: (@clazz.column_names - %w(created_at updated_at id)),
-            search: string_column_names, serialized: []}[type]
+            search: searchable_column_names, serialized: []}[type]
         end
       end
     end
