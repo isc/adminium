@@ -31,8 +31,7 @@ account deprovision ; pour le moment ca supprime la row, on la garde ? que fait-
 BUGS:
 bug dans les params sur un enchainement de plusieurs searches
 serialized columns containing smth else than a basic type
-subnav flickers on a page slightly too long for the screen 
-bug mystique ; de temps en temps je me retrouve avec 0 dans les settings / miscellaneous / per page, alors que j'ai meme pas ouvert le pane mais resultat ca empeche de save settings.
+subnav flickers on a page slightly too long for the screen
 
 potential optimisation : https://github.com/bgipsy/column_queries
 pour les dangerousattributes, ils sont readonly

@@ -1,8 +1,9 @@
+input type="hidden" name="#{type}_columns[]"
 ul
   - clazz.settings.columns_options(type).each do |name, checked|
     li.setting_attribute
-      - input_name = "#{type}_columns[#{name}]"
-      input type='checkbox' name=input_name id=input_name.parameterize checked=checked
-      label for=input_name.parameterize = name
-      i.icon-eye-open style="position:absolute;top:5px;right:20px" data-attribute-name=name
-      i.icon-resize-vertical style="position:absolute;top:5px;right:5px"
+      - input_id = "#{type}_columns_#{name}".parameterize
+      input type='checkbox' name="#{type}_columns[]" id=input_id checked=checked value=name
+      label for=input_id = name
+      - if defined? sortable
+        i.icon-resize-vertical style="position:absolute;top:5px;right:5px"

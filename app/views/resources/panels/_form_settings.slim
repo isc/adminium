@@ -6,7 +6,7 @@
     .modal-body
       = accordion do |accordion|
         = accordion.pane 'Form fields' do
-          = render partial: 'resources/panels/column_listing', locals: {clazz: clazz, type: :form}
+          = render partial: 'resources/panels/column_listing', locals: {clazz: clazz, type: :form, sortable: true}
         = accordion.pane 'Validations' do
           = render partial: 'resources/panels/validations'
         = accordion.pane 'Enum values' do
