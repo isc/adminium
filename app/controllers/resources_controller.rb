@@ -19,6 +19,7 @@ class ResourcesController < ApplicationController
     @items = @items.order(params[:order])
     respond_with(@items) do |format|
       format.html do
+        check_per_page_setting
         @items = @items.page(params[:page]).per(clazz.settings.per_page)
       end
     end
@@ -74,6 +75,14 @@ class ResourcesController < ApplicationController
 
   def fetch_item
     @item = clazz.find params[:id]
+  end
+
+  def check_per_page_setting
+    per_page = params.delete(:per_page).to_i
+    if per_page > 0 && clazz.settings.per_page != per_page
+      clazz.settings.per_page = per_page
+      clazz.settings.save
+    end
   end
 
   def clazz

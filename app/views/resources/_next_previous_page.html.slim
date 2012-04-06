@@ -20,3 +20,8 @@
     - if scope.current_page != scope.num_pages
       li
         = link_to "see last page (page #{scope.num_pages})", params.merge(:page => (scope.num_pages))
+    li.divider
+    li rows per page
+    - ([25, 50, 100, 200, 500] + [clazz.settings.per_page]).uniq.sort.each do |per_page|
+      li(class="#{'active' if clazz.settings.per_page == per_page}")
+        = link_to per_page, params.merge(:per_page => per_page)
