@@ -41,7 +41,13 @@ module ApplicationHelper
     end
     foreign_class = @generic.table(class_name.tableize)
     label_column = foreign_class.settings.label_column
-    label = label_column.present? ? foreign_class.find(value).adminium_label : "#{class_name} ##{value}"
+    if label_column.present?
+      item = foreign_class.where(foreign_class.primary_key => value).first
+      return value if item.nil?
+      label = item.adminium_label
+    else
+      label = "#{class_name} ##{value}"
+    end
     link_to label, path
   end
 
