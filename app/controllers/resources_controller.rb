@@ -19,6 +19,7 @@ class ResourcesController < ApplicationController
     @items = @items.order(params[:order])
     respond_with(@items) do |format|
       format.html do
+        check_per_page_setting
         @items = @items.page(params[:page]).per(clazz.settings.per_page)
       end
     end
@@ -59,7 +60,7 @@ class ResourcesController < ApplicationController
     @item.destroy
     redirect_to :back, flash: {success: "#{object_name} successfully destroyed."}
   end
-  
+
   def bulk_destroy
     clazz.destroy params[:item_ids]
     redirect_to :back, flash: {success: "#{params[:item_ids].size} #{class_name.pluralize} successfully destroyed."}
@@ -76,6 +77,14 @@ class ResourcesController < ApplicationController
     @item = clazz.find params[:id]
   end
 
+  def check_per_page_setting
+    per_page = params.delete(:per_page).to_i
+    if per_page > 0 && clazz.settings.per_page != per_page
+      clazz.settings.per_page = per_page
+      clazz.settings.save
+    end
+  end
+
   def clazz
     @clazz ||= @generic.table(params[:table])
   end
@@ -87,17 +96,28 @@ class ResourcesController < ApplicationController
   def object_name
     "#{class_name} ##{@item[clazz.primary_key]}"
   end
-  
+
   def class_name
     clazz.original_name.humanize
   end
 
   def apply_search
     columns = clazz.settings.columns[:search]
-    query = columns.map do |column|
-      "upper(#{column}) like ?"
-    end.join ' or '
-    @items = @items.where([query, ["%#{params[:search]}%".upcase] * columns.size].flatten)
+    query = []
+    datas = []
+    columns.each do |column|
+      if clazz.settings.is_number_column?(column)
+        if (params[:search].to_i > 0 || params[:search] == "0")
+          query.push "#{column} = ?"
+          datas.push params[:search]
+        end
+      else
+        query.push "upper(#{column}) like ?"
+        datas.push "%#{params[:search]}%".upcase
+      end
+    end
+
+    @items = @items.where([query.join(' OR '), datas].flatten)
   end
 
   def apply_serialized_columns
