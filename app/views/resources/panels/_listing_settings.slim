@@ -7,6 +7,15 @@
       = accordion do |accordion|
         = accordion.pane 'Displayed columns' do
           = render partial: 'resources/panels/column_listing', locals: {clazz: clazz, type: :listing, sortable: true}
+          .control-group.custom-column
+            label.control-label Add column
+            .controls
+              - belongs_to_options = clazz.reflect_on_all_associations(:belongs_to).map{|r|[r.name, r.name] unless r.options[:polymorphic]}.compact
+              = select_tag 'add_column_table', options_for_select(belongs_to_options), include_blank: true, data: {columns_path: columns_settings_path}
+              select
+              '
+              button.btn disabled="disabled"
+                i.icon-plus-sign
         = accordion.pane 'Searchable columns' do
           = render partial: 'resources/panels/column_listing', locals: {clazz: clazz, type: :search}
         - total_filters = clazz.settings.filters.length.zero? ? "" : "<span class='label'>#{clazz.settings.filters.length} </span>"

@@ -23,7 +23,11 @@ class SettingsController < ApplicationController
   end
   
   def values
-    render :json => @generic.table(params[:id]).group(params[:column_name]).limit(50).order(params[:column_name]).count.keys
+    render json: @generic.table(params[:id]).group(params[:column_name]).limit(50).order(params[:column_name]).count.keys
+  end
+  
+  def columns
+    render json: @generic.table(params[:table]).column_names
   end
 
 end

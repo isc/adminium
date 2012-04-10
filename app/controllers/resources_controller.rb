@@ -4,7 +4,6 @@ class ResourcesController < ApplicationController
   before_filter :apply_validations, only: [:create, :update, :new, :edit]
   before_filter :fetch_item, only: [:show, :edit, :update, :destroy]
   helper_method :clazz
-  skip_filter :connect_to_db, only: :test_threads
 
   respond_to :json, :html, :xml, :csv, :only => :index
 
@@ -67,8 +66,8 @@ class ResourcesController < ApplicationController
   end
 
   def test_threads
-    Account.find_by_sql 'select pg_sleep(4)'
-    render text: 'ok'
+    Account.find_by_sql 'select pg_sleep(10)'
+    render json: @generic.table('accounts').first.inspect
   end
 
   private

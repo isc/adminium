@@ -9,6 +9,10 @@ module ApplicationHelper
   end
 
   def display_attribute wrapper_tag, item, key
+    if key.include? "."
+      parts = key.split('.')
+      return display_attribute wrapper_tag, item.send(parts.first), parts.second
+    end
     value = item[key]
     if value && item.class.foreign_key?(key)
       content = display_belongs_to item, key, value

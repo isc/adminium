@@ -17,15 +17,14 @@ export csv/xml/json
 keyboard navigation (ala commit list sur github)
 i18n
 support pour les images
-mysql compat
 decouverte des associations par foreign keys
 optim de la clause select sql (jarter les text / binaries non selectionnes par les settings)
 sortable table for dashboard
 
 TODOS:
-fetching account infos (name, email) is broken
 attr_accessible avec role pour proteger plan sur account
 account deprovision ; pour le moment ca supprime la row, on la garde ? que fait-on des collaborators associés ? des données stockées dans redis ?
+unset le focus eventuel d'un element de la popin quand on la ferme, sinon le "press s" ne fonctionne plus
 
 
 BUGS:
