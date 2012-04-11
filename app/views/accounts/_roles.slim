@@ -5,6 +5,15 @@
         - @account.roles.each do |role|
           tr
             td= link_to role.name, edit_role_path(role)
-            td= link_to 'Edit', edit_role_path(role)
-            td= link_to 'Trash', role_path(role), method: 'delete', confirm: 'Are you sure?'
-  .span6= link_to 'Create a new role', new_role_path, class: 'btn btn-primary'
+            td
+              = pluralize role.users.count, "collaborator"
+            td= link_to role_path(role), method: 'delete', confirm: 'Are you sure?', class: 'btn' do
+              i.icon-trash
+    .span6= link_to 'Create a new role', new_role_path, class: 'btn btn-primary'
+  - else
+    .span6.alert
+      h4.alert-heading What is a role ?
+      p You probably want to share adminium with your collaborators, but you do not want them to see every tables, or edit or delete rows.
+      p Create as many roles as you want for each group of users and assign one or more roles to any users.
+      = link_to 'Create your first role', new_role_path, class: 'btn btn-primary'
+

@@ -1,28 +1,37 @@
 .page-header
   h3== @role.new_record? ? 'New role' : "Edit role <i>#{@role.name}</i>"
 
-= simple_form_for @role, html: {class: 'form-horizontal'}, defaults: {input_html: {class: 'span6'}} do |f|
-  = f.input :name
-  .control-group
-    label.control-label Permissions
-    .controls
-      table.table.table-condensed.table-striped.span6
-        thead
-          th(colspan=2)
-            'Table name
-          - %w(create read update delete).each do |action|
-            th
-              = check_box_tag "#{action}_all"
-              label for="#{action}_all"= action.capitalize
-        tbody
-          - @generic.tables.each do |table|
-            tr
-              td
-                = check_box_tag 'all_actions', nil, nil, :id => "all_actions_#{table}"
-              td
-                label for="all_actions_#{table}"= table.humanize
+= simple_form_for @role, html: {class: 'form-vertical'} do |f|
+  .row
+    .span6
+      = f.input :name
+      .control-group
+        label.control-label Permissions
+        .controls.permissions
+          table.table.table-condensed.table-striped
+            thead
+              th(colspan=2)
+                'Table name
               - %w(create read update delete).each do |action|
-                td= check_box_tag "role[permissions][#{table}][#{action}]", '1', @role.permissions[table].try(:[], action)
-  = f.association :users, :collection => current_account.users.map {|u|[u.name, u.id]}
+                th
+                  = check_box_tag "#{action}_all"
+                  label for="#{action}_all"= action.capitalize
+            tbody
+              - @generic.tables.each do |table|
+                tr
+                  td
+                    = check_box_tag 'all_actions', nil, nil, :id => "all_actions_#{table}"
+                  td
+                    label for="all_actions_#{table}"= table.humanize
+                  - %w(create read update delete).each do |action|
+                    td= check_box_tag "role[permissions][#{table}][#{action}]", '1', @role.permissions[table].try(:[], action)
+    .span6
+      - if current_account.users.present?
+        = f.association :users, :as => :check_boxes, :collection => current_account.users.map {|u|[u.name, u.id]}
+      - else
+        .alert.alert-warning
+          p a role should be assigned to colloborators but you have not invited any yet.
+          = link_to "Add a collaborator", edit_account_path, :class=>'btn btn-primary'
+
   .form-actions
     = f.submit class: 'btn-primary', disable_with: 'Sending...'
