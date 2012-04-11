@@ -83,7 +83,7 @@ class ResourcesController < ApplicationController
   
   def user_can? action_name, table
     return true if @permissions.nil?
-    action_to_perm = {'index' => 'read', 'show' => 'read', 'edit' => 'update', 'update' => 'update', 'new' => 'create', 'create' => 'create', 'destroy' => 'destroy', 'bulk_destroy' => 'bulk_destroy'}
+    action_to_perm = {'index' => 'read', 'show' => 'read', 'edit' => 'update', 'update' => 'update', 'new' => 'create', 'create' => 'create', 'destroy' => 'delete', 'bulk_destroy' => 'delete'}
     @permissions[table] && @permissions[table][action_to_perm[action_name]]
   end
 
