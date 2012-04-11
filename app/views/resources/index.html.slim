@@ -52,7 +52,7 @@
         span.label.label-warning
           == "where #{k} is <i>#{v}</i>"
           span.remove data-param="where[#{k}]=#{v}" x
-    - if @current_filter
+    - if @current_filter.present?
       span.label.label-success.text-more data-title="advanced search #{params[:asearch]}" data-content=display_filter(@current_filter)
         span data-toggle="modal" href="#advanced_search"
           == "saved search <i>#{params[:asearch]}</i>"
