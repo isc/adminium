@@ -27,8 +27,45 @@ class BulkDestroy
     else
       @form.show().css('display', 'inline-block')
 
+class CustomColumns
+  
+  constructor: ->
+    [@assocSelect, @columnSelect] = [$('.custom-column select:eq(0)'), $('.custom-column select:eq(1)')]
+    @addButton = $('.custom-column button')
+    @associationSelection()
+    @columnSelection()
+    @customColumnAdd()
+    
+  associationSelection: ->
+    @assocSelect.change =>
+      if @assocSelect.val()
+        $.get @assocSelect.data().columnsPath, table: @assocSelect.val(), (data) =>
+          $('<option>').appendTo @columnSelect
+          for column in data
+            $('<option>').text(column).val(column).appendTo @columnSelect
+      else
+        @columnSelect.empty()
+        @addButton.attr('disabled', 'disabled')
+        
+  columnSelection: ->
+    @columnSelect.change =>
+      if @columnSelect.val()
+        @addButton.removeAttr('disabled')
+      else
+        @addButton.attr('disabled', 'disabled')
+  
+  customColumnAdd: ->
+    @addButton.click =>
+      label = $('<label>').text("#{@assocSelect.val()} #{@columnSelect.val()}")
+      input = $('<input>').attr('type': 'checkbox', 'checked': 'checked', 'name':'listing_columns[]', 'value':"#{@assocSelect.val()}.#{@columnSelect.val()}")
+      icon = $('<i>').addClass('icon-resize-vertical')
+      $('<li>').append(input).append(label).append(icon).
+        addClass('setting_attribute').appendTo 'ul#listing_columns_list'
+      false
+
 $ ->
   new BulkDestroy()
+  new CustomColumns()
   $('span.label span.remove').click ->
     window.location.href = unescape(window.location.href).replace($(this).data('param'), '')
   if $('.breadcrumb').length > 0

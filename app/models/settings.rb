@@ -97,8 +97,8 @@ module Settings
       else
         column_names = @clazz.column_names
       end
-      options = column_names.map {|name| [name, @columns[type].include?(name)]}
-      checked, non_checked = options.partition {|name, checked| checked }
+      non_checked = (column_names - @columns[type]).map {|n|[n, false]}
+      checked = @columns[type].map {|n|[n, true]}
       checked + non_checked
     end
 
@@ -133,7 +133,7 @@ module Settings
     def set_missing_columns_conf
       [:listing, :show, :form, :form, :search, :serialized].each do |type|
         if @columns[type]
-          @columns[type].delete_if {|name| !@clazz.column_names.include? name }
+          @columns[type].delete_if {|name| !name.include?('.') && !(@clazz.column_names.include? name) }
         else
           @columns[type] =
           {listing: @clazz.column_names, show: @clazz.column_names,

@@ -1,10 +1,10 @@
 class ResourcesController < ApplicationController
 
+  before_filter :check_permissions
   before_filter :apply_serialized_columns, only: [:index, :show]
   before_filter :apply_validations, only: [:create, :update, :new, :edit]
   before_filter :fetch_item, only: [:show, :edit, :update, :destroy]
-  helper_method :clazz
-  skip_filter :connect_to_db, only: :test_threads
+  helper_method :clazz, :user_can?
 
   respond_to :json, :html, :xml, :csv, :only => :index
 
@@ -69,11 +69,25 @@ class ResourcesController < ApplicationController
   end
 
   def test_threads
-    Account.find_by_sql 'select pg_sleep(4)'
-    render text: 'ok'
+    Account.find_by_sql 'select pg_sleep(10)'
+    render json: @generic.table('accounts').first.inspect
   end
 
   private
+
+  def check_permissions
+    return if admin?
+    @permissions = current_user.permissions(current_account)
+    unless user_can? action_name, params[:table]
+      redirect_to dashboard_url, flash: {error: "You haven't the permission to perform #{action_name} on #{params[:table]}"}
+    end
+  end
+  
+  def user_can? action_name, table
+    return true if @permissions.nil?
+    action_to_perm = {'index' => 'read', 'show' => 'read', 'edit' => 'update', 'update' => 'update', 'new' => 'create', 'create' => 'create', 'destroy' => 'delete', 'bulk_destroy' => 'delete'}
+    @permissions[table] && @permissions[table][action_to_perm[action_name]]
+  end
 
   def fetch_item
     @item = clazz.find params[:id]

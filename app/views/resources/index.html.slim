@@ -5,9 +5,9 @@
         .span3
           strong
             = params[:table].humanize
-          span.divider |
-
-          = link_to 'Add new', new_resource_path(table:params[:table])
+          - if user_can? 'create', params[:table]
+            span.divider |
+            = link_to 'Add new', new_resource_path(table:params[:table])
           span.divider |
           a data-toggle="modal" href="#export" Export
 
@@ -31,14 +31,14 @@
                     li
                       =link_to key, params.merge(asearch: key)
         .span1
-          form.bulk-destroy.hide action=bulk_destroy_resources_path(params[:table]) method="POST"
+          = form_tag bulk_destroy_resources_path(params[:table]), class: "bulk-destroy hide" do
             button.btn title='Delete selected rows' rel='tooltip' data-placement="bottom"
               i.icon-trash
 
         .span3
           = render :partial => 'next_previous_page', :locals => {:scope => @items}
         .span1
-          a.btn data-toggle="modal" href="#settings" title="Costumize settings for this table" data-placement="bottom" rel="tooltip"
+          a.btn data-toggle="modal" href="#settings" title="Table settings" data-placement="bottom" rel="tooltip"
             i.icon-cog
 
 - if params[:search] || params[:where] || params[:asearch]
@@ -61,8 +61,9 @@
 table.table-striped.table-bordered.table.items-list
   thead
     tr
-      th
-        input type="checkbox"
+      - if user_can? 'destroy', params[:table]
+        th
+          input type="checkbox"
       - clazz.settings.columns[:listing].each do |name|
         th= header_link name
       th Actions
@@ -70,14 +71,17 @@ table.table-striped.table-bordered.table.items-list
     - if @items.any?
       - @items.each do |item|
         tr data-item-id=item.id
-          td.click_checkbox
-            input type="checkbox"
+          - if user_can? 'destroy', params[:table]
+            td.click_checkbox
+              input type="checkbox"
           - clazz.settings.columns[:listing].each do |name|
               == display_attribute :td, item, name
           td
             = link_to content_tag('i', nil, class: 'icon-eye-open'), resource_path(params[:table], item)
-            = link_to content_tag('i', nil, class: 'icon-pencil'), edit_resource_path(params[:table], item)
-            = link_to content_tag('i', nil, class: 'icon-trash'), resource_path(params[:table], item), method: :delete, confirm: 'You sure?'
+            - if user_can? 'edit', params[:table]
+              = link_to content_tag('i', nil, class: 'icon-pencil'), edit_resource_path(params[:table], item)
+            - if user_can? 'destroy', params[:table]
+              = link_to content_tag('i', nil, class: 'icon-trash'), resource_path(params[:table], item), method: :delete, confirm: 'You sure?'
     - else
       tr
         td colspan=(clazz.settings.columns[:listing].size + 2) No results.

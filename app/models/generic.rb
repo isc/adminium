@@ -102,7 +102,7 @@ class Generic
   end
 
   def tables
-    Base.connection.tables.sort
+    @tables ||= Base.connection.tables.sort
   end
 
   def table table_name
@@ -110,6 +110,36 @@ class Generic
       account_module.const_get table_name.classify
     else
       raise TableNotFoundException.new(table_name)
+    end
+  end
+  
+  def db_name
+    Base.connection.instance_variable_get('@config')[:database]
+  end
+  
+  def db_size
+    if mysql?
+      sql = "select sum(data_length + index_length) as fulldbsize FROM information_schema.TABLES WHERE table_schema = '#{db_name}'"
+      Base.connection.execute(sql).first.first
+    else
+      sql = "select pg_database_size('#{db_name}') as fulldbsize"
+      Base.connection.execute(sql).first['fulldbsize']
+    end
+  end
+  
+  def table_sizes table_list
+    if mysql?
+      return [] if table_list.try(:empty?)
+      cond = "AND table_name in (#{table_list.map{|t|"'#{t}'"}.join(', ')})" if table_list.present?
+      res = Base.connection.execute "select table_name, data_length + index_length, data_length from information_schema.TABLES WHERE table_schema = '#{db_name}' #{cond}"
+      res.map {|table_row| table_row + [table(table_row.first).count] }
+    else
+      tables.map do |table|
+        next if table_list && !table_list.include?(table)
+        res = [table]
+        res += Base.connection.execute("select pg_total_relation_size('#{table}') as fulltblsize, pg_relation_size('#{table}') as tblsize").first.values
+        res << table(table).count
+      end.compact
     end
   end
 

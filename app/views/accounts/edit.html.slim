@@ -27,3 +27,7 @@
         = f.text_field :email, placeholder: 'google account email', type: 'email', required: true
         '
         = submit_tag 'Add collaborator', class: 'btn btn-primary', disable_with: 'Sending...'
+  - tabs.pane 'Display settings' do
+    = render 'display_settings'
+  - tabs.pane 'Roles' do
+    = render 'roles'

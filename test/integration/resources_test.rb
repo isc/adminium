@@ -7,7 +7,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit resources_path(:users)
     assert page.has_css?('table.items-list')
     assert page.has_css?('th a', :text => 'First name')
-    uncheck 'first_name'
+    uncheck 'First name'
     click_button 'Save settings'
     assert !page.has_css?('th a', :text => 'First name')
   end

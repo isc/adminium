@@ -37,7 +37,7 @@ module MtCrap
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password]
+    config.filter_parameters += [:password, :db_url]
 
     # Enable the asset pipeline
     config.assets.enabled = true

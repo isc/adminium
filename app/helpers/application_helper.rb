@@ -9,6 +9,12 @@ module ApplicationHelper
   end
 
   def display_attribute wrapper_tag, item, key
+    if key.include? "."
+      parts = key.split('.')
+      item = item.send(parts.first)
+      return content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
+      return display_attribute wrapper_tag, item, parts.second
+    end
     value = item[key]
     if value && item.class.foreign_key?(key)
       content = display_belongs_to item, key, value
@@ -37,7 +43,13 @@ module ApplicationHelper
     end
     foreign_class = @generic.table(class_name.tableize)
     label_column = foreign_class.settings.label_column
-    label = label_column.present? ? foreign_class.find(value).adminium_label : "#{class_name} ##{value}"
+    if label_column.present?
+      item = foreign_class.where(foreign_class.primary_key => value).first
+      return value if item.nil?
+      label = item.adminium_label
+    else
+      label = "#{class_name} ##{value}"
+    end
     link_to label, path
   end
 

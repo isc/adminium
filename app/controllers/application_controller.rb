@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   before_filter :connect_to_db
   after_filter :cleanup_generic
 
-  helper_method :global_settings, :current_account, :current_user
+  helper_method :global_settings, :current_account, :current_user, :admin?
 
   private
 
@@ -36,7 +36,15 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user
-    @user ||= User.find session[:user]
+    @user ||= User.find session[:user] if session[:user]
+  end
+  
+  def admin?
+    session[:account] && current_user.nil?
+  end
+
+  def require_admin
+    redirect_to dashboard_url unless admin?
   end
 
   def table_not_found exception

@@ -6,8 +6,9 @@
         span.divider >
       li
         = "#{@item.class.original_name} ##{@item[@item.class.primary_key]}"
+      - if user_can? 'edit', params[:table]
         span.divider |
-      li= link_to 'Edit', edit_resource_path(@item.class.table_name, @item)
+        li= link_to 'Edit', edit_resource_path(@item.class.table_name, @item)
       li.pull-right
         a data-toggle="modal" href="#settings" Settings
 .row-fluid
