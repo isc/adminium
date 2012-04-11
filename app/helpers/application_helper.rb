@@ -11,7 +11,9 @@ module ApplicationHelper
   def display_attribute wrapper_tag, item, key
     if key.include? "."
       parts = key.split('.')
-      return display_attribute wrapper_tag, item.send(parts.first), parts.second
+      item = item.send(parts.first)
+      return content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
+      return display_attribute wrapper_tag, item, parts.second
     end
     value = item[key]
     if value && item.class.foreign_key?(key)
