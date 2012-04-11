@@ -1,7 +1,7 @@
 ul.nav.pull-right
   - if session[:account].nil?
     li= link_to 'Sign in', '/auth/google'
-  - if session[:user]
+  - if current_user
     li.dropdown
       a.dropdown-toggle data-toggle="dropdown" href="#"
         ' Signed in as
@@ -21,9 +21,8 @@ ul.nav.pull-right
     a.dropdown-toggle data-toggle="dropdown" href="#"
       i.icon-cog.icon-white
     ul.dropdown-menu
-      - if session[:account]
+      - if admin?
         li class=active_or_not('accounts') = link_to 'Edit Account', edit_account_path
-        li class=active_or_not('general_settings') = link_to 'Settings', edit_general_settings_path
       li class=active_or_not('docs') = link_to 'Docs', docs_path
 - if session[:account] == ENV['DEMO_ACCOUNT_ID']
   ul.nav.pull-right.demo-account

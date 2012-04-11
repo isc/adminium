@@ -1,5 +1,6 @@
 class AccountsController < ApplicationController
   
+  before_filter :require_admin
   skip_filter :connect_to_db, :unless => :valid_db_url?
   
   def edit

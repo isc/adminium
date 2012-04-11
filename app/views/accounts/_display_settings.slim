@@ -1,6 +1,3 @@
-.page-header
-  h3 Settings
-
 = form_tag general_settings_path, method: :put, class: 'form-horizontal' do
   fieldset
     legend Listing
@@ -28,5 +25,3 @@
           = options_for_select(formats.map{|f|[display_datetime(d, f),f.to_s]}, global_settings.date_format)
   .form-actions
     input.btn.btn-primary type="submit" value="Save Changes"
-    '
-    a.btn Cancel

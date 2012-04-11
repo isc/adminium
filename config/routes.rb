@@ -24,6 +24,7 @@ MtCrap::Application.routes.draw do
     get :switch_account
   end
   resource :account, only: [:edit, :update]
+  resources :roles
   resource :dashboard
   resources :collaborators, only: [:create, :destroy]
 
