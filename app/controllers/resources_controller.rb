@@ -10,7 +10,9 @@ class ResourcesController < ApplicationController
 
   def index
     @items = clazz.scoped #select(clazz.settings.columns[:listing].join(", "))
-    clazz.settings.filters.each do |filter|
+    #raise clazz.settings.filters.inspect
+    @current_filter = clazz.settings.filters[params[:asearch]] || []
+    @current_filter.each do |filter|
       @items = build_statement(@items, filter)
     end
     @items = @items.where(params[:where]) if params[:where].present?

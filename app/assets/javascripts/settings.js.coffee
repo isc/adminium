@@ -1,15 +1,16 @@
 $ ->
   $('#settings ul').sortable()
-  $("ul.filters span.btn").live 'click', ->
-    $(this).parent('li').remove()
+  $("table.filters span.btn").live 'click', ->
+    $(this).parents('tr').remove()
   $("#new_filter").bind 'change', (event) ->
     column_name = $("#new_filter option:selected").val()
     table = $("#new_filter").attr("data-table")
+    $("#new_filter").val("")
     $.get "/settings/#{table}?column_name=#{column_name}", (resp) ->
-      $("<li>").append(resp).appendTo($(".filters"))
+      $("<tr>").append(resp).appendTo($(".filters"))
   setupValidations()
   setupEnumValues()
-  
+
 addToHiddenParams = (pane_id, group, params) ->
   div = $("#{pane_id} .params")
   for key, value of params
@@ -34,7 +35,7 @@ setupValidations = ->
     column_name = $('#validations_pane select:eq(1) option:selected')
     addToTable '#validations_pane', [validator.text(), column_name.text()]
     addToHiddenParams '#validations_pane', 'validations', validator:validator.val(), column_name:column_name.val()
-    
+
 setupEnumValues = ->
   setupRemoval '#enum-values_pane'
   $('#enum_value_column_name').change ->

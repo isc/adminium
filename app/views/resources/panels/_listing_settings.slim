@@ -9,18 +9,6 @@
           = render partial: 'resources/panels/column_listing', locals: {clazz: clazz, type: :listing, sortable: true}
         = accordion.pane 'Searchable columns' do
           = render partial: 'resources/panels/column_listing', locals: {clazz: clazz, type: :search}
-        - total_filters = clazz.settings.filters.length.zero? ? "" : "<span class='label'>#{clazz.settings.filters.length} </span>"
-        = accordion.pane "Filters #{total_filters}".html_safe do
-          .control-group
-            = label_tag :new_filter, 'Add a filter on column'
-            select#new_filter.span2 data-table=params[:table]
-              option value='' disabled='disabled' = "choose a column"
-              - clazz.columns.each do |column|
-                option value=column.name = column.name
-
-            ul.filters.form-inline
-              - clazz.settings.filters.each do |filter|
-                li= render partial: '/settings/filter', locals: {filter: filter}
         = accordion.pane 'Enum values' do
           = render partial: 'resources/panels/enum_values'
         = accordion.pane 'Serialized columns' do

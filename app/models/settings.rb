@@ -47,7 +47,12 @@ module Settings
       else
         datas = JSON.parse(value).symbolize_keys!
         @columns = datas[:columns].symbolize_keys!
-        @filters = datas[:filters]
+        if datas[:filters].is_a?(Array)
+          # to be removed in a few weeks, just in case
+          @filters = {"last search" => datas[:filters]}
+        else
+          @filters = datas[:filters]
+        end
         @default_order = datas[:default_order]
         @per_page = datas[:per_page] || @globals.per_page
         @enum_values = datas[:enum_values] || []
@@ -56,7 +61,7 @@ module Settings
       end
       @default_order ||= "#{@clazz.primary_key} desc"
       set_missing_columns_conf
-      @filters ||= []
+      @filters ||= {}
     end
 
     def save

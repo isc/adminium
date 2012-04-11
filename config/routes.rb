@@ -1,5 +1,5 @@
 MtCrap::Application.routes.draw do
-  
+
   match '/auth/:provider/callback' => 'sessions#create'
   match '/signout' => 'sessions#destroy', :as => :signout
 
@@ -10,6 +10,7 @@ MtCrap::Application.routes.draw do
 
   resources :settings do
     get :values, :on => :member
+    post :update_advanced_search, :on => :member
   end
   resource :general_settings, :only => [:edit, :update]
 

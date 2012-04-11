@@ -13,10 +13,23 @@
 
         - if clazz.settings.columns[:search].any?
           .span4
-            form.subnav-search
+            form.form-inline.subnav-search
               - request.query_string.to_s.split('&').each do |param|
                 input type="hidden" name=CGI.unescape(param.split('=').first) value=param.split('=').last
-              input.search-query name="search" value=params[:search] placeholder="search on #{clazz.settings.columns[:search].map(&:humanize).join(', ').downcase}"
+              input name="search" type='text' value=params[:search] placeholder="search on #{clazz.settings.columns[:search].map(&:humanize).join(', ').downcase}"
+              .btn-group
+                button.btn
+                  i.icon-search
+                button.btn.dropdown-toggle data-toggle="dropdown"
+                  span.caret
+                ul.dropdown-menu
+                  li
+                    a data-toggle="modal" href="#advanced_search" advanced search
+                  li.divider
+                  li Saved Search
+                  - clazz.settings.filters.keys.each do |key|
+                    li
+                      =link_to key, params.merge(asearch: key)
         .span1
           form.bulk-destroy.hide action=bulk_destroy_resources_path(params[:table]) method="POST"
             button.btn title='Delete selected rows' rel='tooltip' data-placement="bottom"
@@ -28,7 +41,7 @@
           a.btn data-toggle="modal" href="#settings" title="Costumize settings for this table" data-placement="bottom" rel="tooltip"
             i.icon-cog
 
-- if params[:search] || params[:where]
+- if params[:search] || params[:where] || params[:asearch]
   .page-header
     - if params[:search]
       span.label.label-success
@@ -39,6 +52,11 @@
         span.label.label-warning
           == "where #{k} is <i>#{v}</i>"
           span.remove data-param="where[#{k}]=#{v}" x
+    - if @current_filter
+      span.label.label-success.text-more data-title="advanced search #{params[:asearch]}" data-content=display_filter(@current_filter)
+        span data-toggle="modal" href="#advanced_search"
+          == "saved search <i>#{params[:asearch]}</i>"
+        span.remove data-param="asearch=#{params[:asearch]}" x
 
 table.table-striped.table-bordered.table.items-list
   thead
@@ -65,3 +83,4 @@ table.table-striped.table-bordered.table.items-list
         td colspan=(clazz.settings.columns[:listing].size + 2) No results.
 = render partial: '/resources/panels/listing_settings'
 = render partial: '/resources/panels/export'
+= render partial: '/resources/panels/advanced_search'

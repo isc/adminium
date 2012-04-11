@@ -7,7 +7,7 @@ jQuery ->
   # $(".tooltip").tooltip()
   # $(".typeahead").typeahead()
   $('span[rel=tooltip], button[rel=tooltip], a[rel=tooltip]').tooltip()
-  $("a.text-more").popover()
+  $("a.text-more, span.text-more").popover()
   $('.datepicker').datepicker onClose: (dateText, inst) ->
     console.log inst
     $("##{inst.id}_1i").val(inst.selectedYear)

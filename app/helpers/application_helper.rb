@@ -88,4 +88,10 @@ module ApplicationHelper
     'active' if controller_name == controller.controller_name
   end
 
+  def display_filter filter
+    filter.map do |f|
+      "<strong>#{f["column"]}</strong> #{f["operator"]} <i>#{f["operand"]}</i>"
+    end.join("<br/>")
+  end
+
 end

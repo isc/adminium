@@ -1,0 +1,22 @@
+#advanced_search.modal.hide.fade
+  .modal-header
+    a.close data-dismiss="modal" ×
+    h3 Advanced Search
+  .modal-body
+    = form_tag update_advanced_search_setting_path(id: params[:table]), method: :post, class: 'form-horizontal' do
+      .control-group
+        = label_tag :new_filter, 'Add a filter on column', class:  "control-label"
+        .controls
+          select#new_filter.span2 data-table=params[:table]
+            option value='' disabled='disabled' = "choose a column"
+            - clazz.columns.each do |column|
+              option value=column.name = column.name
+
+      table.table.table-condensed.filters
+        - @current_filter.each do |filter|
+          tr
+            = render partial: '/settings/filter', locals: {filter: filter}
+  .modal-footer
+    'save as
+    = text_field_tag :name, (params[:asearch] || 'last_search'), :class => 'span2'
+    input#save_advanced_search.btn type="submit" value="Search"
