@@ -16,18 +16,29 @@
       = f.input :db_url, required: true, input_html: {title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database', class: 'span8'}
       .form-actions= f.button :submit, class: 'btn-primary'
   - tabs.pane 'Collaborators' do
-    .alert You can use a Google account to log in to this account and authorize collaborators to log in as well.
-    .well
-      ul.unstyled#collaborators data-delete-url="#{collaborator_path(':id')}"
-        = content_tag_for :li, @account.collaborators do |collaborator|
-          = collaborator.email
-          '
-          = link_to content_tag(:i, nil, class: 'icon-remove-sign'), collaborator, method: :delete, remote: true
+    .alert
+      p You can use a Google account to log in to this account and authorize collaborators to log in as well.
       = form_for @account.collaborators.build, remote: true, html: {class: 'form-inline'} do |f|
         = f.text_field :email, placeholder: 'google account email', type: 'email', required: true
         '
-        = submit_tag 'Add collaborator', class: 'btn btn-primary', disable_with: 'Sending...'
+        = submit_tag 'Add a collaborator', class: 'btn btn-primary', disable_with: 'Sending...'
+    .row
+      table.table.span6#collaborators data-delete-url="#{collaborator_path(':id')}"
+        thead
+          tr
+            th(colspan=2)
+            th Roles
+            th
+        - @account.collaborators.each do |collaborator|
+          - next if collaborator.new_record?
+          - css = collaborator.user_id ? nil : 'deactivated'
+
+          tr(class=css)
+            td= collaborator.email
+            td= collaborator.user.try(:name)
+            td= collaborator.user.roles.map(&:name).join(", ") if collaborator.user.try(:roles)
+            td= link_to content_tag(:i, nil, class: 'icon-trash'), collaborator, method: :delete, remote: true, class: 'btn'
+  - tabs.pane 'Roles and permissions' do
+    = render 'roles'
   - tabs.pane 'Display settings' do
     = render 'display_settings'
-  - tabs.pane 'Roles' do
-    = render 'roles'

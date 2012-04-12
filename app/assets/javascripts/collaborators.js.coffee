@@ -1,11 +1,12 @@
 $ ->
   $('#new_collaborator').live 'ajax:before', ->
     input = $(this).find('input[type=email]')
-    $('<li>').text(input.val()).appendTo('#collaborators')
+    tr = $('<tr>').addClass("deactivated").appendTo('#collaborators')
+    $('<td>').attr("colspan", 3).text(input.val()).appendTo(tr)
   $('#new_collaborator').live 'ajax:complete', ->
     $(this).find('input[type=email]').val('')
   $('#collaborators a').live 'ajax:complete', ->
-    $(this).closest('li').remove()
+    $(this).closest('tr').remove()
 
   $("input[name=all_actions]").click ->
     scope = $(this).closest("tr").find("input:not(:first)")
