@@ -1,7 +1,19 @@
-class BulkDestroy
+class BulkActions
   checkbox_selector: '.items-list tbody input[type=checkbox]'
 
   constructor: ->
+    $("#bulk-edit-modal").on('hide', =>
+      $("#bulk-edit-modal").html($(".loading_modal").html())
+    )
+    $("#bulk-edit-modal").on('shown', =>
+      $("#bulk-edit-modal").html($(".loading_modal").html())
+      item_ids = ""
+      for item in $("#{@checkbox_selector}:checked")
+        item_ids += "record_ids[]=#{$(item).closest('tr').data('item-id')}&"
+      path=$("#bulk-edit-modal").attr("data-remote-path")
+      $.get "#{path}?#{item_ids}", (data) =>
+        $("#bulk-edit-modal").html(data)
+    )
     @form = $('.bulk-destroy')
     $(@checkbox_selector).click => @formVisibility()
     @form.submit =>
@@ -21,21 +33,22 @@ class BulkDestroy
         $(@checkbox_selector).removeAttr('checked')
       @formVisibility()
 
+
   formVisibility: ->
     if $("#{@checkbox_selector}:checked").length is 0
-      @form.hide()
+      $(".bulk-action").hide()
     else
-      @form.show().css('display', 'inline-block')
+      $(".bulk-action").show()#.css('display', 'inline-block')
 
 class CustomColumns
-  
+
   constructor: ->
     [@assocSelect, @columnSelect] = [$('.custom-column select:eq(0)'), $('.custom-column select:eq(1)')]
     @addButton = $('.custom-column button')
     @associationSelection()
     @columnSelection()
     @customColumnAdd()
-    
+
   associationSelection: ->
     @assocSelect.change =>
       if @assocSelect.val()
@@ -46,14 +59,14 @@ class CustomColumns
       else
         @columnSelect.empty()
         @addButton.attr('disabled', 'disabled')
-        
+
   columnSelection: ->
     @columnSelect.change =>
       if @columnSelect.val()
         @addButton.removeAttr('disabled')
       else
         @addButton.attr('disabled', 'disabled')
-  
+
   customColumnAdd: ->
     @addButton.click =>
       label = $('<label>').text("#{@assocSelect.val()} #{@columnSelect.val()}")
@@ -64,7 +77,7 @@ class CustomColumns
       false
 
 $ ->
-  new BulkDestroy()
+  new BulkActions()
   new CustomColumns()
   $('span.label span.remove').click ->
     window.location.href = unescape(window.location.href).replace($(this).data('param'), '')

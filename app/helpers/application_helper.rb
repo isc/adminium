@@ -106,4 +106,15 @@ module ApplicationHelper
     end.join("<br/>")
   end
 
+  def spinner_tag
+    content_tag :div, :id => 'bowlG' do
+      content_tag :div, :id =>'bowl_ringG' do
+        content_tag :div, :class => 'ball_holderG' do
+          content_tag :div, :class => 'ballG' do
+          end
+        end
+      end
+    end
+  end
+
 end

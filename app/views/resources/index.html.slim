@@ -2,21 +2,17 @@
   header.jumbotron.subhead
     .breadcrumb
       .row.btn-toolbar
-        .span3
+        .span2
           strong
             = params[:table].humanize
-          - if user_can? 'create', params[:table]
-            span.divider |
-            = link_to 'Add new', new_resource_path(table:params[:table])
-          span.divider |
-          a data-toggle="modal" href="#export" Export
+
 
         - if clazz.settings.columns[:search].any?
-          .span4
+          .span3
             form.form-inline.subnav-search
               - request.query_string.to_s.split('&').each do |param|
                 input type="hidden" name=CGI.unescape(param.split('=').first) value=param.split('=').last
-              input name="search" type='text' value=params[:search] placeholder="search on #{clazz.settings.columns[:search].map(&:humanize).join(', ').downcase}"
+              input.span2 name="search" type='text' value=params[:search] placeholder="search on #{clazz.settings.columns[:search].map(&:humanize).join(', ').downcase}"
               .btn-group
                 button.btn
                   i.icon-search
@@ -30,10 +26,18 @@
                   - clazz.settings.filters.keys.each do |key|
                     li
                       =link_to key, params.merge(asearch: key)
-        .span1
-          = form_tag bulk_destroy_resources_path(params[:table]), class: "bulk-destroy hide" do
-            button.btn title='Delete selected rows' rel='tooltip' data-placement="bottom"
+        .btn-group.span3
+          - if user_can? 'create', params[:table]
+            = link_to new_resource_path(table:params[:table]), class: "btn", rel: "tooltip", title: "Create a new row", "data-placement" => "bottom" do
+              i.icon-file
+          button.btn.bulk-action.bulk-edit.hide title="Edit selected rows" rel='tooltip' data-toggle="modal" href="#bulk-edit-modal" data-placement="bottom"
+            i.icon-pencil
+          a.btn data-toggle="modal" href="#export" title="Export rows" rel='tooltip' data-placement="bottom"
+            i.icon-download-alt
+          = form_tag bulk_destroy_resources_path(params[:table]), class: "bulk-action bulk-destroy hide" do
+            button.btn.btn-danger title='Delete selected rows' rel='tooltip' data-placement="bottom"
               i.icon-trash
+
 
         .span3
           = render :partial => 'next_previous_page', :locals => {:scope => @items}
@@ -88,3 +92,4 @@ table.table-striped.table-bordered.table.items-list
 = render partial: '/resources/panels/listing_settings'
 = render partial: '/resources/panels/export'
 = render partial: '/resources/panels/advanced_search'
+#bulk-edit-modal.modal.hide.fade(data-remote-path=bulk_edit_resources_path(table: params[:table]))

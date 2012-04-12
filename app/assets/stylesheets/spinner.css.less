@@ -1,0 +1,88 @@
+#bowlG{
+  margin: 0px auto 35px;
+  position:relative;
+  width:74px;
+  height:74px;
+}
+
+#bowl_ringG{
+  position:absolute;
+  width:74px;
+  height:74px;
+  border:7px solid #D44413;
+  -moz-border-radius:74px;
+  -webkit-border-radius:74px;
+  border-radius:74px;
+}
+
+.ball_holderG{
+  position:absolute;
+  width:20px;
+  height:74px;
+  left:27px;
+  top:0px;
+  -webkit-animation-name:ball_moveG;
+  -webkit-animation-duration:1.8s;
+  -webkit-animation-iteration-count:infinite;
+  -webkit-animation-timing-function:linear;
+  -moz-animation-name:ball_moveG;
+  -moz-animation-duration:1.8s;
+  -moz-animation-iteration-count:infinite;
+  -moz-animation-timing-function:linear;
+  -o-animation-name:ball_moveG;
+  -o-animation-duration:1.8s;
+  -o-animation-iteration-count:infinite;
+  -o-animation-timing-function:linear;
+  -ms-animation-name:ball_moveG;
+  -ms-animation-duration:1.8s;
+  -ms-animation-iteration-count:infinite;
+  -ms-animation-timing-function:linear;
+}
+
+.ballG{
+  position:absolute;
+  left:0px;
+  top:-17px;
+  width:30px;
+  height:30px;
+  background:#D44413;
+  -moz-border-radius:25px;
+  -webkit-border-radius:25px;
+  border-radius:25px;
+}
+
+@-webkit-keyframes ball_moveG{
+  0%{
+    -webkit-transform:rotate(0deg)}
+
+    100%{
+      -webkit-transform:rotate(360deg)}
+
+    }
+
+    @-moz-keyframes ball_moveG{
+      0%{
+        -moz-transform:rotate(0deg)}
+
+        100%{
+          -moz-transform:rotate(360deg)}
+
+        }
+
+        @-o-keyframes ball_moveG{
+          0%{
+            -o-transform:rotate(0deg)}
+
+            100%{
+              -o-transform:rotate(360deg)}
+
+            }
+
+            @-ms-keyframes ball_moveG{
+              0%{
+                -ms-transform:rotate(0deg)}
+
+                100%{
+                  -ms-transform:rotate(360deg)}
+
+                }

@@ -1,0 +1,23 @@
+= simple_form_for @item, url: @form_url, html: {class: 'form-vertical'}, defaults: {input_html: {class: 'span4'}} do |f|
+  - @record_ids.each do |record_id|
+    = hidden_field_tag "record_ids[]", record_id
+  .modal-header
+    a.close data-dismiss="modal" ×
+    h3 Bulk Edit
+
+  .modal-body
+    - @item.class.settings.columns[:form].each do |name|
+      - if  enum_value = @item.class.settings.enum_values_for(name)
+        = f.input name, as: :select, collection: enum_value
+      - elsif @item.class.foreign_key? name
+        - assoc_name = name.gsub(/_id$/, '').to_sym
+        - if @item.reflections[assoc_name].options[:polymorphic]
+          = f.input name
+        - else
+          = f.association assoc_name
+      - else
+        - options = {readonly: (@item.class.columns.detect{|c|c.name == name}.primary || @item.class.primary_key == name)}
+        - options.merge!({:as => :select}) if @item.class.settings.column_type(name).to_s == "boolean"
+        = f.input name, options
+  .modal-footer
+    = submit_tag "Update #{@record_ids.length} #{params[:table].humanize}", class: 'btn-primary', disable_with: 'Sending...'

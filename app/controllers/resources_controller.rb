@@ -9,6 +9,7 @@ class ResourcesController < ApplicationController
   respond_to :json, :html, :xml, :csv, :only => :index
 
   def index
+
     @items = clazz.scoped #select(clazz.settings.columns[:listing].join(", "))
     #raise clazz.settings.filters.inspect
     @current_filter = clazz.settings.filters[params[:asearch]] || []
@@ -68,6 +69,23 @@ class ResourcesController < ApplicationController
     redirect_to :back, flash: {success: "#{params[:item_ids].size} #{class_name.pluralize} successfully destroyed."}
   end
 
+  def bulk_edit
+    @item = clazz.new
+    @record_ids = params[:record_ids]
+    if clazz.where(id: params[:record_ids]).count != @record_ids.length
+      raise "BulkEditCheckRecordsFailed"
+    end
+    @form_url = bulk_update_resources_path(params[:table])
+    render :layout => false
+  end
+
+  def bulk_update
+    items = clazz.find(params[:record_ids]).map do |item|
+      item.update_attributes!(item_params.reject{|k,v| v.blank?})
+    end
+    redirect_to :back, flash: {success: "#{items.length} rows has been updated"}
+  end
+
   def test_threads
     Account.find_by_sql 'select pg_sleep(10)'
     render json: @generic.table('accounts').first.inspect
@@ -82,7 +100,7 @@ class ResourcesController < ApplicationController
       redirect_to dashboard_url, flash: {error: "You haven't the permission to perform #{action_name} on #{params[:table]}"}
     end
   end
-  
+
   def user_can? action_name, table
     return true if @permissions.nil?
     action_to_perm = {'index' => 'read', 'show' => 'read', 'edit' => 'update', 'update' => 'update', 'new' => 'create', 'create' => 'create', 'destroy' => 'delete', 'bulk_destroy' => 'delete'}
