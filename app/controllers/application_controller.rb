@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   private
 
   def fixed_account
-    session[:account] = FIXED_ACCOUNT if session[:account].nil? && FIXED_ACCOUNT.present?
+    # session[:account] = FIXED_ACCOUNT if session[:account].nil? && FIXED_ACCOUNT.present?
   end
 
   def global_settings
