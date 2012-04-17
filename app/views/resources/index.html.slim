@@ -1,7 +1,7 @@
 - content_for :subnav do
   header.jumbotron.subhead
     .breadcrumb
-      .row.btn-toolbar
+      .row-fluid.btn-toolbar
         .span2
           strong
             = params[:table].humanize
@@ -13,16 +13,17 @@
               - request.query_string.to_s.split('&').each do |param|
                 input type="hidden" name=CGI.unescape(param.split('=').first) value=param.split('=').last
               input.span2 name="search" type='text' value=params[:search] placeholder="search on #{clazz.settings.columns[:search].map(&:humanize).join(', ').downcase}"
+              '
               .btn-group
                 button.btn
                   i.icon-search
                 button.btn.dropdown-toggle data-toggle="dropdown"
                   span.caret
-                ul.dropdown-menu
+                ul.dropdown-menu.nav
                   li
                     a data-toggle="modal" href="#advanced_search" advanced search
                   li.divider
-                  li Saved Search
+                  li.nav-header Saved Searches
                   - clazz.settings.filters.keys.each do |key|
                     li
                       =link_to key, params.merge(asearch: key)
@@ -45,9 +46,9 @@
           a.btn data-toggle="modal" href="#settings" title="Table settings" data-placement="bottom" rel="tooltip"
             i.icon-cog
 
-- if params[:search] || params[:where] || params[:asearch]
+- if params[:search].present? || params[:where] || params[:asearch]
   .page-header
-    - if params[:search]
+    - if params[:search].present?
       span.label.label-success
         == "search for <i>#{params[:search]}</i>"
         span.remove data-param="search=#{params[:search]}" x
