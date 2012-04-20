@@ -52,7 +52,8 @@ class ResourcesController < ApplicationController
 
   def update
     if @item.update_attributes item_params
-      redirect_to resource_path(params[:table], @item), flash: {success: "#{object_name} successfully updated."}
+      path = (params[:return_to] == "back") ? :back : resource_path(params[:table], @item)
+      redirect_to path, flash: {success: "#{object_name} successfully updated."}
     else
       @form_url = resource_path(@item, table: params[:table])
       render :edit
@@ -70,12 +71,19 @@ class ResourcesController < ApplicationController
   end
 
   def bulk_edit
-    @item = clazz.new
+
     @record_ids = params[:record_ids]
-    if clazz.where(id: params[:record_ids]).count != @record_ids.length
+
+    if clazz.where({clazz.primary_key => params[:record_ids]}).count != @record_ids.length
       raise "BulkEditCheckRecordsFailed"
     end
-    @form_url = bulk_update_resources_path(params[:table])
+    if @record_ids.length == 1
+      @item = clazz.find(@record_ids.shift)
+      @form_url = resource_path(@item, table: params[:table], return_to: :back)
+    else
+      @form_url = bulk_update_resources_path(params[:table])
+      @item = clazz.new
+    end
     render :layout => false
   end
 
