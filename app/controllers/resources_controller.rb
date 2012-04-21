@@ -199,12 +199,12 @@ class ResourcesController < ApplicationController
           day = range.first.send(range.last).ago.to_date
           values = (range.last == 'week') ? [day.beginning_of_week, day.end_of_week] : [day, day]
           values = [values.first.beginning_of_day, values.last.end_of_day]
-          ["#{c} BETWEEN ? AND ?", values]
+          params = ["#{c} BETWEEN ? AND ?", *values]
         end
-        operators = {'before' => '>', 'after' => '<'}
-        if operator = operators[filter['operator']]
-          date = Date.strptime(filter['operand'].match(/([0-9]{8})/)[1], '%m%d%Y')
-          ["#{c} #{operator} #{date}"]
+        operators = {'after' => '>', 'before' => '<', 'on' => '='}
+        if (operator = operators[filter['operator']]) && filter['operand'].match(/(\d{2}\/\d{2}\/\d{4})/)
+          date = Date.strptime($1, '%m/%d/%Y')
+          params = ["#{c} #{operator} ?", date]
         end
       else
         raise "Unsupported"

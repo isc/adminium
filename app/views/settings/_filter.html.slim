@@ -7,7 +7,9 @@ td
 td
   = render partial: "/settings/filters/#{filter['type']}", locals: {g: g, operator: filter["operator"]}
 td
-  = text_field_tag "filters[#{g}][operand]", filter['operand'], class: 'span2'
+  - css_class = "span2"
+  - css_class += " datepicker" if filter['type'] == :datetime
+  = text_field_tag "filters[#{g}][operand]", filter['operand'], class: css_class
 td
   span.btn
     i.icon-trash
