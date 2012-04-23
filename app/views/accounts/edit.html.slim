@@ -43,8 +43,8 @@
             td= collaborator.name
             td= collaborator.human_roles
             td
-              = link_to content_tag(:i, nil, class: 'icon-edit'), edit_collaborator_path(collaborator), :remote => true,  'data-toggle' => 'modal', 'data-target' => "#modal-window", 'data-backdrop' => true, 'data-keyboard' => true, :class => 'btn'
-              = link_to content_tag(:i, nil, class: 'icon-trash'), collaborator, method: :delete, remote: true, class: 'btn trash_collaborator'
+              = link_to content_tag(:i, nil, class: 'icon-pencil'), edit_collaborator_path(collaborator), :remote => true,  'data-toggle' => 'modal', 'data-target' => "#modal-window", 'data-backdrop' => true, 'data-keyboard' => true, :class => 'btn', :title => 'Edit this collaborator roles', :rel => 'tooltip'
+              = link_to content_tag(:i, nil, class: 'icon-trash'), collaborator, method: :delete, remote: true, class: 'btn trash_collaborator', title: 'remove every access of this collaborator'
   - tabs.pane 'Roles and permissions' do
     = render 'roles'
   - tabs.pane 'Display settings' do
