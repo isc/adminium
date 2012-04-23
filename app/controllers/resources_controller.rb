@@ -103,7 +103,7 @@ class ResourcesController < ApplicationController
 
   def check_permissions
     return if admin?
-    @permissions = current_user.permissions(current_account)
+    @permissions = current_collaborator.permissions
     unless user_can? action_name, params[:table]
       redirect_to dashboard_url, flash: {error: "You haven't the permission to perform #{action_name} on #{params[:table]}"}
     end

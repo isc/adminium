@@ -26,8 +26,8 @@
                   - %w(create read update delete).each do |action|
                     td= check_box_tag "role[permissions][#{table}][#{action}]", '1', @role.permissions[table].try(:[], action)
     .span6
-      - if current_account.users.present?
-        = f.association :users, :as => :check_boxes, :collection => current_account.users.map {|u|[u.name, u.id]}
+      - if current_account.collaborators.present?
+        = f.association :collaborators, :as => :check_boxes, :collection => current_account.collaborators.map {|collaborator|[collaborator.name, collaborator.id]}
       - else
         .alert.alert-warning
           p a role should be assigned to colloborators but you have not invited any yet.

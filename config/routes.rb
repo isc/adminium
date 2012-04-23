@@ -29,7 +29,7 @@ MtCrap::Application.routes.draw do
   resource :account, only: [:edit, :update]
   resources :roles
   resource :dashboard
-  resources :collaborators, only: [:create, :destroy]
+  resources :collaborators
 
   namespace :heroku do
     resources :resources, only: [:create, :destroy, :update, :show]

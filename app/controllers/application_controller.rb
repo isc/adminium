@@ -38,9 +38,13 @@ class ApplicationController < ActionController::Base
   def current_user
     @user ||= User.find session[:user] if session[:user]
   end
-  
+
+  def current_collaborator
+    @collaborator ||= Collaborator.find(session[:collaborator]) if session[:collaborator]
+  end
+
   def admin?
-    session[:account] && current_user.nil?
+    (session[:account] && current_user.nil?) || current_collaborator.try(:is_administrator)
   end
 
   def require_admin

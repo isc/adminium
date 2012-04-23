@@ -18,10 +18,16 @@
   - tabs.pane 'Collaborators' do
     .alert
       p You can use a Google account to log in to this account and authorize collaborators to log in as well.
-      = form_for @account.collaborators.build, remote: true, html: {class: 'form-inline'} do |f|
-        = f.text_field :email, placeholder: 'google account email', type: 'email', required: true
-        '
-        = submit_tag 'Add a collaborator', class: 'btn btn-primary', disable_with: 'Sending...'
+      = simple_form_for @account.collaborators.build, remote: true, html: {class: 'form-horizontal'} do |f|
+        = f.input :email, placeholder: 'google account email', type: 'email', required: true
+        = f.input :is_administrator, :as => :radio_buttons
+        .control-group
+          'or has the following roles
+          = link_to '(create a new role)', new_role_path
+        - if current_account.roles.present?
+          = f.association :roles, :as => :check_boxes, :collection => current_account.roles.map {|role|[role.name, role.id]}, :html => {:class => "span1"}
+        = f.submit 'Add a collaborator', class: 'btn btn-primary', disable_with: 'Sending...'
+
     .row
       table.table.span6#collaborators data-delete-url="#{collaborator_path(':id')}"
         thead
@@ -34,10 +40,11 @@
           - css = collaborator.user_id ? nil : 'deactivated'
 
           tr(class=css)
-            td= collaborator.email
-            td= collaborator.user.try(:name)
-            td= collaborator.user.roles.map(&:name).join(", ") if collaborator.user.try(:roles)
-            td= link_to content_tag(:i, nil, class: 'icon-trash'), collaborator, method: :delete, remote: true, class: 'btn'
+            td= collaborator.name
+            td= collaborator.human_roles
+            td
+              = link_to content_tag(:i, nil, class: 'icon-edit'), edit_collaborator_path(collaborator), :remote => true,  'data-toggle' => 'modal', 'data-target' => "#modal-window", 'data-backdrop' => true, 'data-keyboard' => true, :class => 'btn'
+              = link_to content_tag(:i, nil, class: 'icon-trash'), collaborator, method: :delete, remote: true, class: 'btn trash_collaborator'
   - tabs.pane 'Roles and permissions' do
     = render 'roles'
   - tabs.pane 'Display settings' do

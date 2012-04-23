@@ -45,6 +45,14 @@ html lang="en"
     = javascript_include_tag 'application'
     = render :partial => "/layouts/ga"
     = render :partial => '/layouts/uservoice' unless Rails.env.development?
+    .modal.hide#modal-window
+      .modal-header
+        a.close data-dismiss="modal" ×
+        h3 Loading the page
+      .modal-body
+        = spinner_tag
+        p.centered please wait a few instants until the page is loaded
+      .modal-footer
     .loading_modal.hide
       .modal-header
         a.close data-dismiss="modal" ×

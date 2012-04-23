@@ -5,7 +5,7 @@ $ ->
     $('<td>').attr("colspan", 3).text(input.val()).appendTo(tr)
   $('#new_collaborator').live 'ajax:complete', ->
     $(this).find('input[type=email]').val('')
-  $('#collaborators a').live 'ajax:complete', ->
+  $('a.trash_collaborator').live 'ajax:complete', ->
     $(this).closest('tr').remove()
 
   $("input[name=all_actions]").click ->

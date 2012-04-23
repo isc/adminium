@@ -6,7 +6,7 @@
           tr
             td= link_to role.name, edit_role_path(role)
             td
-              = pluralize role.users.count, "collaborator"
+              = pluralize role.collaborators.count, "collaborator"
             td= link_to role_path(role), method: 'delete', confirm: 'Are you sure?', class: 'btn' do
               i.icon-trash
     .span6= link_to 'Create a new role', new_role_path, class: 'btn btn-primary'
