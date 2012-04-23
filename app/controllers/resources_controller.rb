@@ -149,9 +149,9 @@ class ResourcesController < ApplicationController
     datas = []
     columns.each do |column|
       if clazz.settings.is_number_column?(column)
-        if (params[:search].to_i > 0 || params[:search] == "0")
+        if (params[:search] ~= /\d+/)
           query.push "#{column} = ?"
-          datas.push params[:search]
+          datas.push params[:search].to_i
         end
       else
         query.push "upper(#{column}) like ?"
