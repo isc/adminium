@@ -9,7 +9,6 @@ class ResourcesController < ApplicationController
   respond_to :json, :html, :xml, :csv, :only => :index
 
   def index
-
     @items = clazz.scoped #select(clazz.settings.columns[:listing].join(", "))
     #raise clazz.settings.filters.inspect
     @current_filter = clazz.settings.filters[params[:asearch]] || []
@@ -145,11 +144,10 @@ class ResourcesController < ApplicationController
 
   def apply_search
     columns = clazz.settings.columns[:search]
-    query = []
-    datas = []
+    query, datas = [], []
     columns.each do |column|
       if clazz.settings.is_number_column?(column)
-        if (params[:search] ~= /\d+/)
+        if (params[:search] =~ /\d+/)
           query.push "#{column} = ?"
           datas.push params[:search].to_i
         end

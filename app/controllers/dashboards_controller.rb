@@ -11,8 +11,8 @@ class DashboardsController < ApplicationController
   protected
   
   def fetch_permissions
-    return unless current_user
-    @permissions = current_user.permissions(current_account)
+    return if admin?
+    @permissions = current_collaborator.permissions
   end
 
 end
