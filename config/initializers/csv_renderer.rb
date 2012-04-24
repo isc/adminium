@@ -10,7 +10,13 @@ class Array
     end.to_csv(options)
     self.each do |item|
       out << keys.map do |key|
-        item[key]
+        if key.include? "."
+          parts = key.split('.')
+          pitem = item.send(parts.first)
+          pitem[parts.second] if pitem
+        else
+          item[key]
+        end
       end.to_csv(options)
     end
     out

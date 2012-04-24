@@ -147,7 +147,7 @@ class ResourcesController < ApplicationController
     query, datas = [], []
     columns.each do |column|
       if clazz.settings.is_number_column?(column)
-        if (params[:search] =~ /\d+/)
+        if params[:search].match(/\A\d+\Z/)
           query.push "#{column} = ?"
           datas.push params[:search].to_i
         end

@@ -131,7 +131,7 @@ module Settings
     end
 
     def set_missing_columns_conf
-      [:listing, :show, :form, :form, :search, :serialized].each do |type|
+      [:listing, :show, :form, :search, :serialized, :export].each do |type|
         if @columns[type]
           @columns[type].delete_if {|name| !name.include?('.') && !(@clazz.column_names.include? name) }
         else

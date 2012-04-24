@@ -5,7 +5,7 @@ colonnes calculees
 conf des associations / foreign_keys
 enum values editing
 disable completement des tables
-CRUD conf on tables (disable add or delete for instance)
+
 improve search (regexp, fulltext ?)
 in-place editing dans le listing (deja les booleens comme typus puis les textes et numbers why not)
 mass editing
