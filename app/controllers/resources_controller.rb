@@ -175,20 +175,29 @@ class ResourcesController < ApplicationController
   def build_statement scope, filter
     c = filter['column']
     params = nil
-    unary_operators = {'blank' => "_ IS NULL OR _ = ''", 'present' => "_ IS NOT NULL AND _ != ''"}
-    unary_operator = unary_operators[filter['operator']]
+    unary_operator = UNARY_OPERATOR_DEFINITIONS[filter['operator']]
     if unary_operator
-      return scope.where(unary_operator.gsub('_', filter['column']))
+      return scope.where(unary_operator.gsub('_', c))
     end
     case filter['type']
       when 'integer'
         raise "Unsupported" unless INTEGER_OPERATORS.include?(filter['operator'])
-        params = ["#{c} #{filter['operator']} ?", filter['operand']]
-      when 'string'
-        string_operators = {'like' => '%_%', 'starts_with' => '_%', 'ends_with' => '%_', 'is' => '_'}
-        value = string_operators[filter['operator']].gsub('_', filter['operand'])
-        like_operator = 'ILIKE'
-        params = ["#{c} #{like_operator} ?", value]
+        unless filter['operand'].blank?
+          params = ["#{c} #{filter['operator']} ?", filter['operand']]
+        end
+      when 'string', 'text'
+        operand = STRING_LIKE_OPERATOR_DEFINITIONS[filter['operator']]
+        if operand
+          like_operator = @generic.mysql? ? 'LIKE' : 'ILIKE'
+          params = ["#{c} #{like_operator} ?", operand.gsub('_', filter['operand'])]
+        end
+        operand = STRING_OPERATOR_DEFINITIONS[filter['operator']]
+        if operand
+          params = operand.gsub('_', c)
+        end
+      when 'boolean'
+        raise "Unsupported" unless BOOLEAN_OPERATORS.include?(filter['operator'])
+        params = ["#{c} = ?", filter['operator'] == "is_true"]
       when 'datetime'
         raise "Unsupported #{filter['operator']}" unless DATETIME_OPERATORS.include?(filter['operator'])
         ranges = {'today' => [0, 'day'], 'yesterday' => [1, 'day'], 'this_week' => [0, 'week'], 'last_week' => [1, 'week']}

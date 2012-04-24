@@ -1,0 +1,2 @@
+select.span2(name="filters[#{g}][operator]")
+  = options_for_select((UNARY_OPERATORS + BOOLEAN_OPERATORS).map{|o| [o.humanize.downcase,o]}, operator)
