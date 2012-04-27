@@ -2,7 +2,7 @@ class SettingsController < ApplicationController
 
   def update
     settings = @generic.table(params[:id]).settings
-    [:listing, :form, :show, :search, :serialized].each do |type|
+    [:listing, :form, :show, :search, :serialized, :export].each do |type|
       param_key = "#{type}_columns".to_sym
       settings.columns[type] = params[param_key].delete_if {|e|e.empty?} if params.has_key? param_key
     end
@@ -37,7 +37,7 @@ class SettingsController < ApplicationController
   def values
     render json: @generic.table(params[:id]).group(params[:column_name]).limit(50).order(params[:column_name]).count.keys
   end
-  
+
   def columns
     render json: @generic.table(params[:table]).column_names
   end
