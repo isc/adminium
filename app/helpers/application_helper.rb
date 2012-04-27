@@ -20,9 +20,14 @@ module ApplicationHelper
       content = display_belongs_to item, key, value
       css_class = 'foreignkey'
     elsif enum_values = item.class.settings.enum_values_for(key)
-      content = link_to (enum_values.invert[value.to_s] || value), resources_path(item.class.table_name, where: {key => value}),
-        :class => 'label label-info'
-      css_class = 'enum'
+      if value.nil?
+        content, css_class = 'null', 'nilclass'
+      else
+        content = link_to (enum_values.invert[value.to_s] || value),
+          resources_path(item.class.table_name, where: {key => value}),
+          :class => 'label label-info'
+        css_class = 'enum'
+      end
     elsif item.class.settings.columns[:serialized].include? key
       css_class, content = 'serialized', content_tag(:pre, value.inspect, :class => 'sh_ruby')
     else
