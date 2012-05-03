@@ -43,8 +43,9 @@ html lang="en"
       footer
         p &copy; Adminium 2012
     = javascript_include_tag 'application'
-    = render :partial => "/layouts/ga"
-    = render :partial => '/layouts/uservoice' unless Rails.env.development?
+    - unless Rails.env.development?
+      = render :partial => "/layouts/ga"
+      = render :partial => '/layouts/uservoice'
     .modal.hide#modal-window
       .modal-header
         a.close data-dismiss="modal" ×
