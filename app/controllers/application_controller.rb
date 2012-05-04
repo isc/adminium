@@ -6,7 +6,7 @@ class ApplicationController < ActionController::Base
   before_filter :connect_to_db
   after_filter :cleanup_generic
 
-  helper_method :global_settings, :current_account, :current_user, :admin?
+  helper_method :global_settings, :current_account, :current_user, :admin?, :current_account?
 
   private
 
@@ -29,6 +29,11 @@ class ApplicationController < ActionController::Base
     else
       redirect_to doc_url(:missing_db_url)
     end
+  end
+
+  def current_account?
+    return !!current_account if session[:account]
+    return false
   end
 
   def current_account

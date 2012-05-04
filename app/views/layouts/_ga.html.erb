@@ -3,6 +3,10 @@
   var _gaq = _gaq || [];
   _gaq.push(['_setAccount', 'UA-30376260-1']);
   _gaq.push(['_trackPageview']);
+  <% if current_account? -%>
+  _gaq.push(['_setCustomVar', 1, 'Account Name', '<%= current_account.name %>', 1]);
+  _gaq.push(['_setCustomVar', 2, 'Account Plan', '<%= current_account.plan || 'free' %>', 1]);
+  <% end -%>
 
   (function() {
     var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
