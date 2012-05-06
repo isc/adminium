@@ -16,6 +16,12 @@ class Account < ActiveRecord::Base
 
   attr_encryptor :db_url, key: (ENV['ENCRYPTION_KEY'] || 'shablagoo')
 
+  class Plan
+    PET_PROJECT = 'pet_project'
+    STARTUP = 'startup'
+    ENTERPRISE = 'enterprise'
+  end
+
   def to_param
     api_key
   end
@@ -30,6 +36,10 @@ class Account < ActiveRecord::Base
 
   def valid_db_url?
     db_url.present?
+  end
+  
+  def pet_project?
+    plan == Plan::PET_PROJECT
   end
 
   private

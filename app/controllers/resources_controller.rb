@@ -1,5 +1,6 @@
 class ResourcesController < ApplicationController
-
+  
+  before_filter :table_access_limitation
   before_filter :check_permissions
   before_filter :apply_serialized_columns, only: [:index, :show]
   before_filter :apply_validations, only: [:create, :update, :new, :edit]
@@ -217,6 +218,14 @@ class ResourcesController < ApplicationController
         raise "Unsupported"
     end
     scope.where(params)
+  end
+  
+  def table_access_limitation
+    return unless current_account.pet_project?
+    if (@generic.tables.index params[:table]) > 5
+      redirect_to dashboard_url,
+        notice: "You're currently on the free plan meant for pet projects which is limited to five tables of your schema.<br/>Upgrade to the startup plan to access your full schema with Adminium.".html_safe
+    end
   end
 
 end
