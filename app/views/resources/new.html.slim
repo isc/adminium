@@ -1,13 +1,14 @@
 - content_for :subnav do
   header.jumbotron.subhead
-    ul.breadcrumb
-      li
-        = link_to params[:table].humanize, resources_path(params[:table])
-        span.divider >
-      li
-        ' New #{@item.class.original_name}
-      li.pull-right
-        a data-toggle="modal" href="#settings" Settings
+    .breadcrumb
+      .row-fluid.btn-toolbar
+        .span11
+          strong= link_to params[:table].humanize, resources_path(params[:table])
+          span.divider >
+          ' New #{@item.class.original_name}
+        .span1
+          a.btn data-toggle="modal" href="#settings" title="Form Settings" data-placement="bottom" rel="tooltip"
+            i.icon-cog
 
 = render :partial => 'resources/form'
 = render 'resources/panels/form_settings'
