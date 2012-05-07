@@ -10,18 +10,24 @@
       #home-carousel.carousel
         .carousel-inner
           .active.item
-            = image_tag 'http://placehold.it/420x250'
+            = image_tag 'advanced_search.png'
             .carousel-caption
               h4 Filters and search
               p
                 | You can configure filters for complex queries on a table and you can also configure which fields should be searchable on a table.
           .item
-            = image_tag 'http://placehold.it/420x250'
+            = image_tag 'associations.png'
             .carousel-caption
               h4 Table relationships navigation
               p The relationships between your tables are automatically discovered so you can easily navigate from one row to the other.
           .item
-            = image_tag 'http://placehold.it/420x250'
+            = image_tag 'collaborators.png'
+            .carousel-caption
+              h4 Collaborators
+              p
+                | You can invite your collaborators to administrate your data and configure what they see or do.
+          .item
+            = image_tag 'enums.png'
             .carousel-caption
               h4 Enum values
               p
@@ -42,11 +48,11 @@
       = image_tag 'logos/mysql.png', :class => 'mysql-logo'
 
   .span4
-    h3.centered Available as a Heroku Add-on *
+    h3.centered Available as a Heroku Add-on
     p.centered= image_tag 'logos/heroku.png'
     .centered
       a.btn.btn-warning href="https://addons.heroku.com/adminium" Install the add-on
     p.centered
-      '* We're currently in Heroku's private beta program, so follow us on Twitter to get the news.
+      'follow us on Twitter to get the news.
     p.centered
       = render :partial => "twitter_widget"

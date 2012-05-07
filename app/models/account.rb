@@ -37,9 +37,17 @@ class Account < ActiveRecord::Base
   def valid_db_url?
     db_url.present?
   end
-  
+
   def pet_project?
     plan == Plan::PET_PROJECT
+  end
+
+  def startup?
+    plan == Plan::STARTUP
+  end
+
+  def enterprise?
+    plan == Plan::ENTERPRISE
   end
 
   private
