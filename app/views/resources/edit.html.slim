@@ -1,15 +1,16 @@
 - content_for :subnav do
   header.jumbotron.subhead
-    ul.breadcrumb
-      li
-        = link_to params[:table].humanize, resources_path(params[:table])
-        span.divider >
-      li
-        = "Editing #{@item.class.original_name} ##{@item[@item.class.primary_key]}"
-        span.divider |
-      li= link_to 'Show', resource_path(@item.class.table_name, @item)
-      li.pull-right
-        a data-toggle="modal" href="#settings" Settings
+    .breadcrumb
+      .row-fluid.btn-toolbar
+        .span3
+          strong= link_to params[:table].humanize, resources_path(params[:table])
+          span.divider >
+          = "Editing #{@item.class.original_name} ##{@item[@item.class.primary_key]}"
+        .span8
+          = link_to content_tag(:i, nil, class: 'icon-eye-open'), resource_path(@item.class.table_name, @item), class: 'btn', :'data-placement' => 'bottom', rel: 'tooltip', title: 'Show'
+        .span1
+          a.btn data-toggle="modal" href="#settings" title="Form Settings" data-placement="bottom" rel="tooltip"
+            i.icon-cog
 
 = render :partial => 'resources/form'
 = render 'resources/panels/form_settings'

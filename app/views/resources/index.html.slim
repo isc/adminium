@@ -6,7 +6,6 @@
           strong
             = params[:table].humanize
 
-
         - if clazz.settings.columns[:search].any?
           .span3
             form.form-inline.subnav-search
@@ -43,7 +42,7 @@
         .span3
           = render :partial => 'next_previous_page', :locals => {:scope => @items}
         .span1
-          a.btn data-toggle="modal" href="#settings" title="Table settings" data-placement="bottom" rel="tooltip"
+          a.btn data-toggle="modal" href="#settings" title="Listing Settings" data-placement="bottom" rel="tooltip"
             i.icon-cog
 
 - if params[:search].present? || params[:where] || params[:asearch]

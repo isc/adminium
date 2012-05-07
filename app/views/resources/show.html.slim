@@ -1,16 +1,17 @@
 - content_for :subnav do
   header.jumbotron.subhead
-    ul.breadcrumb
-      li
-        = link_to params[:table].humanize, resources_path(params[:table])
-        span.divider >
-      li
-        = "#{@item.class.original_name} ##{@item[@item.class.primary_key]}"
-      - if user_can? 'edit', params[:table]
-        span.divider |
-        li= link_to 'Edit', edit_resource_path(@item.class.table_name, @item)
-      li.pull-right
-        a data-toggle="modal" href="#settings" Settings
+    .breadcrumb
+      .row-fluid.btn-toolbar
+        .span3
+          strong= link_to params[:table].humanize, resources_path(params[:table])
+          span.divider >
+          = "#{@item.class.original_name} ##{@item[@item.class.primary_key]}"
+        .span8
+          - if user_can? 'edit', params[:table]
+            = link_to content_tag(:i, nil, class: 'icon-pencil'), edit_resource_path(@item.class.table_name, @item), :title => "Edit", :rel => 'tooltip', :'data-placement' => "bottom", :class => 'btn'
+        .span1.pull-right
+          a.btn data-toggle="modal" href="#settings" title="Show Settings" data-placement="bottom" rel="tooltip"
+            i.icon-cog
 .row-fluid
   .span6
     dl
