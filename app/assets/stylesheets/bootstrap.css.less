@@ -97,6 +97,38 @@ form.bulk-destroy {
     }
   }
 }
-table.items-list tr.selected td:first-child {
-  background-color:#F39C7D !important;
+table.items-list tr.selected td {
+  background-color:lightYellow;
+}
+
+table.items-list {
+  border:0px;
+  margin:0px -20px;
+  th {border:0px; border-bottom:1px solid #DDD !important;}
+  th.checkboxes, td.checkboxes {
+    width:1px;
+    border:none;
+    background:white!important;
+  }
+  th {
+    border-top:0px;
+  }
+  th.actions, td.actions {
+    width:42px;
+    border:none;
+    background:white!important;
+  }
+  tr:hover td {
+    background-color:lightYellow !important;
+  }
+  td {border-top:none}
+  td.actions a {
+    opacity:0;
+  }
+  tr:hover td.actions a {
+    opacity:0.5;
+  }
+  tr:hover td.actions a:hover {
+    opacity:1;
+  }
 }

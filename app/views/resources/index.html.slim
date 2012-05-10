@@ -65,27 +65,27 @@
 table.table-striped.table-bordered.table.items-list
   thead
     tr
+      th.actions
       - if user_can? 'destroy', params[:table]
-        th
+        th.checkboxes
           input type="checkbox"
       - clazz.settings.columns[:listing].each do |name|
         th= header_link name
-      th Actions
   tbody.autopagerize_page_element
     - if @items.any?
       - @items.each do |item|
         tr data-item-id=item.id
-          - if user_can? 'destroy', params[:table]
-            td.click_checkbox
-              input type="checkbox"
-          - clazz.settings.columns[:listing].each do |name|
-              == display_attribute :td, item, name
-          td
+          td.actions
             = link_to content_tag('i', nil, class: 'icon-eye-open'), resource_path(params[:table], item)
             - if user_can? 'edit', params[:table]
               = link_to content_tag('i', nil, class: 'icon-pencil'), edit_resource_path(params[:table], item)
             - if user_can? 'destroy', params[:table]
               = link_to content_tag('i', nil, class: 'icon-trash'), resource_path(params[:table], item), method: :delete, confirm: 'You sure?'
+          - if user_can?('destroy', params[:table]) || user_can?('update', params[:table])
+            td.checkboxes.click_checkbox
+              input type="checkbox"
+          - clazz.settings.columns[:listing].each do |name|
+              == display_attribute :td, item, name
     - else
       tr
         td colspan=(clazz.settings.columns[:listing].size + 2) No results.
