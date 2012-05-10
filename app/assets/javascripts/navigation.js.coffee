@@ -31,7 +31,7 @@ class Navigation
       return if $(event.target).is(':input')
       row = $('.items-list tr.selected')
       if row.length is 0
-        if e.which is 40
+        if [74, 40].indexOf(e.which) isnt -1
           $('.items-list tbody tr').first().addClass('selected')
           e.preventDefault()
         return
@@ -42,12 +42,12 @@ class Navigation
       else if [13, 39, 79].indexOf(e.which) isnt -1 # return or right arrow or o
         window.location.href = row.find('td:first-child a:first-child').attr('href')
       else if e.which is 88 # x
-        checkBox = row.find('td:first-child input[type=checkbox]')
+        checkBox = row.find('td:eq(1) input[type=checkbox]')
         checkBox.attr('checked', !checkBox.attr('checked'))
       else if e.which is 84 # t
-        row.find('td:last-child a:last-child').trigger('click')
+        row.find('td:first-child a:last-child').trigger('click')
       else if e.which is 69 # e
-        window.location.href = row.find('td:last-child a:eq(1)').attr('href')
+        window.location.href = row.find('td:first-child a:eq(1)').attr('href')
       else
         return
       e.preventDefault()
