@@ -97,8 +97,15 @@ form.bulk-destroy {
     }
   }
 }
-table.items-list tr.selected td {
+
+table.items-list tr.selected td.column:nth-child(3) {
+  border-left:3px solid orange;
+  padding-left:3px;
+}
+
+table.items-list tr.checked td.column {
   background-color:lightYellow;
+  border-bottom:1px solid white;
 }
 
 table.items-list {
@@ -119,9 +126,12 @@ table.items-list {
     background:white!important;
   }
   tr:hover td {
-    background-color:lightYellow !important;
+    background-color:#ECECEC !important;
   }
-  td {border-top:none}
+  td {
+    border-top:none;
+    padding-left:5px;
+  }
   td.actions a {
     opacity:0;
   }

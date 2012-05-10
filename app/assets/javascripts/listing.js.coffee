@@ -21,7 +21,7 @@ class BulkActions
     @form = $('.bulk-destroy')
     $(@checkbox_selector).click => @formVisibility()
     @form.submit =>
-      items = $("#{@checkbox_selector}:checked")
+      items = $("#{G}:checked")
       return false unless confirm "Are you sure you want to trash the #{items.length} selected items ?"
       for item in items
         item_id = $(item).closest('tr').data('item-id')
@@ -43,6 +43,8 @@ class BulkActions
       $(".bulk-action").hide()
     else
       $(".bulk-action").show()#.css('display', 'inline-block')
+    $("table.items-list input:checked").parents("tr").addClass("checked")
+    $("table.items-list input:not(:checked)").parents("tr").removeClass("checked")
 
 class CustomColumns
 
