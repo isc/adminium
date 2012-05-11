@@ -1,7 +1,7 @@
 class AccountsController < ApplicationController
   
   before_filter :require_admin
-  skip_filter :connect_to_db, :unless => :valid_db_url?
+  skip_filter :connect_to_db
   
   def edit
     @account = current_account

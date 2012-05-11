@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
   rescue_from Generic::TableNotFoundException, with: :table_not_found
+  rescue_from PGError, Mysql2::Error, :with => :global_db_error
   before_filter :fixed_account
   before_filter :require_authentication
   before_filter :connect_to_db
@@ -62,6 +63,10 @@ class ApplicationController < ActionController::Base
 
   def cleanup_generic
     @generic.try :cleanup
+  end
+  
+  def global_db_error exception
+    redirect_to edit_account_url, :flash => {:error => "There was a database error, it might be a problem with your database url. The error was : <pre>#{exception.message}</pre>".html_safe}
   end
 
 end
