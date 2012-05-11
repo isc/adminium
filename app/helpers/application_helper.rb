@@ -42,7 +42,7 @@ module ApplicationHelper
     reflection = item.class.reflections[assoc_name.to_sym]
     if reflection.options[:polymorphic]
       assoc_type = item.send key.gsub(/_id/, '_type')
-      class_name, path = assoc_type, resource_path(assoc_type.tableize, value)
+      class_name, path = assoc_type, resource_path(assoc_type.to_s.tableize, value)
     else
       class_name, path = assoc_name.classify, resource_path(reflection.table_name, value)
     end
