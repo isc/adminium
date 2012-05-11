@@ -43,9 +43,12 @@ setupValidations = ->
 setupEnumValues = ->
   setupRemoval '#enum-values_pane'
   $('#enum_value_column_name').change ->
-    $.getJSON $(this).data('values-url'), column_name:this.value, (data) ->
-      text = ("#{value}: " for value in data).join("\n")
-      $('#enum_value_values').val(text)
+    if this.value
+      $.getJSON $(this).data('values-url'), column_name:this.value, (data) ->
+        text = ("#{value}: " for value in data).join("\n")
+        $('#enum_value_values').val(text)
+    else
+      $('#enum_value_values').val('')
   $('#enum-values_pane .btn').click ->
     [column, values] = [$('#enum_value_column_name').val(), $('#enum_value_values').val()]
     addToTable '#enum-values_pane', [column, values]
