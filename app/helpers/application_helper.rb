@@ -12,7 +12,7 @@ module ApplicationHelper
     if key.include? "."
       parts = key.split('.')
       item = item.send(parts.first)
-      return content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
+      return column_content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
       return display_attribute wrapper_tag, item, parts.second
     end
     value = item[key]
@@ -33,7 +33,12 @@ module ApplicationHelper
     else
       css_class, content = display_value value, key
     end
-    content_tag wrapper_tag, content, class: css_class
+    column_content_tag wrapper_tag, content, class: css_class
+  end
+
+  def column_content_tag wrapper_tag, content, opts
+    opts[:class] = "column #{opts[:class]}"
+    content_tag wrapper_tag, content, opts
   end
 
   # FIXME n+1 queries perf issue with label_column option
