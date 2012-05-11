@@ -29,9 +29,10 @@ unset le focus eventuel d'un element de la popin quand on la ferme, sinon le "pr
 
 BUGS:
 on peut pas virer une advanced search appliquée en cliquant sur la croix du label
-bug dans les params sur un enchainement de plusieurs searches
 serialized columns containing smth else than a basic type
 subnav flickers on a page slightly too long for the screen
+
+bug sur le param order dans le cadre d'un enchainement de search
 
 potential optimisation : https://github.com/bgipsy/column_queries
 pour les dangerousattributes, ils sont readonly

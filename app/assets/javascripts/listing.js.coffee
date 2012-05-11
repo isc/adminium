@@ -86,7 +86,10 @@ $ ->
   new BulkActions()
   new CustomColumns()
   $('span.label span.remove').click ->
-    window.location.href = unescape(window.location.href).replace($(this).data('param'), '')
+    if $(this).data('param-kind')
+      window.location.href = window.location.href.replace(new RegExp("#{$(this).data('param-kind')}=.*?(&|$)"), '')
+    else
+      window.location.href = window.location.href.replace($(this).data('param'), '')
   if $('.breadcrumb').length > 0
     $('.breadcrumb').jscrollspy
       min: $('.breadcrumb').offset().top,

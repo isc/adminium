@@ -50,7 +50,7 @@
     - if params[:search].present?
       span.label.label-success
         == "search for <i>#{params[:search]}</i>"
-        span.remove data-param="search=#{params[:search]}" x
+        span.remove data-param-kind="search" x
     - if params[:where]
       - params[:where].each do |k, v|
         span.label.label-warning
@@ -60,7 +60,7 @@
       span.label.label-success.text-more data-title="advanced search #{params[:asearch]}" data-content=display_filter(@current_filter)
         span data-toggle="modal" href="#advanced_search"
           == "saved search <i>#{params[:asearch]}</i>"
-        span.remove data-param="asearch=#{params[:asearch]}" x
+        span.remove data-param-kind="asearch" x
 
 table.table-striped.table-bordered.table.items-list
   thead
