@@ -17,7 +17,7 @@ class Account < ActiveRecord::Base
   attr_encryptor :db_url, key: (ENV['ENCRYPTION_KEY'] || 'shablagoo')
 
   class Plan
-    PET_PROJECT = 'pet_project'
+    PET_PROJECT = 'petproject'
     STARTUP = 'startup'
     ENTERPRISE = 'enterprise'
   end
