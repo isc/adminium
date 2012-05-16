@@ -10,7 +10,7 @@
           .span3
             form.form-inline.subnav-search
               - request.query_string.to_s.split('&').each do |param|
-                input type="hidden" name=CGI.unescape(param.split('=').first) value=param.split('=').last
+                input type="hidden" name=CGI.unescape(param.split('=').first) value=CGI.unescape(param.split('=').last)
               input.span2 name="search" type='text' value=params[:search] placeholder="search on #{clazz.settings.columns[:search].map(&:humanize).join(', ').downcase}"
               '
               .btn-group
