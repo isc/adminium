@@ -126,5 +126,9 @@ module ApplicationHelper
       end
     end
   end
+  
+  def format_param_for_removal k, v
+    "#{CGI.escape("where[#{k}]")}=#{CGI.escape(v)}"
+  end
 
 end
