@@ -15,7 +15,8 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test "creating a comment (polymorphic belongs_to)" do
     login
     visit resources_path(:comments)
-    click_link 'Add new'
+    link = find('a[title="Create a new row"]')
+    link.click()
   end
   
   test "save and create another" do
