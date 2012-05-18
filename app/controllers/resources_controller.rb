@@ -222,6 +222,7 @@ class ResourcesController < ApplicationController
   
   def table_access_limitation
     return unless current_account.pet_project?
+    clazz # possibly triggers the table not found exception
     if (@generic.tables.index params[:table]) >= 5
       redirect_to dashboard_url,
         notice: "You're currently on the free plan meant for pet projects which is limited to five tables of your schema.<br/>Upgrade to the startup plan to access your full schema with Adminium.".html_safe
