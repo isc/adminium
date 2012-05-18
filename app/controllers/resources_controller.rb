@@ -199,7 +199,7 @@ class ResourcesController < ApplicationController
       when 'boolean'
         raise "Unsupported" unless BOOLEAN_OPERATORS.include?(filter['operator'])
         params = ["#{c} = ?", filter['operator'] == "is_true"]
-      when 'datetime'
+      when 'datetime', 'date'
         raise "Unsupported #{filter['operator']}" unless DATETIME_OPERATORS.include?(filter['operator'])
         ranges = {'today' => [0, 'day'], 'yesterday' => [1, 'day'], 'this_week' => [0, 'week'], 'last_week' => [1, 'week']}
         range = ranges[filter['operator']]

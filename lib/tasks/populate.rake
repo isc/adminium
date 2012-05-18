@@ -13,6 +13,7 @@ task :populate => :environment do
     user.pseudo = Faker::Name.name
     user.first_name = Faker::Name.first_name
     user.last_name = Faker::Name.last_name
+    user.birthdate = 50.years.ago..10.years.ago
   end
   Post.populate 100 do |post|
     post.title = Faker::Lorem.sentence

@@ -11,7 +11,7 @@ td
   = render partial: "/settings/filters/#{filter_type}", locals: {g: g, operator: filter["operator"]}
 td
   - css_class = "span2"
-  - css_class += " datepicker" if filter['type'] == :datetime
+  - css_class += " datepicker" if [:datetime, :date].include? filter['type']
   = text_field_tag "filters[#{g}][operand]", filter['operand'], class: css_class
 td
   span.btn
