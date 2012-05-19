@@ -181,11 +181,9 @@ class ResourcesController < ApplicationController
       return scope.where(unary_operator.gsub('_', c))
     end
     case filter['type']
-      when 'integer'
+      when 'integer', 'float', 'decimal'
         raise "Unsupported" unless INTEGER_OPERATORS.include?(filter['operator'])
-        unless filter['operand'].blank?
-          params = ["#{c} #{filter['operator']} ?", filter['operand']]
-        end
+        params = ["#{c} #{filter['operator']} ?", filter['operand']] unless filter['operand'].blank?
       when 'string', 'text'
         operand = STRING_LIKE_OPERATOR_DEFINITIONS[filter['operator']]
         if operand
@@ -193,9 +191,7 @@ class ResourcesController < ApplicationController
           params = ["#{c} #{like_operator} ?", operand.gsub('_', filter['operand'])]
         end
         operand = STRING_OPERATOR_DEFINITIONS[filter['operator']]
-        if operand
-          params = operand.gsub('_', c)
-        end
+        params = operand.gsub('_', c) if operand
       when 'boolean'
         raise "Unsupported" unless BOOLEAN_OPERATORS.include?(filter['operator'])
         params = ["#{c} = ?", filter['operator'] == "is_true"]
