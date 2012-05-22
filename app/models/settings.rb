@@ -59,7 +59,7 @@ module Settings
         @validations = datas[:validations] || []
         @label_column = datas[:label_column]
       end
-      @default_order ||= "#{@clazz.primary_key} desc"
+      @default_order ||= "#{@clazz.primary_key} desc" if @clazz.primary_key
       set_missing_columns_conf
       @filters ||= {}
     end

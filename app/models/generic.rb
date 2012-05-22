@@ -74,7 +74,18 @@ class Generic
       def res.abstract_class?
         false
       end
-      res.primary_key = res.column_names.first if res.primary_key.nil?
+      if res.primary_key.nil?
+        if res.column_names.include? 'id'
+          res.primary_key = res.id
+        else
+          references = res.column_names.find_all {|c| c.ends_with? '_id'}
+          if references.any?
+            res.primary_keys = references
+          else
+            res.primary_key = res.column_names.first
+          end
+        end
+      end
       res
     end
   end

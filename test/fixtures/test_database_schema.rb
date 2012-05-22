@@ -1,7 +1,7 @@
 conn_spec = ActiveRecord::Base.configurations['fixture']
 ActiveRecord::Base.establish_connection conn_spec
 ActiveRecord::Schema.verbose = false
-version = 4
+version = 6
 if ActiveRecord::Migrator.current_version != version
   ActiveRecord::Base.connection.tables.each do |table|
     ActiveRecord::Base.connection.drop_table table
@@ -34,6 +34,14 @@ if ActiveRecord::Migrator.current_version != version
     create_table :posts do |t|
       t.string :title, :author
       t.text :body
+    end
+    create_table :roles do |t|
+      t.string :name
+      t.timestamps
+    end
+    create_table :roles_users, id: false do |t|
+      t.references :role
+      t.references :user
     end
   end
 end

@@ -65,6 +65,8 @@ GEM
       execjs
     coffee-script-source (1.2.0)
     commonjs (0.2.4)
+    composite_primary_keys (5.0.6)
+      activerecord (~> 3.2.0)
     configatron (2.9.0)
       yamler (>= 0.1.0)
     country_select (0.0.2)
@@ -240,6 +242,7 @@ DEPENDENCIES
   bootstrap-components-helpers!
   capybara
   coffee-rails (~> 3.2.1)
+  composite_primary_keys
   configatron
   country_select
   factory_girl_rails
