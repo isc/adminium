@@ -49,7 +49,13 @@ class Account < ActiveRecord::Base
   def enterprise?
     plan == Plan::ENTERPRISE
   end
-
+  
+  def fill_tables_count
+    return unless valid_db_url?
+    generic = Generic.new self
+    update_attribute :tables_count, generic.tables.size
+  end
+  
   private
 
   def generate_api_key
