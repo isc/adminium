@@ -76,7 +76,7 @@ class Generic
       end
       if res.primary_key.nil?
         if res.column_names.include? 'id'
-          res.primary_key = res.id
+          res.primary_key = 'id'
         else
           references = res.column_names.find_all {|c| c.ends_with? '_id'}
           if references.any?
