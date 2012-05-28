@@ -170,6 +170,11 @@ class ResourcesController < ApplicationController
     clazz.settings.validations.each do |validation|
       clazz.send validation['validator'], validation['column_name']
     end
+    if clazz.primary_keys.present?
+      clazz.primary_keys.each do |primary_key|
+        clazz.send :validates_presence_of, primary_key
+      end
+    end
   end
 
   def build_statement scope, filter
