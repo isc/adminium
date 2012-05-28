@@ -30,5 +30,10 @@ class SessionsController < ApplicationController
     session.clear
     redirect_to root_url, notice: 'Signed out!'
   end
+  
+  def remove_heroku_chrome
+    cookies.delete 'heroku-nav-data'
+    redirect_to :back
+  end
 
 end

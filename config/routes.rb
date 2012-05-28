@@ -25,6 +25,7 @@ MtCrap::Application.routes.draw do
   end
   resource :sessions, only: [] do
     get :switch_account
+    get :remove_heroku_chrome
   end
   resource :account, only: [:edit, :update]
   resources :roles

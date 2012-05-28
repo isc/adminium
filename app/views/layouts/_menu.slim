@@ -24,6 +24,10 @@ ul.nav.pull-right
       - if admin?
         li class=active_or_not('accounts') = link_to 'Edit Account', edit_account_path
       li class=active_or_not('docs') = link_to 'Docs', docs_path
+      - if cookies['heroku-nav-data']
+        li= link_to 'Remove Heroku Chrome', remove_heroku_chrome_sessions_path
+      - if current_user.nil?
+        li= link_to 'Sign out', signout_path
 - if session[:account] == ENV['DEMO_ACCOUNT_ID']
   ul.nav.pull-right.demo-account
     li
