@@ -9,6 +9,13 @@
 @iconWhiteSpritePath: asset-path('twitter/bootstrap/glyphicons-halflings-white.png');
 
 // Your custom stylesheets goes here (override Less here)
+.breadcrumb .active a {
+  color:white;
+}
+.breadcrumb li:hover a {
+  color:@orange;
+}
+
 .pagination {
   span:first-child a {
     border-left:1px solid #DDD;
@@ -106,6 +113,7 @@ table.items-list tr.selected td.column:nth-child(3) {
 table.items-list tr.checked td.column {
   background-color:lightYellow;
   border-bottom:1px solid white;
+  padding-bottom:7px;
 }
 
 table.items-list {
@@ -116,6 +124,7 @@ table.items-list {
     width:1px;
     border:none;
     background:white!important;
+    padding-left:5px;
   }
   th {
     border-top:0px;

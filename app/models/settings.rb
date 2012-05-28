@@ -6,7 +6,7 @@ module Settings
 
   class Global
 
-    DEFAULTS = {per_page: 25, date_format: :long, datetime_format: :long}
+    DEFAULTS = {per_page: 25, date_format: :long, datetime_format: :long, export_col_sep: ',', export_skip_header: false}
 
     def initialize account_id
       @account_id = account_id
@@ -32,7 +32,7 @@ module Settings
 
   class Base
 
-    attr_accessor :filters, :default_order, :enum_values, :validations, :label_column
+    attr_accessor :filters, :default_order, :enum_values, :validations, :label_column, :export_col_sep, :export_skip_header
 
     def initialize clazz
       @clazz = clazz
@@ -58,6 +58,8 @@ module Settings
         @enum_values = datas[:enum_values] || []
         @validations = datas[:validations] || []
         @label_column = datas[:label_column]
+        @export_skip_header = datas[:export_skip_header]
+        @export_col_sep = datas[:export_col_sep]
       end
       @default_order ||= "#{@clazz.primary_key} desc" if @clazz.primary_key
       set_missing_columns_conf
@@ -66,13 +68,23 @@ module Settings
 
     def save
       settings = {columns: @columns, filters: @filters, validations: @validations,
-        default_order: @default_order, enum_values: @enum_values, label_column: @label_column}
+        default_order: @default_order, enum_values: @enum_values, label_column: @label_column,
+        export_col_sep: @export_col_sep, export_skip_header: @export_skip_header}
       settings.merge! per_page: @per_page if @globals.per_page != @per_page
       REDIS.set settings_key, settings.to_json
     end
 
     def settings_key
       "account:#{@clazz.adminium_account_id}:settings:#{@clazz.original_name}"
+    end
+
+    def csv_options= options
+      @export_skip_header = options.has_key?(:skip_header)
+      @export_col_sep = options[:col_sep] if options.has_key? :col_sep
+    end
+
+    def export_col_sep
+      @export_col_sep
     end
 
     def per_page= per_page
@@ -138,6 +150,7 @@ module Settings
           @columns[type] =
           {listing: @clazz.column_names, show: @clazz.column_names,
             form: (@clazz.column_names - %w(created_at updated_at id)),
+            export: @clazz.column_names,
             search: searchable_column_names, serialized: []}[type]
         end
       end

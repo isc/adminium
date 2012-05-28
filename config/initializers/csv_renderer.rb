@@ -4,10 +4,13 @@ class Array
 
   def to_my_csv(options = Hash.new)
     clazz = first.class
-    keys = clazz.settings.columns[:listing]
-    out = keys.map do |key|
-      key.humanize
-    end.to_csv(options)
+    keys = clazz.settings.columns[:export]
+    options = {col_sep: clazz.settings.export_col_sep}
+    out = if clazz.settings.export_skip_header
+      ''
+    else
+      keys.map { |k| k.humanize }.to_csv(options)
+    end
     self.each do |item|
       out << keys.map do |key|
         if key.include? "."

@@ -2,12 +2,22 @@ module ResourcesHelper
 
   def header_link key
     params[:order] ||= 'id'
-    order, icon = [key, '']
-    order, icon = ["#{key} desc", 'icon-chevron-up'] if params[:order] == key
-    icon = 'icon-chevron-down' if params[:order] == "#{key} desc"
-    res = content_tag('i', '', class: icon, style:"position:absolute")
-    style = icon.present? ? "margin-left:20px" : ""
-    res << (link_to key.humanize, params.merge(order:order), style:style)
+    if params[:order] == key
+      order = "#{key} desc"
+      title = "descend by #{key}"
+    else
+      order = key
+      title = "ascend by #{key}"
+    end
+    res = ""
+    {'up' => key, 'down' => "#{key} desc"}.each do |direction, dorder|
+      active = dorder == params[:order] ? 'active' : nil
+      dtitle = direction == 'up' ? "ascend by #{key}" : "descend by #{key}"
+      res << link_to(params.merge(order:dorder), title:dtitle, rel:'tooltip') do
+        content_tag('i', '', class: "icon-chevron-#{direction} #{active}")
+      end
+    end
+    res << (link_to key.humanize, params.merge(order:order), title: title, rel:'tooltip')
   end
 
   def page_entries_info(collection, options = {})

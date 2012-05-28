@@ -1,5 +1,5 @@
 class ResourcesController < ApplicationController
-  
+
   before_filter :table_access_limitation
   before_filter :check_permissions
   before_filter :apply_serialized_columns, only: [:index, :show]
@@ -10,8 +10,7 @@ class ResourcesController < ApplicationController
   respond_to :json, :html, :xml, :csv, :only => :index
 
   def index
-    @items = clazz.scoped #select(clazz.settings.columns[:listing].join(", "))
-    #raise clazz.settings.filters.inspect
+    @items = clazz.scoped
     @current_filter = clazz.settings.filters[params[:asearch]] || []
     @current_filter.each do |filter|
       @items = build_statement(@items, filter)
@@ -20,6 +19,7 @@ class ResourcesController < ApplicationController
     apply_search if params[:search].present?
     params[:order] ||= clazz.settings.default_order
     @items = @items.order(params[:order])
+    update_export_settings
     respond_with(@items) do |format|
       format.html do
         check_per_page_setting
@@ -99,6 +99,14 @@ class ResourcesController < ApplicationController
   end
 
   private
+
+  def update_export_settings
+    if params[:export_columns].present?
+      clazz.settings.columns[:export] = params[:export_columns]
+      clazz.settings.csv_options = params[:csv_options]
+      clazz.settings.save
+    end
+  end
 
   def check_permissions
     return if admin?
@@ -219,7 +227,7 @@ class ResourcesController < ApplicationController
     end
     scope.where(params)
   end
-  
+
   def table_access_limitation
     return unless current_account.pet_project?
     clazz # possibly triggers the table not found exception

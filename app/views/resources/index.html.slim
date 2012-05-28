@@ -70,7 +70,7 @@ table.table-striped.table-bordered.table.items-list
           - if user_can? 'destroy', params[:table]
             input type="checkbox"
       - clazz.settings.columns[:listing].each do |name|
-        th= header_link name
+        th== header_link name
   tbody.autopagerize_page_element
     - if @items.any?
       - @items.each do |item|
