@@ -7,11 +7,11 @@
             = params[:table].humanize
 
         - if clazz.settings.columns[:search].any?
-          .span3
+          .span4
             form.form-inline.subnav-search
               - request.query_string.to_s.split('&').each do |param|
                 input type="hidden" name=CGI.unescape(param.split('=').first) value=CGI.unescape(param.split('=').last)
-              input.span2 name="search" type='text' value=params[:search] placeholder="search on #{clazz.settings.columns[:search].map(&:humanize).join(', ').downcase}"
+              input.span3 name="search" type='text' value=params[:search] placeholder="search on #{clazz.settings.columns[:search].map(&:humanize).join(', ').downcase}"
               '
               .btn-group
                 button.btn
@@ -26,7 +26,7 @@
                   - clazz.settings.filters.keys.each do |key|
                     li
                       =link_to key, params.merge(asearch: key)
-        .btn-group.span3
+        .btn-group.span2
           - if user_can? 'create', params[:table]
             = link_to new_resource_path(table:params[:table]), class: "btn", rel: "tooltip", title: "Create a new row", "data-placement" => "bottom" do
               i.icon-file

@@ -62,7 +62,8 @@ class ResourcesController < ApplicationController
 
   def destroy
     @item.destroy
-    redirect_to :back, flash: {success: "#{object_name} successfully destroyed."}
+    redirection = params[:redirect] == 'index' ? resources_path(params[:table]) : :back
+    redirect_to redirection, flash: {success: "#{object_name} successfully destroyed."}
   end
 
   def bulk_destroy
@@ -71,9 +72,7 @@ class ResourcesController < ApplicationController
   end
 
   def bulk_edit
-
     @record_ids = params[:record_ids]
-
     if clazz.where({clazz.primary_key => params[:record_ids]}).count != @record_ids.length
       raise "BulkEditCheckRecordsFailed"
     end
@@ -140,7 +139,7 @@ class ResourcesController < ApplicationController
   end
 
   def class_name
-    clazz.original_name.humanize
+    clazz.original_name.underscore.humanize
   end
 
   def apply_search

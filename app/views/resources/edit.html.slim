@@ -6,8 +6,10 @@
           strong= link_to params[:table].humanize, resources_path(params[:table])
           span.divider >
           = "Editing #{@item.class.original_name} ##{@item[@item.class.primary_key]}"
-        .span8
+        .btn-group.span8
           = link_to content_tag(:i, nil, class: 'icon-eye-open'), resource_path(@item.class.table_name, @item), class: 'btn', :'data-placement' => 'bottom', rel: 'tooltip', title: 'Show'
+          - if user_can? 'destroy', params[:table]
+            = link_to content_tag(:i, nil, class: 'icon-trash'), resource_path(@item.class.table_name, @item, redirect: 'index'), method: :delete, confirm: 'You sure?', class: 'btn', title: 'Destroy', rel: 'tooltip', 'data-placement' => 'bottom'
         .span1
           a.btn data-toggle="modal" href="#settings" title="Form Settings" data-placement="bottom" rel="tooltip"
             i.icon-cog
