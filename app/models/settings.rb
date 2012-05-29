@@ -43,7 +43,7 @@ module Settings
       @globals = Global.new @clazz.adminium_account_id
       value = REDIS.get settings_key
       if value.nil?
-        @columns, @enum_values, @validations = {}, [], []
+        @column, @columns, @enum_values, @validations = {}, {}, [], []
       else
         datas = JSON.parse(value).symbolize_keys!
         @columns = datas[:columns].symbolize_keys!
@@ -53,6 +53,7 @@ module Settings
         else
           @filters = datas[:filters]
         end
+        @column = datas[:column] || {}
         @default_order = datas[:default_order]
         @per_page = datas[:per_page] || @globals.per_page
         @enum_values = datas[:enum_values] || []
@@ -67,7 +68,7 @@ module Settings
     end
 
     def save
-      settings = {columns: @columns, filters: @filters, validations: @validations,
+      settings = {columns: @columns, column:@column, filters: @filters, validations: @validations,
         default_order: @default_order, enum_values: @enum_values, label_column: @label_column,
         export_col_sep: @export_col_sep, export_skip_header: @export_skip_header}
       settings.merge! per_page: @per_page if @globals.per_page != @per_page
@@ -97,6 +98,23 @@ module Settings
 
     def columns type = nil
       type ? @columns[type] : @columns
+    end
+
+    def column_options name
+      @column[name.to_s] || {}
+    end
+
+    def update_column_options name, options
+      hidden = options.delete :hide
+      @columns[:listing].delete name if hidden
+      if options[:serialized]
+        @columns[:serialized].push(name)
+      else
+        @columns[:serialized].delete(name)
+      end
+      @columns[:serialized].uniq!
+      @column[name.to_s] = options
+      save
     end
 
     def columns_options type, opts = {}

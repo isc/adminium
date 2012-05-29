@@ -17,7 +17,13 @@ module ResourcesHelper
         content_tag('i', '', class: "icon-chevron-#{direction} #{active}")
       end
     end
-    res << (link_to key.humanize, params.merge(order:order), title: title, rel:'tooltip')
+    res << (link_to column_display_name(clazz, key), params.merge(order:order), title: title, rel:'tooltip')
+  end
+
+  def column_display_name clazz, key
+    value = clazz.settings.column_options(key)['rename']
+    value.present? ? value : key.humanize
+
   end
 
   def page_entries_info(collection, options = {})

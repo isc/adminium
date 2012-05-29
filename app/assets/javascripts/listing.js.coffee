@@ -2,11 +2,7 @@ class BulkActions
   checkbox_selector: '.items-list tbody input[type=checkbox]'
 
   constructor: ->
-    $("#bulk-edit-modal").on('hide', =>
-      $("#bulk-edit-modal").html($(".loading_modal").html())
-    )
-    $("#bulk-edit-modal").on('shown', =>
-      $("#bulk-edit-modal").html($(".loading_modal").html())
+    $("#bulk-edit-modal").on 'shown', =>
       item_ids = ""
       for item in $("#{@checkbox_selector}:checked")
         item_ids += "record_ids[]=#{$(item).closest('tr').data('item-id')}&"
@@ -17,7 +13,7 @@ class BulkActions
           $("##{inst.id}_1i").val(inst.selectedYear)
           $("##{inst.id}_2i").val(inst.selectedMonth + 1)
           $("##{inst.id}_3i").val(inst.selectedDay)
-    )
+
     @form = $('.bulk-destroy')
     $(@checkbox_selector).click => @formVisibility()
     @form.submit =>
@@ -82,20 +78,41 @@ class CustomColumns
         addClass('setting_attribute').appendTo 'ul#listing_columns_list'
       false
 
+class ColumnSettings
+  constructor: ->
+    $(".column_settings").click ->
+      column_name = $(this).attr("rel")
+      path = $("#column-settings").attr("data-remote-path") + "?column=#{column_name}"
+      $("#column-settings").modal('show')
+      $.get path, (data) =>
+        $("#column-settings").html(data)
+
+class UIListing
+  constructor: ->
+    $(".modal[data-remote-path]").on 'hide', ->
+      $(this).html($(".loading_modal").html())
+
+    $(".modal[data-remote-path]").on 'shown', ->
+      $(this).html($(".loading_modal").html())
+
+    $('span.label span.remove').click ->
+      if $(this).data('param-kind')
+        window.location.href = window.location.href.replace(new RegExp("#{$(this).data('param-kind')}=.*?(&|$)"), '')
+      else
+        window.location.href = window.location.href.replace($(this).data('param'), '')
+    if $('.breadcrumb').length > 0
+      $('.breadcrumb').jscrollspy
+        min: $('.breadcrumb').offset().top,
+        max: $(document).height(),
+        onEnter: (element, position) ->
+          $(".breadcrumb").addClass('subnav-fixed')
+        ,
+        onLeave: (element, position) ->
+          $(".breadcrumb").removeClass('subnav-fixed')
+
+
 $ ->
   new BulkActions()
   new CustomColumns()
-  $('span.label span.remove').click ->
-    if $(this).data('param-kind')
-      window.location.href = window.location.href.replace(new RegExp("#{$(this).data('param-kind')}=.*?(&|$)"), '')
-    else
-      window.location.href = window.location.href.replace($(this).data('param'), '')
-  if $('.breadcrumb').length > 0
-    $('.breadcrumb').jscrollspy
-      min: $('.breadcrumb').offset().top,
-      max: $(document).height(),
-      onEnter: (element, position) ->
-        $(".breadcrumb").addClass('subnav-fixed')
-      ,
-      onLeave: (element, position) ->
-        $(".breadcrumb").removeClass('subnav-fixed')
+  new UIListing()
+  new ColumnSettings()

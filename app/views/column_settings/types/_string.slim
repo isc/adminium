@@ -1,0 +1,5 @@
+.control-group
+  label.control-label for="column_hide" serialized values
+  .controls
+      = check_box_tag 'column_options[serialized]', 'checked', @serialized
+      p.help-block= "check this if your data represents a serialized Ruby Core Class"

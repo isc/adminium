@@ -15,6 +15,8 @@ MtCrap::Application.routes.draw do
     get :columns, on: :collection
     post :update_advanced_search, :on => :member
   end
+
+  resources :column_settings
   resource :general_settings, only: [:edit, :update]
 
   resources :docs, only: [:index, :show] do

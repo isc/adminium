@@ -31,7 +31,7 @@ module ApplicationHelper
     elsif item.class.settings.columns[:serialized].include? key
       css_class, content = 'serialized', content_tag(:pre, value.inspect, :class => 'sh_ruby')
     else
-      css_class, content = display_value value, key
+      css_class, content = display_value item, key
     end
     column_content_tag wrapper_tag, content, class: css_class
   end
@@ -63,7 +63,8 @@ module ApplicationHelper
     link_to label, path
   end
 
-  def display_value value, key
+  def display_value item, key
+    value = item[key]
     css_class = value.class.to_s.parameterize
     content = case value
     when String
@@ -74,15 +75,45 @@ module ApplicationHelper
         truncate_with_popover value, key
       end
     when ActiveSupport::TimeWithZone
-      display_datetime value
+      display_datetime value, column: key, clazz: item.class
     when Fixnum, BigDecimal
-      number_with_delimiter value
+      display_number key, item
+    when TrueClass, FalseClass
+      display_boolean key, item
     when nil
       'null'
     else
       value.to_s
     end
     [css_class, content]
+  end
+
+  def display_boolean key, item
+    value = item[key]
+    options = item.class.settings.column_options(key)
+    if options["boolean_#{value}"].present?
+      options["boolean_#{value}"]
+    else
+      value.to_s
+    end
+  end
+
+  def display_number key, item
+    value = item[key]
+    options = item.class.settings.column_options(key)
+    number_options = {:unit => "", :significant => true}
+    opts = [:unit, :delimiter, :separator, :precision]
+    if value.is_a? Fixnum
+      number_options[:precision] = 0
+    else
+      opts.push :precision
+    end
+    opts.each do |u|
+      number_options[u] = options["number_#{u}"] if options["number_#{u}"].present?
+    end
+    number_options[:format] = "%n%u" if options['number_unit_append'].present?
+    number_options[:precision] = number_options[:precision].to_i if number_options[:precision]
+    number_to_currency value, number_options
   end
 
   def truncate_with_popover value, key
@@ -95,14 +126,36 @@ module ApplicationHelper
     end
   end
 
-  def display_datetime(value, format=nil)
-    return if nil
-    format ||= global_settings.datetime_format
-    if format.to_sym == :time_ago_in_words
+  def display_datetime(value, opts={})
+    return if value == nil
+    if opts[:column] && opts[:clazz]
+      opts[:format] = opts[:clazz].settings.column_options(opts[:column])['format']
+      opts[:format] = nil if opts[:format].blank?
+    end
+    opts[:format] ||= global_settings.datetime_format
+    if opts[:format].to_sym == :time_ago_in_words
       str = time_ago_in_words(value) + ' ago'
       content_tag('span', str, title: l(value, format: :long), rel: 'tooltip')
     else
-      l(value, format: format.to_sym)
+      l(value, format: opts[:format].to_sym)
+    end
+  end
+
+  def display_datetime_control_group opts={}
+    opts[:label] ||= "DateTime format"
+    d = Time.now
+    formats = (opts[:kind] == :date) ? configatron.settings.date : configatron.settings.date
+    datas = formats.map{|f|[display_datetime(d, format: f),f.to_s]}
+    if opts[:allow_blank]
+      datas = [[opts[:allow_blank], '']] + datas
+    end
+    content_tag :div, class: "control-group" do
+      l = content_tag(:label, opts[:label], class: "control-label")
+      l + content_tag(:div, class: "controls") do
+        content_tag(:select, name: opts[:input_name]) do
+          options_for_select(datas, opts[:selected])
+        end
+      end
     end
   end
 
@@ -126,7 +179,7 @@ module ApplicationHelper
       end
     end
   end
-  
+
   def format_param_for_removal k, v
     "#{CGI.escape("where[#{k}]")}=#{CGI.escape(v)}"
   end

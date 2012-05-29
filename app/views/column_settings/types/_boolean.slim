@@ -1,0 +1,6 @@
+- ["true", "false"].each do |value|
+  .control-group
+    label.control-label for="column_options_boolean_true"= "#{value} values".capitalize
+    .controls
+      = text_field_tag "column_options[boolean_#{value}]", settings.column_options(column.name)["boolean_#{value}"]
+      p.help-block= "displayed text for #{value} values"

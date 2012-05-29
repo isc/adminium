@@ -70,7 +70,10 @@ table.table-striped.table-bordered.table.items-list
           - if user_can? 'destroy', params[:table]
             input type="checkbox"
       - clazz.settings.columns[:listing].each do |name|
-        th== header_link name
+        th.column_header
+          == header_link name
+          i.column_settings.icon-cog(rel=name)
+
   tbody.autopagerize_page_element
     - if @items.any?
       - @items.each do |item|
@@ -92,4 +95,5 @@ table.table-striped.table-bordered.table.items-list
 = render partial: '/resources/panels/listing_settings'
 = render partial: '/resources/panels/export'
 = render partial: '/resources/panels/advanced_search'
+#column-settings.modal.hide.fade(data-remote-path="/column_settings/#{params[:table]}")
 #bulk-edit-modal.modal.hide.fade(data-remote-path=bulk_edit_resources_path(table: params[:table]))

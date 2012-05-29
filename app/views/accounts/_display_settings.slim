@@ -9,19 +9,5 @@
         p.help-block number of rows displayed per page by default
   fieldset
     legend Types
-    .control-group
-      label.control-label DateTime format
-      .controls
-        - d = Time.now
-        - formats = configatron.settings.datetime
-        select name='settings[datetime_format]'
-          = options_for_select(formats.map{|f|[display_datetime(d, f),f.to_s]}, global_settings.datetime_format)
-    .control-group
-      label.control-label Date format
-      .controls
-        - d = Date.today
-        - formats = configatron.settings.date
-        select name='settings[date_format]'
-          = options_for_select(formats.map{|f|[display_datetime(d, f),f.to_s]}, global_settings.date_format)
-  .form-actions
-    input.btn.btn-primary type="submit" value="Save Changes"
+    = display_datetime_control_group input_name: 'settings[datetime_format]', selected: global_settings.datetime_format
+    = display_datetime_control_group kind: :date, label: "Date format", input_name: 'settings[date_format]', selected: global_settings.date_format
