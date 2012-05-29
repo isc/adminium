@@ -2,7 +2,7 @@
   .control-group
     label.control-label for="column_options_number_#{key}"= key.to_s.humanize
     .controls
-      = text_field_tag "column_options[number_#{key}]", settings.column_options(column.name)["number_#{key}"]
+      = text_field_tag "column_options[number_#{key}]", settings.column_options(column.name)["number_#{key}"], class: "span1"
       p.help-block= description
 .control-group
   label.control-label for="column_options_number_unit_append" Append unit
