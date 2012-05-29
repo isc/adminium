@@ -48,37 +48,49 @@ class BulkActions
 class CustomColumns
 
   constructor: ->
-    [@assocSelect, @columnSelect] = [$('.custom-column select:eq(0)'), $('.custom-column select:eq(1)')]
+    [@assocSelect, @columnSelect] = [$('select.select-custom-assoc'), $('select.select-custom-column')]
     @addButton = $('.custom-column button')
     @associationSelection()
     @columnSelection()
     @customColumnAdd()
 
   associationSelection: ->
-    @assocSelect.change =>
-      if @assocSelect.val()
-        $.get @assocSelect.data().columnsPath, table: @assocSelect.val(), (data) =>
-          $('<option>').appendTo @columnSelect
+    @assocSelect.change (elt) =>
+      assocSelect = $(elt.currentTarget)
+      columnSelect = assocSelect.siblings(".select-custom-column")
+      addButton = assocSelect.siblings("button")
+      if assocSelect.val()
+        $.get assocSelect.data().columnsPath, table: assocSelect.val(), (data) =>
+          $('<option>').appendTo columnSelect
           for column in data
-            $('<option>').text(column).val(column).appendTo @columnSelect
+            $('<option>').text(column).val(column).appendTo columnSelect
       else
-        @columnSelect.empty()
-        @addButton.attr('disabled', 'disabled')
+        columnSelect.empty()
+        addButton.attr('disabled', 'disabled')
 
   columnSelection: ->
-    @columnSelect.change =>
-      if @columnSelect.val()
-        @addButton.removeAttr('disabled')
+    @columnSelect.change (elt) =>
+      columnSelect = $(elt.currentTarget)
+      addButton = columnSelect.siblings("button")
+      if columnSelect.val()
+        addButton.removeAttr('disabled')
       else
-        @addButton.attr('disabled', 'disabled')
+        addButton.attr('disabled', 'disabled')
 
   customColumnAdd: ->
-    @addButton.click =>
-      label = $('<label>').text("#{@assocSelect.val()} #{@columnSelect.val()}")
-      input = $('<input>').attr('type': 'checkbox', 'checked': 'checked', 'name':'listing_columns[]', 'value':"#{@assocSelect.val()}.#{@columnSelect.val()}")
+    @addButton.click (elt) =>
+      addButton = $(elt.currentTarget)
+      assocSelect = addButton.siblings(".select-custom-assoc")
+      columnSelect = addButton.siblings(".select-custom-column")
+      ul = addButton.parents(".custom-column").siblings("ul")
+      type = ul.attr("data-type")
+      value = "#{assocSelect.val()}.#{columnSelect.val()}"
+      label = $('<label>').text(value.replace(".", " "))
+      input = $('<input>').attr('type': 'checkbox', 'checked': 'checked', 'name':"#{type}_columns[]", 'value':value)
       icon = $('<i>').addClass('icon-resize-vertical')
+
       $('<li>').append(input).append(label).append(icon).
-        addClass('setting_attribute').appendTo 'ul#listing_columns_list'
+        addClass('setting_attribute').appendTo ul
       false
 
 class ColumnSettings

@@ -7,7 +7,7 @@
       = accordion do |accordion|
         = accordion.pane 'Select exported fields' do
           = render partial: 'resources/panels/column_listing', locals: {clazz: clazz, type: :export, sortable: true}
-
+          = render partial: 'resources/panels/extra_columns', locals: {clazz: clazz}
         = accordion.pane 'CSV file options' do
           .control-group
             - guessed_encoding = (Rails.configuration.database_configuration[Rails.env]['encoding'].presence rescue 'UTF-8') || 'UTF-8'

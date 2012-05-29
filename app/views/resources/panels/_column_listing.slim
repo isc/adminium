@@ -1,4 +1,4 @@
-ul id="#{type}_columns_list"
+ul id="#{type}_columns_list" data-type=type
   - clazz.settings.columns_options(type).each do |name, checked|
     li.setting_attribute
       - input_id = "#{type}_columns_#{name}".parameterize
