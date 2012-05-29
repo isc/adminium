@@ -1,9 +1,9 @@
 .modal-header
   a.close data-dismiss="modal" ×
-  h3== "Settings for column #{column.name}"
+  h3== "Settings for column #{params[:column]}"
 = form_tag column_settings_path, method: :post, class: 'form-horizontal denser' do
   input type="hidden" name="id" value=params[:id]
-  input type="hidden" name="column" value=column.name
+  input type="hidden" name="column" value=params[:column]
   .modal-body
     .control-group
       label.control-label for="column_hide" Hide this column
@@ -14,9 +14,19 @@
     .control-group
       label.control-label for="column_options_rename" Column displayed name
       .controls
-        = text_field_tag 'column_options[rename]', settings.column_options(column.name)['rename']
-        p.help-block= "default is #{column.name.humanize}"
-    - type = [:integer, :decimal].include?(column.type) ? :number : column.type
-    = render partial: "/column_settings/types/#{type}"
+        = text_field_tag 'column_options[rename]', settings.column_options(params[:column])['rename']
+        p.help-block= "default is #{params[:column].humanize}"
+    - unless association_clazz || clazz.foreign_key?(params[:column])
+      = render partial: "/column_settings/types/#{column.type}"
+    - else
+      - if clazz.foreign_key?(params[:column])
+        - foreign_clazz = foreign_class(clazz, params[:column])
+        .control-group
+          = label_tag 'label_column', nil, class: 'control-label'
+          .controls
+            = hidden_field_tag 'label_column[table]', foreign_clazz.table_name
+            = select_tag 'label_column[label_column]', options_from_collection_for_select(foreign_clazz.columns, :name, :name, foreign_clazz.settings.label_column), include_blank: true
+            p.help-block
+              = "We detected this column as a foreign key on #{foreign_clazz.table_name}, you can decide which column of this table is the most relevant to represent the association, default is the primary key"
   .modal-footer
     = submit_tag "Save settings", class: "btn btn-primary"

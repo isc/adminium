@@ -1,6 +1,7 @@
 module ResourcesHelper
 
-  def header_link key
+  def header_link original_key
+    key = original_key
     if key.include? '.'
       parts = key.split('.')
       parts[0] = parts.first.tableize
@@ -22,7 +23,7 @@ module ResourcesHelper
         content_tag('i', '', class: "icon-chevron-#{direction} #{active}")
       end
     end
-    res << (link_to column_display_name(clazz, key), params.merge(order:order), title: title, rel:'tooltip')
+    res << (link_to column_display_name(clazz, original_key), params.merge(order:order), title: title, rel:'tooltip')
   end
 
   def column_display_name clazz, key

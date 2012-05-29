@@ -42,6 +42,26 @@ module ApplicationHelper
   end
 
   # FIXME n+1 queries perf issue with label_column option
+
+  def foreign_class clazz, key
+    assoc_name = key.gsub /_id$/, ''
+    reflection = clazz.reflections[assoc_name.to_sym]
+    @generic.table(assoc_name.classify.tableize)
+  end
+
+  def foreign_class_and_path item, key, value
+    assoc_name = key.gsub /_id$/, ''
+    reflection = item.class.reflections[assoc_name.to_sym]
+    if reflection.options[:polymorphic]
+      assoc_type = item.send key.gsub(/_id/, '_type')
+      class_name, path = assoc_type, resource_path(assoc_type.to_s.tableize, value)
+    else
+      class_name, path = assoc_name.classify, resource_path(reflection.table_name, value)
+    end
+    foreign_clazz = @generic.table(class_name.tableize)
+    [class_name, foreign_clazz, path]
+  end
+
   def display_belongs_to item, key, value
     assoc_name = key.gsub /_id$/, ''
     reflection = item.class.reflections[assoc_name.to_sym]
@@ -51,10 +71,10 @@ module ApplicationHelper
     else
       class_name, path = assoc_name.classify, resource_path(reflection.table_name, value)
     end
-    foreign_class = @generic.table(class_name.tableize)
-    label_column = foreign_class.settings.label_column
+    foreign_clazz = @generic.table(class_name.tableize)
+    label_column = foreign_clazz.settings.label_column
     if label_column.present?
-      item = foreign_class.where(foreign_class.primary_key => value).first
+      item = foreign_clazz.where(foreign_clazz.primary_key => value).first
       return value if item.nil?
       label = item.adminium_label
     else
