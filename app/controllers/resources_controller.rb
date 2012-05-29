@@ -16,6 +16,7 @@ class ResourcesController < ApplicationController
       @items = build_statement(@items, filter)
     end
     @items = @items.where(params[:where]) if params[:where].present?
+    apply_includes
     apply_search if params[:search].present?
     params[:order] ||= clazz.settings.default_order
     @items = @items.order(params[:order])
@@ -164,8 +165,14 @@ class ResourcesController < ApplicationController
         datas.push "%#{params[:search]}%".upcase
       end
     end
-
     @items = @items.where([query.join(' OR '), datas].flatten)
+  end
+
+  def apply_includes
+    assocs = clazz.settings.columns[:listing].find_all {|c| c.include? '.'}.map {|c| c.split('.').first}
+    assocs.each do |assoc|
+      @items = @items.includes(assoc.to_sym)
+    end
   end
 
   def apply_serialized_columns
