@@ -1,4 +1,5 @@
-ul id="#{type}_columns_list" data-type=type
+- css_class = defined?(sortable) ? 'sortable' : nil
+ul id="#{type}_columns_list" data-type=type class=css_class
   - clazz.settings.columns_options(type).each do |name, checked|
     li.setting_attribute
       - input_id = "#{type}_columns_#{name}".parameterize

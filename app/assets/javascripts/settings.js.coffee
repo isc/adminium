@@ -1,5 +1,5 @@
 $ ->
-  $('#settings ul').sortable()
+  $('ul.sortable').sortable()
   $("table.filters span.btn").live 'click', ->
     $(this).parents('tr').remove()
   $("#new_filter").bind 'change', (event) ->
