@@ -1,6 +1,11 @@
 module ResourcesHelper
 
   def header_link key
+    if key.include? '.'
+      parts = key.split('.')
+      parts[0] = parts.first.tableize
+      key = parts.join('.')
+    end
     params[:order] ||= 'id'
     if params[:order] == key
       order = "#{key} desc"
