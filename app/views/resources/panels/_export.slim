@@ -2,7 +2,10 @@
   .modal-header
     a.close data-dismiss="modal" ×
     h3 Export results
-  = form_tag params.merge(format: :csv), method: :get, class: 'form-horizontal denser' do
+  form.form-horizontal.denser
+    - request.query_string.to_s.split('&').each do |param|
+      input type="hidden" name=CGI.unescape(param.split('=').first) value=CGI.unescape(param.split('=').last)
+    input type="hidden" name="format" value="csv"
     .modal-body
       = accordion do |accordion|
         = accordion.pane 'Select exported fields' do
