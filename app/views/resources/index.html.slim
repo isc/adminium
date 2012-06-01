@@ -87,7 +87,7 @@ table.table-striped.table-bordered.table.items-list
             td.checkboxes.click_checkbox
               - if user_can?('destroy', params[:table]) || user_can?('update', params[:table])
                 input type="checkbox"
-          - clazz.settings.columns[:listing].each_with_index do |name|
+          - clazz.settings.columns[:listing].each do |name|
               == display_attribute :td, item, name
     - else
       tr

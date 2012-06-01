@@ -33,4 +33,7 @@ ul.nav.pull-right
     li
       a Demo account
     - if session[:account_before_demo]
-      li= link_to 'Back to my account', stop_demo_docs_path
+      li
+        = link_to stop_demo_docs_path do
+          i.icon-arrow-right.icon-white
+          '  Back to my account
