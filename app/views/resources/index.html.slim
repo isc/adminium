@@ -62,7 +62,7 @@
           == "saved search <i>#{params[:asearch]}</i>"
         span.remove data-param-kind="asearch" x
 
-table.table-striped.table-bordered.table.items-list
+table.table-striped.table-bordered.table.items-list data-table=params[:table] data-model=clazz.to_s.underscore.gsub('/', '_')
   thead
     tr
       th.actions

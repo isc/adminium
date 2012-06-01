@@ -1,5 +1,9 @@
 class ResourcesController < ApplicationController
 
+  include ActionView::Helpers::TagHelper
+  include ActionView::Helpers::NumberHelper
+  include ResourcesHelper
+
   before_filter :table_access_limitation
   before_filter :check_permissions
   before_filter :apply_serialized_columns, only: [:index, :show]
@@ -7,7 +11,8 @@ class ResourcesController < ApplicationController
   before_filter :fetch_item, only: [:show, :edit, :update, :destroy]
   helper_method :clazz, :user_can?
 
-  respond_to :json, :html, :xml, :csv, :only => :index
+  respond_to :json, :html, :only => [:index, :update]
+  respond_to :csv, :only => :index
 
   def index
     @items = clazz.scoped
@@ -53,11 +58,28 @@ class ResourcesController < ApplicationController
 
   def update
     if @item.update_attributes item_params
-      path = (params[:return_to] == "back") ? :back : resource_path(params[:table], @item)
-      redirect_to path, flash: {success: "#{object_name} successfully updated."}
+      respond_with(@item) do |format|
+        format.html do
+          path = (params[:return_to] == "back") ? :back : resource_path(params[:table], @item)
+          redirect_to path, flash: {success: "#{object_name} successfully updated."}
+        end
+        format.json do
+          column_name = item_params.keys.first
+          raw_value = @item.send(column_name)
+          value = display_attribute(:td, @item, column_name)
+          render :json => {:result => :success, :value => value, :column => column_name, :id => @item.id}
+        end
+      end
     else
-      @form_url = resource_path(@item, table: params[:table])
-      render :edit
+      respond_with(@item) do |format|
+        format.html do
+          @form_url = resource_path(@item, table: params[:table])
+          render :edit
+        end
+        format.json do
+          render :json => {:result => :failed, :message => @item.errors.full_messages}
+        end
+      end
     end
   end
 

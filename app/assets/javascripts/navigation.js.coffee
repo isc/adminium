@@ -25,8 +25,8 @@ class Navigation
 
   itemList: ->
     return unless $('.items-list').length
-    $('.items-list tbody tr').click ->
-      window.location.href = $(this).find('td:first-child a:first-child').attr('href')
+    #$('.items-list tbody tr').click ->
+    #  window.location.href = $(this).find('td:first-child a:first-child').attr('href')
     $(document).keydown (e) =>
       return if $(event.target).is(':input')
       row = $('.items-list tr.selected')
