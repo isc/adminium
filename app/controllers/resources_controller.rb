@@ -2,6 +2,7 @@ class ResourcesController < ApplicationController
 
   include ActionView::Helpers::TagHelper
   include ActionView::Helpers::NumberHelper
+  include ActionView::Helpers::TextHelper
   include ResourcesHelper
 
   before_filter :table_access_limitation
