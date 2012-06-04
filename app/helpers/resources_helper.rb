@@ -39,12 +39,17 @@ module ResourcesHelper
       content = display_belongs_to item, key, value
       css_class = 'foreignkey'
     elsif enum_values = item.class.settings.enum_values_for(key)
+      is_editable = true
       if value.nil?
         content, css_class = 'null', 'nilclass'
       else
+        begin # link generation fails if rendered via json controller update
         content = link_to (enum_values.invert[value.to_s] || value),
           resources_path(item.class.table_name, where: {key => value}),
           :class => 'label label-info'
+        rescue
+          content = content_tag :span, (enum_values.invert[value.to_s] || value), :class => 'label label-info'
+        end
         css_class = 'enum'
       end
     elsif item.class.settings.columns[:serialized].include? key
@@ -54,10 +59,10 @@ module ResourcesHelper
       is_editable = true
     end
     opts = {class: css_class}
+    is_editable = false if item.class.primary_key == key || key == 'updated_at'
     if is_editable
       opts.merge! "data-column-name" => key
-      opts.merge! "data-raw-value" => item[key].to_s unless item[key].is_a? String
-
+      opts.merge! "data-raw-value" => item[key].to_s unless item[key].is_a?(String) && css_class != 'enum'
     end
     column_content_tag wrapper_tag, content, opts
   end

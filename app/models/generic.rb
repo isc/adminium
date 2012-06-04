@@ -21,12 +21,26 @@ class Generic
     def self.foreign_key? column_name
       column_name.ends_with?('_id') && reflections.keys.find {|assoc| assoc.to_s == column_name.gsub(/_id$/, '') }
     end
-    
+
     def adminium_label
       if (label_column = self.class.settings.label_column)
         label = self[label_column]
       end
       label || "#{self.class.original_name.humanize} ##{self[self.class.primary_key]}"
+    end
+
+    def self.adminium_column_options
+      res = {}
+      columns_hash.each do |column|
+        res[column[0]] = settings.column_options(column[0])
+        if res[column[0]].empty?
+          enum = settings.enum_values_for(column[0])
+          raise enum.inspect if column[0] == 'outcom'
+          res[column[0]] = {:is_enum => true, :values => enum} if enum
+        end
+        res[column[0]][:is_enum] ||= false
+      end
+      res
     end
 
     # workaround to allow column names like save, changes.
@@ -123,11 +137,11 @@ class Generic
       raise TableNotFoundException.new(table_name)
     end
   end
-  
+
   def db_name
     Base.connection.instance_variable_get('@config')[:database]
   end
-  
+
   def db_size
     if mysql?
       sql = "select sum(data_length + index_length) as fulldbsize FROM information_schema.TABLES WHERE table_schema = '#{db_name}'"
@@ -137,7 +151,7 @@ class Generic
       Base.connection.execute(sql).first['fulldbsize']
     end
   end
-  
+
   def table_sizes table_list
     if mysql?
       return [] if table_list.try(:empty?)

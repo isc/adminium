@@ -77,7 +77,9 @@ class ResourcesController < ApplicationController
           render :edit
         end
         format.json do
-          render :json => {:result => :failed, :message => @item.errors.full_messages}
+          column_name = item_params.keys.first
+          raw_value = @item.send(column_name)
+          render :json => {:result => :failed, :message => @item.errors.full_messages, :column => column_name, :id => @item.id}
         end
       end
     end
