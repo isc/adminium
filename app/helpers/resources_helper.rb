@@ -144,8 +144,8 @@ module ResourcesHelper
   def truncate_with_popover value, key
     if value.length > 100
       popover = content_tag :a, content_tag(:i, nil, class:'icon-plus-sign'),
-        data: {content:h(value), title:key}, class: 'text-more'
-      (h(value.truncate(100)) + popover).html_safe
+        data: {content:ERB::Util.h(value), title:key}, class: 'text-more'
+      (ERB::Util.h(value.truncate(100)) + popover).html_safe
     else
       value
     end
