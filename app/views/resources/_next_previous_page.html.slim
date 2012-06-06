@@ -1,10 +1,10 @@
 .btn-group
   - unless scope.current_page == 1
     = link_to params.merge(:page => (scope.current_page - 1)), rel: 'tooltip', title: 'Previous page', :"data-placement" => 'bottom', class: 'btn' do
-      i.icon-backward
+      i.icon-arrow-left
   - unless (scope.current_page == scope.num_pages) || scope.num_pages.zero?
     = link_to params.merge(:page => (scope.current_page + 1)), rel: 'tooltip', title: 'Next page', :"data-placement" => 'bottom', class: 'btn' do
-      i.icon-forward
+      i.icon-arrow-right
 - if scope.num_pages.nonzero?
   .btn-group
     = link_to "#", :class => "btn dropdown-toggle", :'data-toggle' => 'dropdown' do
