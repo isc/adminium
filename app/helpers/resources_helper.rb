@@ -99,7 +99,7 @@ module ResourcesHelper
       else
         truncate_with_popover value, key
       end
-    when ActiveSupport::TimeWithZone
+    when ActiveSupport::TimeWithZone, Date
       display_datetime value, column: key, clazz: item.class
     when Fixnum, BigDecimal
       display_number key, item

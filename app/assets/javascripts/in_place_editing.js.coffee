@@ -4,17 +4,15 @@ class InPlaceEditing
     @table = $('.items-list').attr("data-table")
     @model = $('.items-list').attr("data-model")
     $(".items-list td[data-column-name]:not([data-mode=editing])").bind 'hover', @setupEditableColumn
-    $(document).keyup (ev )->
-      if (ev.keyCode == 27)
-        tds = $(".items-list td[data-mode=editing] a").click()
+    $(document).keyup (ev) ->
+      $(".items-list td[data-mode=editing] a").click() if ev.keyCode is 27
 
   setupEditableColumn: (elt) =>
     td = $(elt.currentTarget)
-    if td.find('i.icon-pencil').length == 0 && td.attr('data-mode') != 'editing'
-      item = $("<i class='icon-pencil'>").appendTo(td)
-      item.click @swithToEditionMode
+    if td.find('i.icon-pencil').length is 0 && td.attr('data-mode') isnt 'editing'
+      $("<i class='icon-pencil'>").appendTo(td).click @switchToEditionMode
 
-  swithToEditionMode: (elt) =>
+  switchToEditionMode: (elt) =>
     td = $(elt.currentTarget).parents("td")
     raw_value = td.attr("data-raw-value")
     raw_value = td.text() unless raw_value
@@ -39,7 +37,10 @@ class InPlaceEditing
     input.attr('name', name)
 
   textEditionMode: (td) =>
-    i=$('<textarea>')
+    $('<textarea>')
+
+  dateEditionMode: (td, name, raw_value) =>
+    @datetimeEditionMode td, name, raw_value
 
   datetimeEditionMode: (td, name, raw_value) =>
     d = $('<div>')
@@ -50,10 +51,10 @@ class InPlaceEditing
     time.shift()
     time = time.join(" ")
     d.datepicker({altField:i,  altFormat : "yy-mm-dd #{time}"})
-    return i
+    i
 
   defaultEditionMode: (td, name) =>
-    i=$('<input>')
+    $('<input>')
 
   enumEditionMode: (td, name, raw_value) =>
     options = ""
@@ -71,7 +72,7 @@ class InPlaceEditing
     for value in [null, 'true', 'false']
       v = if value then "value='#{value}'> #{display[value]}" else "value= >"
       options += "<option #{v}</option>"
-    return $("<select>#{options}")
+    $("<select>#{options}")
 
   submitColumnEdition: (elt) =>
     form = $(elt.currentTarget)
@@ -86,10 +87,10 @@ class InPlaceEditing
       success: @submitCallback,
       error: @errorCallback
     })
-    return false
+    false
 
   submitCallback: (data) =>
-    if data.result == "success"
+    if data.result is "success"
       td = $(".items-list tr[data-item-id=#{data.id}] td=[data-column-name=#{data.column}]").replaceWith(data.value)
       new_td = $(".items-list tr[data-item-id=#{data.id}] td=[data-column-name=#{data.column}]")
       new_td.bind 'hover', @setupEditableColumn
@@ -98,14 +99,13 @@ class InPlaceEditing
       td = $(".items-list tr[data-item-id=#{data.id}] td=[data-column-name=#{data.column}]")
       @restoreOriginalValue(td)
 
-
   errorCallback: (data) =>
     alert('internal error : failed to update this field')
 
   cancelEditionMode: (elt) =>
     td = $(elt.currentTarget).parents('td')
     @restoreOriginalValue(td)
-    return false
+    false
 
   restoreOriginalValue: (td) =>
     td.text(td.attr("data-original-text"))
