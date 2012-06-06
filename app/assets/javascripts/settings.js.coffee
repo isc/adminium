@@ -14,6 +14,7 @@ $ ->
         $("##{inst.id}_3i").val(inst.selectedDay)
   setupValidations()
   setupEnumValues()
+  setupSearchDeletion()
 
 addToHiddenParams = (pane_id, group, params) ->
   div = $("#{pane_id} .params")
@@ -53,3 +54,10 @@ setupEnumValues = ->
     [column, values] = [$('#enum_value_column_name').val(), $('#enum_value_values').val()]
     addToTable '#enum-values_pane', [column, values]
     addToHiddenParams '#enum-values_pane', 'enum_values', column_name:column, values:values
+
+setupSearchDeletion = ->
+  $('#manage_searches .btn-danger').bind 'ajax:before', ->
+    search_name = $(this).closest('tr').find('td').eq(0).text()
+    link = link for link in $('.dropdown-searches a') when $(link).text() is search_name
+    $(link).closest('li').remove()
+    $(this).closest('tr').remove()

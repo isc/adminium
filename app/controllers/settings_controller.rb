@@ -29,6 +29,13 @@ class SettingsController < ApplicationController
     redirect_to resources_path(params[:id], asearch: params[:name])
   end
 
+  def destroy
+    settings = @generic.table(params[:id]).settings
+    settings.filters.delete params[:name]
+    settings.save
+    render nothing: true
+  end
+
   def show
     @column = @generic.table(params[:id]).columns.detect{|c|c.name == params[:column_name]}
     render partial: '/settings/filter', locals: {filter: {'column' => @column.name, 'type' => @column.type}}

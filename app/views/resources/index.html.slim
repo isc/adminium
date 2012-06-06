@@ -22,9 +22,11 @@ javascript:
                   i.icon-search
                 button.btn.dropdown-toggle data-toggle="dropdown"
                   span.caret
-                ul.dropdown-menu.nav
+                ul.dropdown-menu.nav.dropdown-searches
                   li
-                    a data-toggle="modal" href="#advanced_search" advanced search
+                    a data-toggle="modal" href="#advanced_search" Advanced search ...
+                  li
+                    a data-toggle="modal" href="#manage_searches" Manage saved searches ...
                   li.divider
                   li.nav-header Saved Searches
                   - clazz.settings.filters.keys.each do |key|
@@ -99,5 +101,6 @@ table.table-striped.table-bordered.table.items-list data-table=params[:table] da
 = render partial: '/resources/panels/listing_settings'
 = render partial: '/resources/panels/export'
 = render partial: '/resources/panels/advanced_search'
+= render partial: '/resources/panels/manage_searches', locals: {searches: clazz.settings.filters.keys}
 #column-settings.modal.hide.fade(data-remote-path="/column_settings/#{params[:table]}")
 #bulk-edit-modal.modal.hide.fade(data-remote-path=bulk_edit_resources_path(table: params[:table]))

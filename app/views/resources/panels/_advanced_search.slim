@@ -8,7 +8,7 @@
         = label_tag :new_filter, 'Add a filter on column', class:  "control-label"
         .controls
           select#new_filter.span2 data-table=params[:table]
-            option value='' disabled='disabled' = "choose a column"
+            option value="" disabled="disabled" selected="selected" = "choose a column"
             - clazz.columns.each do |column|
               option value=column.name = column.name
 
