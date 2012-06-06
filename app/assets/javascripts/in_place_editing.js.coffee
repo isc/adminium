@@ -27,7 +27,7 @@ class InPlaceEditing
     td.html($("<form class='form form-inline'><div class='control-group'><div class='controls'><div><button class='btn' ><i class='icon-ok' /></button><a>cancel</a></div>"))
     td.attr("data-mode", "editing")
     td.find('a').click @cancelEditionMode
-    $('form').submit @submitColumnEdition
+    td.find('form').submit @submitColumnEdition
     if this["#{type}EditionMode"]
       input = this["#{type}EditionMode"](td, name, raw_value)
     else
@@ -66,8 +66,8 @@ class InPlaceEditing
   booleanEditionMode: (td, name) =>
     options = ""
     column = td.attr('data-column-name')
-    f=adminium_column_options[column].boolean_false || "false"
-    t=adminium_column_options[column].boolean_true || "true"
+    f = adminium_column_options[column].boolean_false || "false"
+    t = adminium_column_options[column].boolean_true || "true"
     display = {"true" : t, "false" : f}
     for value in [null, 'true', 'false']
       v = if value then "value='#{value}'> #{display[value]}" else "value= >"
