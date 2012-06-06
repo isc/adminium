@@ -233,6 +233,7 @@ class ResourcesController < ApplicationController
           like_operator = @generic.mysql? ? 'LIKE' : 'ILIKE'
           params = ["#{c} #{like_operator} ?", operand.gsub('_', filter['operand'])]
         end
+        params = ["#{c} != ?", filter['operand']] if filter['operator'] == 'not'
         operand = STRING_OPERATOR_DEFINITIONS[filter['operator']]
         params = operand.gsub('_', c) if operand
       when 'boolean'
