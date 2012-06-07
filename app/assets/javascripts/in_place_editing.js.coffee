@@ -4,13 +4,14 @@ class InPlaceEditing
     @table = $('.items-list').attr("data-table")
     @model = $('.items-list').attr("data-model")
     $(".items-list td[data-column-name]:not([data-mode=editing])").bind 'hover', @setupEditableColumn
+    $('.items-list td[data-column-name] i.icon-pencil').live 'click', @switchToEditionMode
     $(document).keyup (ev) ->
       $(".items-list td[data-mode=editing] a").click() if ev.keyCode is 27
 
   setupEditableColumn: (elt) =>
     td = $(elt.currentTarget)
-    if td.find('i.icon-pencil').length is 0 && td.attr('data-mode') isnt 'editing'
-      $("<i class='icon-pencil'>").appendTo(td).click @switchToEditionMode
+    if td.find('i.icon-pencil').length is 0 and td.attr('data-mode') isnt 'editing'
+      $("<i class='icon-pencil'>").appendTo(td)
 
   switchToEditionMode: (elt) =>
     td = $(elt.currentTarget).parents("td")
@@ -23,7 +24,7 @@ class InPlaceEditing
     if td.find('a i.icon-plus-sign').length
       type = 'text'
       raw_value = td.find('a').attr('data-content')
-    td.attr("data-original-text", td.text())
+    td.attr("data-original-content", td.html())
     td.html($("<form class='form form-inline'><div class='control-group'><div class='controls'><div><button class='btn' ><i class='icon-ok' /></button><a>cancel</a></div>"))
     td.attr("data-mode", "editing")
     td.find('a').click @cancelEditionMode
@@ -97,7 +98,7 @@ class InPlaceEditing
     else
       alert(data.message)
       td = $(".items-list tr[data-item-id=#{data.id}] td=[data-column-name=#{data.column}]")
-      @restoreOriginalValue(td)
+      @restoreOriginalValue td
 
   errorCallback: (data) =>
     alert('internal error : failed to update this field')
@@ -108,8 +109,8 @@ class InPlaceEditing
     false
 
   restoreOriginalValue: (td) =>
-    td.text(td.attr("data-original-text"))
-    td.removeAttr("data-mode").removeAttr("data-original-text")
+    td.html(td.attr('data-original-content'))
+    td.removeAttr('data-mode').removeAttr('data-original-content')
 
 
 $ ->
