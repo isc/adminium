@@ -18,7 +18,7 @@ class Widget
       $.get $(widget).data('query-url'), (data) =>
         widget = $(".widget[data-widget-id=#{data.id}]")
         widget.find('.content').html(data.widget)
-        widget.find('h4 small span').text(data.total_count)
+        widget.find('h4 small').show().find('span').text(data.total_count)
   
   setupDeletion: ->
     $('.widget .btn-mini').bind 'ajax:success', ->
