@@ -7,6 +7,7 @@ class Account < ActiveRecord::Base
   has_many :collaborators
   has_many :users, :through => :collaborators
   has_many :roles
+  has_many :widgets
 
   # fucked up "unless" below, but otherwise the tests are fucked up
   # likely because of the transactions being used in tests

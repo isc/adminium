@@ -6,6 +6,7 @@ class DashboardsController < ApplicationController
     @db_size = @generic.db_size
     table_list = @permissions.map {|key, value| key if value['read']}.compact if @permissions
     @table_sizes = @generic.table_sizes table_list
+    @widgets = current_account.widgets
   end
   
   protected

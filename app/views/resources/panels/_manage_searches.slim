@@ -10,7 +10,7 @@
             tr
               td= search
               td
-                = link_to setting_path(params[:table], name: search), remote: true, class: 'btn btn-danger btn-mini', method: 'delete' do
+                = link_to search_path(params[:table], name: search), remote: true, class: 'btn btn-danger btn-mini', method: 'delete' do
                   i.icon-trash
     - else
       .alert

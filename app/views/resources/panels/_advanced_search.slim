@@ -1,5 +1,5 @@
 #advanced_search.modal.hide.fade
-  = form_tag update_advanced_search_setting_path(id: params[:table]), method: :post, class: 'form-horizontal' do
+  = form_tag search_path(id: params[:table]), method: :put, class: 'form-horizontal' do
     .modal-header
       a.close data-dismiss="modal" ×
       h3 Advanced Search

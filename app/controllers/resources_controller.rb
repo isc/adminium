@@ -26,10 +26,18 @@ class ResourcesController < ApplicationController
     params[:order] ||= clazz.settings.default_order
     @items = @items.order(params[:order])
     update_export_settings
-    respond_with(@items) do |format|
+    respond_with @items do |format|
       format.html do
         check_per_page_setting
         @items = @items.page(params[:page]).per(clazz.settings.per_page)
+      end
+      format.json do
+        @items = @items.page(1).per(10)
+        render json: {
+          widget: render_to_string(partial: 'items', locals: {items: @items, actions_cell: false}),
+          id: params[:widget_id],
+          total_count: @items.total_count
+        }
       end
     end
   end

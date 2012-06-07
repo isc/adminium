@@ -67,37 +67,8 @@ javascript:
         span data-toggle="modal" href="#advanced_search"
           == "saved search <i>#{params[:asearch]}</i>"
         span.remove data-param-kind="asearch" x
-
-table.table-striped.table-bordered.table.items-list data-table=params[:table] data-model=clazz.to_s.underscore.gsub('/', '_')
-  thead
-    tr
-      th.actions
-        th.checkboxes
-          - if user_can? 'destroy', params[:table]
-            input type="checkbox"
-      - clazz.settings.columns[:listing].each do |name|
-        th.column_header
-          == header_link name
-          i.column_settings.icon-cog(rel=name)
-
-  tbody.autopagerize_page_element
-    - if @items.any?
-      - @items.each do |item|
-        tr data-item-id=item.id
-          td.actions
-            = link_to content_tag('i', nil, class: 'icon-eye-open'), resource_path(params[:table], item)
-            - if user_can? 'edit', params[:table]
-              = link_to content_tag('i', nil, class: 'icon-pencil'), edit_resource_path(params[:table], item)
-            - if user_can? 'destroy', params[:table]
-              = link_to content_tag('i', nil, class: 'icon-trash'), resource_path(params[:table], item), method: :delete, confirm: 'You sure?'
-            td.checkboxes.click_checkbox
-              - if user_can?('destroy', params[:table]) || user_can?('update', params[:table])
-                input type="checkbox"
-          - clazz.settings.columns[:listing].each do |name|
-              == display_attribute :td, item, name
-    - else
-      tr
-        td colspan=(clazz.settings.columns[:listing].size + 2) No results.
+        
+= render partial: 'items', locals: {items: @items, actions_cell: true}
 = render partial: '/resources/panels/listing_settings'
 = render partial: '/resources/panels/export'
 = render partial: '/resources/panels/advanced_search'

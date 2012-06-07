@@ -16,6 +16,9 @@ MtCrap::Application.routes.draw do
     post :update_advanced_search, :on => :member
   end
 
+  resources :widgets
+  resources :searches
+
   resources :column_settings
   resource :general_settings, only: [:edit, :update]
 

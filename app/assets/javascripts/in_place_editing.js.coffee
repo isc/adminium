@@ -62,7 +62,7 @@ class InPlaceEditing
     column = td.attr('data-column-name')
     for display, value of adminium_column_options[column].values
       options += "<option value=#{value}>#{display}</option>"
-    return $("<select>#{options}")
+    $("<select>#{options}")
 
   booleanEditionMode: (td, name) =>
     options = ""

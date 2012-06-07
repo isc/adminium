@@ -1,5 +1,25 @@
 .page-header
-  h2 Dashboard
+  .pull-right
+    button.btn title="Add a widget" rel="tooltip" data-placement="left" data-toggle="modal" href="#new_widget"
+      i.icon-plus-sign
+  h3
+    = current_account.name
+    small  Dashboard
+
+ul.thumbnails
+  - @widgets.each do |widget|
+    li.widget.thumbnail.span6 data-query-url=widget_query_path(widget, with_id: true) data-widget-id=widget.id
+      .pull-right
+        = link_to widget_path(widget), class: 'btn btn-mini', remote: true, method: :delete, confirm: 'Sure ?' do
+          i.icon-trash
+      h4
+        = link_to((widget.advanced_search.presence || widget.table), widget_query_path(widget))
+        '
+        small
+          span
+          '  records
+      .content
+    
 dl
   dt Database size
   dd= number_to_human_size @db_size
@@ -16,3 +36,15 @@ table.table.table-striped
         td= number_to_human_size fulltblsize
         td= number_to_human_size tblsize
         td= number_with_delimiter record_count
+
+#new_widget.modal.hide.fade
+  .modal-header
+    a.close data-dismiss="modal" x
+    h3 New dashboard widget
+  = simple_form_for Widget.new, html: {class: 'form-horizontal'} do |f|
+    .modal-body
+      = f.input :table, as: :select, collection: @generic.tables
+      .hide
+        = f.input :advanced_search, as: :select, collection: []
+    .modal-footer
+      = f.submit class: 'btn btn-primary'
