@@ -26,13 +26,13 @@ module ResourcesHelper
     res << (link_to column_display_name(clazz, original_key), params.merge(order:order), title: title, rel:'tooltip')
   end
 
-  def display_attribute wrapper_tag, item, key
+  def display_attribute wrapper_tag, item, key, relation = false
     is_editable = nil
     if key.include? "."
       parts = key.split('.')
       item = item.send(parts.first)
       return column_content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
-      return display_attribute wrapper_tag, item, parts.second
+      return display_attribute wrapper_tag, item, parts.second, true
     end
     value = item[key]
     if value && item.class.foreign_key?(key)
@@ -59,7 +59,7 @@ module ResourcesHelper
       is_editable = true
     end
     opts = {class: css_class}
-    is_editable = false if item.class.primary_key == key || key == 'updated_at'
+    is_editable = false if item.class.primary_key == key || key == 'updated_at' || relation
     if is_editable
       opts.merge! "data-column-name" => key
       opts.merge! "data-raw-value" => item[key].to_s unless item[key].is_a?(String) && css_class != 'enum'
