@@ -47,7 +47,7 @@
                 = link_to content_tag(:i, nil, class: 'icon-pencil'), edit_collaborator_path(collaborator), :remote => true,  'data-toggle' => 'modal', 'data-target' => "#modal-window", 'data-backdrop' => true, 'data-keyboard' => true, :class => 'btn', :title => 'Edit this collaborator roles', :rel => 'tooltip'
                 = link_to content_tag(:i, nil, class: 'icon-trash'), collaborator, method: :delete, remote: true, class: 'btn trash_collaborator', title: 'remove every access of this collaborator'
     - else
-      .alert.notice Upgrade to the enterprise plan and add as many collaborators you need to access your data. Moreover, you can define roles to each collaborators to limit what tables they may access, or prevent them from editing or deleting rows.
+      = upgrade_to_enterprise_notice current_account
   - tabs.pane 'Roles and permissions' do
     = render 'roles'
   - tabs.pane 'Display settings' do

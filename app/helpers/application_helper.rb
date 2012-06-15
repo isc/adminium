@@ -71,5 +71,11 @@ module ApplicationHelper
   def format_param_for_removal k, v
     "#{CGI.escape("where[#{k}]")}=#{CGI.escape(v)}"
   end
+  
+  def upgrade_to_enterprise_notice account
+    content_tag :div, class: 'alert notice' do
+      "<a class=\"btn btn-warning\" href=\"#{account.upgrade_link}\">Upgrade</a> to the enterprise plan ($50 per month) and add as many collaborators you need to access your data. Moreover, you can define roles to each collaborators to limit what tables they may access, or prevent them from editing or deleting rows.".html_safe
+    end
+  end
 
 end
