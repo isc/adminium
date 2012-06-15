@@ -57,6 +57,10 @@ class Account < ActiveRecord::Base
     update_attribute :tables_count, generic.tables.size
   end
   
+  def upgrade_link
+    "https://api.heroku.com/v3/resources/adminium+#{{Plan::PET_PROJECT => Plan::STARTUP, Plan::STARTUP => Plan::ENTERPRISE}[plan]}?selected=#{name}"
+  end
+  
   private
 
   def generate_api_key
