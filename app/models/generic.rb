@@ -131,7 +131,7 @@ class Generic
   end
 
   def table table_name
-    if account_module.constants.include? table_name.classify.to_sym
+    if tables.include? table_name
       account_module.const_get table_name.classify
     else
       raise TableNotFoundException.new(table_name)
