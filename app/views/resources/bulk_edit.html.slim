@@ -15,16 +15,17 @@
         br
         'Leave the other inputs empty to preserve the original record values.
     - @item.class.settings.columns[:form].each do |name|
+      - options = {label: column_display_name(@item.class, name)}
       - if  enum_value = @item.class.settings.enum_values_for(name)
-        = f.input name, as: :select, collection: enum_value
+        = f.input name, options.merge(as: :select, collection: enum_value)
       - elsif @item.class.foreign_key? name
         - assoc_name = name.gsub(/_id$/, '').to_sym
         - if @item.reflections[assoc_name].options[:polymorphic]
-          = f.input name
+          = f.input name, options
         - else
-          = f.association assoc_name
+          = f.association assoc_name, options
       - else
-        - options = {readonly: (@item.class.columns.detect{|c|c.name == name}.primary || @item.class.primary_key == name)}
+        - options.merge! readonly: (@item.class.columns.detect{|c|c.name == name}.primary || @item.class.primary_key == name)
         - options.merge!({:as => :select}) if @item.class.settings.column_type(name).to_s == "boolean"
         = f.input name, options
   .modal-footer

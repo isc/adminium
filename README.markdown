@@ -8,7 +8,7 @@ disable completement des tables
 
 improve search (regexp, fulltext ?)
 in-place editing sur les belongs_to
-mass editing
+mass editing / editing ; nullifier des champs
 renommage de colonnes
 support pour l'édition des associations has many
 audit with papertrail

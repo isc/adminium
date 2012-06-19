@@ -18,7 +18,7 @@
   .span6
     dl
       - @item.class.settings.columns[:show].each do |name|
-        dt= name.humanize
+        dt= column_display_name @item.class, name
         == display_attribute :dd, @item, name
   .span6
     dl

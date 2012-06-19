@@ -174,7 +174,6 @@ module ResourcesHelper
   def column_display_name clazz, key
     value = clazz.settings.column_options(key)['rename']
     value.present? ? value : key.humanize
-
   end
 
   def page_entries_info(collection, options = {})
