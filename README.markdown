@@ -7,7 +7,7 @@ enum values editing
 disable completement des tables
 
 improve search (regexp, fulltext ?)
-in-place editing dans le listing (deja les booleens comme typus puis les textes et numbers why not)
+in-place editing sur les belongs_to
 mass editing
 renommage de colonnes
 support pour l'édition des associations has many

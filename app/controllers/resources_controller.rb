@@ -114,7 +114,7 @@ class ResourcesController < ApplicationController
       @form_url = resource_path(@item, table: params[:table], return_to: :back)
     else
       @form_url = bulk_update_resources_path(params[:table])
-      @item = clazz.new
+      @item = blank_object clazz.new
     end
     render :layout => false
   end
@@ -275,6 +275,13 @@ class ResourcesController < ApplicationController
       redirect_to dashboard_url,
         notice: "You're currently on the free plan meant for pet projects which is limited to five tables of your schema.<br/><a href=\"#{current_account.upgrade_link}\" class=\"btn btn-warning\">Upgrade</a> to the startup plan ($10 per month) to access your full schema with Adminium.".html_safe
     end
+  end
+  
+  def blank_object object
+    object.attributes.keys.each do |key|
+      object[key] = nil
+    end
+    object
   end
 
 end
