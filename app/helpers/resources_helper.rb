@@ -175,6 +175,12 @@ module ResourcesHelper
     value = clazz.settings.column_options(key)['rename']
     value.present? ? value : key.humanize
   end
+  
+  def boolean_input_options clazz, key
+    column_options = clazz.settings.column_options(key)
+    opts = [[column_options['boolean_true'].presence || 'Yes', true], [column_options['boolean_false'].presence || 'No', false]]
+    {as: :select, collection: opts}
+  end
 
   def page_entries_info(collection, options = {})
     entry_name = options[:entry_name] || (collection.empty?? 'entry' : collection.first.class.name.underscore.sub('_', ' '))

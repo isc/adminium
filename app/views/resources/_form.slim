@@ -10,6 +10,8 @@
       - else
         = f.association assoc_name, options
     - else
-      = f.input name, options.merge(readonly: (@item.class.columns.detect{|c|c.name == name}.primary || @item.class.primary_key == name))
+      - options.merge! readonly: (@item.class.columns.detect{|c|c.name == name}.primary || @item.class.primary_key == name)
+      - options.merge!(boolean_input_options(@item.class, name)) if @item.class.settings.column_type(name).to_s == "boolean"
+      = f.input name, options
   .form-actions
     = f.submit class: 'btn-primary', disable_with: 'Sending...'
