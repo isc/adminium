@@ -20,7 +20,7 @@ class BulkActions
     @form = $('.bulk-destroy')
     $(@checkbox_selector).click => @formVisibility()
     @form.submit =>
-      items = $("#{G}:checked")
+      items = $("#{@checkbox_selector}:checked")
       return false unless confirm "Are you sure you want to trash the #{items.length} selected items ?"
       for item in items
         item_id = $(item).closest('tr').data('item-id')
