@@ -1,9 +1,14 @@
-- {separator: 'Sets the separator between the units (defaults to ".")', delimiter: 'Sets the thousands delimiter (defaults to ",")', precision: 'Sets the level of precision (defaults to 2)', unit: "sets a unit after the value ($, km, etc)"}.each do |key, description|
+- {separator: 'Sets the separator between the units (defaults to ".")', delimiter: 'Sets the thousands delimiter (defaults to ",")', unit: "Sets a unit after the value ($, km, etc)"}.each do |key, description|
   .control-group
     label.control-label for="column_options_number_#{key}"= key.to_s.humanize
     .controls
       = text_field_tag "column_options[number_#{key}]", settings.column_options(column.name)["number_#{key}"], class: "span1"
       p.help-block= description
+.control-group
+  label.control-label for="column_options_number_precision" Precision
+  .controls
+    = text_field_tag "column_options[number_precision]", settings.column_options(column.name)["number_precision"], class: "span1", type: 'number', min: 0
+    p.help-block Sets the level of precision (defaults to 2)
 .control-group
   label.control-label for="column_options_number_unit_append" Append unit
   .controls
