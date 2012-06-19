@@ -31,14 +31,10 @@ class Generic
 
     def self.adminium_column_options
       res = {}
-      columns_hash.each do |column|
-        res[column[0]] = settings.column_options(column[0])
-        if res[column[0]].empty?
-          enum = settings.enum_values_for(column[0])
-          raise enum.inspect if column[0] == 'outcom'
-          res[column[0]] = {:is_enum => true, :values => enum} if enum
-        end
-        res[column[0]][:is_enum] ||= false
+      column_names.each do |column|
+        res[column] = settings.column_options(column) || {is_enum: false}
+        enum = settings.enum_values_for column
+        res[column].merge! is_enum: true, values: enum if enum
       end
       res
     end
