@@ -194,5 +194,9 @@ module ResourcesHelper
       ]
     end
   end
+  
+  def unescape_name_value_pair param
+    [CGI.unescape(param.split('=').first), CGI.unescape(param.split('=').last)]
+  end
 
 end

@@ -14,7 +14,9 @@ javascript:
           .span4
             form.form-inline.subnav-search
               - request.query_string.to_s.split('&').each do |param|
-                input type="hidden" name=CGI.unescape(param.split('=').first) value=CGI.unescape(param.split('=').last)
+                - name, value = unescape_name_value_pair param
+                - next if name == 'search'
+                input type="hidden" name=name value=value
               input.span3 name="search" type='text' value=params[:search] placeholder="search on #{clazz.settings.columns[:search].map(&:humanize).join(', ').downcase}"
               '
               .btn-group
