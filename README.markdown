@@ -12,9 +12,7 @@ mass editing / editing ; nullifier des champs
 renommage de colonnes
 support pour l'édition des associations has many
 audit with papertrail
-export csv/xml/json
-  -> inclure des champs des modeles lies dans l'export
-keyboard navigation (ala commit list sur github)
+help popin pour la keyboard navigation
 i18n
 support pour les images
 decouverte des associations par foreign keys

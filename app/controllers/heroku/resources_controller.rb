@@ -28,6 +28,8 @@ class Heroku::ResourcesController < ApplicationController
     app = Account.find_by_api_key! params[:id]
     session[:account] = app.id
     cookies['heroku-nav-data'] = params['nav-data']
+    SignOn.create account_id: app.id, plan: app.plan,
+      remote_ip: request.remote_ip, kind: SignOn::Kind::HEROKU
     redirect_to dashboard_url
   end
   

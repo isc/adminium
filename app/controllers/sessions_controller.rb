@@ -11,6 +11,7 @@ class SessionsController < ApplicationController
       session[:account] = collaborator.account_id
       session[:user] = user.id
       session[:collaborator] = collaborator.id
+      track_sign_on collaborator
       redirect_to root_url, notice: "Signed in as #{user.name} to #{current_account.name}."
     else
       redirect_to root_url, notice: 'Your google account is not associated to any Adminium account.'
@@ -22,6 +23,7 @@ class SessionsController < ApplicationController
     if collaborator
       session[:account] = collaborator.account_id
       session[:collaborator] = collaborator.id
+      track_sign_on collaborator
     end
     redirect_to dashboard_url
   end
@@ -34,6 +36,12 @@ class SessionsController < ApplicationController
   def remove_heroku_chrome
     cookies.delete 'heroku-nav-data'
     redirect_to :back
+  end
+  
+  private
+  def track_sign_on collaborator
+    SignOn.create account_id: collaborator.account_id, plan: collaborator.account.plan,
+      remote_ip: request.remote_ip, kind: SignOn::Kind::GOOGLE
   end
 
 end
