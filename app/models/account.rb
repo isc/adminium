@@ -29,9 +29,13 @@ class Account < ActiveRecord::Base
 
   def self.fetch_missing_names_and_emails
     where(name: nil).where('callback_url is not null').find_each do |account|
-      res = RestClient.get "https://#{HEROKU_MANIFEST['id']}:#{HEROKU_MANIFEST['api']['password']}@api.heroku.com/vendor/apps/#{account.callback_url.split('/').last}"
-      res = JSON.parse res
-      account.update_attributes name: res['name'], owner_email: res['owner_email']
+      begin
+        res = RestClient.get "https://#{HEROKU_MANIFEST['id']}:#{HEROKU_MANIFEST['api']['password']}@api.heroku.com/vendor/apps/#{account.callback_url.split('/').last}"
+        res = JSON.parse res
+        account.update_attributes name: res['name'], owner_email: res['owner_email']
+      rescue RestClient::ResourceNotFound
+        # not sure what to do with those accounts
+      end
     end
   end
 
