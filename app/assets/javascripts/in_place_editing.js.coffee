@@ -14,9 +14,10 @@ class InPlaceEditing
       $("<i class='icon-pencil'>").appendTo(td)
 
   switchToEditionMode: (elt) =>
+    $(".items-list td[data-mode=editing] a").click()
     td = $(elt.currentTarget).parents("td")
     raw_value = td.attr("data-raw-value")
-    raw_value = td.text() unless raw_value
+    raw_value = td.text() unless raw_value || td.hasClass('nilclass') || td.hasClass('emptystring')
     column = td.attr('data-column-name')
     name = "#{@model}[#{column}]"
     type = columns_hash[column].type
@@ -25,7 +26,7 @@ class InPlaceEditing
       type = 'text'
       raw_value = td.find('a').attr('data-content')
     td.attr("data-original-content", td.html())
-    td.html($("<form class='form form-inline'><div class='control-group'><div class='controls'><div><button class='btn'><i class='icon-ok' /></button><a class='cancel'>cancel</a></div>"))
+    td.html($("<form class='form form-inline'><div class='control-group'><div class='controls'><div><button class='btn'><i class='icon-ok' /></button><a class='cancel'><i class='icon-remove'></i</a></div>"))
     td.attr("data-mode", "editing")
     td.find('a').click @cancelEditionMode
     td.find('form').submit @submitColumnEdition
@@ -39,7 +40,10 @@ class InPlaceEditing
 
   textEditionMode: (td) =>
     $('<textarea>')
-
+  
+  integerEditionMode: (td) =>
+    $('<input type="number">')
+  
   dateEditionMode: (td, name, raw_value) =>
     @datetimeEditionMode td, name, raw_value
 
@@ -51,7 +55,7 @@ class InPlaceEditing
     time = raw_value.split(" ")
     time.shift()
     time = time.join(" ")
-    d.datepicker({altField:i,  altFormat : "yy-mm-dd #{time}"})
+    d.datepicker altField:i,  altFormat: "yy-mm-dd #{time}"
     i
 
   defaultEditionMode: (td, name) =>
