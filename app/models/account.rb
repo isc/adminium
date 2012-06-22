@@ -5,9 +5,9 @@ class Account < ActiveRecord::Base
   before_create :generate_api_key
   before_save :fill_adapter
   has_many :collaborators
-  has_many :users, :through => :collaborators
+  has_many :users, through: :collaborators
   has_many :roles
-  has_many :widgets
+  has_many :widgets, dependent: :destroy
 
   # fucked up "unless" below, but otherwise the tests are fucked up
   # likely because of the transactions being used in tests

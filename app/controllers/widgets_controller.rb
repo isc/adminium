@@ -1,7 +1,7 @@
 class WidgetsController < ApplicationController
 
   def create
-    Widget.create! params[:widget].merge(account_id: current_account.id)
+    current_account.widgets.create params[:widget]
     redirect_to dashboard_url
   end
 
