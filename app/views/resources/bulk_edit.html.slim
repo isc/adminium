@@ -30,4 +30,4 @@
         = f.input name, options
   .modal-footer
     - submit_tag_label = @item.persisted? ? "Update #{params[:table].humanize} ##{@item[clazz.primary_key]}" : "Update #{@record_ids.length} #{params[:table].humanize}"
-    = submit_tag submit_tag_label, class: 'btn-primary', disable_with: 'Sending...'
+    = submit_tag submit_tag_label, class: 'btn-primary', data: {disable_with: 'Sending...'}
