@@ -84,7 +84,7 @@ class CustomColumns
       columnSelect = addButton.siblings(".select-custom-column")
       ul = addButton.parents(".custom-column").siblings("ul")
       type = ul.attr("data-type")
-      value = "#{assocSelect.val()}.#{columnSelect.val()}"
+      value = "#{assocSelect.text()}.#{columnSelect.val()}"
       label = $('<label>').text(value.replace(".", " "))
       input = $('<input>').attr('type': 'checkbox', 'checked': 'checked', 'name':"#{type}_columns[]", 'value':value)
       icon = $('<i>').addClass('icon-resize-vertical')

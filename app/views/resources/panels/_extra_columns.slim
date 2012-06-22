@@ -1,7 +1,7 @@
 .control-group.custom-column
   label.control-label Add column
   .controls
-    - belongs_to_options = clazz.reflect_on_all_associations(:belongs_to).map{|r|[r.name, r.name] unless r.options[:polymorphic]}.compact
+    - belongs_to_options = clazz.reflect_on_all_associations(:belongs_to).map{|r|[r.name, r.plural_name] unless r.options[:polymorphic]}.compact
     = select_tag 'add_column_table', options_for_select(belongs_to_options), include_blank: true, data: {columns_path: columns_settings_path}, class: 'select-custom-assoc'
     select(class='select-custom-column')
     '
