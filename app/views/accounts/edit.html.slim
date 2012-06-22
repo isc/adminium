@@ -27,7 +27,7 @@
             = link_to '(create a new role)', new_role_path
           - if current_account.roles.present?
             = f.association :roles, :as => :check_boxes, :collection => current_account.roles.map {|role|[role.name, role.id]}, :html => {:class => "span1"}
-          = f.submit 'Add a collaborator', class: 'btn btn-primary', data: {disable_with: 'Sending...'}
+          = f.submit 'Add a collaborator', class: 'btn btn-primary', disable_with: 'Sending...'
 
       .row
         table.table.span6#collaborators data-delete-url="#{collaborator_path(':id')}"
