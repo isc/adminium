@@ -21,6 +21,7 @@ class Account < ActiveRecord::Base
     PET_PROJECT = 'petproject'
     STARTUP = 'startup'
     ENTERPRISE = 'enterprise'
+    COMPLIMENTARY = 'complimentary'
   end
 
   def to_param
@@ -52,7 +53,7 @@ class Account < ActiveRecord::Base
   end
 
   def enterprise?
-    plan == Plan::ENTERPRISE
+    (plan == Plan::ENTERPRISE) || (plan == Plan::COMPLIMENTARY)
   end
   
   def fill_tables_count
