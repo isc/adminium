@@ -7,7 +7,7 @@ enum values editing
 disable completement des tables
 
 improve search (regexp, fulltext ?)
-in-place editing sur les belongs_to
+in-place editing sur les belongs_to / custom columns
 mass editing / editing ; nullifier des champs
 renommage de colonnes
 support pour l'édition des associations has many
