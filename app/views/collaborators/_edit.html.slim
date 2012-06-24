@@ -3,4 +3,4 @@
   = f.input :is_administrator, :as => :radio_buttons
   - if current_account.roles.present?
     = f.association :roles, :as => :check_boxes, :collection => current_account.roles.map {|role|[role.name, role.id]}, :html => {:class => "span1"}
-  = f.submit class: 'btn-primary', disable_with: 'Sending...'
+  = f.submit class: 'btn-primary', data: {disable_with: 'Sending...'}
