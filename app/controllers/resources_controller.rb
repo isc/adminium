@@ -189,12 +189,12 @@ class ResourcesController < ApplicationController
     query, datas = [], []
     columns.each do |column|
       if clazz.settings.is_number_column?(column)
-        if params[:search].match(/\A\d+\Z/)
-          query.push "#{column} = ?"
+        if params[:search].match(/\A\-?\d+\Z/)
+          query.push "#{clazz.table_name}.#{column} = ?"
           datas.push params[:search].to_i
         end
       else
-        query.push "upper(#{column}) like ?"
+        query.push "upper(#{clazz.table_name}.#{column}) like ?"
         datas.push "%#{params[:search]}%".upcase
       end
     end
@@ -281,7 +281,7 @@ class ResourcesController < ApplicationController
       end
     end
   end
-  
+
   def blank_object object
     object.attributes.keys.each do |key|
       object[key] = nil
