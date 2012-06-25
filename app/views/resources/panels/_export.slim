@@ -33,4 +33,7 @@
 
 
     .modal-footer
-      = submit_tag "Export #{@items.total_count} #{params[:table].humanize.downcase} to csv", class: "btn btn-primary"
+      - if @items.present?
+        = submit_tag "Export #{@items.total_count} #{params[:table].humanize.downcase} to csv", class: "btn btn-primary"
+      - else
+        i There is nothing to export
