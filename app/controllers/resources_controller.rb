@@ -189,12 +189,12 @@ class ResourcesController < ApplicationController
     query, datas = [], []
     columns.each do |column|
       if clazz.settings.is_number_column?(column)
-        if params[:search].match(/\A\d+\Z/)
-          query.push "#{column} = ?"
+        if params[:search].match(/\A\-?\d+\Z/)
+          query.push "#{clazz.table_name}.#{column} = ?"
           datas.push params[:search].to_i
         end
       else
-        query.push "upper(#{column}) like ?"
+        query.push "upper(#{clazz.table_name}.#{column}) like ?"
         datas.push "%#{params[:search]}%".upcase
       end
     end
@@ -277,7 +277,7 @@ class ResourcesController < ApplicationController
         notice: "You're currently on the free plan meant for pet projects which is limited to five tables of your schema.<br/><a href=\"#{current_account.upgrade_link}\" class=\"btn btn-warning\">Upgrade</a> to the startup plan ($10 per month) to access your full schema with Adminium.".html_safe
     end
   end
-  
+
   def blank_object object
     object.attributes.keys.each do |key|
       object[key] = nil
