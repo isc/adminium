@@ -7,6 +7,9 @@ class Widget
     @setupDeletion()
 
   setupCreation: ->
+    if $('meta[name=plan]').attr('content') is 'petproject'
+      for option, i in $('#widget_table').find('option') when i > 5
+        $(option).attr('disabled', 'disabled')
     $('#widget_table').change ->
       $.getJSON "/searches/#{this.value}", (data) ->
         return unless data.length
