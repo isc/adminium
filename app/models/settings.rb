@@ -163,7 +163,7 @@ module Settings
     def set_missing_columns_conf
       [:listing, :show, :form, :search, :serialized, :export].each do |type|
         if @columns[type]
-          @columns[type].delete_if {|name| !name.include?('.') && !(@clazz.column_names.include? name) }
+          @columns[type].delete_if {|name| !association_column?(name) && !(@clazz.column_names.include? name) }
         else
           @columns[type] =
           {listing: @clazz.column_names, show: @clazz.column_names,
@@ -172,6 +172,10 @@ module Settings
             search: searchable_column_names, serialized: []}[type]
         end
       end
+    end
+    
+    def association_column? name
+      name.include?('.') || name.starts_with?('has_many/')
     end
 
     def enum_values_for column_name

@@ -23,17 +23,13 @@ module ResourcesHelper
         content_tag('i', '', class: "icon-chevron-#{direction} #{active}")
       end
     end
-    res << (link_to column_display_name(clazz, original_key), params.merge(order:order), title: title, rel:'tooltip')
+    res << (link_to clazz.column_display_name(original_key), params.merge(order:order), title: title, rel:'tooltip')
   end
 
   def display_attribute wrapper_tag, item, key, relation = false
     is_editable = nil
-    if key.include? "."
-      parts = key.split('.')
-      item = item.send(parts.first)
-      return column_content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
-      return display_attribute wrapper_tag, item, parts.second, true
-    end
+    return display_associated_column item, key, wrapper_tag if key.include? '.'
+    return display_associated_count item, key, wrapper_tag if key.starts_with? 'has_many/'
     value = item[key]
     if value && item.class.foreign_key?(key)
       content = display_belongs_to item, key, value
@@ -65,6 +61,22 @@ module ResourcesHelper
       opts.merge! "data-raw-value" => item[key].to_s unless item[key].is_a?(String) && css_class != 'enum'
     end
     column_content_tag wrapper_tag, content, opts
+  end
+
+  def display_associated_column item, key, wrapper_tag
+    parts = key.split('.')
+    item = item.send(parts.first)
+    return column_content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
+    display_attribute wrapper_tag, item, parts.second, true
+  end
+  
+  def display_associated_count item, key, wrapper_tag
+    key = key.gsub 'has_many/', ''
+    foreign_key_name = item.class.original_name.underscore + '_id'
+    foreign_key_value = item[item.class.primary_key]
+    value = @generic.table(key).where(foreign_key_name => foreign_key_value).count
+    content = link_to value, resources_path(key, where: {foreign_key_name => foreign_key_value}), class: 'badge badge-warning'
+    column_content_tag wrapper_tag, content, class: 'hasmany'
   end
 
   def display_belongs_to item, key, value
@@ -170,11 +182,6 @@ module ResourcesHelper
     opts[:class] = "column #{opts[:class]}"
     content_tag wrapper_tag, content, opts
   end
-
-  def column_display_name clazz, key
-    value = clazz.settings.column_options(key)['rename']
-    value.present? ? value : key.humanize
-  end
   
   def boolean_input_options clazz, key
     column_options = clazz.settings.column_options(key)
@@ -202,6 +209,12 @@ module ResourcesHelper
   
   def unescape_name_value_pair param
     [CGI.unescape(param.split('=').first), CGI.unescape(param.split('=').last)]
+  end
+  
+  def options_for_custom_columns clazz
+    res = [['belongs_to', clazz.reflect_on_all_associations(:belongs_to).map{|r|[r.name, r.plural_name] unless r.options[:polymorphic]}.compact]]
+    res << ['has_many', clazz.reflect_on_all_associations(:has_many).map{|r|["#{r.name.to_s.humanize} count", r.plural_name]}]
+    grouped_options_for_select res
   end
 
 end

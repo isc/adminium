@@ -1,7 +1,7 @@
 conn_spec = ActiveRecord::Base.configurations['fixture']
 ActiveRecord::Base.establish_connection conn_spec
 ActiveRecord::Schema.verbose = false
-version = 6
+version = 10
 if ActiveRecord::Migrator.current_version != version
   ActiveRecord::Base.connection.tables.each do |table|
     ActiveRecord::Base.connection.drop_table table
@@ -44,5 +44,13 @@ if ActiveRecord::Migrator.current_version != version
       t.references :user
     end
   end
+  class UserFromTest < ActiveRecord::Base
+    self.table_name = 'users'
+  end
+  class CommentFromTest < ActiveRecord::Base
+    self.table_name = 'comments'
+  end
+  u = UserFromTest.create! pseudo: 'bob'
+  2.times { CommentFromTest.create! user_id: u.id, title: 'My comment'}
 end
 ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations[Rails.env]

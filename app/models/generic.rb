@@ -5,49 +5,6 @@ class Generic
   attr_accessor :models
   attr_reader :current_adapter
 
-  class Base < ActiveRecord::Base
-    cattr_accessor :adminium_account_id
-    extend Settings
-
-    def self.abstract_class?
-      true
-    end
-    def self.original_name
-      name.demodulize
-    end
-    def self.inheritance_column
-    end
-
-    def self.foreign_key? column_name
-      column_name.ends_with?('_id') && reflections.keys.find {|assoc| assoc.to_s == column_name.gsub(/_id$/, '') }
-    end
-
-    def adminium_label
-      if (label_column = self.class.settings.label_column)
-        label = self[label_column]
-      end
-      label || "#{self.class.original_name.humanize} ##{self[self.class.primary_key]}"
-    end
-
-    def self.adminium_column_options
-      res = {}
-      column_names.each do |column|
-        res[column] = settings.column_options(column) || {is_enum: false}
-        enum = settings.enum_values_for column
-        res[column].merge! is_enum: true, values: enum if enum
-      end
-      res
-    end
-
-    # workaround to allow column names like save, changes.
-    # can't edit those columns though
-    def self.instance_method_already_implemented?(method)
-      super
-    rescue ActiveRecord::DangerousAttributeError
-      false
-    end
-  end
-
   def initialize account
     @account_id = account.id
     connection = build_connection_from_db_url account.db_url
@@ -80,6 +37,7 @@ class Generic
     self.models = tables.map do |table|
       res = account_module.const_set table.classify, Class.new(Base)
       res.adminium_account_id = @account_id
+      res.generic = self
       res.table_name = table
       def res.abstract_class?
         false

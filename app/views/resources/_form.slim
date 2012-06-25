@@ -1,6 +1,6 @@
 = simple_form_for @item, url: @form_url, html: {class: 'form-horizontal'}, defaults: {input_html: {class: 'span6'}} do |f|
   - @item.class.settings.columns[:form].each do |name|
-    - options = {label: column_display_name(@item.class, name)}
+    - options = {label: @item.class.column_display_name(name)}
     - if  enum_value = @item.class.settings.enum_values_for(name)
       = f.input name, options.merge(as: :select, collection: enum_value)
     - elsif @item.class.foreign_key? name

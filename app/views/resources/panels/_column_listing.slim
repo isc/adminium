@@ -4,6 +4,6 @@ ul id="#{type}_columns_list" data-type=type class=css_class
     li.setting_attribute
       - input_id = "#{type}_columns_#{name}".parameterize
       input type='checkbox' name="#{type}_columns[]" id=input_id checked=checked value=name
-      label for=input_id = name.humanize
+      label for=input_id = clazz.column_display_name name
       - if defined? sortable
         i.icon-resize-vertical

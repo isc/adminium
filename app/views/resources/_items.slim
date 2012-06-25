@@ -21,7 +21,7 @@ table.table-striped.table-bordered.table.items-list data-table=params[:table] da
               - if user_can? 'edit', params[:table]
                 = link_to content_tag('i', nil, class: 'icon-pencil'), edit_resource_path(params[:table], item)
               - if user_can? 'destroy', params[:table]
-                = link_to content_tag('i', nil, class: 'icon-trash'), resource_path(params[:table], item), method: :delete, confirm: 'You sure?'
+                = link_to content_tag('i', nil, class: 'icon-trash'), resource_path(params[:table], item), method: :delete, data: {confirm: 'You sure?'}
               td.checkboxes.click_checkbox
                 - if user_can?('destroy', params[:table]) || user_can?('update', params[:table])
                   input type="checkbox"

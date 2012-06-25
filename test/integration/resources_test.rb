@@ -25,4 +25,11 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     # save_and_open_page
   end
   
+  test "custom column has_many" do
+    login
+    Settings::Base.any_instance.stubs(:columns).returns :listing => ['has_many/comments'], :serialized => [], :search => []
+    visit resources_path(:users)
+    assert page.has_css?('td.hasmany a', :text => '2')
+  end
+  
 end

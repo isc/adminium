@@ -47,48 +47,50 @@ class BulkActions
 
 class CustomColumns
 
-  constructor: ->
-    [@assocSelect, @columnSelect] = [$('select.select-custom-assoc'), $('select.select-custom-column')]
-    @addButton = $('.custom-column button')
+  constructor: (root) ->
+    root = $(root)
+    [@assocSelect, @columnSelect] = [root.find('select.select-custom-assoc'), root.find('select.select-custom-column')]
+    @addButton = root.find('.custom-column button')
     @associationSelection()
     @columnSelection()
     @customColumnAdd()
 
   associationSelection: ->
     @assocSelect.change (elt) =>
-      assocSelect = $(elt.currentTarget)
-      columnSelect = assocSelect.siblings(".select-custom-column")
-      addButton = assocSelect.siblings("button")
-      if assocSelect.val()
-        $.get assocSelect.data().columnsPath, table: assocSelect.val(), (data) =>
-          $('<option>').appendTo columnSelect
-          for column in data
-            $('<option>').text(column).val(column).appendTo columnSelect
+      @type = @assocSelect.find('option:selected').closest('optgroup').attr('label')
+      if @assocSelect.val()
+        if @type is 'belongs_to'
+          $.get @assocSelect.data().columnsPath, table: @assocSelect.val(), (data) =>
+            $('<option>').appendTo @columnSelect
+            for column in data
+              $('<option>').text(column).val(column).appendTo @columnSelect
+        else
+          @columnSelect.attr('disabled', 'disabled')
+          @addButton.removeAttr('disabled')
       else
-        columnSelect.empty()
-        addButton.attr('disabled', 'disabled')
+        @columnSelect.empty()
+        @addButton.attr('disabled', 'disabled')
 
   columnSelection: ->
     @columnSelect.change (elt) =>
-      columnSelect = $(elt.currentTarget)
-      addButton = columnSelect.siblings("button")
-      if columnSelect.val()
-        addButton.removeAttr('disabled')
+      if @columnSelect.val()
+        @addButton.removeAttr('disabled')
       else
-        addButton.attr('disabled', 'disabled')
+        @addButton.attr('disabled', 'disabled')
 
   customColumnAdd: ->
     @addButton.click (elt) =>
-      addButton = $(elt.currentTarget)
-      assocSelect = addButton.siblings(".select-custom-assoc")
-      columnSelect = addButton.siblings(".select-custom-column")
-      ul = addButton.parents(".custom-column").siblings("ul")
+      ul = @addButton.parents(".custom-column").siblings("ul")
       type = ul.attr("data-type")
-      value = "#{assocSelect.text()}.#{columnSelect.val()}"
-      label = $('<label>').text(value.replace(".", " "))
+      if @type is 'belongs_to'
+        value = "#{@assocSelect.val()}.#{@columnSelect.val()}"
+        text = value.replace(".", " ")
+      else
+        value = "has_many/#{@assocSelect.val()}"
+        text = @assocSelect.find('option:selected').text()
+      label = $('<label>').text(text)
       input = $('<input>').attr('type': 'checkbox', 'checked': 'checked', 'name':"#{type}_columns[]", 'value':value)
       icon = $('<i>').addClass('icon-resize-vertical')
-
       $('<li>').append(input).append(label).append(icon).
         addClass('setting_attribute').appendTo ul
       false
@@ -123,6 +125,7 @@ class UIListing
 
 $ ->
   new BulkActions()
-  new CustomColumns()
+  new CustomColumns('#displayed-columns_pane')
+  new CustomColumns('#select-exported-fields_pane')
   new UIListing()
   new ColumnSettings()
