@@ -26,7 +26,7 @@ class InPlaceEditing
       type = 'text'
       raw_value = td.find('a').attr('data-content')
     td.attr("data-original-content", td.html())
-    td.html($("<form class='form form-inline'><div class='control-group'><div class='controls'><div><button class='btn'><i class='icon-ok' /></button><a class='cancel'><i class='icon-remove'></i</a></div>"))
+    td.html($("<form class='form form-inline'><div class='control-group'><div class='controls'><div class='in-place-actions'><button class='btn'><i class='icon-ok' /></button><a class='cancel'><i class='icon-remove'></i</a></div>"))
     td.attr("data-mode", "editing")
     td.find('a').click @cancelEditionMode
     td.find('form').submit @submitColumnEdition
@@ -40,10 +40,10 @@ class InPlaceEditing
 
   textEditionMode: (td) =>
     $('<textarea>')
-  
+
   integerEditionMode: (td) =>
     $('<input type="number">')
-  
+
   dateEditionMode: (td, name, raw_value) =>
     @datetimeEditionMode td, name, raw_value
 
