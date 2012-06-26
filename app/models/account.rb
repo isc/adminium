@@ -8,6 +8,7 @@ class Account < ActiveRecord::Base
   has_many :users, through: :collaborators
   has_many :roles
   has_many :widgets, dependent: :destroy
+  has_many :sign_ons
 
   # fucked up "unless" below, but otherwise the tests are fucked up
   # likely because of the transactions being used in tests

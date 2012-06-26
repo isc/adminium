@@ -17,6 +17,10 @@ optim de la clause select sql (jarter les text / binaries non selectionnes par l
 sortable table for dashboard
 more ajax (destroy) / pjax
 
+ordering sur les has_many :
+Account.joins(:sign_ons).select('count(sign_ons.id) as the_count, accounts.*').group('accounts.id').order('the_count desc').first.the_count
+
+
 TODOS:
 attr_accessible avec role pour proteger plan sur account
 account deprovision ; pour le moment ca supprime la row, on la garde ? que fait-on des collaborators associés ? des données stockées dans redis ?

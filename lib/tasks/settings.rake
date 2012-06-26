@@ -14,9 +14,14 @@ namespace :settings do
   task :load => :environment do
     data = YAML.load_file File.join(Rails.root, 'db', 'settings.yml')
     data.each do |key, value|
-      key.gsub! /account:\d+:/, "account:#{ENV['DEMO_ACCOUNT_ID']}:"
+      key.gsub!(/account:\d+:/, "account:#{ENV['DEMO_ACCOUNT_ID']}:")
       REDIS.set key, value
     end
+  end
+  
+  task :clear => :environment do
+    keys = REDIS.keys "account:#{ENV['ACCOUNT_ID']}:settings:*"
+    keys.each {|key| REDIS.del key}
   end
 
 end
