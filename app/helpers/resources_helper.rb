@@ -213,7 +213,7 @@ module ResourcesHelper
   
   def options_for_custom_columns clazz
     res = [['belongs_to', clazz.reflect_on_all_associations(:belongs_to).map{|r|[r.name, r.plural_name] unless r.options[:polymorphic]}.compact]]
-    res << ['has_many', clazz.reflect_on_all_associations(:has_many).map{|r|["#{r.name.to_s.humanize} count", r.plural_name]}]
+    res << ['has_many', clazz.reflect_on_all_associations(:has_many).map{|r|["#{r.name.to_s.humanize} count", r.name]}]
     grouped_options_for_select res
   end
 

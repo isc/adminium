@@ -1,15 +1,12 @@
 FEATURES:
 validations avec arguments
-associations has_many dans le listing
 colonnes calculees
 conf des associations / foreign_keys
 enum values editing
 disable completement des tables
-
 improve search (regexp, fulltext ?)
 in-place editing sur les belongs_to / custom columns
 mass editing / editing ; nullifier des champs
-renommage de colonnes
 support pour l'édition des associations has many
 audit with papertrail
 help popin pour la keyboard navigation
@@ -18,6 +15,7 @@ support pour les images
 decouverte des associations par foreign keys
 optim de la clause select sql (jarter les text / binaries non selectionnes par les settings)
 sortable table for dashboard
+more ajax (destroy) / pjax
 
 TODOS:
 attr_accessible avec role pour proteger plan sur account

@@ -61,6 +61,7 @@ class CustomColumns
       if @assocSelect.val()
         if @type is 'belongs_to'
           $.get @assocSelect.data().columnsPath, table: @assocSelect.val(), (data) =>
+            @columnSelect.empty().removeAttr('disabled')
             $('<option>').appendTo @columnSelect
             for column in data
               $('<option>').text(column).val(column).appendTo @columnSelect
@@ -83,7 +84,7 @@ class CustomColumns
       ul = @addButton.parents(".custom-column").siblings("ul")
       type = ul.attr("data-type")
       if @type is 'belongs_to'
-        value = "#{@assocSelect.val()}.#{@columnSelect.val()}"
+        value = "#{@assocSelect.find('option:selected').text()}.#{@columnSelect.val()}"
         text = value.replace(".", " ")
       else
         value = "has_many/#{@assocSelect.val()}"
