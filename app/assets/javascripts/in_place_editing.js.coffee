@@ -47,6 +47,9 @@ class InPlaceEditing
   dateEditionMode: (td, name, raw_value) =>
     @datetimeEditionMode td, name, raw_value
 
+  timestampEditionMode: (td, name, raw_value) =>
+    @datetimeEditionMode td, name, raw_value
+
   datetimeEditionMode: (td, name, raw_value) =>
     d = $('<div>')
     d.prependTo(td.find('.controls'))
