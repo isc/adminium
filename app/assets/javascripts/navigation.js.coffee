@@ -15,6 +15,8 @@ class Navigation
       if e.which is 115 # 's' key
         @input.focus().focus() # Double focus call needed because of the typeahead plugin applied to this field
         e.preventDefault()
+      if e.which is 99 # 'c' for create
+        window.location.href = $('a.btn.create')[0].href if $('a.btn.create').length
 
   searchBar: ->
     $(document).keypress (e) =>

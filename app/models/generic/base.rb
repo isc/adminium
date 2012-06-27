@@ -12,7 +12,7 @@ class Generic::Base < ActiveRecord::Base
   end
 
   def self.foreign_key? column_name
-    column_name.ends_with?('_id') && reflections.keys.find {|assoc| assoc.to_s == column_name.gsub(/_id$/, '') }
+    reflections.values.find {|reflection| reflection.foreign_key == column_name }
   end
 
   def adminium_label

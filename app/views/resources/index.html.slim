@@ -36,7 +36,7 @@ javascript:
                       =link_to key, params.merge(asearch: key)
         .btn-group.span2
           - if user_can? 'create', params[:table]
-            = link_to new_resource_path(table:params[:table]), class: "btn", rel: "tooltip", title: "Create a new row", "data-placement" => "bottom" do
+            = link_to new_resource_path(table:params[:table]), class: "btn create", rel: "tooltip", title: "Create a new row", "data-placement" => "bottom" do
               i.icon-file
           button.btn.bulk-action.bulk-edit.hide title="Edit selected rows" rel='tooltip' data-toggle="modal" href="#bulk-edit-modal" data-placement="bottom"
             i.icon-pencil
