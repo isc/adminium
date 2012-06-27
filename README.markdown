@@ -30,8 +30,7 @@ unset le focus eventuel d'un element de la popin quand on la ferme, sinon le "pr
 BUGS:
 serialized columns containing smth else than a basic type
 subnav flickers on a page slightly too long for the screen
-
-sur le schema sakila, on peut pas show un customer ; souci sur l'association avec address (le modele est Addres parce que "address".classify dans discover_models, resultat customer belongs_to :addres mais dans display_belongs_to on cherche une assoc address puisque address_id)
+on peut pas mettre un espace comme thousand delimiter (or j'aurais bien voulu pouvoir le faire sur une colonne zipcode)
 
 potential optimisation : https://github.com/bgipsy/column_queries
 pour les dangerousattributes, ils sont readonly
