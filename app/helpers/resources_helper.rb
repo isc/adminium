@@ -69,10 +69,10 @@ module ResourcesHelper
     return column_content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
     display_attribute wrapper_tag, item, parts.second, true
   end
-  
+
   def display_associated_count item, key, wrapper_tag
     key = key.gsub 'has_many/', ''
-    foreign_key_name = item.class.original_name.underscore + '_id'
+    foreign_key_name = item.class.reflections.values.find {|r| r.name.to_s == key }.foreign_key
     foreign_key_value = item[item.class.primary_key]
     value = @generic.table(key).where(foreign_key_name => foreign_key_value).count
     content = link_to value, resources_path(key, where: {foreign_key_name => foreign_key_value}), class: 'badge badge-warning'
@@ -80,15 +80,17 @@ module ResourcesHelper
   end
 
   def display_belongs_to item, key, value
-    assoc_name = key.gsub /_id$/, ''
-    reflection = item.class.reflections[assoc_name.to_sym]
+    reflection = item.class.reflections.values.find {|r| r.foreign_key == key}
     if reflection.options[:polymorphic]
       assoc_type = item.send key.gsub(/_id/, '_type')
       class_name, path = assoc_type, resource_path(assoc_type.to_s.tableize, value)
+      foreign_clazz = @generic.table class_name.tableize
     else
-      class_name, path = assoc_name.classify, resource_path(reflection.table_name, value)
+      class_name, path = reflection.klass.original_name, resource_path(reflection.table_name, value)
+      # reflection.klass is a leftover class that should have been garbage collected
+      # and has settings already loaded in it that may be outdated
+      foreign_clazz = @generic.table(reflection.klass.table_name)
     end
-    foreign_clazz = @generic.table(class_name.tableize)
     label_column = foreign_clazz.settings.label_column
     if label_column.present?
       item = foreign_clazz.where(foreign_clazz.primary_key => value).first

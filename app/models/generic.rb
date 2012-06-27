@@ -13,8 +13,8 @@ class Generic
 
   def account_module
     return @account_module if @account_module
-    module_name = "Account#{@account_id}"
-    @account_module = self.class.const_get module_name
+    module_name = "Account_#{@account_id}"
+    @account_module = self.class.const_get module_name, false
   rescue NameError
     @account_module = self.class.const_set module_name, Module.new
   end
@@ -30,10 +30,7 @@ class Generic
   end
 
   def discover_models
-    if models.present?
-      account_module.constants.each {|const| account_module.remove_const const unless const == :Base }
-      models.clear # need to explicitly clear in case the filling goes wrong
-    end
+    account_module.constants(false).each {|const| account_module.send :remove_const, const }
     self.models = tables.map do |table|
       res = account_module.const_set table.classify, Class.new(Base)
       res.adminium_account_id = @account_id
@@ -57,27 +54,86 @@ class Generic
       res
     end
   end
-
+  
   def discover_associations
     models.each do |klass|
-      begin
-        owners = klass.column_names.find_all {|c| c.ends_with? '_id'}.map {|c| c.gsub(/_id$/, '')}
-        owners.each do |owner|
-          begin
-            if tables.include? owner.tableize
-              account_module.const_get(owner.classify).has_many klass.table_name.to_sym
-              klass.belongs_to owner.to_sym
-            elsif klass.column_names.include? "#{owner}_type"
-              klass.belongs_to owner.to_sym, polymorphic: true
-            end
-          rescue NameError => e
-            Rails.logger.warn "Failed for #{klass.table_name} belongs_to #{owner} : #{e.message}"
-          end
-        end
-      rescue => e
-        Rails.logger.warn "Association discovery failed for #{klass.name} : #{e.message}"
+      if foreign_keys[klass.table_name].present?
+        discover_associations_through_foreign_keys klass
+      else
+        discover_associations_through_conventions klass
       end
     end
+  end
+  
+  def discover_associations_through_foreign_keys klass
+    foreign_keys[klass.table_name].each do |foreign_key|
+      options = {:primary_key => foreign_key[:primary_key], :foreign_key => foreign_key[:column]}
+      klass.belongs_to foreign_key[:to_table].singularize.to_sym, options
+      klassos = klass.reflections[foreign_key[:to_table].singularize.to_sym].klass
+      models.find{|model|model.table_name == foreign_key[:to_table]}.has_many klass.table_name.to_sym, options
+    end
+  end
+
+  def discover_associations_through_conventions klass
+    begin
+      owners = klass.column_names.find_all {|c| c.ends_with? '_id'}.map {|c| c.gsub(/_id$/, '')}
+      owners.each do |owner|
+        begin
+          if tables.include? owner.tableize
+            account_module.const_get(owner.classify).has_many klass.table_name.to_sym
+            klass.belongs_to owner.to_sym
+          elsif klass.column_names.include? "#{owner}_type"
+            klass.belongs_to owner.to_sym, polymorphic: true
+          end
+        rescue NameError => e
+          Rails.logger.warn "Failed for #{klass.table_name} belongs_to #{owner} : #{e.message}"
+        end
+      end
+    rescue => e
+      Rails.logger.warn "Association discovery failed for #{klass.name} : #{e.message}"
+    end
+  end
+
+  def foreign_keys
+    @foreign_keys ||= Rails.cache.fetch "foreign_keys:#{@account_id}", :expires_in => 2.minutes do
+      query = postgresql? ? postgresql_foreign_keys_query : mysql_foreign_keys_query
+      fk_info = Base.connection.select_all query
+      foreign_keys = {}
+      fk_info.each do |row|
+        foreign_keys[row['table_name']] ||= []
+        foreign_keys[row['table_name']] << {:column => row['column'], :to_table => row['to_table'],
+          :primary_key => row['primary_key']}
+      end
+      foreign_keys
+    end
+  end
+  
+  def mysql_foreign_keys_query
+    %{
+      SELECT fk.referenced_table_name as 'to_table'
+            ,fk.referenced_column_name as 'primary_key'
+            ,fk.column_name as 'column'
+            ,fk.constraint_name as 'name'
+            ,fk.table_name as 'table_name'
+      FROM information_schema.key_column_usage fk
+      WHERE fk.referenced_column_name is not null
+        AND fk.table_schema = '#{db_name}'
+    }
+  end
+  
+  def postgresql_foreign_keys_query
+    %{
+      SELECT t2.relname AS to_table, a1.attname AS column, a2.attname AS primary_key, t1.relname as table_name
+      FROM pg_constraint c
+      JOIN pg_class t1 ON c.conrelid = t1.oid
+      JOIN pg_class t2 ON c.confrelid = t2.oid
+      JOIN pg_attribute a1 ON a1.attnum = c.conkey[1] AND a1.attrelid = t1.oid
+      JOIN pg_attribute a2 ON a2.attnum = c.confkey[1] AND a2.attrelid = t2.oid
+      JOIN pg_namespace t3 ON c.connamespace = t3.oid
+      WHERE c.contype = 'f'
+        AND t3.nspname = ANY (current_schemas(false))
+      ORDER BY c.conname
+    }
   end
 
   def tables
@@ -86,7 +142,7 @@ class Generic
 
   def table table_name
     if tables.include? table_name
-      account_module.const_get table_name.classify
+      account_module.const_get table_name.classify, false
     else
       raise TableNotFoundException.new(table_name)
     end

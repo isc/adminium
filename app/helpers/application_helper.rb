@@ -11,22 +11,10 @@ module ApplicationHelper
   # FIXME n+1 queries perf issue with label_column option
 
   def foreign_class clazz, key
-    assoc_name = key.gsub /_id$/, ''
-    reflection = clazz.reflections[assoc_name.to_sym]
-    @generic.table(assoc_name.classify.tableize)
-  end
-
-  def foreign_class_and_path item, key, value
-    assoc_name = key.gsub /_id$/, ''
-    reflection = item.class.reflections[assoc_name.to_sym]
-    if reflection.options[:polymorphic]
-      assoc_type = item.send key.gsub(/_id/, '_type')
-      class_name, path = assoc_type, resource_path(assoc_type.to_s.tableize, value)
-    else
-      class_name, path = assoc_name.classify, resource_path(reflection.table_name, value)
-    end
-    foreign_clazz = @generic.table(class_name.tableize)
-    [class_name, foreign_clazz, path]
+    reflection = clazz.reflections.values.find {|r| r.foreign_key == key}
+    # clazz.reflections[assoc_name.to_sym].klass is a leftover class that should have been garbage collected
+    # and has settings already loaded in it that may be outdated
+    @generic.table(reflection.klass.table_name)
   end
 
   def display_datetime_control_group opts={}
