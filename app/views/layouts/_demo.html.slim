@@ -1,0 +1,17 @@
+- if session[:account] != ENV['DEMO_ACCOUNT_ID']
+  .navbar.demo
+    .navbar-inner
+      .container-fluid
+        .span6
+          h4 Hello and welcome,
+          p
+            'this demo account features a sample database about movies.
+            'Feel free to play with the data, they will be reset automatically.
+        .span3
+          - if session[:account_before_demo]
+            = link_to stop_demo_docs_path, class: 'btn btn-warning' do
+              i.icon-arrow-right.icon-white
+              '  Back to my account
+          - else
+            = link_to 'add adminium', "https://api.heroku.com/v3/resources/adminium", class: "btn btn-success btn-large"
+            p try it for free on your own Heroku application.

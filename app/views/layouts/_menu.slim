@@ -28,12 +28,3 @@ ul.nav.pull-right
         li= link_to 'Remove Heroku Chrome', remove_heroku_chrome_sessions_path
       - if session[:account] && current_user.nil?
         li= link_to 'Sign out', signout_path
-- if session[:account] == ENV['DEMO_ACCOUNT_ID']
-  ul.nav.pull-right.demo-account
-    li
-      a Demo account
-    - if session[:account_before_demo]
-      li
-        = link_to stop_demo_docs_path do
-          i.icon-arrow-right.icon-white
-          '  Back to my account
