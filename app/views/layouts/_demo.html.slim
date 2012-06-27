@@ -1,4 +1,4 @@
-- if session[:account] != ENV['DEMO_ACCOUNT_ID']
+- if session[:account] == ENV['DEMO_ACCOUNT_ID']
   .navbar.demo
     .navbar-inner
       .container-fluid
