@@ -62,7 +62,7 @@ module ApplicationHelper
   
   def upgrade_to_enterprise_notice account
     content_tag :div, class: 'alert notice' do
-      "<a class=\"btn btn-warning\" href=\"#{account.upgrade_link}\">Upgrade</a> to the enterprise plan ($50 per month) and add as many collaborators you need to access your data. Moreover, you can define roles to each collaborators to limit what tables they may access, or prevent them from editing or deleting rows.".html_safe
+      "<a class=\"btn btn-warning\" href=\"#{account.upgrade_link}\">Upgrade</a> to the enterprise plan ($25 per month) and add as many collaborators you need to access your data. Moreover, you can define roles to each collaborators to limit what tables they may access, or prevent them from editing or deleting rows.".html_safe
     end
   end
 
