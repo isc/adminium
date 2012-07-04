@@ -42,9 +42,6 @@ html lang="en"
               a.close data-dismiss="alert" href="#" &times;
               = v
           = yield
-
-      footer
-        p &copy; Adminium 2012
     = javascript_include_tag 'application'
     - unless Rails.env.development?
       = render :partial => "/layouts/ga"
