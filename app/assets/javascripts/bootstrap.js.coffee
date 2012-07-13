@@ -13,3 +13,4 @@ jQuery ->
     $("##{inst.id}_2i").val(inst.selectedMonth + 1)
     $("##{inst.id}_3i").val(inst.selectedDay)
   sh_highlightDocument()
+  $('form.simple_form textarea').wysihtml5 html: true

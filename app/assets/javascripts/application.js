@@ -11,4 +11,6 @@
 //= require sh_main.min
 //= require sh_ruby.min
 //= require jquery-scrollspy
+//= require wysihtml5
+//= require bootstrap-wysihtml5
 //= require_tree .

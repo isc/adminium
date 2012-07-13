@@ -22,6 +22,8 @@ gem 'airbrake'
 gem 'bootstrap-components-helpers', git: 'git://gist.github.com/2117187.git'
 gem 'composite_primary_keys', git: 'git://github.com/isc/composite_primary_keys.git'
 
+gem 'bootstrap-wysihtml5-rails'
+
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
