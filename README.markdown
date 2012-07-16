@@ -12,7 +12,6 @@ audit with papertrail
 help popin pour la keyboard navigation
 i18n
 support pour les images
-decouverte des associations par foreign keys
 optim de la clause select sql (jarter les text / binaries non selectionnes par les settings)
 sortable table for dashboard
 more ajax (destroy) / pjax
