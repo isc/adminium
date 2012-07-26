@@ -172,7 +172,7 @@ class Generic
       tables.map do |table|
         next if table_list && !table_list.include?(table)
         res = [table]
-        res += Base.connection.execute("select pg_total_relation_size('#{table}') as fulltblsize, pg_relation_size('#{table}') as tblsize").first.values
+        res += Base.connection.execute("select pg_total_relation_size('\"#{table}\"') as fulltblsize, pg_relation_size('\"#{table}\"') as tblsize").first.values
         res << table(table).count
       end.compact
     end
