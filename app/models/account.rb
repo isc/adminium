@@ -34,7 +34,8 @@ class Account < ActiveRecord::Base
       begin
         res = RestClient.get "https://#{HEROKU_MANIFEST['id']}:#{HEROKU_MANIFEST['api']['password']}@api.heroku.com/vendor/apps/#{account.callback_url.split('/').last}"
         res = JSON.parse res
-        account.update_attributes name: res['name'], owner_email: res['owner_email']
+        account.attributes = {name: res['name'], owner_email: res['owner_email']}
+        account.save validate: false
       rescue RestClient::ResourceNotFound
         # not sure what to do with those accounts
       end
