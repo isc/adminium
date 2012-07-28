@@ -68,9 +68,10 @@ class Generic
   def discover_associations_through_foreign_keys klass
     foreign_keys[klass.table_name].each do |foreign_key|
       options = {:primary_key => foreign_key[:primary_key], :foreign_key => foreign_key[:column]}
-      klass.belongs_to foreign_key[:to_table].singularize.to_sym, options
-      klassos = klass.reflections[foreign_key[:to_table].singularize.to_sym].klass
-      models.find{|model|model.table_name == foreign_key[:to_table]}.has_many klass.table_name.to_sym, options
+      assoc_name = foreign_key[:to_table].downcase.singularize.to_sym
+      klass.belongs_to assoc_name, options
+      klassos = klass.reflections[assoc_name].klass
+      models.find{|model|model.table_name.downcase == foreign_key[:to_table].downcase}.has_many klass.table_name.to_sym, options
     end
   end
 

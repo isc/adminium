@@ -19,7 +19,8 @@ module ActiveRecord
         end
 
         @primary_keys = Hash.new do |h, table_name|
-          h[table_name] = table_exists?(table_name) ? conn.primary_key(conn.quote_table_name(table_name)) : nil
+          table_name = conn.adapter_name == 'PostgreSQL' ? conn.quote_table_name(table_name) : table_name
+          h[table_name] = table_exists?(table_name) ? conn.primary_key(table_name) : nil
         end
       end
     end
