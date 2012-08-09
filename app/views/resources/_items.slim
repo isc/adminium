@@ -14,7 +14,7 @@ table.table-striped.table-bordered.table.items-list data-table=params[:table] da
   tbody
     - if items.any?
       - items.each do |item|
-        tr data-item-id=item.id
+        tr data-item-id=item[item.class.primary_key]
           - if actions_cell
             td.actions
               = link_to content_tag('i', nil, class: 'icon-eye-open'), resource_path(params[:table], item)

@@ -74,9 +74,8 @@ class ResourcesController < ApplicationController
         end
         format.json do
           column_name = item_params.keys.first
-          raw_value = @item.send(column_name)
-          value = display_attribute(:td, @item, column_name)
-          render :json => {:result => :success, :value => value, :column => column_name, :id => @item.id}
+          value = display_attribute :td, @item, column_name
+          render json: {result: :success, value: value, column: column_name, id: @item[@item.class.primary_key]}
         end
       end
     else
@@ -87,8 +86,7 @@ class ResourcesController < ApplicationController
         end
         format.json do
           column_name = item_params.keys.first
-          raw_value = @item.send(column_name)
-          render :json => {:result => :failed, :message => @item.errors.full_messages, :column => column_name, :id => @item.id}
+          render json: {result: :failed, message: @item.errors.full_messages, column: column_name, id: @item[@item.class.primary_key]}
         end
       end
     end
