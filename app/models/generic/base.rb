@@ -51,6 +51,6 @@ class Generic::Base < ActiveRecord::Base
   def self.instance_method_already_implemented?(method)
     super
   rescue ActiveRecord::DangerousAttributeError
-    false
+    true
   end
 end
