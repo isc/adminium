@@ -137,7 +137,7 @@ class ResourcesController < ApplicationController
 
   def update_export_settings
     if params[:export_columns].present?
-      clazz.settings.columns[:export] = params[:export_columns]
+      clazz.settings.columns[:export] = params[:export_columns].delete_if {|e|e.empty?}
       clazz.settings.csv_options = params[:csv_options]
       clazz.settings.save
     end
