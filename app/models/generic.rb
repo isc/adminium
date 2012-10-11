@@ -162,6 +162,10 @@ class Generic
       Base.connection.execute(sql).first['fulldbsize']
     end
   end
+  
+  def connection
+    Base.connection
+  end
 
   def table_sizes table_list
     if mysql?

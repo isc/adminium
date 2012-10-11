@@ -12,8 +12,8 @@ class ResourcesController < ApplicationController
   before_filter :fetch_item, only: [:show, :edit, :update, :destroy]
   helper_method :clazz, :user_can?
 
-  respond_to :json, :html, :only => [:index, :update]
-  respond_to :csv, :only => :index
+  respond_to :json, :html, only: [:index, :update]
+  respond_to :csv, only: :index
 
   def index
     @items = clazz.scoped
@@ -118,7 +118,7 @@ class ResourcesController < ApplicationController
       @form_url = bulk_update_resources_path(params[:table])
       @item = blank_object clazz.new
     end
-    render :layout => false
+    render layout: false
   end
 
   def bulk_update
@@ -188,14 +188,16 @@ class ResourcesController < ApplicationController
   def apply_search
     columns = clazz.settings.columns[:search]
     query, datas = [], []
+    quoted_table_name = @generic.connection.quote_table_name clazz.table_name
     columns.each do |column|
+      quoted_column = @generic.connection.quote_column_name column
       if clazz.settings.is_number_column?(column)
         if params[:search].match(/\A\-?\d+\Z/)
-          query.push "#{clazz.table_name}.#{column} = ?"
+          query.push "#{quoted_table_name}.#{quoted_column} = ?"
           datas.push params[:search].to_i
         end
       else
-        query.push "upper(#{clazz.table_name}.#{column}) like ?"
+        query.push "upper(#{quoted_table_name}.#{quoted_column}) like ?"
         datas.push "%#{params[:search]}%".upcase
       end
     end
