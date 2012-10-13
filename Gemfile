@@ -9,7 +9,7 @@ gem 'mysql2'
 gem "hiredis", "~> 0.3.1"
 gem "redis", ">= 2.2.0", require: ["redis", "redis/connection/hiredis"]
 gem 'configatron'
-gem 'jquery-rails'
+gem 'jquery-rails', '2.0.1'
 gem 'slim-rails'
 gem 'kaminari'
 gem 'simple_form'
