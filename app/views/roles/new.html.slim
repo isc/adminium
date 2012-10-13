@@ -30,7 +30,7 @@
         = f.association :collaborators, :as => :check_boxes, :collection => current_account.collaborators.map {|collaborator|[collaborator.name, collaborator.id]}
       - else
         .alert.alert-warning
-          p a role should be assigned to colloborators but you have not invited any yet.
+          p A role should be assigned to collaborators but you have not invited any yet.
           = link_to "Add a collaborator", edit_account_path, :class=>'btn btn-primary'
 
   .form-actions

@@ -5,8 +5,8 @@
         .span6
           h4 Hello and welcome,
           p
-            'this demo account features a sample database about movies.
-            'Feel free to play with the data, they will be reset automatically.
+            'this demo account features a sample database.
+            'Feel free to play with the data, it will be reset automatically.
         .span3
           - if session[:account_before_demo]
             = link_to stop_demo_docs_path, class: 'btn btn-warning' do

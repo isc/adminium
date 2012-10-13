@@ -30,6 +30,7 @@ BUGS:
 serialized columns containing smth else than a basic type
 subnav flickers on a page slightly too long for the screen
 on peut pas mettre un espace comme thousand delimiter (or j'aurais bien voulu pouvoir le faire sur une colonne zipcode)
+la table completion /navigation bug quand on clique sur un resultat
 
 potential optimisation : https://github.com/bgipsy/column_queries
 pour les dangerousattributes, ils sont readonly
