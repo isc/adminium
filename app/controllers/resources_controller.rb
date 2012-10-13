@@ -188,9 +188,9 @@ class ResourcesController < ApplicationController
   def apply_search
     columns = clazz.settings.columns[:search]
     query, datas = [], []
-    quoted_table_name = @generic.connection.quote_table_name clazz.table_name
+    quoted_table_name = quote_table_name clazz.table_name
     columns.each do |column|
-      quoted_column = @generic.connection.quote_column_name column
+      quoted_column = quote_column_name column
       if clazz.settings.is_number_column?(column)
         if params[:search].match(/\A\-?\d+\Z/)
           query.push "#{quoted_table_name}.#{quoted_column} = ?"
@@ -230,7 +230,7 @@ class ResourcesController < ApplicationController
   end
 
   def build_statement scope, filter
-    c = filter['column']
+    c = "#{quote_table_name clazz.table_name}.#{quote_column_name filter['column']}"
     params = nil
     unary_operator = UNARY_OPERATOR_DEFINITIONS[filter['operator']]
     if unary_operator
@@ -318,6 +318,14 @@ class ResourcesController < ApplicationController
       end.to_csv(options)
     end
     out
+  end
+  
+  def quote_column_name column_name
+    @generic.connection.quote_column_name column_name 
+  end
+  
+  def quote_table_name table_name
+    @generic.connection.quote_table_name table_name
   end
 
 end
