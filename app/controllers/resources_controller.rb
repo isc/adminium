@@ -196,7 +196,7 @@ class ResourcesController < ApplicationController
           query.push "#{quoted_table_name}.#{quoted_column} = ?"
           datas.push params[:search].to_i
         end
-      else
+      elsif clazz.settings.is_text_column?(column)
         query.push "upper(#{quoted_table_name}.#{quoted_column}) like ?"
         datas.push "%#{params[:search]}%".upcase
       end

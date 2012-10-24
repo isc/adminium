@@ -140,12 +140,12 @@ module Settings
       @clazz.columns.detect{|c|c.name == column_name}.try(:type)
     end
 
-    def is_string_column?(column_name)
-      column_type(column_name) == :string
-    end
-
     def is_number_column?(column_name)
       [:integer, :decimal].include? column_type(column_name)
+    end
+    
+    def is_text_column?(column_name)
+      [:string, :text].include? column_type(column_name)
     end
 
     def string_or_text_column_names
