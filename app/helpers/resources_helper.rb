@@ -115,7 +115,7 @@ module ResourcesHelper
       end
     when ActiveSupport::TimeWithZone, Date
       display_datetime value, column: key, clazz: item.class
-    when Fixnum, BigDecimal
+    when Fixnum, BigDecimal, Float
       display_number key, item
     when TrueClass, FalseClass
       display_boolean key, item

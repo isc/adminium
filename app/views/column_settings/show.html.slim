@@ -17,7 +17,8 @@
         = text_field_tag 'column_options[rename]', settings.column_options(params[:column])['rename']
         p.help-block= "default is #{params[:column].humanize}"
     - unless association_clazz || clazz.foreign_key?(params[:column])
-      = render partial: "/column_settings/types/#{column.type}"
+      - partial = {float: :decimal}[column.type] || column.type
+      = render partial: "/column_settings/types/#{partial}"
     - else
       - if clazz.foreign_key?(params[:column])
         - foreign_clazz = foreign_class(clazz, params[:column])
