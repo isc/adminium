@@ -70,7 +70,6 @@ class Generic
       options = {:primary_key => foreign_key[:primary_key], :foreign_key => foreign_key[:column]}
       assoc_name = foreign_key[:to_table].downcase.singularize.to_sym
       klass.belongs_to assoc_name, options
-      klassos = klass.reflections[assoc_name].klass
       models.find{|model|model.table_name.downcase == foreign_key[:to_table].downcase}.has_many klass.table_name.to_sym, options
     end
   end
