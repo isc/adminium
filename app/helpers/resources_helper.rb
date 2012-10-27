@@ -96,7 +96,11 @@ module ResourcesHelper
     end
     label_column = foreign_clazz.settings.label_column
     if label_column.present?
-      item = foreign_clazz.where(foreign_clazz.primary_key => value).first
+      item = if reflection.options[:polymorphic]
+        foreign_clazz.where(foreign_clazz.primary_key => value).first
+      else
+        item.send reflection.name
+      end
       return value if item.nil?
       label = item.adminium_label
     else

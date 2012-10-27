@@ -205,9 +205,11 @@ class ResourcesController < ApplicationController
   end
 
   def apply_includes
-    assocs = clazz.settings.columns[settings_type].find_all {|c| c.include? '.'}.map {|c| c.split('.').first}
+    assocs = clazz.settings.columns[settings_type].find_all {|c| c.include?('.')}.map {|c| c.split('.').first}
+    assocs += clazz.settings.columns[settings_type].map {|c| clazz.foreign_key?(c)}.compact
     assocs.each do |assoc|
-      @items = @items.includes(assoc.to_sym)
+      next if !assoc.is_a?(String) && assoc.options[:polymorphic]
+      @items = @items.includes(assoc.is_a?(String) ? assoc.to_sym : assoc.name)
     end
   end
 
