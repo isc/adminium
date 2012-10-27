@@ -11,7 +11,7 @@
     - @widgets.each do |widget|
       li.widget.thumbnail.span6 data-query-url=widget_query_path(widget, with_id: true) data-widget-id=widget.id
         .pull-right
-          = link_to widget_path(widget), class: 'btn btn-mini', remote: true, method: :delete, confirm: 'Sure ?' do
+          = link_to widget_path(widget), class: 'btn btn-mini', remote: true, method: :delete, data: {confirm: 'Sure ?'} do
             i.icon-trash
         h4
           = link_to((widget.advanced_search.presence || widget.table), widget_query_path(widget))

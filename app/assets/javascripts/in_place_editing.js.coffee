@@ -4,9 +4,7 @@ class InPlaceEditing
     @table = $('.items-list').attr("data-table")
     @model = $('.items-list').attr("data-model")
     $(".items-list td[data-column-name]:not([data-mode=editing])").bind 'hover', @setupEditableColumn
-    $('.items-list td[data-column-name] i.icon-pencil').live 'click', @switchToEditionMode
-    $(document).keyup (ev) ->
-      $(".items-list td[data-mode=editing] a").click() if ev.keyCode is 27
+    $('.items-list').on 'click', 'td[data-column-name] i.icon-pencil', @switchToEditionMode
 
   setupEditableColumn: (elt) =>
     td = $(elt.currentTarget)
@@ -122,3 +120,5 @@ class InPlaceEditing
 
 $ ->
   new InPlaceEditing()
+  $(document).keyup (ev) ->
+    $(".items-list td[data-mode=editing] a").click() if ev.keyCode is 27

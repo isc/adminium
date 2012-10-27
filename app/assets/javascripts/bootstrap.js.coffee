@@ -1,4 +1,4 @@
-jQuery ->
+$ ->
   # $(".alert-message").alert()
   # $(".tabs").button()
   # $(".carousel").carousel()

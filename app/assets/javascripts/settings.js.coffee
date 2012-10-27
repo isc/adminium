@@ -1,11 +1,11 @@
 $ ->
   $('ul.sortable').sortable()
-  $("table.filters span.btn").live 'click', ->
+  $('table.filters span.btn').live 'click', ->
     $(this).parents('tr').remove()
   $("#new_filter").bind 'change', (event) ->
-    column_name = $("#new_filter option:selected").val()
-    table = $("#new_filter").attr("data-table")
-    $("#new_filter").val("")
+    column_name = $('#new_filter option:selected').val()
+    table = $('#new_filter').attr('data-table')
+    $('#new_filter').val('')
     $.get "/settings/#{table}?column_name=#{column_name}", (resp) ->
       $("<tr>").append(resp).appendTo($(".filters"))
       $('.datepicker').datepicker onClose: (dateText, inst) ->

@@ -2,6 +2,11 @@ class BulkActions
   checkbox_selector: '.items-list tbody input[type=checkbox]'
 
   constructor: ->
+    @setupBulkEdit()
+    @setupBulkDestroy()
+    @setupBulkCheckbox()
+
+  setupBulkEdit: ->
     $("#bulk-edit-modal").on 'hide', =>
       $("#bulk-edit-modal").html($(".loading_modal").html())
     $("#bulk-edit-modal").on 'shown', =>
@@ -9,23 +14,25 @@ class BulkActions
       item_ids = ""
       for item in $("#{@checkbox_selector}:checked")
         item_ids += "record_ids[]=#{$(item).closest('tr').data('item-id')}&"
-      path=$("#bulk-edit-modal").attr("data-remote-path")
+      path = $("#bulk-edit-modal").attr("data-remote-path")
       $.get "#{path}?#{item_ids}", (data) =>
         $("#bulk-edit-modal").html(data)
         $('.datepicker').datepicker onClose: (dateText, inst) ->
           $("##{inst.id}_1i").val(inst.selectedYear)
           $("##{inst.id}_2i").val(inst.selectedMonth + 1)
           $("##{inst.id}_3i").val(inst.selectedDay)
-
-    @form = $('.bulk-destroy')
-    $(@checkbox_selector).click => @formVisibility()
-    @form.submit =>
+  
+  setupBulkDestroy: ->
+    $('.bulk-destroy').submit =>
       items = $("#{@checkbox_selector}:checked")
       return false unless confirm "Are you sure you want to trash the #{items.length} selected items ?"
       for item in items
         item_id = $(item).closest('tr').data('item-id')
-        $('<input>').attr('type': 'hidden', 'name': 'item_ids[]').val(item_id).appendTo(@form)
-    $(".click_checkbox").click (e) =>
+        $('<input>').attr('type': 'hidden', 'name': 'item_ids[]').val(item_id).appendTo('.bulk-destroy')
+
+  setupBulkCheckbox: ->
+    $(@checkbox_selector).click => @formVisibility()
+    $('.click_checkbox').click (e) =>
       $(e.target).find("input[type=checkbox]").click()
       e.stopPropagation()
       @formVisibility()
@@ -35,8 +42,7 @@ class BulkActions
       else
         $(@checkbox_selector).removeAttr('checked')
       @formVisibility()
-
-
+    
   formVisibility: ->
     if $("#{@checkbox_selector}:checked").length is 0
       $(".bulk-action").hide()

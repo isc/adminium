@@ -21,7 +21,6 @@ gem 'attr_encrypted', git: 'git://github.com/hron/attr_encrypted.git', branch: '
 gem 'airbrake'
 gem 'bootstrap-components-helpers', git: 'git://gist.github.com/2117187.git'
 gem 'composite_primary_keys', git: 'git://github.com/isc/composite_primary_keys.git'
-
 gem 'bootstrap-wysihtml5-rails', require: 'bootstrap-wysihtml5-rails',
   git: 'git://github.com/Nerian/bootstrap-wysihtml5-rails.git'
 

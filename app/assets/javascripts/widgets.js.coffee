@@ -7,7 +7,7 @@ class Widget
     @setupDeletion()
 
   setupCreation: ->
-    if $('meta[name=plan]').attr('content') is 'petproject'
+    if $('#plan').text() is 'petproject'
       for option, i in $('#widget_table').find('option') when i > 5
         $(option).attr('disabled', 'disabled')
     $('#widget_table').change ->
@@ -31,8 +31,7 @@ class Widget
       $(this).closest('.widget').remove()
 
   updateWidgetSorting: (id, data) ->
-    d = {type:"PUT", data:{widget:data}}
-    $.ajax("/widgets/#{id}", d)
+    $.ajax "/widgets/#{id}", type: "PUT", data: {widget: data}
 
   setupSorting: ->
     $('.widget .content').on 'click', 'th.column_header a', (ev) =>

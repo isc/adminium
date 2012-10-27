@@ -6,17 +6,17 @@ class Navigation
     @searchBar()
 
   tableSelection: ->
-    @input = $('#search-table .search-query')
-    @input.change ->
+    @selector = '#search-table .search-query'
+    $(document).on 'change', @selector, ->
       this.form.action = this.form.action + this.value
       this.form.submit()
     $(document).keypress (e) =>
       return if $(event.target).is(':input')
       if e.which is 115 # 's' key
-        @input.focus().focus() # Double focus call needed because of the typeahead plugin applied to this field
+        $(@selector).focus().focus() # Double focus call needed because of the typeahead plugin applied to this field
         e.preventDefault()
       if e.which is 99 # 'c' for create
-        window.location.href = $('a.btn.create')[0].href if $('a.btn.create').length
+        location.href = $('a.btn.create')[0].href if $('a.btn.create').length
 
   searchBar: ->
     $(document).keypress (e) =>
@@ -26,11 +26,8 @@ class Navigation
         e.preventDefault()
 
   itemList: ->
-    return unless $('.items-list').length
-    #$('.items-list tbody tr').click ->
-    #  window.location.href = $(this).find('td:first-child a:first-child').attr('href')
     $(document).keydown (e) =>
-      return if $(event.target).is(':input')
+      return if $(event.target).is(':input') or $('.items-list').length is 0
       row = $('.items-list tr.selected')
       if row.length is 0
         if [74, 40].indexOf(e.which) isnt -1
@@ -42,13 +39,13 @@ class Navigation
       else if [75, 38].indexOf(e.which) isnt -1 # k or up arrow
         row.removeClass('selected').prev().addClass('selected') if row.prev().length
       else if [13, 39, 79].indexOf(e.which) isnt -1 # return or right arrow or o
-        window.location.href = row.find('td:first-child a:first-child').attr('href')
+        location.href = row.find('td:first-child a:first-child').attr('href')
       else if e.which is 88 # x
         checkBox = row.find('td:eq(1) input[type=checkbox]').get(0).click()
       else if e.which is 84 # t
         row.find('td:first-child a:last-child').trigger('click')
       else if e.which is 69 # e
-        window.location.href = row.find('td:first-child a:eq(1)').attr('href')
+        location.href = row.find('td:first-child a:eq(1)').attr('href')
       else
         return
       e.preventDefault()
