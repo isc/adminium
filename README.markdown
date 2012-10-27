@@ -16,10 +16,6 @@ optim de la clause select sql (jarter les text / binaries non selectionnes par l
 sortable table for dashboard
 more ajax (destroy) / pjax
 
-ordering sur les has_many :
-Account.joins(:sign_ons).select('count(sign_ons.id) as the_count, accounts.*').group('accounts.id').order('the_count desc').first.the_count
-
-
 TODOS:
 attr_accessible avec role pour proteger plan sur account
 account deprovision ; pour le moment ca supprime la row, on la garde ? que fait-on des collaborators associés ? des données stockées dans redis ?
@@ -27,6 +23,7 @@ unset le focus eventuel d'un element de la popin quand on la ferme, sinon le "pr
 gerer mieux une erreur de violation de fk lors d'un destroy
 
 BUGS:
+column_settings modal sur une has_many/things
 serialized columns containing smth else than a basic type
 subnav flickers on a page slightly too long for the screen
 on peut pas mettre un espace comme thousand delimiter (or j'aurais bien voulu pouvoir le faire sur une colonne zipcode)

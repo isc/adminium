@@ -16,13 +16,14 @@ class ResourcesController < ApplicationController
   respond_to :csv, only: :index
 
   def index
-    @items = clazz.scoped
+    @items = clazz.select("#{quoted_table_name}.*")
     @current_filter = clazz.settings.filters[params[:asearch]] || []
     @current_filter.each do |filter|
       @items = build_statement(@items, filter)
     end
     @items = @items.where(params[:where]) if params[:where].present?
     apply_includes
+    apply_has_many_counts
     apply_search if params[:search].present?
     params[:order] ||= clazz.settings.default_order
     @items = @items.order(params[:order])
@@ -78,7 +79,7 @@ class ResourcesController < ApplicationController
         format.json do
           column_name = item_params.keys.first
           value = display_attribute :td, @item, column_name
-          render json: {result: :success, value: value, column: column_name, id: @item[@item.class.primary_key]}
+          render json: {result: :success, value: value, column: column_name, id: @item[clazz.primary_key]}
         end
       end
     else
@@ -89,7 +90,7 @@ class ResourcesController < ApplicationController
         end
         format.json do
           column_name = item_params.keys.first
-          render json: {result: :failed, message: @item.errors.full_messages, column: column_name, id: @item[@item.class.primary_key]}
+          render json: {result: :failed, message: @item.errors.full_messages, column: column_name, id: @item[clazz.primary_key]}
         end
       end
     end
@@ -188,7 +189,6 @@ class ResourcesController < ApplicationController
   def apply_search
     columns = clazz.settings.columns[:search]
     query, datas = [], []
-    quoted_table_name = quote_table_name clazz.table_name
     columns.each do |column|
       quoted_column = quote_column_name column
       if clazz.settings.is_number_column?(column)
@@ -205,10 +205,18 @@ class ResourcesController < ApplicationController
   end
 
   def apply_includes
-    settings_type = request.format.to_s == 'text/csv' ? :export : :listing
     assocs = clazz.settings.columns[settings_type].find_all {|c| c.include? '.'}.map {|c| c.split('.').first}
     assocs.each do |assoc|
       @items = @items.includes(assoc.to_sym)
+    end
+  end
+
+  def apply_has_many_counts
+    clazz.settings.columns[settings_type].find_all {|c| c.starts_with? 'has_many/'}.each do |column|
+      assoc = column.gsub('has_many/', '').to_sym
+      grouping_column = "#{quoted_table_name}.#{quote_column_name clazz.primary_key}"
+      count_on = "#{quote_table_name assoc}.#{quote_column_name @generic.table(assoc.to_s).primary_key}"
+      @items = @items.joins(assoc).group(grouping_column).select("count(#{count_on}) as \"#{column}\"")
     end
   end
 
@@ -230,7 +238,7 @@ class ResourcesController < ApplicationController
   end
 
   def build_statement scope, filter
-    c = "#{quote_table_name clazz.table_name}.#{quote_column_name filter['column']}"
+    c = "#{quoted_table_name}.#{quote_column_name filter['column']}"
     params = nil
     unary_operator = UNARY_OPERATOR_DEFINITIONS[filter['operator']]
     if unary_operator
@@ -326,6 +334,14 @@ class ResourcesController < ApplicationController
   
   def quote_table_name table_name
     @generic.connection.quote_table_name table_name
+  end
+  
+  def quoted_table_name
+    @quoted_table_name ||= quote_table_name clazz.table_name
+  end
+  
+  def settings_type
+    request.format.to_s == 'text/csv' ? :export : :listing
   end
 
 end

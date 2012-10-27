@@ -70,7 +70,7 @@ javascript:
           == "saved search <i>#{params[:asearch]}</i>"
         span.remove data-param-kind="asearch" x
         
-= render partial: 'items', locals: {items: @items, actions_cell: true}
+= render partial: 'items', locals: {items: @items.to_a, actions_cell: true}
 = render partial: '/resources/panels/listing_settings'
 = render partial: '/resources/panels/export'
 = render partial: '/resources/panels/advanced_search'

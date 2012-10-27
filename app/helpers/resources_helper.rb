@@ -7,6 +7,9 @@ module ResourcesHelper
       parts[0] = parts.first.tableize
       key = parts.join('.')
     end
+    if key.starts_with? 'has_many/'
+      key = "\"#{key}\""
+    end
     params[:order] ||= 'id'
     if params[:order] == key
       order = "#{key} desc"
@@ -19,7 +22,7 @@ module ResourcesHelper
     {'up' => key, 'down' => "#{key} desc"}.each do |direction, dorder|
       active = dorder == params[:order] ? 'active' : nil
       dtitle = direction == 'up' ? "ascend by #{key}" : "descend by #{key}"
-      res << link_to(params.merge(order:dorder), title:dtitle, rel:'tooltip') do
+      res << link_to(params.merge(order: dorder), title: dtitle, rel: 'tooltip') do
         content_tag('i', '', class: "icon-chevron-#{direction} #{active}")
       end
     end
@@ -71,10 +74,10 @@ module ResourcesHelper
   end
 
   def display_associated_count item, key, wrapper_tag
+    value = item[key]
     key = key.gsub 'has_many/', ''
     foreign_key_name = item.class.reflections.values.find {|r| r.name.to_s == key }.foreign_key
     foreign_key_value = item[item.class.primary_key]
-    value = @generic.table(key).where(foreign_key_name => foreign_key_value).count
     content = link_to value, resources_path(key, where: {foreign_key_name => foreign_key_value}), class: 'badge badge-warning'
     column_content_tag wrapper_tag, content, class: 'hasmany'
   end
@@ -192,7 +195,7 @@ module ResourcesHelper
   end
 
   def page_entries_info(collection, options = {})
-    entry_name = options[:entry_name] || (collection.empty?? 'entry' : collection.first.class.name.underscore.sub('_', ' '))
+    entry_name = options[:entry_name] || (collection.empty? ? 'entry' : collection.first.class.name.underscore.sub('_', ' '))
     if collection.num_pages < 2
       case collection.total_count
       when 0; "0 #{entry_name.pluralize}"
@@ -203,7 +206,7 @@ module ResourcesHelper
       offset = (collection.current_page - 1) * collection.limit_value
       %{<b>%d&nbsp;-&nbsp;%d</b> of <b>%d</b>} % [
         offset + 1,
-        offset + collection.count,
+        offset + collection.limit_value,
         collection.total_count
       ]
     end
