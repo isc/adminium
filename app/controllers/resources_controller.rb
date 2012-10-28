@@ -25,8 +25,7 @@ class ResourcesController < ApplicationController
     apply_includes
     apply_has_many_counts
     apply_search if params[:search].present?
-    params[:order] ||= clazz.settings.default_order
-    @items = @items.order(params[:order])
+    apply_order
     update_export_settings
     respond_with @items do |format|
       format.html do
@@ -220,6 +219,12 @@ class ResourcesController < ApplicationController
       count_on = "#{quote_table_name assoc}.#{quote_column_name @generic.table(assoc.to_s).primary_key}"
       @items = @items.joins(assoc).group(grouping_column).select("count(#{count_on}) as \"#{column}\"")
     end
+  end
+  
+  def apply_order
+    params[:order] ||= clazz.settings.default_order
+    params[:order] = "#{quoted_table_name}.#{params[:order]}" unless params[:order][/[.\/]/]
+    @items = @items.order(params[:order])
   end
 
   def apply_serialized_columns
