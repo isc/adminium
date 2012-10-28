@@ -219,7 +219,8 @@ class ResourcesController < ApplicationController
       grouping_column = "#{quoted_table_name}.#{quote_column_name clazz.primary_key}"
       count_on = "#{quote_table_name assoc}.#{quote_column_name @generic.table(assoc.to_s).primary_key}"
       outer_join = "#{quote_table_name assoc}.#{quote_column_name reflection.foreign_key} = #{grouping_column}"
-      @items = @items.joins("left outer join #{assoc} on #{outer_join}").group(grouping_column).select("count(#{count_on}) as \"#{column}\"")
+      @items = @items.joins("left outer join #{assoc} on #{outer_join}").select("count(distinct #{count_on}) as #{quote_column_name column}")
+      @items = @items.group(grouping_column) unless @items.group_values.include? grouping_column
     end
   end
   
