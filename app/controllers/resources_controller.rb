@@ -215,9 +215,11 @@ class ResourcesController < ApplicationController
   def apply_has_many_counts
     clazz.settings.columns[settings_type].find_all {|c| c.starts_with? 'has_many/'}.each do |column|
       assoc = column.gsub('has_many/', '').to_sym
+      _, reflection = clazz.reflections.detect {|m, r| m == assoc}
       grouping_column = "#{quoted_table_name}.#{quote_column_name clazz.primary_key}"
       count_on = "#{quote_table_name assoc}.#{quote_column_name @generic.table(assoc.to_s).primary_key}"
-      @items = @items.joins(assoc).group(grouping_column).select("count(#{count_on}) as \"#{column}\"")
+      outer_join = "#{quote_table_name assoc}.#{quote_column_name reflection.foreign_key} = #{grouping_column}"
+      @items = @items.joins("left outer join #{assoc} on #{outer_join}").group(grouping_column).select("count(#{count_on}) as \"#{column}\"")
     end
   end
   
