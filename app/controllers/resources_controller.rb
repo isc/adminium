@@ -99,11 +99,15 @@ class ResourcesController < ApplicationController
     @item.destroy
     redirection = params[:redirect] == 'index' ? resources_path(params[:table]) : :back
     redirect_to redirection, flash: {success: "#{object_name} successfully destroyed."}
+  rescue ActiveRecord::StatementInvalid => e
+    redirect_to :back, flash: {error: e.message}
   end
 
   def bulk_destroy
     clazz.destroy params[:item_ids]
     redirect_to :back, flash: {success: "#{params[:item_ids].size} #{class_name.pluralize} successfully destroyed."}
+  rescue ActiveRecord::StatementInvalid => e
+    redirect_to :back, flash: {error: e.message}
   end
 
   def bulk_edit

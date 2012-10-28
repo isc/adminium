@@ -20,7 +20,6 @@ TODOS:
 attr_accessible avec role pour proteger plan sur account
 account deprovision ; pour le moment ca supprime la row, on la garde ? que fait-on des collaborators associés ? des données stockées dans redis ?
 unset le focus eventuel d'un element de la popin quand on la ferme, sinon le "press s" ne fonctionne plus
-gerer mieux une erreur de violation de fk lors d'un destroy
 
 BUGS:
 column_settings modal sur une has_many/things
