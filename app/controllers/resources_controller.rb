@@ -63,9 +63,13 @@ class ResourcesController < ApplicationController
     if @item.save
       redirect_to resource_path(params[:table], @item), flash: {success: "#{object_name} successfully created."}
     else
-      @form_url = resources_path(params[:table])
+      @form_url = resources_path params[:table]
       render :new
     end
+  rescue ActiveRecord::StatementInvalid => e
+    flash.now[:error] = e.message
+    @form_url = resources_path params[:table]
+    render :new
   end
 
   def update
