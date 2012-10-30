@@ -7,6 +7,9 @@
           span.divider >
           = "#{@item.class.original_name} ##{@item[@item.class.primary_key]}"
         .btn-group.span8
+          - if user_can? 'create', params[:table]
+            = link_to new_resource_path(table:params[:table]), class: "btn create", rel: "tooltip", title: "Create a new row", "data-placement" => "bottom" do
+              i.icon-file
           - if user_can? 'edit', params[:table]
             = link_to content_tag(:i, nil, class: 'icon-pencil'), edit_resource_path(@item.class.table_name, @item), title: 'Edit', rel: 'tooltip', :'data-placement' => "bottom", class: 'btn'
           - if user_can? 'destroy', params[:table]
