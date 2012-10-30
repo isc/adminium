@@ -6,7 +6,7 @@ td
     = filter["column"]
 td
   - filter_type = filter['type'].to_s
-  - filter_type = 'integer' if filter_type == 'decimal'
+  - filter_type = 'integer' if %w(decimal float).include? filter_type
   - filter_type = 'string' if filter_type == 'text'
   = render partial: "/settings/filters/#{filter_type}", locals: {g: g, operator: filter["operator"]}
 td
