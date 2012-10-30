@@ -54,7 +54,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_admin
-    redirect_to dashboard_url unless admin?
+    redirect_to :back, flash: {error: 'You need administrator privileges to access this page.'} unless admin?
   end
 
   def table_not_found exception
