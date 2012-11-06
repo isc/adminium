@@ -75,6 +75,7 @@ module ResourcesHelper
 
   def display_associated_count item, key, wrapper_tag
     value = item[key]
+    return column_content_tag wrapper_tag, '', class: 'hasmany' if value.nil?
     key = key.gsub 'has_many/', ''
     foreign_key_name = item.class.reflections.values.find {|r| r.name.to_s == key }.foreign_key
     foreign_key_value = item[item.class.primary_key]

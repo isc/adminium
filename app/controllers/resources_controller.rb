@@ -35,7 +35,7 @@ class ResourcesController < ApplicationController
       format.json do
         @items = @items.page(1).per(10)
         render json: {
-          widget: render_to_string(partial: 'items', locals: {items: @items, actions_cell: false}),
+          widget: render_to_string(partial: 'items', locals: {items: @items.to_a, actions_cell: false}),
           id: params[:widget_id],
           total_count: @items.total_count
         }
@@ -224,6 +224,7 @@ class ResourcesController < ApplicationController
     clazz.settings.columns[settings_type].find_all {|c| c.starts_with? 'has_many/'}.each do |column|
       assoc = column.gsub('has_many/', '').to_sym
       _, reflection = clazz.reflections.detect {|m, r| m == assoc}
+      next if reflection.nil?
       grouping_column = "#{quoted_table_name}.#{quote_column_name clazz.primary_key}"
       count_on = "#{quote_table_name assoc}.#{quote_column_name @generic.table(assoc.to_s).primary_key}"
       outer_join = "#{quote_table_name assoc}.#{quote_column_name reflection.foreign_key} = #{grouping_column}"
