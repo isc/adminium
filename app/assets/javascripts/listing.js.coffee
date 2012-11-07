@@ -116,9 +116,9 @@ class UIListing
   constructor: ->
     $('span.label span.remove').click ->
       if $(this).data('param-kind')
-        window.location.href = window.location.href.replace(new RegExp("#{$(this).data('param-kind')}=.*?(&|$)"), '')
+        location.href = location.href.replace(new RegExp("#{$(this).data('param-kind')}=.*?(&|$)"), '')
       else
-        window.location.href = window.location.href.replace($(this).data('param'), '')
+        location.href = location.href.replace(new RegExp("#{$(this).data('param')}&?"), '')
     if $('.breadcrumb').length > 0
       $('.breadcrumb').jscrollspy
         min: $('.breadcrumb').offset().top,
@@ -128,7 +128,6 @@ class UIListing
         ,
         onLeave: (element, position) ->
           $(".breadcrumb").removeClass('subnav-fixed')
-
 
 $ ->
   new BulkActions()
