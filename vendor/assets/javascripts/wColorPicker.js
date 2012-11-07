@@ -316,9 +316,9 @@
 			//if(offset.top - $(window).scrollTop() + $this.height > $(window).height())
 			//{
 				$this.slideTopToBottom = 0;
-				top = -1 * ($this.height) + 10;
+				top = -1 * ($this.height);
 			//}
-			//top -= 50;
+			top += 30;
 			$this.paletteHolder.css({left: left, top: top});
 			
 			$this.paletteHolder.addClass('active')

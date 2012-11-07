@@ -13,7 +13,6 @@ $ ->
         $("##{inst.id}_2i").val(inst.selectedMonth + 1)
         $("##{inst.id}_3i").val(inst.selectedDay)
   setupValidations()
-  setupEnumValues()
   setupSearchDeletion()
 
 addToHiddenParams = (pane_id, group, params) ->
@@ -40,20 +39,6 @@ setupValidations = ->
     column_name = $('#validations_pane select:eq(1) option:selected')
     addToTable '#validations_pane', [validator.text(), column_name.text()]
     addToHiddenParams '#validations_pane', 'validations', validator:validator.val(), column_name:column_name.val()
-
-setupEnumValues = ->
-  setupRemoval '#enum-values_pane'
-  $('#enum_value_column_name').change ->
-    if this.value
-      $.getJSON $(this).data('values-url'), column_name:this.value, (data) ->
-        text = ("#{value}: " for value in data).join("\n")
-        $('#enum_value_values').val(text)
-    else
-      $('#enum_value_values').val('')
-  $('#enum-values_pane .btn').click ->
-    [column, values] = [$('#enum_value_column_name').val(), $('#enum_value_values').val()]
-    addToTable '#enum-values_pane', [column, values]
-    addToHiddenParams '#enum-values_pane', 'enum_values', column_name:column, values:values
 
 setupSearchDeletion = ->
   $('#manage_searches .btn-danger').bind 'ajax:before', ->
