@@ -5,7 +5,7 @@
   input type="hidden" name="id" value=params[:id]
   input type="hidden" name="column" value=params[:column]
   .modal-body
-    = accordion(open: true) do |accordion|
+    = accordion do |accordion|
       = accordion.pane 'Visibility' do
         .control-group
           label.control-label for="column_hide" Hidden column
@@ -33,7 +33,7 @@
                 = check_box_tag 'column_options[serialized]', 'checked', @serialized
               .span10
                 label for="column_options_serialized"
-                  'check this if your data represents a serialized Ruby Core Class
+                  'Check this if your data represents a serialized Ruby Core Class
                 
         - if column.possible_enum_column
           = accordion.pane "Enumerable data" do

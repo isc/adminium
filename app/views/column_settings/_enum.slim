@@ -2,16 +2,16 @@
   .span1.offset2
     = check_box_tag 'is_enum', 'checked', @enum, :data => {:values_url => values_setting_path(clazz.table_name)}
   .span8
-    label for="is_enum" check if this column represents a specific set of values
+    label for="is_enum" Check if this column represents a specific set of values
     
 .alert.alert-info.loading_enum.hide
-  'loading possible values ...
+  'Loading possible values ...
 table.table.table-bordered.enum_details_area class=(@enum ? '' : 'hide')
   tr
     thead
       th
-      th database value
-      th human translation
+      th Database value
+      th Human translation
   tbody
     - if @enum
       - i = 0

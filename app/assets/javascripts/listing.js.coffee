@@ -122,7 +122,7 @@ class ColumnSettings
     $('.template_line a').click @addNewEmptyLine
     $('.color').each () ->
       $(this).wColorPicker
-        target:$(this).siblings('input')
+        target: $(this).siblings('input')
         initColor: $(this).data('color')
 
   toggleEnumConfigurationPanel: (evt) =>
