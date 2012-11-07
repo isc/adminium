@@ -1,18 +1,34 @@
-table.table-striped.table-bordered.table.items-list data-table=params[:table] data-model=clazz.to_s.underscore.gsub('/', '_')
-  thead
-    tr
-      - if actions_cell
-        th.actions
-        th.checkboxes
-          - if user_can? 'destroy', params[:table]
-            input type="checkbox"
-      - clazz.settings.columns[:listing].each do |name|
-        th.column_header
-          == header_link name
-          i.column_settings.icon-cog(rel=name)
-
-  tbody
-    - if items.any?
+- if items.empty?
+  - if @items.current_page > @items.num_pages && @items.num_pages > 0
+    .alert.alert-block
+      h4 Warning!
+      p
+        == "You are looking for results on page #{@items.current_page}, but your query only have #{pluralize @items.num_pages, "result page"}, so there are no results on this page, but still #{@items.total_count} records."
+        br
+        'Try to go to the
+        = link_to "first page", params.merge(page: 1)
+        - if @items.num_pages > 1
+          '  or the
+          = link_to "last page", params.merge(page: @items.num_pages)
+        = "."
+  - else
+    .alert.alert-info
+      'No records were found.
+- else
+  table.table-striped.table-bordered.table.items-list data-table=params[:table] data-model=clazz.to_s.underscore.gsub('/', '_')
+    thead
+      tr
+        - if actions_cell
+          th.actions
+          th.checkboxes
+            - if user_can? 'destroy', params[:table]
+              input type="checkbox"
+        - clazz.settings.columns[:listing].each do |name|
+          th.column_header
+            == header_link name
+            i.column_settings.icon-cog(rel=name)
+  
+    tbody
       - items.each do |item|
         tr data-item-id=item[item.class.primary_key]
           - if actions_cell
@@ -27,6 +43,3 @@ table.table-striped.table-bordered.table.items-list data-table=params[:table] da
                   input type="checkbox"
           - clazz.settings.columns[:listing].each do |name|
               == display_attribute :td, item, name
-    - else
-      tr
-        td colspan=(clazz.settings.columns[:listing].size + 2) No results.

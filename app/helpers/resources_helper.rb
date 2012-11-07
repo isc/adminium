@@ -44,8 +44,7 @@ module ResourcesHelper
       else
         begin # link generation fails if rendered via json controller update
         content = link_to (enum_values.invert[value.to_s] || value),
-          resources_path(item.class.table_name, where: {key => value}),
-          :class => 'label label-info'
+          params.merge(where: {key => value}), :class => 'label label-info'
         rescue
           content = content_tag :span, (enum_values.invert[value.to_s] || value), :class => 'label label-info'
         end

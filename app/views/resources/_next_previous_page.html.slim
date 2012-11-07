@@ -6,8 +6,9 @@
     = link_to params.merge(:page => (scope.current_page + 1)), rel: 'tooltip', title: 'Next page', :"data-placement" => 'bottom', class: 'btn' do
       i.icon-arrow-right
 - if scope.num_pages.nonzero?
+  - warning_class = scope.current_page > scope.num_pages ? 'btn-danger' : ''
   .btn-group
-    = link_to "#", :class => "btn dropdown-toggle", :'data-toggle' => 'dropdown' do
+    = link_to "#", :class => "btn dropdown-toggle #{warning_class}", :'data-toggle' => 'dropdown' do
       = page_entries_info(scope, entry_name: 'record').html_safe
       '
       span.caret
