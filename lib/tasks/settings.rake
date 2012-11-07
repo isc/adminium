@@ -11,7 +11,7 @@ namespace :settings do
           res = {}
           values.split("\n").each do |t|
             split = t.split(':').map &:strip
-            res[split[0]] = {'color' => 'red', 'label' => split[1]}
+            res[split[0]] = {'color' => '#3366FF', 'label' => split[1]}
           end
           setting["values"] = res
         end
