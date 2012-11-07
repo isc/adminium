@@ -9,7 +9,7 @@
         = link_to "first page", params.merge(page: 1)
         - if @items.num_pages > 1
           '  or the
-          = link_to "last page"
+          = link_to "last page", params.merge(page: @items.num_pages)
         = "."
   - else
     .alert.alert-info
