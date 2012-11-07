@@ -23,6 +23,7 @@ unset le focus eventuel d'un element de la popin quand on la ferme, sinon le "pr
 
 BUGS:
 column_settings modal sur une has_many/things
+une colonne nommé "increment" fait peter le create/update (lors du dirty tracking la methode built in rails increment est incorrectement appelee)
 serialized columns containing smth else than a basic type
 subnav flickers on a page slightly too long for the screen
 on peut pas mettre un espace comme thousand delimiter (or j'aurais bien voulu pouvoir le faire sur une colonne zipcode)

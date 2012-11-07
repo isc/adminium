@@ -3,7 +3,7 @@
     .alert.alert-block
       h4 Warning!
       p
-        == "You are looking for results on page #{@items.current_page}, but your query only have #{pluralize @items.num_pages, "result page"}, so there are no results on this page, but still #{@items.total_count} records."
+        == "You are looking for results on page #{@items.current_page}, but your query only has #{pluralize @items.num_pages, "result page"}, so there are no results on this page, but still #{@items.total_count} records."
         br
         'Try to go to the
         = link_to "first page", params.merge(page: 1)
