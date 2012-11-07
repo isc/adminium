@@ -103,14 +103,56 @@ class CustomColumns
       false
 
 class ColumnSettings
+
   constructor: ->
-    $(".column_settings").click ->
-      column_name = $(this).attr("rel")
-      path = $("#column-settings").attr("data-remote-path") + "?column=#{column_name}"
+    $.fn.wColorPicker.defaultSettings['onSelect'] = (color) ->
+      this.settings.target.val(color)
+    
+    $(".column_settings").click (evt) =>
+      @column_name = $(evt.currentTarget).attr("rel")
+      path = $("#column-settings").attr("data-remote-path") + "?column=#{@column_name}"
       $("#column-settings").html($(".loading_modal").html())
       $("#column-settings").modal('show')
       $.get path, (data) =>
         $("#column-settings").html(data)
+        @setupEnumConfigurationPanel()
+  
+  setupEnumConfigurationPanel: =>
+    $("#is_enum").click @toggleEnumConfigurationPanel
+    $('.template_line a').click @addNewEmptyLine
+    $('.color').each () ->
+      $(this).wColorPicker
+        target:$(this).siblings('input')
+        initColor: $(this).data('color')
+
+  toggleEnumConfigurationPanel: (evt) =>
+    checked = $(evt.currentTarget)[0].checked
+    $("table.enum_details_area tbody tr:not(.template_line)").remove()
+    if (checked)
+      $('.loading_enum').show().parents(".modal-body").scrollTop(1000)
+      $.getJSON $(evt.currentTarget).data('values-url'), column_name:@column_name, (data) =>
+        $('.enum_details_area').show()
+        for value in data
+          $('.template_line input[type=text]').val(value)
+          @addNewEmptyLine()
+        $('.loading_enum').hide().parents(".modal-body").scrollTop(1000)
+    else
+      $('.enum_details_area').hide()
+    
+  addNewEmptyLine: =>
+    line = $('.template_line').clone()
+    line.removeClass('template_line')
+    line.find('a').remove()
+    $('.template_line').before(line)
+    $('.template_line input').val('')
+    color = line.find('.color').html('')
+    color.wColorPicker({target:color.siblings('input')})
+    previous_id = $('.template_line').data('line-identifer')
+    new_id = parseInt(previous_id) + 1
+    $('.template_line').data('line-identifer', new_id)
+    for input in $('.template_line input:not(._wColorPicker_customInput)')
+      $(input).attr('name', $(input).attr('name').replace(previous_id, new_id))
+    $('.template_line input').eq(1).focus()
 
 class UIListing
   constructor: ->

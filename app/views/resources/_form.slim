@@ -1,8 +1,9 @@
 = simple_form_for @item, url: @form_url, html: {class: 'form-horizontal resource-form'}, defaults: {input_html: {class: 'span6'}} do |f|
   - @item.class.settings.columns[:form].each do |name|
     - options = {label: @item.class.column_display_name(name)}
-    - if  enum_value = @item.class.settings.enum_values_for(name)
-      = f.input name, options.merge(as: :select, collection: enum_value)
+    - if enum_value = @item.class.settings.enum_values_for(name)
+      - enum_collection = enum_value.to_a.map {|v| [v[1]['label'], v[0]]}
+      = f.input name, options.merge(as: :select, collection: enum_collection)
     - elsif reflection = @item.class.foreign_key?(name)
       - if reflection.options[:polymorphic]
         = f.input name, options

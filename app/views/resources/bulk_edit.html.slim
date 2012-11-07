@@ -17,7 +17,8 @@
     - @item.class.settings.columns[:form].each do |name|
       - options = {label: @item.class.column_display_name(name)}
       - if  enum_value = @item.class.settings.enum_values_for(name)
-        = f.input name, options.merge(as: :select, collection: enum_value)
+        - enum_collection = enum_value.to_a.map {|v| [v[1]['label'], v[0]]}
+        = f.input name, options.merge(as: :select, collection: enum_collection)
       - elsif @item.class.foreign_key? name
         - assoc_name = name.gsub(/_id$/, '').to_sym
         - if @item.reflections[assoc_name].options[:polymorphic]

@@ -9,8 +9,6 @@
           = render partial: 'resources/panels/column_listing', locals: {clazz: clazz, type: :form, sortable: true}
         = accordion.pane 'Validations' do
           = render partial: 'resources/panels/validations'
-        = accordion.pane 'Enum values' do
-          = render partial: 'resources/panels/enum_values'
             
     .modal-footer
       input#save_settings.btn.btn-primary type='submit' value='Save settings'

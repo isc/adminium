@@ -6,7 +6,7 @@ class SettingsController < ApplicationController
       param_key = "#{type}_columns".to_sym
       settings.columns[type] = params[param_key].delete_if {|e|e.empty?} if params.has_key? param_key
     end
-    [:enum_values, :validations].each do |setting|
+    [:validations].each do |setting|
       settings.send "#{setting}=", params[setting].delete_if {|e|e.empty?} if params.has_key? setting
     end
     settings.per_page = params[:per_page] if params[:per_page]

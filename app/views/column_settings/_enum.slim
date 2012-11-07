@@ -1,0 +1,35 @@
+.row-fluid
+  .span1.offset2
+    = check_box_tag 'is_enum', 'checked', @enum, :data => {:values_url => values_setting_path(clazz.table_name)}
+  .span8
+    label for="is_enum" check if this column represents a specific set of values
+    
+.alert.alert-info.loading_enum.hide
+  'loading possible values ...
+table.table.table-bordered.enum_details_area class=(@enum ? '' : 'hide')
+  tr
+    thead
+      th
+      th database value
+      th human translation
+  tbody
+    - if @enum
+      - i = 0
+      - @enum.each do |value, infos|
+        tr
+          td
+            div.color(data-color=infos['color'])
+            = hidden_field_tag "enum_data[#{i}][color]", infos['color']
+          td= text_field_tag "enum_data[#{i}][value]", value, class: 'span2'
+          td= text_field_tag "enum_data[#{i}][label]", infos['label'], class: 'span2'
+        - i += 1
+    - i = rand(1000)+100
+    tr.template_line(data-line-identifer=i)
+      td
+        div.color
+        = hidden_field_tag "enum_data[#{i}][color]", ''
+      td= text_field_tag "enum_data[#{i}][value]", nil, class: 'span2'
+      td
+        = text_field_tag "enum_data[#{i}][label]", nil, class: 'span2'
+        a.btn
+          i.icon-plus-sign

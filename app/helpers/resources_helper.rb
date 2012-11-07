@@ -43,10 +43,12 @@ module ResourcesHelper
         content, css_class = 'null', 'nilclass'
       else
         begin # link generation fails if rendered via json controller update
-        content = link_to (enum_values.invert[value.to_s] || value),
-          params.merge(where: {key => value}), :class => 'label label-info'
+        label = enum_values[value.to_s].try(:[], 'label') || value
+        user_defined_bg = enum_values[value.to_s].try(:[], 'color')
+        user_defined_bg = "background-color: #{user_defined_bg}" if user_defined_bg.present?
+        content = link_to label, params.merge(where: {key => value}), :class => 'label label-info', :style => user_defined_bg
         rescue
-          content = content_tag :span, (enum_values.invert[value.to_s] || value), :class => 'label label-info'
+          content = content_tag :span, label, :class => 'label label-info', :style => user_defined_bg
         end
         css_class = 'enum'
       end

@@ -10,10 +10,6 @@
           = render partial: 'resources/panels/extra_columns', locals: {clazz: clazz}
         = accordion.pane 'Searchable columns' do
           = render partial: 'resources/panels/column_listing', locals: {clazz: clazz, type: :search}
-        = accordion.pane 'Enum values' do
-          = render partial: 'resources/panels/enum_values'
-        = accordion.pane 'Serialized columns' do
-          = render partial: 'resources/panels/column_listing', locals: {clazz: clazz, type: :serialized}
         = accordion.pane 'Miscellaneous' do
           = render partial: 'resources/panels/misc'
     .modal-footer

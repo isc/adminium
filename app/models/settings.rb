@@ -116,6 +116,18 @@ module Settings
       @column[name.to_s] = options
       save
     end
+    
+    def update_enum_values params
+      return if params[:enum_data].nil?
+      @enum_values.delete_if {|enums| enums['column_name'] == params[:column]}
+      values = {}
+      params[:enum_data].values.each do |value|
+        db_value = value.delete 'value'
+        values[db_value] = value if db_value.present? && value['label'].present?
+      end
+      @enum_values.push({'column_name' => params[:column], 'values' => values}) if values.present?
+      save
+    end
 
     def columns_options type, opts = {}
       return @columns[type] if opts[:only_checked]
@@ -180,11 +192,11 @@ module Settings
 
     def enum_values_for column_name
       return unless enum_value = @enum_values.detect {|enum_value| enum_value['column_name'] == column_name}
-      Hash[enum_value['values'].split("\n").map {|val|val.split(':').map(&:strip).reverse}]
+      enum_value['values']
     end
 
     def possible_enum_columns
-      @clazz.columns.find_all {|c| !c.primary && ![:date, :datetime].include?(c.type)}
+      @clazz.columns.find_all {|c| c.possible_enum_column }
     end
 
   end

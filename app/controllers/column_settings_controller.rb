@@ -6,10 +6,12 @@ class ColumnSettingsController < ApplicationController
   def show
     @hidden = !settings.columns[:listing].include?(params[:column])
     @serialized = settings.columns[:serialized].include?(params[:column])
+    @enum = settings.enum_values_for params[:column]
   end
 
   def create
     settings.update_column_options params[:column], params[:column_options]
+    settings.update_enum_values params
     if params[:label_column]
       settings = @generic.table(params[:label_column][:table]).settings
       settings.label_column = params[:label_column][:label_column]
