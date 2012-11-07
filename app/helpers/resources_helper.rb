@@ -29,7 +29,7 @@ module ResourcesHelper
     res << (link_to clazz.column_display_name(original_key), params.merge(order:order), title: title, rel:'tooltip')
   end
 
-  def display_attribute wrapper_tag, item, key, relation = false
+  def display_attribute wrapper_tag, item, key, relation = false, original_key = nil
     is_editable = nil
     return display_associated_column item, key, wrapper_tag if key.include? '.'
     return display_associated_count item, key, wrapper_tag if key.starts_with? 'has_many/'
@@ -43,10 +43,10 @@ module ResourcesHelper
         content, css_class = 'null', 'nilclass'
       else
         begin # link generation fails if rendered via json controller update
-        label = enum_values[value.to_s].try(:[], 'label') || value
-        user_defined_bg = enum_values[value.to_s].try(:[], 'color')
-        user_defined_bg = "background-color: #{user_defined_bg}" if user_defined_bg.present?
-        content = link_to label, params.merge(where: {key => value}), :class => 'label label-info', :style => user_defined_bg
+          label = enum_values[value.to_s].try(:[], 'label') || value
+          user_defined_bg = enum_values[value.to_s].try(:[], 'color')
+          user_defined_bg = "background-color: #{user_defined_bg}" if user_defined_bg.present?
+          content = link_to label, params.merge(where: {(original_key || key) => value}), :class => 'label label-info', :style => user_defined_bg
         rescue
           content = content_tag :span, label, :class => 'label label-info', :style => user_defined_bg
         end
@@ -71,7 +71,7 @@ module ResourcesHelper
     parts = key.split('.')
     item = item.send(parts.first)
     return column_content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
-    display_attribute wrapper_tag, item, parts.second, true
+    display_attribute wrapper_tag, item, parts.second, true, [item.class.table_name, parts.second].join('.')
   end
 
   def display_associated_count item, key, wrapper_tag
