@@ -5,7 +5,7 @@
   input type="hidden" name="id" value=params[:id]
   input type="hidden" name="column" value=params[:column]
   .modal-body
-    = accordion do |accordion|
+    = accordion accordion_id: 'column-settings-accordion' do |accordion|
       = accordion.pane 'Visibility' do
         .control-group
           label.control-label for="column_hide" Hidden column

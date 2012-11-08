@@ -31,5 +31,6 @@ table.table.table-bordered.enum_details_area class=(@enum ? '' : 'hide')
       td= text_field_tag "enum_data[#{i}][value]", nil, class: 'span2'
       td
         = text_field_tag "enum_data[#{i}][label]", nil, class: 'span2'
+        '
         a.btn
           i.icon-plus-sign
