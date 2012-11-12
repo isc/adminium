@@ -20,7 +20,7 @@ gem 'country_select'
 gem 'attr_encrypted', git: 'git://github.com/hron/attr_encrypted.git', branch: 'issue-2-ruby19-compatibility'
 gem 'airbrake', '3.1.6'
 gem 'bootstrap-components-helpers', git: 'git://gist.github.com/2117187.git'
-gem 'composite_primary_keys', git: 'git://github.com/isc/composite_primary_keys.git'
+gem 'composite_primary_keys', '5.0.8'
 gem 'bootstrap-wysihtml5-rails', require: 'bootstrap-wysihtml5-rails',
   git: 'git://github.com/Nerian/bootstrap-wysihtml5-rails.git'
 
