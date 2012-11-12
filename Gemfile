@@ -18,7 +18,7 @@ gem 'heroku-nav', require: 'heroku/nav'
 gem 'rest-client'
 gem 'country_select'
 gem 'attr_encrypted', git: 'git://github.com/hron/attr_encrypted.git', branch: 'issue-2-ruby19-compatibility'
-gem 'airbrake'
+gem 'airbrake', '3.1.6'
 gem 'bootstrap-components-helpers', git: 'git://gist.github.com/2117187.git'
 gem 'composite_primary_keys', git: 'git://github.com/isc/composite_primary_keys.git'
 gem 'bootstrap-wysihtml5-rails', require: 'bootstrap-wysihtml5-rails',
