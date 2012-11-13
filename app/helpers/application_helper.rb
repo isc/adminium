@@ -65,5 +65,11 @@ module ApplicationHelper
       "<a class=\"btn btn-warning\" href=\"#{account.upgrade_link}\">Upgrade</a> to the enterprise plan ($25 per month) and add as many collaborators you need to access your data. Moreover, you can define roles to each collaborators to limit what tables they may access, or prevent them from editing or deleting rows.".html_safe
     end
   end
+  
+  def setup_mailto_href account
+    res = 'mailto:?'
+    res << "subject=#{URI::encode("Need your help setting up Adminium for #{account.name}")}"
+    res << "&body=#{URI::encode "Hi there,\nCan you please help me setup the Adminium add-on for #{account.name} ? You need to login to Heroku, select the app and click on Adminium in the resources to get to the instructions.\nThanks a lot,"}"
+  end
 
 end

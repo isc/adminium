@@ -10,6 +10,10 @@ p.alert.alert-info In order to be able to administrate your data we need access 
         = "heroku plugins:install git://github.com/isc/heroku-adminium\nheroku adminium\n"
     .span2
       == clippy "heroku plugins:install git://github.com/isc/heroku-adminium %26%26 heroku adminium"
+  h4 Not your job ?
+  = link_to setup_mailto_href(current_account), target: '_blank' do
+    i.icon-envelope
+    '  Ask a coworker
 .span6
   h2 Browser setup
   = form_for current_account, html: {class: 'form-inline'} do |f|
