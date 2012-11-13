@@ -14,6 +14,7 @@ $ ->
         $("##{inst.id}_3i").val(inst.selectedDay)
   setupValidations()
   setupSearchDeletion()
+  setupDbUrlPresence()
 
 addToHiddenParams = (pane_id, group, params) ->
   div = $("#{pane_id} .params")
@@ -46,3 +47,10 @@ setupSearchDeletion = ->
     link = link for link in $('.dropdown-searches a') when $(link).text() is search_name
     $(link).closest('li').remove()
     $(this).closest('tr').remove()
+
+setupDbUrlPresence = ->
+  return unless $('.heroku-connection-instructions').length
+  setInterval ->
+    $.get '/account/db_url_presence', (data) ->
+      window.location = '/dashboard?step=done' if data
+  , 3000

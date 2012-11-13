@@ -11,9 +11,9 @@ MtCrap::Application.routes.draw do
   end
 
   resources :settings do
-    get :values, :on => :member
+    get :values, on: :member
     get :columns, on: :collection
-    post :update_advanced_search, :on => :member
+    post :update_advanced_search, on: :member
   end
 
   resources :widgets
@@ -32,7 +32,9 @@ MtCrap::Application.routes.draw do
     get :switch_account
     get :remove_heroku_chrome
   end
-  resource :account, only: [:edit, :update]
+  resource :account, only: [:edit, :update] do
+    get :db_url_presence, on: :member
+  end
   resources :roles
   resource :dashboard
   resources :collaborators
