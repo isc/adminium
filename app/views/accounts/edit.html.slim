@@ -5,7 +5,7 @@
     small= " #{@account.plan.humanize} plan"
   - if @account.pet_project?
     p.alert
-      ' You 're currently on the free plan meant for pet projects which is limited to the 5 first tables of your schema.
+      ' You are currently on the free plan meant for pet projects which is limited to the 5 first tables of your schema.
       br
       = link_to 'Upgrade', current_account.upgrade_link, :class => 'btn btn-warning'
       '  to the startup plan ($10 per month) to access your full schema with Adminium.
