@@ -1,6 +1,9 @@
 .page-header
   h1 Next step, connect to your database
-p.alert.alert-info In order to be able to administrate your data we need access to your database. 
+p.alert.alert-info
+  ' In order to be able to administrate your data we need access to your database.
+  br
+  ' Choose one of the following methods.
 .span6
   h2 Command line setup
   p The easiest way to complete the add-on installation is to run the following commands in your application root :
@@ -13,11 +16,12 @@ p.alert.alert-info In order to be able to administrate your data we need access 
 .span6
   h2 Browser setup
   = form_for current_account, html: {class: 'form-inline'} do |f|
+    = hidden_field_tag :install, 1
     .input-prepend
       span.add-on
         i.icon-th
       = f.text_field :db_url, class: 'span4', placeholder: 'Paste your database URL here'
-    ' 
+    '
     = f.submit 'Connect', class: 'btn btn-primary'
   h3 Finding your Heroku Postgres database url
   .row-fluid.heroku-connection-instructions

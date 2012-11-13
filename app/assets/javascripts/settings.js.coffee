@@ -1,4 +1,5 @@
 $ ->
+  $("#welcome-modal").modal()
   $('ul.sortable').sortable()
   $('table.filters span.btn').live 'click', ->
     $(this).parents('tr').remove()

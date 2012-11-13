@@ -233,7 +233,7 @@ class ResourcesController < ApplicationController
       @items = @items.group(grouping_column) unless @items.group_values.include? grouping_column
     end
   end
-  
+
   def apply_order
     params[:order] ||= clazz.settings.default_order
     params[:order] = "#{quoted_table_name}.#{params[:order]}" unless params[:order][/[.\/]/]
@@ -320,7 +320,7 @@ class ResourcesController < ApplicationController
     end
     object
   end
-  
+
   def generate_csv
     keys = clazz.settings.columns[:export]
     options = {col_sep: clazz.settings.export_col_sep}
@@ -347,19 +347,19 @@ class ResourcesController < ApplicationController
     end
     out
   end
-  
+
   def quote_column_name column_name
-    @generic.connection.quote_column_name column_name 
+    @generic.connection.quote_column_name column_name
   end
-  
+
   def quote_table_name table_name
     @generic.connection.quote_table_name table_name
   end
-  
+
   def quoted_table_name
     @quoted_table_name ||= quote_table_name clazz.table_name
   end
-  
+
   def settings_type
     request.format.to_s == 'text/csv' ? :export : :listing
   end

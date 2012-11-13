@@ -22,11 +22,11 @@
         .content= spinner_tag
 - else
   .alert
-    ' Add widgets using the 
+    ' Add widgets using the
     button.btn data-toggle="modal" href="#new_widget"
       i.icon-plus-sign
     '  button in the top right corner.
-    
+
 dl
   dt Database size
   dd= number_to_human_size @db_size
@@ -55,3 +55,27 @@ table.table.table-striped
         = f.input :advanced_search, as: :select, collection: []
     .modal-footer
       = f.submit class: 'btn btn-primary'
+
+- if params[:step] == 'done'
+  .modal.hide#welcome-modal
+    .modal-header
+      a.close data-dismiss="modal" ×
+      h3
+        ' Welcome on board !
+    .modal-body
+      p
+        '  Your account
+        b= current_account.name
+        '  is now correctly configured and we have detected
+        = pluralize @table_sizes.length, 'table'
+        '  in your database. To get started, just <u>press 'S'</u> and type one of your table names to see some data.
+      - if @account.pet_project?
+        h4 The Pet Project Plan
+        p
+          'You choose our free plan designed for pet projects meaning you may only access the 5 first tables of your schema.
+          'If you need more, you will have to upgrade to our startup plan that allows administration of all your tables !
+      h4 Need help ?
+      p
+        ' If you have any questions about using Adminium, please let us know using the bottom-left-feedback-button, we'll be glad to help.
+    .modal-footer
+      a.btn.btn-primary.btn-large data-dismiss="modal" Ok
