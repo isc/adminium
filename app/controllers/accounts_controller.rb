@@ -19,6 +19,10 @@ class AccountsController < ApplicationController
     end
   end
 
+  def db_url_presence
+    render json: current_account.db_url.present?
+  end
+
   private
   def valid_db_url?
     current_account.valid_db_url?
