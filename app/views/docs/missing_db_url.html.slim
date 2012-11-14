@@ -24,7 +24,7 @@ p.alert.alert-info
     .input-prepend
       span.add-on
         i.icon-th
-      = f.text_field :db_url, class: 'span4', placeholder: 'Paste your database URL here'
+      = f.text_field :db_url, class: 'span4', placeholder: 'Paste your database URL here', required: true, title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database', pattern: "^((mysql2?)|(postgres(ql)?)):\/\/.*"
     '
     = f.submit 'Connect', class: 'btn btn-primary'
   h3 Finding your Heroku Postgres database url

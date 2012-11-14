@@ -10,11 +10,11 @@ class Account < ActiveRecord::Base
   has_many :widgets, dependent: :destroy
   has_many :sign_ons
 
+  validates_format_of :db_url, with: /^((mysql2?)|(postgres(ql)?)):\/\/.*/, allow_blank: true
   # fucked up "unless" below, but otherwise the tests are fucked up
   # likely because of the transactions being used in tests
   # and the fact that this validation causes a new connection to be established
   validate :db_url_validation unless Rails.env.test?
-  validates_format_of :db_url, with: /^((mysql2?)|(postgres(ql)?)):\/\/.*/, allow_blank: true
 
   attr_encryptor :db_url, key: (ENV['ENCRYPTION_KEY'] || 'shablagoo')
 
@@ -75,7 +75,7 @@ class Account < ActiveRecord::Base
   end
 
   def db_url_validation
-    return unless db_url.present?
+    return if db_url.blank? || errors[:db_url]
     Generic.new self
   rescue PGError, Mysql2::Error, URI::InvalidURIError => e
     errors[:base] = e.message
