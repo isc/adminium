@@ -69,7 +69,7 @@ module ApplicationHelper
   def setup_mailto_href account
     res = 'mailto:?'
     res << "subject=#{URI::encode("Need your help setting up Adminium for #{account.name}")}"
-    res << "&body=#{URI::encode "Hi there,\nCan you please help me setup the Adminium add-on for #{account.name} ? You need to login to Heroku, select the app and click on Adminium in the resources to get to the instructions.\nThanks a lot,"}"
+    res << "&body=#{URI::encode "Hi there,\n\nCan you please help me setup the Adminium add-on for #{account.name} ? You need to login to Heroku, select the app and click on Adminium in the resources to get to the instructions.\n\nThanks a lot,"}"
   end
 
 end
