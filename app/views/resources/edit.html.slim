@@ -5,7 +5,7 @@
         .span3
           strong= link_to params[:table].humanize, resources_path(params[:table])
           span.divider >
-          = "Editing #{@item.class.original_name} ##{@item[@item.class.primary_key]}"
+          = "Editing #{@item.class.model_name.human} ##{@item[@item.class.primary_key]}"
         .btn-group.span8
           = link_to content_tag(:i, nil, class: 'icon-eye-open'), resource_path(@item.class.table_name, @item), class: 'btn', :'data-placement' => 'bottom', rel: 'tooltip', title: 'Show'
           - if user_can? 'destroy', params[:table]

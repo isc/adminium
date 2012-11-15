@@ -5,7 +5,7 @@
         .span3
           strong= link_to params[:table].humanize, resources_path(params[:table])
           span.divider >
-          = "#{@item.class.original_name} ##{@item[@item.class.primary_key]}"
+          = "#{@item.class.model_name.human} ##{@item[@item.class.primary_key]}"
         .btn-group.span8
           - if user_can? 'create', params[:table]
             = link_to new_resource_path(table:params[:table]), class: "btn create", rel: "tooltip", title: "Create a new row", "data-placement" => "bottom" do

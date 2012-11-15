@@ -5,7 +5,7 @@
         .span11
           strong= link_to params[:table].humanize, resources_path(params[:table])
           span.divider >
-          ' New #{@item.class.original_name}
+          ' New #{@item.class.model_name.human}
         .span1
           a.btn data-toggle="modal" href="#settings" title="Form Settings" data-placement="bottom" rel="tooltip"
             i.icon-cog
