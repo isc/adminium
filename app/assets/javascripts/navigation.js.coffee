@@ -8,8 +8,10 @@ class Navigation
   tableSelection: ->
     @selector = '#search-table .search-query'
     $(document).on 'change', @selector, ->
-      this.form.action = this.form.action + this.value
-      this.form.submit()
+      if $(this).data('source').indexOf(this.value) isnt -1
+        this.form.action = this.form.action + this.value
+        this.form.submit()
+        $(this).tooltip('show')
     $(document).keypress (e) =>
       return if $(event.target).is(':input')
       if e.which is 115 # 's' key

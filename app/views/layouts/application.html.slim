@@ -26,7 +26,7 @@ html lang="en"
           .container-fluid.nav-collapse
             - if current_account && current_account.db_url.present?
               form#search-table.navbar-search action=resources_path('')
-                input.search-query type="search" data-provide="typeahead" data-source="#{@tables.inspect}" autocomplete="off" placeholder="go to table (press s)"
+                input.search-query type="search" data-provide='typeahead' data-trigger='manual' data-placement="bottom" rel="tooltip" data-original-title="loading your page. please wait ..."  data-source="#{@tables.inspect}" autocomplete="off" placeholder="go to table (press s)"
             = render 'layouts/menu'
     .container-fluid
       - subnav = yield :subnav
