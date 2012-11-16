@@ -97,6 +97,14 @@ class ResourcesController < ApplicationController
         end
       end
     end
+  rescue ActiveRecord::StatementInvalid => e
+    respond_with @item do |format|
+      format.html {redirect_to :back, flash: {error: e.message}}
+      format.json do
+        column_name = item_params.keys.first
+        render json: {result: :failed, message: e.message, column: column_name, id: @item[clazz.primary_key]}
+      end
+    end
   end
 
   def destroy
