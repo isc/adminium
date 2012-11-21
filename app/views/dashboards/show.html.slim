@@ -43,6 +43,12 @@ table.table.table-striped
         td= number_to_human_size fulltblsize
         td= number_to_human_size tblsize
         td= number_with_delimiter record_count
+  tfoot
+    tr
+      td Totals
+      td= number_to_human_size @table_sizes.sum{|e|e[1].to_i}
+      td= number_to_human_size @table_sizes.sum{|e|e[2].to_i}
+      td= number_with_delimiter @table_sizes.sum{|e|e[3]}
 
 #new_widget.modal.hide.fade
   .modal-header
