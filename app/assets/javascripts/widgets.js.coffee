@@ -46,7 +46,7 @@ class Widget
         query_url = query_url.replace("?", "?#{result[0]}")
       widget.data("query-url", query_url)
       @fetchContent widget
-      @updateWidgetSorting(widget.data('widget-id'), {order:result[1].replace("+", " ")})
+      @updateWidgetSorting(widget.data('widget-id'), {order:decodeURIComponent(result[1]).replace("+", " ")})
       ev.preventDefault()
 
 $ -> new Widget()
