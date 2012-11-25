@@ -22,7 +22,7 @@
               br
               = "Default is \"#{params[:column].humanize}\""
       - unless association_clazz || clazz.foreign_key?(params[:column])
-        - partial = {float: :decimal}[column.type] || column.type
+        - partial = {float: :decimal, timestamp: :datetime}[column.type] || column.type
         - if partial != :string
           = accordion.pane "#{partial.to_s.pluralize.humanize} display" do
             = render partial: "/column_settings/types/#{partial}"
