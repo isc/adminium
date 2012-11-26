@@ -54,4 +54,4 @@ setupDbUrlPresence = ->
   setInterval ->
     $.get '/account/db_url_presence', (data) ->
       window.location = '/dashboard?step=done' if data
-  , 3000
+  , 6000
