@@ -21,7 +21,7 @@ class BulkActions
           $("##{inst.id}_1i").val(inst.selectedYear)
           $("##{inst.id}_2i").val(inst.selectedMonth + 1)
           $("##{inst.id}_3i").val(inst.selectedDay)
-  
+
   setupBulkDestroy: ->
     $('.bulk-destroy').submit =>
       items = $("#{@checkbox_selector}:checked")
@@ -42,7 +42,7 @@ class BulkActions
       else
         $(@checkbox_selector).removeAttr('checked')
       @formVisibility()
-    
+
   formVisibility: ->
     if $("#{@checkbox_selector}:checked").length is 0
       $(".bulk-action").hide()
@@ -107,7 +107,7 @@ class ColumnSettings
   constructor: ->
     $.fn.wColorPicker.defaultSettings['onSelect'] = (color) ->
       this.settings.target.val(color)
-    
+
     $(".column_settings").click (evt) =>
       @column_name = $(evt.currentTarget).attr("rel")
       path = $("#column-settings").attr("data-remote-path") + "?column=#{@column_name}"
@@ -116,7 +116,7 @@ class ColumnSettings
       $.get path, (data) =>
         $("#column-settings").html(data)
         @setupEnumConfigurationPanel()
-  
+
   setupEnumConfigurationPanel: =>
     $("#is_enum").click @toggleEnumConfigurationPanel
     $('.template_line a').click @addNewEmptyLine
@@ -138,7 +138,7 @@ class ColumnSettings
         $('.loading_enum').hide().parents(".modal-body").scrollTop(1000)
     else
       $('.enum_details_area').hide()
-    
+
   addNewEmptyLine: =>
     line = $('.template_line').clone()
     line.removeClass('template_line')
@@ -154,9 +154,16 @@ class ColumnSettings
       $(input).attr('name', $(input).attr('name').replace(previous_id, new_id))
     $('.template_line input').eq(1).focus()
 
+class AdvanceSearchNavBar
+  constructor: ->
+    $('#nav_searches i.add_widget').click (evt) ->
+      $(evt.currentTarget).addClass('active').removeClass('add_widget')
+      $('#nav_searches form').submit()
+
+
 class UIListing
   constructor: ->
-    $('span.label span.remove').click ->
+    $('span.label span.remove, i.remove').click ->
       if $(this).data('param-kind')
         location.href = location.href.replace(new RegExp("#{$(this).data('param-kind')}=.*?(&|$)"), '')
       else
@@ -177,3 +184,4 @@ $ ->
   new CustomColumns('#select-exported-fields_pane')
   new UIListing()
   new ColumnSettings()
+  new AdvanceSearchNavBar()

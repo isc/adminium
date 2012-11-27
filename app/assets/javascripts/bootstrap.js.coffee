@@ -6,8 +6,8 @@ $ ->
   # $(".tab").tab "show"
   # $(".tooltip").tooltip()
   # $(".typeahead").typeahead()
-  $('span[rel=tooltip], button[rel=tooltip], a[rel*=tooltip]').tooltip()
-  $("a.text-more, span.text-more").popover()
+  $('span[rel=tooltip], button[rel=tooltip], a[rel*=tooltip], i[rel=tooltip]').tooltip()
+  $("a.text-more, span.text-more, i.text-more").popover()
   $('.datepicker').datepicker onClose: (dateText, inst) ->
     $("##{inst.id}_1i").val(inst.selectedYear)
     $("##{inst.id}_2i").val(inst.selectedMonth + 1)

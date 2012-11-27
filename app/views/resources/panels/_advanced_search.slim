@@ -18,6 +18,6 @@
             = render partial: '/settings/filter', locals: {filter: filter}
     .modal-footer
       = label_tag :name, 'Save as', class: 'control-label'
-      = text_field_tag :name, (params[:asearch] || 'last_search'), :class => 'span2'
+      = text_field_tag :name, (params[:asearch] || 'last search'), :class => 'span2'
       '
       input#save_advanced_search.btn.btn-primary type="submit" value="Search"

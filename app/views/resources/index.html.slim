@@ -27,13 +27,6 @@ javascript:
                 ul.dropdown-menu.nav.dropdown-searches
                   li
                     a data-toggle="modal" href="#advanced_search" Advanced search ...
-                  li
-                    a data-toggle="modal" href="#manage_searches" Manage saved searches ...
-                  li.divider
-                  li.nav-header Saved Searches
-                  - clazz.settings.filters.keys.each do |key|
-                    li
-                      =link_to key, params.merge(asearch: key)
         .btn-group.span2
           - if user_can? 'create', params[:table]
             = link_to new_resource_path(table:params[:table]), class: "btn create", rel: "tooltip", title: "Create a new row", "data-placement" => "bottom" do
@@ -53,7 +46,39 @@ javascript:
           a.btn data-toggle="modal" href="#settings" title="Listing Settings" data-placement="bottom" rel="tooltip"
             i.icon-cog
 
-- if params[:search].present? || params[:where] || params[:asearch]
+#nav_searches.tabbable.tabs-below
+  = form_for Widget.new(:table => params[:table], :advanced_search => params[:asearch]), :remote => true do |t|
+    = t.hidden_field :table
+    = t.hidden_field :advanced_search
+
+  ul.nav.nav-tabs
+    - clazz.settings.filters.keys.each do |key|
+      - if params[:asearch] == key
+        li.active
+          span
+            i.icon-remove.remove data-param-kind="asearch" title="close this view" rel="tooltip" data-placement="bottom"
+            span == params[:asearch]
+            - if @widget
+              i.icon-star.active title="this view is on your dashboard as a widget" rel="tooltip" data-placement="bottom"
+            - else
+              i.icon-star.add_widget title="add this view as a widget on your dashboard" rel="tooltip" data-placement="bottom"
+            i.icon-eye-open.text-more data-placement="bottom" data-title="#{params[:asearch]}" data-content=display_filter(@current_filter)
+            i.icon-pencil data-toggle="modal" href="#advanced_search"  title="edit this view" rel="tooltip" data-placement="bottom"
+            = link_to search_path(params[:table], name: params[:asearch]), method: 'delete' do
+              i.icon-trash title="delete this view, permanently" rel="tooltip" data-placement="bottom"
+
+      - else
+        li
+          = link_to key, params.merge(asearch: key)
+    li.add_view
+      a data-toggle="modal" href="#advanced_search"
+        i.icon-plus-sign
+        - if clazz.settings.filters.keys.length > 0
+          '  add another view
+        - else
+          '  create a custom view
+
+- if params[:search].present? || params[:where]
   .page-header
     - if params[:search].present?
       span.label.label-success
@@ -64,12 +89,7 @@ javascript:
         span.label.label-warning
           == "where #{k} is <i>#{v}</i>"
           span.remove data-param=format_param_for_removal(k, v) x
-    - if @current_filter.present?
-      span.label.label-success.text-more data-title="advanced search #{params[:asearch]}" data-content=display_filter(@current_filter)
-        span data-toggle="modal" href="#advanced_search"
-          == "saved search <i>#{params[:asearch]}</i>"
-        span.remove data-param-kind="asearch" x
-        
+
 = render partial: 'items', locals: {items: @items.to_a, actions_cell: true}
 = render partial: '/resources/panels/listing_settings'
 = render partial: '/resources/panels/export'

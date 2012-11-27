@@ -14,7 +14,7 @@ $ ->
         $("##{inst.id}_2i").val(inst.selectedMonth + 1)
         $("##{inst.id}_3i").val(inst.selectedDay)
   setupValidations()
-  setupSearchDeletion()
+
   setupDbUrlPresence()
 
 addToHiddenParams = (pane_id, group, params) ->
@@ -41,13 +41,6 @@ setupValidations = ->
     column_name = $('#validations_pane select:eq(1) option:selected')
     addToTable '#validations_pane', [validator.text(), column_name.text()]
     addToHiddenParams '#validations_pane', 'validations', validator:validator.val(), column_name:column_name.val()
-
-setupSearchDeletion = ->
-  $('#manage_searches .btn-danger').bind 'ajax:before', ->
-    search_name = $(this).closest('tr').find('td').eq(0).text()
-    link = link for link in $('.dropdown-searches a') when $(link).text() is search_name
-    $(link).closest('li').remove()
-    $(this).closest('tr').remove()
 
 setupDbUrlPresence = ->
   return unless $('.heroku-connection-instructions').length

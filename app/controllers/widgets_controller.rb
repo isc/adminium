@@ -1,8 +1,17 @@
 class WidgetsController < ApplicationController
 
+  respond_to :json, :html, only: [:create]
+
   def create
-    current_account.widgets.create params[:widget]
-    redirect_to dashboard_url
+    widget = current_account.widgets.create params[:widget]
+    respond_with widget do |format|
+      format.html do
+        redirect_to dashboard_url
+      end
+      format.json do
+        render nothing: true
+      end
+    end
   end
 
   def destroy
