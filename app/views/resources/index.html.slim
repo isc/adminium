@@ -46,52 +46,52 @@ javascript:
           a.btn data-toggle="modal" href="#settings" title="Listing Settings" data-placement="bottom" rel="tooltip"
             i.icon-cog
 
-#nav_searches.tabbable.tabs-below
-  = form_for Widget.new, remote: true do |t|
-    = t.hidden_field :table, value: params[:table]
-    = t.hidden_field :advanced_search, value: params[:asearch] if params[:asearch].present?
+  #nav_searches.tabbable.tabs-below
+    = form_for Widget.new, remote: true do |t|
+      = t.hidden_field :table, value: params[:table]
+      = t.hidden_field :advanced_search, value: params[:asearch] if params[:asearch].present?
 
-  ul.nav.nav-tabs
-    - if params[:asearch].blank?
-      li.active
-        span
-          span All
-          - if @widget
-            i.icon-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
-          - else
-            i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom"
-    - else
-      li= link_to 'All', params.merge(asearch: nil)
-    - clazz.settings.filters.keys.each do |key|
-      - if params[:asearch] == key
+    ul.nav.nav-tabs
+      - if params[:asearch].blank?
         li.active
           span
-            span.text-more data-placement="right" data-title=key data-content=display_filter(@current_filter) = key
+            span All
             - if @widget
               i.icon-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
             - else
               i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom"
-            i.icon-pencil data-toggle="modal" href="#advanced_search"  title="Edit this view" rel="tooltip" data-placement="bottom"
-            = link_to search_path(params[:table], name: params[:asearch]), method: 'delete' do
-              i.icon-trash title="Delete this view" rel="tooltip" data-placement="bottom"
-
       - else
-        li= link_to key, params.merge(asearch: key)
-    li.add_view
-      a data-toggle="modal" href="#advanced_search" title="#{clazz.settings.filters.keys.length > 0 ? 'Add another view' : 'Create a custom view'}" rel="tooltip" data-placement="bottom"
-        i.icon-plus-sign
+        li= link_to 'All', params.merge(asearch: nil)
+      - clazz.settings.filters.keys.each do |key|
+        - if params[:asearch] == key
+          li.active
+            span
+              span.text-more data-placement="right" data-title=key data-content=display_filter(@current_filter) = key
+              - if @widget
+                i.icon-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
+              - else
+                i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom"
+              i.icon-pencil data-toggle="modal" href="#advanced_search"  title="Edit this view" rel="tooltip" data-placement="bottom"
+              = link_to search_path(params[:table], name: params[:asearch]), method: 'delete' do
+                i.icon-trash title="Delete this view" rel="tooltip" data-placement="bottom"
 
-- if params[:search].present? || params[:where]
-  .page-header.search-where-filters
-    - if params[:search].present?
-      span.label.label-success
-        == "search for <i>#{params[:search]}</i>"
-        span.remove data-param-kind="search" x
-    - if params[:where]
-      - params[:where].each do |k, v|
-        span.label.label-warning
-          == "where #{k} is <i>#{v}</i>"
-          span.remove data-param=format_param_for_removal(k, v) x
+        - else
+          li= link_to key, params.merge(asearch: key)
+      li.add_view
+        a data-toggle="modal" href="#advanced_search" title="#{clazz.settings.filters.keys.length > 0 ? 'Add another view' : 'Create a custom view'}" rel="tooltip" data-placement="bottom"
+          i.icon-plus-sign
+
+  - if params[:search].present? || params[:where]
+    .page-header.search-where-filters
+      - if params[:search].present?
+        span.label.label-success
+          == "search for <i>#{params[:search]}</i>"
+          span.remove data-param-kind="search" x
+      - if params[:where]
+        - params[:where].each do |k, v|
+          span.label.label-warning
+            == "where #{k} is <i>#{v}</i>"
+            span.remove data-param=format_param_for_removal(k, v) x
 
 = render partial: 'items', locals: {items: @items.to_a, actions_cell: true}
 = render partial: '/resources/panels/listing_settings'

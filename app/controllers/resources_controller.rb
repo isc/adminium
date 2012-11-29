@@ -62,7 +62,7 @@ class ResourcesController < ApplicationController
   def create
     @item = clazz.new item_params
     if @item.save
-      redirect_to resource_path(params[:table], @item), flash: {success: "#{object_name} successfully created."}
+      redirect_to after_save_redirection, flash: {success: "#{object_name} successfully created."}
     else
       @form_url = resources_path params[:table]
       render :new
@@ -77,8 +77,7 @@ class ResourcesController < ApplicationController
     if @item.update_attributes item_params
       respond_with(@item) do |format|
         format.html do
-          path = (params[:return_to] == "back") ? :back : resource_path(params[:table], @item)
-          redirect_to path, flash: {success: "#{object_name} successfully updated."}
+          redirect_to after_save_redirection, flash: {success: "#{object_name} successfully updated."}
         end
         format.json do
           column_name = item_params.keys.first
@@ -371,6 +370,18 @@ class ResourcesController < ApplicationController
 
   def settings_type
     request.format.to_s == 'text/csv' ? :export : :listing
+  end
+  
+  def after_save_redirection
+    return :back if params[:return_to] == 'back'
+    redirection = case params[:then_redirect]
+    when /edit/
+      edit_resource_path(params[:table], @item)
+    when /create/
+      new_resource_path(params[:table])
+    else
+      resource_path(params[:table], @item)
+    end
   end
 
 end
