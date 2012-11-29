@@ -33,11 +33,6 @@ class SessionsController < ApplicationController
     redirect_to root_url, notice: 'Signed out!'
   end
   
-  def remove_heroku_chrome
-    cookies.delete 'heroku-nav-data'
-    redirect_to :back
-  end
-  
   private
   def track_sign_on account
     SignOn.create account_id: account.id, plan: account.plan, remote_ip: request.remote_ip, kind: SignOn::Kind::GOOGLE
