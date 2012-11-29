@@ -47,39 +47,42 @@ javascript:
             i.icon-cog
 
 #nav_searches.tabbable.tabs-below
-  = form_for Widget.new(:table => params[:table], :advanced_search => params[:asearch]), :remote => true do |t|
-    = t.hidden_field :table
-    = t.hidden_field :advanced_search
+  = form_for Widget.new, remote: true do |t|
+    = t.hidden_field :table, value: params[:table]
+    = t.hidden_field :advanced_search, value: params[:asearch] if params[:asearch].present?
 
   ul.nav.nav-tabs
+    - if params[:asearch].blank?
+      li.active
+        span
+          span All
+          - if @widget
+            i.icon-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
+          - else
+            i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom"
+    - else
+      li= link_to 'All', params.merge(asearch: nil)
     - clazz.settings.filters.keys.each do |key|
       - if params[:asearch] == key
         li.active
           span
-            i.icon-remove.remove data-param-kind="asearch" title="close this view" rel="tooltip" data-placement="bottom"
-            span == params[:asearch]
+            span.text-more data-placement="right" data-title=key data-content=display_filter(@current_filter) = key
             - if @widget
-              i.icon-star.active title="this view is on your dashboard as a widget" rel="tooltip" data-placement="bottom"
+              i.icon-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
             - else
-              i.icon-star.add_widget title="add this view as a widget on your dashboard" rel="tooltip" data-placement="bottom"
-            i.icon-eye-open.text-more data-placement="bottom" data-title="#{params[:asearch]}" data-content=display_filter(@current_filter)
-            i.icon-pencil data-toggle="modal" href="#advanced_search"  title="edit this view" rel="tooltip" data-placement="bottom"
+              i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom"
+            i.icon-pencil data-toggle="modal" href="#advanced_search"  title="Edit this view" rel="tooltip" data-placement="bottom"
             = link_to search_path(params[:table], name: params[:asearch]), method: 'delete' do
-              i.icon-trash title="delete this view, permanently" rel="tooltip" data-placement="bottom"
+              i.icon-trash title="Delete this view" rel="tooltip" data-placement="bottom"
 
       - else
-        li
-          = link_to key, params.merge(asearch: key)
+        li= link_to key, params.merge(asearch: key)
     li.add_view
-      a data-toggle="modal" href="#advanced_search"
+      a data-toggle="modal" href="#advanced_search" title="#{clazz.settings.filters.keys.length > 0 ? 'Add another view' : 'Create a custom view'}" rel="tooltip" data-placement="bottom"
         i.icon-plus-sign
-        - if clazz.settings.filters.keys.length > 0
-          '  add another view
-        - else
-          '  create a custom view
 
 - if params[:search].present? || params[:where]
-  .page-header
+  .page-header.search-where-filters
     - if params[:search].present?
       span.label.label-success
         == "search for <i>#{params[:search]}</i>"

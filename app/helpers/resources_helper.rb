@@ -13,15 +13,15 @@ module ResourcesHelper
     params[:order] ||= 'id'
     if params[:order] == key
       order = "#{key} desc"
-      title = "descend by #{key}"
+      title = "Descend by #{key}"
     else
       order = key
-      title = "ascend by #{key}"
+      title = "Ascend by #{key}"
     end
     res = ""
     {'up' => key, 'down' => "#{key} desc"}.each do |direction, dorder|
       active = dorder == params[:order] ? 'active' : nil
-      dtitle = direction == 'up' ? "ascend by #{key}" : "descend by #{key}"
+      dtitle = direction == 'up' ? "Ascend by #{key}" : "Descend by #{key}"
       res << link_to(params.merge(order: dorder), title: dtitle, rel: 'tooltip') do
         content_tag('i', '', class: "icon-chevron-#{direction} #{active}")
       end

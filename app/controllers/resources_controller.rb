@@ -18,7 +18,7 @@ class ResourcesController < ApplicationController
   def index
     @items = clazz.select("#{quoted_table_name}.*")
     @current_filter = clazz.settings.filters[params[:asearch]] || []
-    @widget = current_account.widgets.where(table: params[:table], advanced_search: params[:asearch]).first if params[:asearch].present?
+    @widget = current_account.widgets.where(table: params[:table], advanced_search: params[:asearch]).first
     @current_filter.each do |filter|
       @items = build_statement(@items, filter)
     end
