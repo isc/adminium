@@ -28,7 +28,5 @@ serialized columns containing smth else than a basic type
 subnav flickers on a page slightly too long for the screen
 on peut pas mettre un espace comme thousand delimiter (or j'aurais bien voulu pouvoir le faire sur une colonne zipcode)
 
-https://adminium.herokuapp.com/resources/accounts?asearch=inactives&order=%22accounts%22.id+desc&search=k.hankinson%40btinternet.com => quand on essaie de virer la search, ça vire la asearch a la place
-
 potential optimisation : https://github.com/bgipsy/column_queries
 pour les dangerousattributes, ils sont readonly

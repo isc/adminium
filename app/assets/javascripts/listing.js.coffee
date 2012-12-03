@@ -165,7 +165,7 @@ class UIListing
   constructor: ->
     $('span.label span.remove, i.remove').click ->
       if $(this).data('param-kind')
-        location.href = location.href.replace(new RegExp("#{$(this).data('param-kind')}=.*?(&|$)"), '')
+        location.href = location.href.replace(new RegExp("[&?]#{$(this).data('param-kind')}=.*?(&|$)"), '')
       else
         location.href = location.href.replace(new RegExp("#{$(this).data('param')}&?"), '')
     if $('.breadcrumb').length > 0
