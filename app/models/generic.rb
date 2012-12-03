@@ -68,7 +68,7 @@ class Generic
   
   def discover_associations_through_foreign_keys klass
     foreign_keys[klass.table_name].each do |foreign_key|
-      options = {:primary_key => foreign_key[:primary_key], :foreign_key => foreign_key[:column]}
+      options = {primary_key: foreign_key[:primary_key], foreign_key: foreign_key[:column]}
       assoc_name = foreign_key[:to_table].downcase.singularize.to_sym
       klass.belongs_to assoc_name, options
       models.find{|model|model.table_name.downcase == foreign_key[:to_table].downcase}.has_many klass.table_name.to_sym, options
@@ -77,8 +77,9 @@ class Generic
 
   def discover_associations_through_conventions klass
     begin
-      owners = klass.column_names.find_all {|c| c.ends_with? '_id'}.map {|c| c.gsub(/_id$/, '')}
-      owners.each do |owner|
+      klass.columns.each do |column|
+        next unless (column.name.ends_with? '_id') && (column.type == :integer)
+        owner = column.name.gsub(/_id$/, '')
         begin
           if tables.include? owner.tableize
             account_module.const_get(owner.classify).has_many klass.table_name.to_sym
@@ -96,14 +97,13 @@ class Generic
   end
 
   def foreign_keys
-    @foreign_keys ||= Rails.cache.fetch "foreign_keys:#{@account_id}", :expires_in => 2.minutes do
+    @foreign_keys ||= Rails.cache.fetch "foreign_keys:#{@account_id}", expires_in: 2.minutes do
       query = postgresql? ? postgresql_foreign_keys_query : mysql_foreign_keys_query
       fk_info = Base.connection.select_all query
       foreign_keys = {}
       fk_info.each do |row|
         foreign_keys[row['table_name']] ||= []
-        foreign_keys[row['table_name']] << {:column => row['column'], :to_table => row['to_table'],
-          :primary_key => row['primary_key']}
+        foreign_keys[row['table_name']] << {column: row['column'], to_table: row['to_table'], primary_key: row['primary_key']}
       end
       foreign_keys
     end
