@@ -1,7 +1,7 @@
 class ColumnSettingsController < ApplicationController
 
   layout false
-  helper_method :clazz, :column, :settings, :association_clazz
+  helper_method :clazz, :column, :settings, :association_clazz, :has_many_count_column
 
   def show
     @hidden = !settings.columns[:listing].include?(params[:column])
@@ -22,31 +22,30 @@ class ColumnSettingsController < ApplicationController
 
   private
   def detect_association_column
-    key = params[:column]
-    if key.include? '.'
-      parts = key.split('.')
-      @assocation_table_name = parts.first.tableize
-      @assocation_column_name = parts.join('.')
+    if params[:column].include? '.'
+      @association_table_name = params[:column].split('.').first.tableize
     end
   end
 
   def association_clazz
-    return if @assocation_table_name.nil?
-    @association_clazz ||= @generic.table(@assocation_table_name)
+    return if @association_table_name.nil?
+    @association_clazz ||= @generic.table @association_table_name
+  end
+  
+  def has_many_count_column
+    params[:column].starts_with? 'has_many/'
   end
 
   def clazz
     detect_association_column
-    @clazz ||= @generic.table(params[:id])
+    @clazz ||= @generic.table params[:id]
   end
 
   def settings
-    detect_association_column
-    @settings ||= @generic.table(params[:id]).settings
+    @settings ||= clazz.settings
   end
 
   def column
-    detect_association_column
     @column ||= clazz.columns.detect{|c|c.name == params[:column]}
   end
 
