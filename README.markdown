@@ -2,7 +2,6 @@ FEATURES:
 validations avec arguments
 colonnes calculees
 conf des associations / foreign_keys
-enum values editing
 disable completement des tables
 improve search (regexp, fulltext ?)
 in-place editing sur les belongs_to / custom columns
@@ -15,6 +14,10 @@ support pour les images
 optim de la clause select sql (jarter les text / binaries non selectionnes par les settings)
 sortable table for dashboard
 more ajax (destroy) / pjax
+for pg 9.2 users ; https://github.com/will/datascope
+advanced search definition improvements :
+  - client side validation (ex input type integer si colonne int)
+  - select input for column with enum values defined
 
 TODOS:
 attr_accessible avec role pour proteger plan sur account

@@ -15,14 +15,14 @@
     ul.dropdown-menu.nav
       - if scope.current_page != 1
         li
-          = link_to "see first page", params.merge(page: 1)
+          = link_to "Go to first page", params.merge(page: 1)
       - ((scope.current_page - 3)..(scope.current_page + 3)).each do |page|
-        - if page >= 1 && page <= scope.num_pages && page != scope.current_page && (page + 1) != scope.current_page && (page - 1) != scope.current_page
+        - if page > 1 && page <= scope.num_pages && page != scope.current_page && (page + 1) != scope.current_page && (page - 1) != scope.current_page
           li
-            = link_to "see page #{page}", params.merge(page: page)
+            = link_to "Go to page #{page}", params.merge(page: page)
       - if scope.current_page != scope.num_pages
         li
-          = link_to "see last page (page #{scope.num_pages})", params.merge(:page => (scope.num_pages))
+          = link_to "Go to last page (page #{scope.num_pages})", params.merge(:page => (scope.num_pages))
       li.divider
       li.nav-header rows per page
       - ([25, 50, 100, 200, 500] + [clazz.settings.per_page.to_i]).uniq.sort.each do |per_page|
