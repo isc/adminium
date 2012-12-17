@@ -1,8 +1,8 @@
 # Be sure to restart your server when you modify this file.
 
-MtCrap::Application.config.session_store :cookie_store, key: '_mt-crap_session'
+Adminium::Application.config.session_store :cookie_store, key: '_adminium_session'
 
 # Use the database for sessions instead of the cookie-based default,
 # which shouldn't be used to store highly confidential information
 # (create the session table with "rails generate session_migration")
-# MtCrap::Application.config.session_store :active_record_store
+# Adminium::Application.config.session_store :active_record_store

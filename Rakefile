@@ -4,4 +4,4 @@
 
 require File.expand_path('../config/application', __FILE__)
 
-MtCrap::Application.load_tasks
+Adminium::Application.load_tasks
