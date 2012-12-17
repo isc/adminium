@@ -30,12 +30,13 @@
 dl
   dt Database size
   dd= number_to_human_size @db_size
-table.table.table-striped
+table.table.table-striped.tables-info
   thead
-    th Table
-    th Full table size
-    th Table size
-    th Record count
+    tr
+      th Table
+      th Full table size
+      th Table size
+      th Record count
   tfoot
     tr
       td Totals
@@ -46,9 +47,9 @@ table.table.table-striped
     - @table_sizes.each do |table, fulltblsize, tblsize, record_count|
       tr
         td= link_to table, resources_path(table)
-        td= number_to_human_size fulltblsize
-        td= number_to_human_size tblsize
-        td= number_with_delimiter record_count
+        td data-value=fulltblsize = number_to_human_size fulltblsize
+        td data-value=tblsize = number_to_human_size tblsize
+        td data-value=record_count = number_with_delimiter record_count
 
 #new_widget.modal.hide.fade
   .modal-header
