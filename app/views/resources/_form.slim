@@ -1,5 +1,6 @@
 = simple_form_for @item, url: @form_url, html: {class: 'form-horizontal resource-form'}, defaults: {input_html: {class: 'span6'}} do |f|
   - @item.class.settings.columns[:form].each do |name|
+    - next if @item.class.settings.column_type(name).to_s == 'binary' 
     - options = {label: @item.class.column_display_name(name)}
     - if enum_value = @item.class.settings.enum_values_for(name)
       - enum_collection = enum_value.to_a.map {|v| [v[1]['label'], v[0]]}
