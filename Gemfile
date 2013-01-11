@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 ruby '1.9.3'
 
-gem 'rails', '3.2.6'
+gem 'rails', '3.2.11'
 
 gem 'pg'
 gem 'mysql2'
@@ -12,7 +12,7 @@ gem 'configatron'
 gem 'jquery-rails', '2.0.1'
 gem 'slim-rails'
 gem 'kaminari'
-gem 'simple_form'
+gem 'simple_form', '2.0.4'
 gem 'omniauth-openid'
 gem 'rest-client'
 gem 'country_select'
@@ -20,7 +20,7 @@ gem 'attr_encrypted', git: 'git://github.com/hron/attr_encrypted.git', branch: '
 # gem 'airbrake', '3.1.6'
 gem 'honeybadger'
 gem 'bootstrap-components-helpers', git: 'git://gist.github.com/2117187.git'
-gem 'composite_primary_keys', '5.0.8'
+gem 'composite_primary_keys', '5.0.10'
 gem 'bootstrap-wysihtml5-rails', require: 'bootstrap-wysihtml5-rails',
   git: 'git://github.com/Nerian/bootstrap-wysihtml5-rails.git'
 
