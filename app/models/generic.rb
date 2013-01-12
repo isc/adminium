@@ -82,7 +82,8 @@ class Generic
         owner = column.name.gsub(/_id$/, '')
         begin
           if tables.include? owner.tableize
-            account_module.const_get(owner.classify).has_many klass.table_name.to_sym
+            plural_assoc = klass.table_name.to_sym
+            account_module.const_get(owner.classify).has_many plural_assoc unless reserved_keyword_for_has_many?(plural_assoc)
             klass.belongs_to owner.to_sym
           elsif klass.column_names.include? "#{owner}_type"
             klass.belongs_to owner.to_sym, polymorphic: true
@@ -94,6 +95,10 @@ class Generic
     rescue => e
       Rails.logger.warn "Association discovery failed for #{klass.name} : #{e.message}"
     end
+  end
+  
+  def reserved_keyword_for_has_many? assoc_name
+    [:errors].include? assoc_name
   end
 
   def foreign_keys
