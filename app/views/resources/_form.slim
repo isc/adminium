@@ -13,7 +13,7 @@
     - else
       - options.merge! readonly: (@item.class.columns.detect{|c|c.name == name}.primary || @item.class.primary_key == name)
       - options.merge!(boolean_input_options(@item.class, name)) if @item.class.settings.column_type(name).to_s == 'boolean'
-      = f.input name, options
+      = f.input name, options rescue "Error with input generation for #{name}"
   .form-actions
     = f.submit 'Save', class: 'btn-primary', data: {disable_with: 'Sending...'}, name: 'then_redirect'
     '
