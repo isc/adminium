@@ -90,7 +90,11 @@ module ResourcesHelper
       assoc_type = item.send key.gsub(/_id/, '_type')
       return value if assoc_type.blank?
       class_name, path = assoc_type, resource_path(assoc_type.to_s.tableize, value)
-      foreign_clazz = @generic.table class_name.tableize
+      begin
+        foreign_clazz = @generic.table class_name.tableize
+      rescue Generic::TableNotFoundException
+        return value
+      end
     else
       class_name, path = reflection.klass.original_name, resource_path(reflection.table_name, value)
       # reflection.klass is a leftover class that should have been garbage collected
