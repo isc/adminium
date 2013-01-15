@@ -88,6 +88,7 @@ module ResourcesHelper
     reflection = item.class.reflections.values.find {|r| r.foreign_key == key}
     if reflection.options[:polymorphic]
       assoc_type = item.send key.gsub(/_id/, '_type')
+      return value if assoc_type.blank?
       class_name, path = assoc_type, resource_path(assoc_type.to_s.tableize, value)
       foreign_clazz = @generic.table class_name.tableize
     else
