@@ -12,7 +12,7 @@ class Generic::Base < ActiveRecord::Base
   end
 
   def self.foreign_key? column_name
-    reflections.values.find {|reflection| reflection.foreign_key == column_name }
+    reflections.values.find {|reflection| reflection.macro == :belongs_to && reflection.foreign_key == column_name }
   end
 
   def adminium_label

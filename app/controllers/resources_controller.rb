@@ -225,17 +225,17 @@ class ResourcesController < ApplicationController
     assocs += clazz.settings.columns[settings_type].map {|c| clazz.foreign_key?(c)}.compact
     assocs.each do |assoc|
       next if !assoc.is_a?(String) && assoc.options[:polymorphic]
-      @items = @items.includes(assoc.is_a?(String) ? assoc.to_sym : assoc.name)
+      @items = @items.includes(assoc.is_a?(String) ? "_adminium_#{assoc}".to_sym : assoc.name)
     end
   end
 
   def apply_has_many_counts
     clazz.settings.columns[settings_type].find_all {|c| c.starts_with? 'has_many/'}.each do |column|
-      assoc = column.gsub('has_many/', '').to_sym
-      _, reflection = clazz.reflections.detect {|m, r| m == assoc}
+      assoc = column.gsub('has_many/', '')
+      _, reflection = clazz.reflections.detect {|m, r| r.original_name == assoc}
       next if reflection.nil?
       grouping_column = "#{quoted_table_name}.#{quote_column_name clazz.primary_key}"
-      count_on = "#{quote_table_name assoc}.#{quote_column_name @generic.table(assoc.to_s).primary_key}"
+      count_on = "#{quote_table_name assoc}.#{quote_column_name @generic.table(assoc).primary_key}"
       outer_join = "#{quote_table_name assoc}.#{quote_column_name reflection.foreign_key} = #{grouping_column}"
       @items = @items.joins("left outer join #{assoc} on #{outer_join}").select("count(distinct #{count_on}) as #{quote_column_name column}")
       @items = @items.group(grouping_column) unless @items.group_values.include? grouping_column

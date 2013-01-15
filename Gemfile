@@ -37,6 +37,8 @@ group :development do
   gem 'taps'
   gem 'populator'
   gem 'faker'
+  gem 'better_errors'
+  gem 'binding_of_caller'
 end
 
 group :production do

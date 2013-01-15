@@ -36,7 +36,7 @@
         - else
           - count = @item.send(name).count
           dd
-            = link_to "#{name}", resources_path(name, where: {assoc.foreign_key => @item[@item.class.primary_key]})
+            = link_to assoc.original_name, resources_path(assoc.original_name, where: {assoc.foreign_key => @item[@item.class.primary_key]})
             '
             span.badge.badge-warning = count
 

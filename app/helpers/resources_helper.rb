@@ -69,7 +69,7 @@ module ResourcesHelper
 
   def display_associated_column item, key, wrapper_tag
     parts = key.split('.')
-    item = item.send(parts.first)
+    item = item.send "_adminium_#{parts.first}"
     return column_content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
     display_attribute wrapper_tag, item, parts.second, true, [item.class.table_name, parts.second].join('.')
   end
@@ -78,7 +78,7 @@ module ResourcesHelper
     value = item[key]
     return column_content_tag wrapper_tag, '', class: 'hasmany' if value.nil?
     key = key.gsub 'has_many/', ''
-    foreign_key_name = item.class.reflections.values.find {|r| r.name.to_s == key }.foreign_key
+    foreign_key_name = item.class.reflections.values.find {|r| r.original_name.to_s == key }.foreign_key
     foreign_key_value = item[item.class.primary_key]
     content = link_to value, resources_path(key, where: {foreign_key_name => foreign_key_value}), class: 'badge badge-warning'
     column_content_tag wrapper_tag, content, class: 'hasmany'
@@ -223,8 +223,8 @@ module ResourcesHelper
   end
   
   def options_for_custom_columns clazz
-    res = [['belongs_to', clazz.reflect_on_all_associations(:belongs_to).map{|r|[r.name, r.plural_name] unless r.options[:polymorphic]}.compact]]
-    res << ['has_many', clazz.reflect_on_all_associations(:has_many).map{|r|["#{r.name.to_s.humanize} count", r.name]}]
+    res = [['belongs_to', clazz.reflect_on_all_associations(:belongs_to).map{|r|[r.original_name, r.original_plural_name] unless r.options[:polymorphic]}.compact]]
+    res << ['has_many', clazz.reflect_on_all_associations(:has_many).map{|r|["#{r.original_name.to_s.humanize} count", r.original_name]}]
     grouped_options_for_select res
   end
 
