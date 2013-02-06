@@ -23,12 +23,15 @@ gerer joliment les 404 sur le show d'une table existante d'un user (genre "There
 
 gerer les colonnes binary (file field for upload ?)
 
+import de datas
+
 TODOS:
 attr_accessible avec role pour proteger plan sur account
 account deprovision ; pour le moment ca supprime la row, on la garde ? que fait-on des collaborators associés ? des données stockées dans redis ?
 unset le focus eventuel d'un element de la popin quand on la ferme, sinon le "press s" ne fonctionne plus
 
 BUGS:
+label column fonctionne pas juste apres configuration (jamais ?) sur metrics-recorder
 une colonne nommé "increment" fait peter le create/update (lors du dirty tracking la methode built in rails increment est incorrectement appelee)
 serialized columns containing smth else than a basic type
 subnav flickers on a page slightly too long for the screen

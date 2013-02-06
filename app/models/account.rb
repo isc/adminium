@@ -69,7 +69,8 @@ class Account < ActiveRecord::Base
   end
 
   def upgrade_link
-    "https://api.heroku.com/v3/resources/adminium+#{{Plan::PET_PROJECT => Plan::STARTUP, Plan::STARTUP => Plan::ENTERPRISE}[plan]}?selected=#{name}"
+    # "https://api.heroku.com/v3/resources/adminium+#{{Plan::PET_PROJECT => Plan::STARTUP, Plan::STARTUP => Plan::ENTERPRISE}[plan]}?selected=#{name}"
+    'https://addons.heroku.com/adminium'
   end
 
   private
