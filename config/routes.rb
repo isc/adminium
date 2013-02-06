@@ -8,6 +8,8 @@ Adminium::Application.routes.draw do
     post :bulk_destroy, on: :collection
     post :bulk_update, on: :collection
     get :bulk_edit, on: :collection
+    get :import, on: :collection
+    post :perform_import, on: :collection
   end
 
   resources :settings do

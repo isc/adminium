@@ -28,10 +28,11 @@ class Generic::Base < ActiveRecord::Base
       res[column] = settings.column_options(column) || {is_enum: false}
       enum = settings.enum_values_for column
       res[column].merge! is_enum: true, values: enum if enum
+      res[column].merge! displayed_column_name: column_display_name(column)
     end
     res
   end
-  
+
   def self.column_display_name key
     value = settings.column_options(key)['rename']
     if value.present?

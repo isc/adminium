@@ -1,3 +1,5 @@
+require "activerecord-import/base"
+
 class ResourcesController < ApplicationController
 
   include ActionView::Helpers::TagHelper
@@ -13,6 +15,7 @@ class ResourcesController < ApplicationController
   helper_method :clazz, :user_can?
 
   respond_to :json, :html, only: [:index, :update]
+  respond_to :json, only: [:perform_import]
   respond_to :csv, only: :index
 
   def index
@@ -52,6 +55,32 @@ class ResourcesController < ApplicationController
 
   def edit
     @form_url = resource_path(@item, table: params[:table])
+  end
+
+  def import
+  end
+
+  def perform_import
+    columns = params[:headers]
+    values = params[:rows].values
+    pkey = clazz.primary_key.to_sym
+    fromId = clazz.last.try pkey || 0
+    ActiveRecord::Import.require_adapter('postgresql')
+    begin
+      clazz.import columns, values, :validate => false
+    rescue => error
+      result = {error: error.to_s}
+    end
+    toId = clazz.last.try pkey || 0
+    if (fromId == toId)
+      result = {error: 'no new record were imported'}
+    else
+      import_filter = [{"column"=>pkey, "type"=>"integer", "operator"=>">", "operand"=>fromId}, {"column"=>pkey, "type"=>"integer", "operator"=>"<=", "operand"=>toId}]
+      clazz.settings.filters['last_import'] =  import_filter
+      clazz.settings.save
+      result = {success: true}
+    end
+    render json: result.to_json
   end
 
   def new
@@ -170,7 +199,7 @@ class ResourcesController < ApplicationController
 
   def user_can? action_name, table
     return true if @permissions.nil?
-    action_to_perm = {'index' => 'read', 'show' => 'read', 'edit' => 'update', 'update' => 'update', 'new' => 'create', 'create' => 'create', 'destroy' => 'delete', 'bulk_destroy' => 'delete'}
+    action_to_perm = {'index' => 'read', 'show' => 'read', 'edit' => 'update', 'update' => 'update', 'new' => 'create', 'create' => 'create', 'destroy' => 'delete', 'bulk_destroy' => 'delete', 'import' => 'create', 'perform_import' => 'create'}
     @permissions[table] && @permissions[table][action_to_perm[action_name]]
   end
 
@@ -377,7 +406,7 @@ class ResourcesController < ApplicationController
   def settings_type
     request.format.to_s == 'text/csv' ? :export : :listing
   end
-  
+
   def after_save_redirection
     return :back if params[:return_to] == 'back'
     redirection = case params[:then_redirect]

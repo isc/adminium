@@ -6,6 +6,7 @@ gem 'rails', '3.2.11'
 
 gem 'pg'
 gem 'mysql2'
+gem "activerecord-import", ">= 0.2.0"
 gem "hiredis", "~> 0.3.1"
 gem "redis", ">= 2.2.0", require: ["redis", "redis/connection/hiredis"]
 gem 'configatron'

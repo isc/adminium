@@ -35,6 +35,9 @@ javascript:
             i.icon-pencil
           a.btn data-toggle="modal" href="#export" title="Export rows" rel='tooltip' data-placement="bottom"
             i.icon-download-alt
+          - if current_account.complimentary?
+            = link_to import_resources_path(table: params[:table]), class: "btn", rel: "tooltip", title: "Import rows", "data-placement" => 'bottom' do
+              i.icon-upload
           = form_tag bulk_destroy_resources_path(params[:table]), class: "bulk-action bulk-destroy hide" do
             button.btn.btn-danger title='Delete selected rows' rel='tooltip' data-placement="bottom"
               i.icon-trash

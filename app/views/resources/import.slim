@@ -1,0 +1,36 @@
+javascript:
+  columns_hash = #{clazz.columns_hash.to_json.html_safe}
+  adminium_column_options = #{clazz.adminium_column_options.to_json.html_safe}
+
+- content_for :subnav do
+  header.jumbotron.subhead
+    .breadcrumb
+      .row-fluid.btn-toolbar
+        .span3
+          strong= link_to params[:table].humanize, resources_path(params[:table])
+          span.divider >
+          = "Importing #{clazz.model_name.human}"
+
+.row-fluid
+  #select-file.well.span3(data-import-result-path=resources_path(params[:table], asearch: 'last_import', order: clazz.primary_key))
+    p for a quickier insert of new records
+    .btn.btn-primary.btn-large select a CSV file and preview import
+    .hint the first row of the csv must contain the column names
+  .span6.alert.alert-info.file-description
+    p.file-info.hide
+      i.icon.icon-file
+      span
+    p.importable_rows.hide
+      i.icon.icon-list
+      span
+      '  rows detected
+    p.status
+
+
+table.table-striped.table-bordered.table.items-list data-table=params[:table] data-model=clazz.to_s.underscore.gsub('/', '_')
+  thead
+    tr
+  tbody
+
+input type="file" id="import_file" name="file" class='hide'
+= submit_tag "", class: "btn btn-primary hide", id: 'perform-import'

@@ -55,19 +55,23 @@ class Account < ActiveRecord::Base
   end
 
   def enterprise?
-    (plan == Plan::ENTERPRISE) || (plan == Plan::COMPLIMENTARY)
+    (plan == Plan::ENTERPRISE) || complimentary?
   end
-  
+
+  def complimentary?
+    plan == Plan::COMPLIMENTARY
+  end
+
   def fill_tables_count
     return unless valid_db_url?
     generic = Generic.new self
     update_attribute :tables_count, generic.tables.size
   end
-  
+
   def upgrade_link
     "https://api.heroku.com/v3/resources/adminium+#{{Plan::PET_PROJECT => Plan::STARTUP, Plan::STARTUP => Plan::ENTERPRISE}[plan]}?selected=#{name}"
   end
-  
+
   private
 
   def generate_api_key
