@@ -1,6 +1,6 @@
 UNARY_OPERATOR_DEFINITIONS = {'null' => "_ IS NULL", 'not_null' => "_ IS NOT NULL"}
 UNARY_OPERATORS = UNARY_OPERATOR_DEFINITIONS.keys
-INTEGER_OPERATORS = ['=', '>=', '<=', '>', '<', '!=']
+INTEGER_OPERATORS = ['=', '>=', '<=', '>', '<', '!=', 'IN']
 UNARY_DATETIME_OPERATORS = ['today', 'yesterday', 'this_week', 'last_week']
 DATETIME_OPERATORS = ['on', 'before', 'after', 'not'] + UNARY_DATETIME_OPERATORS
 BOOLEAN_OPERATORS = ['is_true', 'is_false']

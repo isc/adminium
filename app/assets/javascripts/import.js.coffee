@@ -56,15 +56,32 @@ class window.ImportManager
     header = @rows.shift()
     @sql_column_names = []
     $(".importable_rows").show()
-    $(".importable_rows span").text(@rows.length)
+    $(".importable_rows span").text("#{@rows.length} rows detected")
     try
       for name in header
         @detectColumnName(name)
     catch e
       @error('column name resolution failed', e)
       return
+    @update_rows = []
     @preview()
+    @prepareToImport()
     @enableImport()
+
+  prepareToImport: =>
+    @data =
+      create: []
+      update: []
+      headers: @sql_column_names
+    pindex = @sql_column_names.indexOf(primary_key)
+    for row, index in @rows
+      kind = if (@update_rows.indexOf(index) isnt -1) then 'update' else 'create'
+      row.splice(pindex, 1) if kind == 'create' && pindex isnt -1
+      @data[kind].push row
+    text = []
+    for kind in ['create', 'update']
+      text.push "#{kind} #{@data[kind].length} row#{if @data[kind].length > 1 then 's' else ''}" if @data[kind].length > 0
+    $(".importable_rows span").append(": will " + text.join(' and '))
 
   enableImport: =>
     @readyToImport = true
@@ -79,7 +96,7 @@ class window.ImportManager
       $("<th>").addClass('column_header').text(name).appendTo($(".items-list thead tr"))
     for row, index in @rows
       tr = $("<tr>").appendTo($(".items-list tbody"))
-      $("<td class='importIndex'>").text("#{index+1}").appendTo(tr)
+      $("<td class='importIndex'>").html("#{index+1}").appendTo(tr)
       for cell, i in row
         column_name = @sql_column_names[i]
         sql_type = columns_hash[column_name].sql_type
@@ -96,8 +113,14 @@ class window.ImportManager
             css += "#{value}class"
         if cell == '' || cell == null
           css += "nilclass"
-          cell = if cell == null then 'NULL' else 'empty string'
-        $('<td>').addClass(css).text(cell).appendTo(tr)
+          if sql_type == 'character varying(255)'
+            cell = if cell == null then 'NULL' else 'empty string'
+        if (column_name == primary_key)
+          if cell == ''
+            cell = "<i class='icon-star' /><span class='label label-success'>new</span>"
+          else
+            @update_rows.push(index)
+        $('<td>').addClass(css).html(cell).appendTo(tr)
     $(".items-list").show()
 
   detectColumnName: (name) =>
@@ -123,7 +146,7 @@ class window.ImportManager
     $.ajax
       type: 'POST',
       url: "/resources/#{@table}/perform_import"
-      data: {headers:@sql_column_names, rows:@rows}
+      data: @data
       success: @performCallback
       error: @errorCallback
     window.location.href ="#"

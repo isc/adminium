@@ -1,6 +1,7 @@
 javascript:
   columns_hash = #{clazz.columns_hash.to_json.html_safe}
   adminium_column_options = #{clazz.adminium_column_options.to_json.html_safe}
+  primary_key = '#{clazz.primary_key}'
 
 - content_for :subnav do
   header.jumbotron.subhead
@@ -23,7 +24,7 @@ javascript:
     p.importable_rows.hide
       i.icon.icon-list
       span
-      '  rows detected
+
     p.status
 
 

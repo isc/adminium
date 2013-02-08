@@ -62,17 +62,23 @@ class ResourcesController < ApplicationController
 
   def perform_import
     columns = params[:headers]
-    values = params[:rows].values
-    pkey = clazz.primary_key.to_sym
-    fromId = clazz.last.try pkey || 0
-    ActiveRecord::Import.require_adapter('postgresql')
-    begin
-      clazz.import columns, values, :validate => false
-    rescue => error
-      result = {error: error.to_s}
+    pkey = clazz.primary_key.to_s
+    columns_without_pk = columns.clone
+    columns_without_pk.delete pkey
+    import_rows = params[:create].present? ? params[:create].values : nil
+    update_rows = params[:update].present? ? params[:update].values : nil
+    ActiveRecord::Import.require_adapter(@generic.current_adapter)
+    #begin
+    if import_rows
+      clazz.import columns_without_pk, import_values, :validate => false
+      fromId = clazz.last.try pkey || 0
+      toId = clazz.last.try pkey || 0
     end
-    toId = clazz.last.try pkey || 0
-    if (fromId == toId)
+    ids = update_from_import(pkey, columns, update_rows) if update_rows
+    #rescue => error
+    #  result = {error: error.to_s}
+    #end
+    if (import_rows && fromId == toId)
       result = {error: 'no new record were imported'}
     else
       import_filter = [{"column"=>pkey, "type"=>"integer", "operator"=>">", "operand"=>fromId}, {"column"=>pkey, "type"=>"integer", "operator"=>"<=", "operand"=>toId}]
@@ -310,7 +316,13 @@ class ResourcesController < ApplicationController
     case filter['type']
       when 'integer', 'float', 'decimal'
         raise "Unsupported" unless INTEGER_OPERATORS.include?(filter['operator'])
-        params = ["#{c} #{filter['operator']} ?", filter['operand']] unless filter['operand'].blank?
+        if filter['operand'].present?
+          params = if filter['operator'] == 'IN'
+            ["#{c} IN (?)", filter['operand'].split(',')]
+          else
+            ["#{c} #{filter['operator']} ?", filter['operand']]
+          end
+        end
       when 'string', 'text'
         operand = STRING_LIKE_OPERATOR_DEFINITIONS[filter['operator']]
         if operand
@@ -416,6 +428,17 @@ class ResourcesController < ApplicationController
       new_resource_path(params[:table])
     else
       resource_path(params[:table], @item)
+    end
+  end
+
+  def update_from_import pk, columns, data
+    data.each do |row|
+      attrs = {}
+      columns.each_with_index do |name, index|
+        attrs[name] = row[index]
+      end
+      id = attrs.delete pk
+      clazz.find(id).update_attributes! attrs
     end
   end
 
