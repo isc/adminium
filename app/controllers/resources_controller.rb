@@ -79,7 +79,7 @@ class ResourcesController < ApplicationController
     #  result = {error: error.to_s}
     #end
     if (import_rows && fromId == toId)
-      result = {error: 'no new record were imported'}
+      result = {error: ' No new records were imported'}
     else
       import_filter = [{"column"=>pkey, "type"=>"integer", "operator"=>">", "operand"=>fromId}, {"column"=>pkey, "type"=>"integer", "operator"=>"<=", "operand"=>toId}]
       clazz.settings.filters['last_import'] =  import_filter

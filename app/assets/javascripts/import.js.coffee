@@ -87,7 +87,7 @@ class window.ImportManager
     @readyToImport = true
     $("#perform-import").val("Import #{@rows.length} rows into #{@table}").show()
     $(".file-description").addClass('alert-info')
-    $(".status").html("<i class='icon  icon-ok-sign' /> <u>ready to import</u>. Review this list and validate at the end of the page")
+    $(".status").html("<i class='icon  icon-ok-sign' /> <u>Ready to import</u>. Review this list and validate at the end of the page")
 
   preview: () ->
     $(".items-list").hide()
@@ -167,7 +167,7 @@ class window.ImportManager
 
   errorCallback: (data) =>
     @importing = false
-    @error('sorry, but an unexpected error occured, please contact us so we can work this out.')
+    @error(' Sorry, but an unexpected error occured, please contact us so we can work this out.')
 
 $ ->
   new ImportManager()

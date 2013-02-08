@@ -14,15 +14,17 @@ javascript:
 
 .row-fluid
   #select-file.well.span3(data-import-result-path=resources_path(params[:table], asearch: 'last_import', order: clazz.primary_key))
-    p for a quickier insert of new records
-    .btn.btn-primary.btn-large select a CSV file and preview import
-    .hint the first row of the csv must contain the column names
+    p For a quicker insertion of new records
+    .btn.btn-primary.btn-large Select a CSV file and preview import
+    .hint The first row of the CSV file must contain the column names
   .span6.alert.alert-info.file-description
     p.file-info.hide
       i.icon.icon-file
+      '
       span
     p.importable_rows.hide
       i.icon.icon-list
+      '  
       span
 
     p.status
