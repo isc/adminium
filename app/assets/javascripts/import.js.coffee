@@ -167,7 +167,7 @@ class window.ImportManager
 
   errorCallback: (data) =>
     @importing = false
-    @error(' Sorry, but an unexpected error occured, please contact us so we can work this out.')
+    @error(' Sorry, but an unexpected error occurred, please contact us so we can work this out.')
 
 $ ->
   new ImportManager()
