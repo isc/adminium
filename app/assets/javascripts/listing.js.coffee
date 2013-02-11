@@ -171,7 +171,7 @@ class UIListing
     if $('.breadcrumb').length > 0
       $('.breadcrumb').jscrollspy
         min: $('.breadcrumb').offset().top,
-        max: $(document).height(),
+        max: () -> $(document).height(),
         onEnter: (element, position) ->
           $(".breadcrumb").addClass('subnav-fixed')
         ,

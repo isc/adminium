@@ -9,6 +9,7 @@ Adminium::Application.routes.draw do
     post :bulk_update, on: :collection
     get :bulk_edit, on: :collection
     get :import, on: :collection
+    get :check_existence, on: :collection
     post :perform_import, on: :collection
   end
 

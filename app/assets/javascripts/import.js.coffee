@@ -8,9 +8,20 @@ class window.ImportManager
     $("#select-file .btn").on 'click', ->
       $("#import_file").click()
     $("#perform-import").on 'click', @perform
-    dropZone = document.getElementById('select-file');
+    $(".file-info a.change").click @disableImport
+    dropZone = $('body')[0];
     dropZone.addEventListener 'dragover', @handleDragOver, false
     dropZone.addEventListener 'drop', @handleFileDrop, false
+    $('.importHeader').jscrollspy
+        min: $('.importHeader .btn').offset().top,
+        max: () -> $(document).height(),
+        onEnter: (element, position) ->
+          $(".importHeader").addClass('subnav-fixed')
+        ,
+        onLeave: (element, position) ->
+          $(".importHeader").removeClass('subnav-fixed')
+    if !$.isFunction(FileReader)
+      @error("Your browser is missing some HTML5 support required for this import feature (FileReader is not defined)")
 
   handleDragOver: (evt) ->
     evt.stopPropagation();
@@ -29,25 +40,40 @@ class window.ImportManager
     @disableImport()
     file = files[0]
     $(".file-info").show()
-    $(".file-info span").html("<b>#{file.name}</b> <i>(#{file.size} bytes)</i> last modified date on #{file.lastModifiedDate}")
+    $(".file-info span.filename").html("<b>#{file.name}</b> <i>(#{file.size} bytes)</i>")
     reader = new FileReader()
     reader.onload = @readFile
+    @processing('loading file locally')
     reader.readAsText(file)
 
   disableImport: =>
     @readyToImport = false
     $(".items-list thead tr, .items-list tbody").html('')
-    $("#perform-import").hide()
+    @toggleStartImport('select-file')
     $(".file-info").hide()
+    @notice ''
     $(".importable_rows").hide()
-    $(".file-description").removeClass('alert-info alert-danger')
+    $(".importHeader").removeClass("fail success")
+
+  processing: (msg) =>
+    @toggleStartImport('processing')
+    $(".hint").html(msg)
+
+  toggleStartImport: (name) ->
+    $(".importHeader .span3").hide()
+    $("##{name}").show()
 
   error: (msg, details) =>
-    $(".file-description").removeClass("alert-info").addClass("alert-danger")
+    @toggleStartImport('select-file')
+    $(".importHeader").toggleClass("fail", true)
     details = if details then "(#{details})" else ""
-    $(".status").html("<i class='icon icon-ban-circle' /><b>#{msg}</b> #{details}")
+    $(".status").html("<i class='icon icon-ban-circle' /><b>#{msg}</b> #{details}").show()
+
+  notice: (msg) =>
+    $('.status').html(msg)
 
   readFile: (evt) =>
+    @processing('parsing your file')
     try
       @rows = $.csv.toArrays(evt.target.result);
     catch e
@@ -64,9 +90,30 @@ class window.ImportManager
       @error('column name resolution failed', e)
       return
     @update_rows = []
+    @update_ids = []
     @preview()
     @prepareToImport()
-    @enableImport()
+    @checkExistenceOfUpdatingRecord()
+
+  checkExistenceOfUpdatingRecord: =>
+    if @update_ids.length > 0
+      @processing "checking that every rows to update exists"
+      $.ajax
+        type: 'GET',
+        url: "/resources/#{@table}/check_existence"
+        data: {id: @update_ids}
+        success: @checkExistenceCallback
+        error: @errorCallback
+    else
+      @checkExistenceCallback()
+
+  checkExistenceCallback: (data={}) =>
+    if (data.error)
+      sample = data.ids.slice(0, 6).join(", ")
+      sample += "..." if data.ids.length > 6
+      @error("#{data.ids.length} rows that shall be update were not found :", sample)
+    else
+      @enableImport()
 
   prepareToImport: =>
     @data =
@@ -77,6 +124,7 @@ class window.ImportManager
     for row, index in @rows
       kind = if (@update_rows.indexOf(index) isnt -1) then 'update' else 'create'
       row.splice(pindex, 1) if kind == 'create' && pindex isnt -1
+      @update_ids.push row[pindex] if pindex isnt -1 && kind is 'update'
       @data[kind].push row
     text = []
     for kind in ['create', 'update']
@@ -85,9 +133,9 @@ class window.ImportManager
 
   enableImport: =>
     @readyToImport = true
-    $("#perform-import").val("Import #{@rows.length} rows into #{@table}").show()
-    $(".file-description").addClass('alert-info')
-    $(".status").html("<i class='icon  icon-ok-sign' /> <u>ready to import</u>. Review this list and validate at the end of the page")
+    $("#perform-import").val("Import #{@rows.length} rows into #{@table}")
+    @toggleStartImport('start-import')
+    $(".status").html("<i class='icon  icon-ok-sign' /> ready to import")
 
   preview: () ->
     $(".items-list").hide()
@@ -142,15 +190,13 @@ class window.ImportManager
       alert('sorry. already importing')
       return
     @importing = true
-    $('#perform-import').hide()
+    @processing('importing your data')
     $.ajax
       type: 'POST',
       url: "/resources/#{@table}/perform_import"
       data: @data
       success: @performCallback
       error: @errorCallback
-    window.location.href ="#"
-    $(".status").html('<div class="progress progress-striped active"><div class="bar" style="width: 100%;"></div></div>importing rows')
 
   performCallback: (data) =>
     @importing = false
@@ -160,10 +206,9 @@ class window.ImportManager
       @success()
 
   success: =>
-    $(".file-description").removeClass("alert-info").addClass('alert-success')
-    $(".status").html("your data has been imported, <a>click here to see it</a>")
-    $(".status a").attr('href', $("#select-file").data('import-result-path'))
-
+    $(".importHeader").removeClass("fail").addClass('success')
+    $(".status").html("")
+    @toggleStartImport 'import-success'
 
   errorCallback: (data) =>
     @importing = false

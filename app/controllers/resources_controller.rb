@@ -15,7 +15,7 @@ class ResourcesController < ApplicationController
   helper_method :clazz, :user_can?
 
   respond_to :json, :html, only: [:index, :update]
-  respond_to :json, only: [:perform_import]
+  respond_to :json, only: [:perform_import, :check_existence]
   respond_to :csv, only: :index
 
   def index
@@ -68,16 +68,16 @@ class ResourcesController < ApplicationController
     import_rows = params[:create].present? ? params[:create].values : nil
     update_rows = params[:update].present? ? params[:update].values : nil
     ActiveRecord::Import.require_adapter(@generic.current_adapter)
-    #begin
-    if import_rows
-      clazz.import columns_without_pk, import_values, :validate => false
-      fromId = clazz.last.try pkey || 0
-      toId = clazz.last.try pkey || 0
+    begin
+      if import_rows
+        clazz.import columns_without_pk, import_values, :validate => false
+        fromId = clazz.last.try pkey || 0
+        toId = clazz.last.try pkey || 0
+      end
+      ids = update_from_import(pkey, columns, update_rows) if update_rows
+    rescue => error
+      result = {error: error.to_s}
     end
-    ids = update_from_import(pkey, columns, update_rows) if update_rows
-    #rescue => error
-    #  result = {error: error.to_s}
-    #end
     if (import_rows && fromId == toId)
       result = {error: 'no new record were imported'}
     else
@@ -87,6 +87,19 @@ class ResourcesController < ApplicationController
       result = {success: true}
     end
     render json: result.to_json
+  end
+
+  def check_existence
+     ids = params[:id].uniq
+     found_items = clazz.count :conditions => {:id => ids}, :group => clazz.primary_key
+     not_found_ids = ids - found_items.keys.map(&:to_s)
+     if not_found_ids.present?
+       result = {error: true, ids: not_found_ids}
+     else
+       result = {success: true}
+     end
+     sleep 10
+     render :json => result.to_json
   end
 
   def new
@@ -205,7 +218,7 @@ class ResourcesController < ApplicationController
 
   def user_can? action_name, table
     return true if @permissions.nil?
-    action_to_perm = {'index' => 'read', 'show' => 'read', 'edit' => 'update', 'update' => 'update', 'new' => 'create', 'create' => 'create', 'destroy' => 'delete', 'bulk_destroy' => 'delete', 'import' => 'create', 'perform_import' => 'create'}
+    action_to_perm = {'index' => 'read', 'show' => 'read', 'edit' => 'update', 'update' => 'update', 'new' => 'create', 'create' => 'create', 'destroy' => 'delete', 'bulk_destroy' => 'delete', 'import' => 'create', 'perform_import' => 'create', 'check_existence' => 'read'}
     @permissions[table] && @permissions[table][action_to_perm[action_name]]
   end
 

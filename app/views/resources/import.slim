@@ -4,34 +4,40 @@ javascript:
   primary_key = '#{clazz.primary_key}'
 
 - content_for :subnav do
-  header.jumbotron.subhead
-    .breadcrumb
-      .row-fluid.btn-toolbar
-        .span3
-          strong= link_to params[:table].humanize, resources_path(params[:table])
-          span.divider >
-          = "Importing #{clazz.model_name.human}"
+  header.jumbotron.subhead.importHeader
+    .well
+      .row-fluid
+        #select-file.span3
+          h5 Step 1 of 3
+          .btn.btn-warning.btn-large select a CSV file and preview import
+          .hint the first row of the csv must contain the column names
+        #start-import.span3.hide
+          h5 Step 2 of 3
+          = submit_tag "", class: "btn btn-primary btn-large", id: 'perform-import'
+          .hint just review your data and go on !
+        #processing.span3.hide
+          h5 Processing, please wait
+          .progress.progress-striped.active
+            .bar(style="width: 100%;")
+          .hint
 
-.row-fluid
-  #select-file.well.span3(data-import-result-path=resources_path(params[:table], asearch: 'last_import', order: clazz.primary_key))
-    p for a quickier insert of new records
-    .btn.btn-primary.btn-large select a CSV file and preview import
-    .hint the first row of the csv must contain the column names
-  .span6.alert.alert-info.file-description
-    p.file-info.hide
-      i.icon.icon-file
-      span
-    p.importable_rows.hide
-      i.icon.icon-list
-      span
-
-    p.status
+        #import-success.span3.hide
+          h5 Step 3 of 3
+          = link_to "see imported data", resources_path(params[:table], asearch: 'last_import', order: clazz.primary_key), class: 'btn btn-large btn-success'
+          .hint your data has been successfuly imported
+        .span6.file-description
+          p.file-info.hide
+            i.icon.icon-file
+            span.filename
+            a.change change file
+          p.importable_rows.hide
+            i.icon.icon-list
+            span
+          p.status
 
 
 table.table-striped.table-bordered.table.items-list data-table=params[:table] data-model=clazz.to_s.underscore.gsub('/', '_')
   thead
     tr
   tbody
-
 input type="file" id="import_file" name="file" class='hide'
-= submit_tag "", class: "btn btn-primary hide", id: 'perform-import'
