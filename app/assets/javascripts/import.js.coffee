@@ -223,7 +223,7 @@ class window.ImportManager
     else
       @success()
       delay = Math.round((new Date() - @import_started_at) / 100) / 10
-      Analytics.importEvent('imported', "insert=#{@data.create.length} update=#{@data.update.length} time=#{delay}")
+      Analytics.importEvent('imported', "insert=#{@data.create.length} update=#{@data.update.length} time=#{delay} account=#{adminium_account.name} plan=#{adminium_account.plan}")
 
   success: =>
     $(".importHeader").removeClass("fail").addClass('success')
