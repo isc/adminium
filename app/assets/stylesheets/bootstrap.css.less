@@ -148,12 +148,22 @@ table.items-list {
   }
   td.actions a {
     opacity:0;
+    font-size: 125%;
+    margin-right: 4px;
+    &:first-child {
+      margin-left: 2px;
+    }
+    &:last-child {
+      margin-right: 0px;
+      color: darkRed;
+    }
   }
   tr:hover td.actions a {
     opacity:0.5;
   }
   tr:hover td.actions a:hover {
     opacity:1;
+    text-decoration: none;
   }
 }
 

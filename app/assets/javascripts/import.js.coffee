@@ -90,7 +90,7 @@ class window.ImportManager
     $(".importable_rows span").text("#{@rows.length} rows detected")
     try
       for name in header
-        @detectColumnName(name)
+        @detectColumnName $.trim(name)
     catch e
       @error("column_name_resolution", 'column name resolution failed', e)
       return
