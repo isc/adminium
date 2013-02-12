@@ -14,8 +14,8 @@ class ResourcesController < ApplicationController
   before_filter :fetch_item, only: [:show, :edit, :update, :destroy]
   helper_method :clazz, :user_can?
 
-  respond_to :json, :html, only: [:index, :update]
   respond_to :json, only: [:perform_import, :check_existence]
+  respond_to :json, :html, only: [:index, :update]
   respond_to :csv, only: :index
 
   def index
