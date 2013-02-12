@@ -61,36 +61,64 @@ class ResourcesController < ApplicationController
   end
 
   def perform_import
-    columns = params[:headers]
+    data = JSON.parse(params[:data])
+    columns = data['headers']
     pkey = clazz.primary_key.to_s
     columns_without_pk = columns.clone
     columns_without_pk.delete pkey
-    import_rows = params[:create].present? ? params[:create].values : nil
-    update_rows = params[:update].present? ? params[:update].values : nil
+    import_rows = data['create'].present? ? data['create'] : nil
+    update_rows = data['update'].present? ? data['update'] : nil
     ActiveRecord::Import.require_adapter(@generic.current_adapter)
     fromId = toId = 0
+    updated_ids = []
     begin
-      if import_rows
-        clazz.uncached do
-          fromId = clazz.last.try pkey || 0
-          clazz.import columns_without_pk, import_rows, :validate => false
-          toId = clazz.last.try pkey || 0
+      clazz.transaction do
+        if import_rows
+          clazz.uncached do
+            fromId = clazz.select(pkey).last.try pkey || 0
+            clazz.import columns_without_pk, import_rows, :validate => false
+            toId = clazz.select(pkey).last.try pkey || 0
+          end
+        end
+        if update_rows
+          updated_ids = update_from_import(pkey, columns, update_rows)
         end
       end
-      ids = update_from_import(pkey, columns, update_rows) if update_rows
     rescue => error
       render json: {error: error.to_s}.to_json
       return
     end
     if (import_rows && fromId == toId)
-      result = {error: "no new record were imported (#{fromId} - #{toId})"}
-    else
-      import_filter = [{"column"=>pkey, "type"=>"integer", "operator"=>">", "operand"=>fromId}, {"column"=>pkey, "type"=>"integer", "operator"=>"<=", "operand"=>toId}]
-      clazz.settings.filters['last_import'] =  import_filter
-      clazz.settings.save
-      result = {success: true}
+      render json: {error: "no new record were imported"}.to_json
+      return
     end
+    if (update_rows && updated_ids.blank?)
+      render json: {error: "no records were updated"}.to_json
+      return
+    end
+    set_last_import_filter(import_rows, update_rows, fromId, toId, updated_ids)
+    result = {success: true}
     render json: result.to_json
+  end
+
+  def set_last_import_filter import_rows, update_rows, fromId, toId, updated_ids
+    pkey = clazz.primary_key.to_s
+    import_filter = []
+    if import_rows && update_rows
+      created_ids = clazz.where(["(#{pkey} > ?) AND (#{pkey} <= ?)", fromId, toId]).count(:group => pkey).keys
+      updated_ids += created_ids
+      import_filter.push "column" => pkey, "type"=>"integer", "operator"=>"IN", "operand" => updated_ids.join(',')
+    else
+      if import_rows
+        import_filter.push "column" => pkey, "type" => "integer", "operator"=>">", "operand" => fromId
+        import_filter.push "column" => pkey, "type" => "integer", "operator"=>"<=", "operand" => toId
+      end
+      if update_rows
+        import_filter.push "column" => pkey, "type"=>"integer", "operator"=>"IN", "operand" => updated_ids.join(',')
+      end
+    end
+    clazz.settings.filters['last_import'] =  import_filter
+    clazz.settings.save
   end
 
   def check_existence
@@ -102,7 +130,6 @@ class ResourcesController < ApplicationController
      else
        result = {success: true}
      end
-     sleep 10
      render :json => result.to_json
   end
 
@@ -449,13 +476,14 @@ class ResourcesController < ApplicationController
   end
 
   def update_from_import pk, columns, data
-    data.each do |row|
+    data.map do |row|
       attrs = {}
       columns.each_with_index do |name, index|
         attrs[name] = row[index]
       end
       id = attrs.delete pk
       clazz.find(id).update_attributes! attrs
+      id
     end
   end
 

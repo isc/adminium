@@ -39,6 +39,7 @@ class window.ImportManager
     @selectFiles evt.target.files
 
   selectFiles: (files) =>
+    $('.importHelp').hide()
     @disableImport()
     file = files[0]
     $(".file-info").show()
@@ -158,9 +159,9 @@ class window.ImportManager
       $("<td class='importIndex'>").html("#{index+1}").appendTo(tr)
       for cell, i in row
         column_name = @sql_column_names[i]
-        sql_type = columns_hash[column_name].sql_type
-        css = sql_type + ' '
-        if sql_type == 'boolean' && cell != '' && cell != null
+        type = columns_hash[column_name].type
+        css = type + ' '
+        if type == 'boolean' && cell != '' && cell != null
           value = null
           value = true if [adminium_column_options[column_name].boolean_true, 'true', 'True', 'TRUE', 'yes', 't', '1'].indexOf(cell) isnt -1
           value = false if [adminium_column_options[column_name].boolean_false, 'false', 'False', 'FALSE', 'no', 'f', '0'].indexOf(cell) isnt -1
@@ -172,8 +173,12 @@ class window.ImportManager
             css += "#{value}class"
         if cell == '' || cell == null
           css += "nilclass"
-          if sql_type == 'character varying(255)'
+          if ['text', 'string'].indexOf(type) isnt -1
             cell = if cell == null then 'NULL' else 'empty string'
+          else
+            if (column_name != primary_key)
+              cell = 'NULL'
+              row[i] = null
         if (column_name == primary_key)
           if cell == ''
             cell = "<i class='icon-star' /><span class='label label-success'>new</span>"
@@ -207,7 +212,7 @@ class window.ImportManager
     $.ajax
       type: 'POST',
       url: "/resources/#{@table}/perform_import"
-      data: @data
+      data: {data: JSON.stringify(@data)}
       success: @performCallback
       error: @errorCallback
 
