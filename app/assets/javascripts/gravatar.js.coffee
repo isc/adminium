@@ -6,8 +6,16 @@ class window.Gravatar
   @profile: (email) ->
     "http://www.gravatar.com/#{md5(email)}"
 
+  @emailColumnDetect: ->
+    return 'email' if columns_hash.hasOwnProperty('email')
+    for key, value of columns_hash
+      return key if (key.indexOf('_email') isnt -1) || (key.indexOf('email_') isnt -1) || (key.indexOf('Email') isnt -1)
+    null
+
   @findAll: ->
-    emailCells = $("td[data-column-name='email']")
+    email = @emailColumnDetect()
+    return unless email
+    emailCells = $("td[data-column-name='#{email}']")
     return if emailCells.length is 0
     $("<th>").insertAfter $('th.checkboxes')
     for elt in emailCells
