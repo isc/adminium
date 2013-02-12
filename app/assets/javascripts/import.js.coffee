@@ -147,7 +147,7 @@ class window.ImportManager
     @readyToImport = true
     $("#perform-import").val("Import #{@rows.length} rows")
     @toggleStartImport('start-import')
-    $(".status").html("<i class='icon  icon-ok-sign' /> ready to import")
+    $(".status").html("<i class='icon  icon-ok-sign' /> Ready to import")
 
   preview: () ->
     $(".items-list").hide()
@@ -166,7 +166,7 @@ class window.ImportManager
           value = true if [adminium_column_options[column_name].boolean_true, 'true', 'True', 'TRUE', 'yes', 't', '1'].indexOf(cell) isnt -1
           value = false if [adminium_column_options[column_name].boolean_false, 'false', 'False', 'FALSE', 'no', 'f', '0'].indexOf(cell) isnt -1
           if value is null
-            error("data integrity check: unknown value '#{cell}' for boolean column #{column_name}")
+            error("Data integrity check: unknown value '#{cell}' for boolean column #{column_name}")
             return
           else
             row[i] = value
@@ -232,7 +232,7 @@ class window.ImportManager
 
   errorCallback: (data) =>
     @importing = false
-    @error('internal-server-side-error', 'sorry, but an unexpected error occured, please contact us so we can work this out')
+    @error('internal-server-side-error', 'Sorry, but an unexpected error occured, please contact us so we can work this out')
 
 $ ->
   new ImportManager()

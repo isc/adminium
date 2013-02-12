@@ -89,11 +89,11 @@ class ResourcesController < ApplicationController
       return
     end
     if (import_rows && fromId == toId)
-      render json: {error: "no new record were imported"}.to_json
+      render json: {error: "No new record were imported"}.to_json
       return
     end
     if (update_rows && updated_ids.blank?)
-      render json: {error: "no records were updated"}.to_json
+      render json: {error: "No records were updated"}.to_json
       return
     end
     set_last_import_filter(import_rows, update_rows, fromId, toId, updated_ids)

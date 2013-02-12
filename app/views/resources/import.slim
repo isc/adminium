@@ -12,7 +12,7 @@ javascript:
         #select-file.span3
           h5 Step 1 of 3
           .btn.btn-warning.btn-large select a CSV file and preview
-          .hint the first row of the csv must contain the column names
+          .hint The first row of the csv must contain the column names
         #start-import.span3.hide
           h5 Step 2 of 3
           = submit_tag "", class: "btn btn-primary btn-large", id: 'perform-import'
@@ -22,7 +22,6 @@ javascript:
           .progress.progress-striped.active
             .bar(style="width: 100%;")
           .hint
-
         #import-success.span3.hide
           h5 Step 3 of 3
           = link_to "see imported data", resources_path(params[:table], asearch: 'last_import', order: clazz.primary_key), class: 'btn btn-large btn-success'
@@ -39,7 +38,6 @@ javascript:
             i.icon.icon-list
             span
           p.status
-
 
 table.table-striped.table-bordered.table.items-list data-table=params[:table] data-model=clazz.to_s.underscore.gsub('/', '_')
   thead
