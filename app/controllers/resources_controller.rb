@@ -68,18 +68,22 @@ class ResourcesController < ApplicationController
     import_rows = params[:create].present? ? params[:create].values : nil
     update_rows = params[:update].present? ? params[:update].values : nil
     ActiveRecord::Import.require_adapter(@generic.current_adapter)
+    fromId = toId = 0
     begin
       if import_rows
-        clazz.import columns_without_pk, import_values, :validate => false
-        fromId = clazz.last.try pkey || 0
-        toId = clazz.last.try pkey || 0
+        clazz.uncached do
+          fromId = clazz.last.try pkey || 0
+          clazz.import columns_without_pk, import_rows, :validate => false
+          toId = clazz.last.try pkey || 0
+        end
       end
       ids = update_from_import(pkey, columns, update_rows) if update_rows
     rescue => error
-      result = {error: error.to_s}
+      render json: {error: error.to_s}.to_json
+      return
     end
     if (import_rows && fromId == toId)
-      result = {error: 'no new record were imported'}
+      result = {error: "no new record were imported (#{fromId} - #{toId})"}
     else
       import_filter = [{"column"=>pkey, "type"=>"integer", "operator"=>">", "operand"=>fromId}, {"column"=>pkey, "type"=>"integer", "operator"=>"<=", "operand"=>toId}]
       clazz.settings.filters['last_import'] =  import_filter

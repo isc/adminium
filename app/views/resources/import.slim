@@ -9,7 +9,7 @@ javascript:
       .row-fluid
         #select-file.span3
           h5 Step 1 of 3
-          .btn.btn-warning.btn-large select a CSV file and preview import
+          .btn.btn-warning.btn-large select a CSV file and preview
           .hint the first row of the csv must contain the column names
         #start-import.span3.hide
           h5 Step 2 of 3
@@ -26,6 +26,9 @@ javascript:
           = link_to "see imported data", resources_path(params[:table], asearch: 'last_import', order: clazz.primary_key), class: 'btn btn-large btn-success'
           .hint your data has been successfuly imported
         .span6.file-description
+          p
+            .i.icon.icon-list-alt
+            == " #{params[:table]} table"
           p.file-info.hide
             i.icon.icon-file
             span.filename

@@ -1,5 +1,7 @@
 class window.ImportManager
 
+  limit: 500
+
   constructor: ->
     return unless document.getElementById('import_file')
     window.importManager = this
@@ -21,7 +23,7 @@ class window.ImportManager
         onLeave: (element, position) ->
           $(".importHeader").removeClass('subnav-fixed')
     if !$.isFunction(FileReader)
-      @error("Your browser is missing some HTML5 support required for this import feature (FileReader is not defined)")
+      @error("html5-incompatibility", "Your browser is missing some HTML5 support required for this import feature (FileReader is not defined)")
 
   handleDragOver: (evt) ->
     evt.stopPropagation();
@@ -44,6 +46,7 @@ class window.ImportManager
     reader = new FileReader()
     reader.onload = @readFile
     @processing('loading file locally')
+    Analytics.importEvent('loading-file')
     reader.readAsText(file)
 
   disableImport: =>
@@ -57,17 +60,18 @@ class window.ImportManager
 
   processing: (msg) =>
     @toggleStartImport('processing')
-    $(".hint").html(msg)
+    $("#processing .hint").html(msg)
 
   toggleStartImport: (name) ->
     $(".importHeader .span3").hide()
     $("##{name}").show()
 
-  error: (msg, details) =>
+  error: (tracker_code, msg, details) =>
     @toggleStartImport('select-file')
     $(".importHeader").toggleClass("fail", true)
     details = if details then "(#{details})" else ""
     $(".status").html("<i class='icon icon-ban-circle' /><b>#{msg}</b> #{details}").show()
+    Analytics.importEvent 'error', tracker_code
 
   notice: (msg) =>
     $('.status').html(msg)
@@ -77,7 +81,7 @@ class window.ImportManager
     try
       @rows = $.csv.toArrays(evt.target.result);
     catch e
-      @error("We couldn't parse your File, be sure to provide a CSV File", e.message)
+      @error("parsing", "We couldn't parse your File, be sure to provide a CSV File", e.message)
       return
     header = @rows.shift()
     @sql_column_names = []
@@ -87,13 +91,20 @@ class window.ImportManager
       for name in header
         @detectColumnName(name)
     catch e
-      @error('column name resolution failed', e)
+      @error("column_name_resolution", 'column name resolution failed', e)
       return
     @update_rows = []
     @update_ids = []
     @preview()
     @prepareToImport()
-    @checkExistenceOfUpdatingRecord()
+    if @checkQuota()
+      @checkExistenceOfUpdatingRecord()
+
+  checkQuota: =>
+    if @rows.length > @limit
+      @error("quotas_excedeed", "Too many rows to import", "sorry but for now, you can only import #{@limit} rows at a time")
+      return
+    true
 
   checkExistenceOfUpdatingRecord: =>
     if @update_ids.length > 0
@@ -111,7 +122,7 @@ class window.ImportManager
     if (data.error)
       sample = data.ids.slice(0, 6).join(", ")
       sample += "..." if data.ids.length > 6
-      @error("#{data.ids.length} rows that shall be update were not found :", sample)
+      @error("update_not_found_ids", "#{data.ids.length} rows that shall be update were not found :", sample)
     else
       @enableImport()
 
@@ -133,7 +144,7 @@ class window.ImportManager
 
   enableImport: =>
     @readyToImport = true
-    $("#perform-import").val("Import #{@rows.length} rows into #{@table}")
+    $("#perform-import").val("Import #{@rows.length} rows")
     @toggleStartImport('start-import')
     $(".status").html("<i class='icon  icon-ok-sign' /> ready to import")
 
@@ -191,6 +202,8 @@ class window.ImportManager
       return
     @importing = true
     @processing('importing your data')
+    Analytics.importEvent('importing', "insert=#{@data.create.length} update=#{@data.update.length}")
+    @import_started_at = new Date()
     $.ajax
       type: 'POST',
       url: "/resources/#{@table}/perform_import"
@@ -201,9 +214,11 @@ class window.ImportManager
   performCallback: (data) =>
     @importing = false
     if data.error
-      @error(data.error)
+      @error('server-side-detected-error', data.error)
     else
       @success()
+      delay = Math.round((new Date() - @import_started_at) / 100) / 10
+      Analytics.importEvent('imported', "insert=#{@data.create.length} update=#{@data.update.length} time=#{delay}")
 
   success: =>
     $(".importHeader").removeClass("fail").addClass('success')
@@ -212,7 +227,7 @@ class window.ImportManager
 
   errorCallback: (data) =>
     @importing = false
-    @error('sorry, but an unexpected error occured, please contact us so we can work this out.')
+    @error('internal-server-side-error', 'sorry, but an unexpected error occured, please contact us so we can work this out')
 
 $ ->
   new ImportManager()

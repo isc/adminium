@@ -9,10 +9,10 @@ td
   - filter_type = 'integer' if %w(decimal float).include? filter_type
   - filter_type = 'string' if filter_type == 'text'
   = render partial: "/settings/filters/#{filter_type}", locals: {g: g, operator: filter["operator"]}
-td
-  - options = {class: 'span2'}
+td.span2
+  - options = {class: 'operand'}
   - options[:class] += ' datepicker' if %w(datetime date).include? filter_type
-  - options[:type] = 'number' if filter_type == 'integer'
+  - options['data-type'] = filter_type
   = text_field_tag "filters[#{g}][operand]", filter['operand'], options
 td
   span.btn

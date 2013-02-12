@@ -1,20 +1,7 @@
 $ ->
   $("#welcome-modal").modal()
   $('ul.sortable').sortable()
-  $('table.filters span.btn').live 'click', ->
-    $(this).parents('tr').remove()
-  $("#new_filter").bind 'change', (event) ->
-    column_name = $('#new_filter option:selected').val()
-    table = $('#new_filter').attr('data-table')
-    $('#new_filter').val('')
-    $.get "/settings/#{table}?column_name=#{column_name}", (resp) ->
-      $("<tr>").append(resp).appendTo($(".filters"))
-      $('.datepicker').datepicker onClose: (dateText, inst) ->
-        $("##{inst.id}_1i").val(inst.selectedYear)
-        $("##{inst.id}_2i").val(inst.selectedMonth + 1)
-        $("##{inst.id}_3i").val(inst.selectedDay)
   setupValidations()
-
   setupDbUrlPresence()
 
 addToHiddenParams = (pane_id, group, params) ->
