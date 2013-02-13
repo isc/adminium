@@ -7,6 +7,7 @@ class window.Gravatar
     "http://www.gravatar.com/#{md5(email)}"
 
   @emailColumnDetect: ->
+    return unless window.hasOwnProperty('columns_hash')
     return 'email' if columns_hash.hasOwnProperty('email')
     for key, value of columns_hash
       return key if (key.indexOf('_email') isnt -1) || (key.indexOf('email_') isnt -1) || (key.indexOf('Email') isnt -1)
