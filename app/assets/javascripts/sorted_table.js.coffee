@@ -19,4 +19,4 @@ makeSortable = (selector) ->
     table.find('tbody').empty()
     table.find('tbody').get(0).appendChild(row) for row in rows
 
-$ -> makeSortable '.sor'
+$ -> makeSortable '.sortable'
