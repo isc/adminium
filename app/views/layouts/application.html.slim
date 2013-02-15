@@ -11,7 +11,7 @@ html lang="en"
     meta name="description" content="Administration interface for your database as a service"
     meta name="keywords" content="Adminium, database, administration, interface, export, heroku, add-on"
     link href="/images/favicon.ico" rel="shortcut icon"
-  body
+  body class=controller.controller_name
     - if session[:account]
       div#plan style="display:none" = current_account.plan
     = render partial: '/layouts/demo'
@@ -22,7 +22,7 @@ html lang="en"
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          = link_to 'Adminium', dashboard_path, class: 'brand'
+          = link_to "#{current_account.try(:name) || 'Adminium'}", dashboard_path, class: 'brand'
           .container-fluid.nav-collapse
             - if current_account && current_account.db_url.present?
               form#search-table.navbar-search action=resources_path('')
@@ -57,6 +57,13 @@ html lang="en"
       .modal-body
         = spinner_tag
         p.centered please wait a few instants until the page is loaded
+  - footer = yield :footer
+  - if footer.present?
+    .footer
+      .footer-inner
+        = footer
+  .adminium-footer
+    '&copy; Adminium
 .hide
   #facebookG
     #block_1.facebook_blockG

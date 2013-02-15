@@ -1,0 +1,43 @@
+h3= "Table #{params[:table]}"
+h4
+  = "#{clazz.columns_hash.keys.length} columns,"
+  = link_to "#{clazz.count} records", resources_path(params[:table])
+br
+table.table.table-striped.black
+  thead
+    tr
+      th
+      th Column name
+      th Type
+      th Null
+      th Default
+      th
+
+  - clazz.columns_hash.each do |name, column|
+    tr
+      th
+        - if column.primary
+          i.icon.icon-key.primaryKey
+        - elsif clazz.connection.index_exists?(params[:table], name)
+          i.icon.icon-link
+      th(data-value=column.name)= name
+      td(class="#{column.type}Type" data-value=column.sql_type)= column.sql_type
+      td(data-value="#{column.null ? 1 : 0}")= "NOT NULL" if column.null == false
+      td(class=column.type data-value=column.default)= column.default if column.default
+      td
+
+table.table.table-striped.black
+  thead
+    tr
+      th
+        i.icon.icon-link
+      th Index name
+      th Columns
+      th Uniqueness
+  - clazz.connection.indexes(params[:table]).each do |index|
+    tr
+      th
+      th
+        i= index.name
+      td== index.columns.join("<br/>")
+      td= "UNIQUE" if index.unique

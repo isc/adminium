@@ -8,7 +8,7 @@ makeSortable = (selector) ->
     rows = (tr.cloneNode(true) for tr in table.find('tbody tr'))
     rows.sort (e1, e2) ->
       [td1, td2] = [$(e1).find('td').eq(index), $(e2).find('td').eq(index)]
-      if index is 0
+      if index is 1
         [v1, v2] = [td1.text(), td2.text()]
       else
         [v1, v2] = [Number(td1.data('value')), Number(td2.data('value'))]
@@ -19,4 +19,4 @@ makeSortable = (selector) ->
     table.find('tbody').empty()
     table.find('tbody').get(0).appendChild(row) for row in rows
 
-$ -> makeSortable '.tables-info'
+$ -> makeSortable '.sor'

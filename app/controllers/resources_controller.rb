@@ -12,7 +12,7 @@ class ResourcesController < ApplicationController
   before_filter :apply_serialized_columns, only: [:index, :show]
   before_filter :apply_validations, only: [:create, :update, :new, :edit]
   before_filter :fetch_item, only: [:show, :edit, :update, :destroy]
-  helper_method :clazz, :user_can?
+  helper_method :user_can?
 
   respond_to :json, only: [:perform_import, :check_existence]
   respond_to :json, :html, only: [:index, :update]
@@ -263,10 +263,6 @@ class ResourcesController < ApplicationController
       clazz.settings.per_page = per_page
       clazz.settings.save
     end
-  end
-
-  def clazz
-    @clazz ||= @generic.table(params[:table])
   end
 
   def item_params

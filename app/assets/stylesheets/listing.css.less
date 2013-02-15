@@ -1,7 +1,11 @@
+@orange:                #413877;
+
 .widget {
   overflow:auto;
-  padding:5px 0 0 0;
+  padding: 0;
+  background: white;
   max-height:300px;
+  box-shadow: 0px 0px 15px darken(#EEE, 5%);
   i.icon-cog {
     display:none;
   }
@@ -10,13 +14,31 @@
   }
   .btn-mini {
     opacity:0;
-    margin-right:5px;
+    margin-right:2px;
+    margin-top:2px;
   }
   h4 {
-    margin:0 0 0 5px;
+    padding:3px 3px 3px 6px;
+    margin:0px;
+    background: lighten(@orange, 25%);
+    color: white;
+    a {
+      color: white;
+    }
+    small {
+      background: lighten(@orange, 5%);
+      padding: 2px 6px;
+      color: white;
+      border-radius: 5px;
+    }
+    border-bottom: 1px solid darken(#EEE, 10%);
+
   }
   .items-list {
     margin-left:-1px;
+    tbody {
+      background: white;
+    }
   }
   .content {
     -webkit-transform: translate3D(0, 0, 0);

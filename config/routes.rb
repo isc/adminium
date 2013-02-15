@@ -20,6 +20,9 @@ Adminium::Application.routes.draw do
   end
 
   resources :widgets
+
+  resources :schemas, only: [:show]
+
   resources :searches
 
   resources :column_settings

@@ -1,8 +1,11 @@
 td.fixnum, td.bigdecimal, td.integer, td.float, td.decimal {
   font-family:Monaco;
-  color:green;
   font-weight:bold;
   text-align:right;
+}
+
+td.fixnum, td.bigdecimal, td.integer, td.float, td.decimal, td.decimalType, td.floatType, td.integerType {
+  color:green;
 }
 
 .trueclass, .falseclass {
@@ -33,8 +36,11 @@ td.fixnum, td.bigdecimal, td.integer, td.float, td.decimal {
   margin-left:0px;
 }
 
-.time, .activesupport-timewithzone, .date {
+.time, .activesupport-timewithzone, .date, td.dateType, td.datetimeType {
   color:purple;
+}
+td.booleanType {
+  color: orange;
 }
 
 .setting_attribute {

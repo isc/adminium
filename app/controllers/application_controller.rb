@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   before_filter :connect_to_db
   after_filter :cleanup_generic
 
-  helper_method :global_settings, :current_account, :current_user, :admin?, :current_account?
+  helper_method :global_settings, :current_account, :current_user, :admin?, :current_account?, :clazz
 
   private
 
@@ -63,6 +63,10 @@ class ApplicationController < ActionController::Base
 
   def cleanup_generic
     @generic.try :cleanup
+  end
+
+  def clazz
+    @clazz ||= @generic.table(params[:table])
   end
 
   def global_db_error exception
