@@ -1,9 +1,10 @@
 class Account < ActiveRecord::Base
 
   attr_accessible :db_url, :plan, :heroku_id, :callback_url, :name, :owner_email
+  serialize :plan_migrations
 
   before_create :generate_api_key
-  before_save :fill_adapter
+  before_save :fill_adapter, :track_plan_migration
   has_many :collaborators
   has_many :users, through: :collaborators
   has_many :roles
@@ -23,6 +24,7 @@ class Account < ActiveRecord::Base
     STARTUP = 'startup'
     ENTERPRISE = 'enterprise'
     COMPLIMENTARY = 'complimentary'
+    DELETED = 'deleted'
   end
 
   def to_param
@@ -73,6 +75,14 @@ class Account < ActiveRecord::Base
     'https://addons.heroku.com/adminium'
   end
 
+  def flag_as_deleted!
+    self.db_url = nil
+    self.api_key = nil
+    self.plan = Plan::DELETED
+    self.deleted_at = Time.now
+    self.save!
+  end
+
   private
 
   def generate_api_key
@@ -88,6 +98,17 @@ class Account < ActiveRecord::Base
 
   def fill_adapter
     self.adapter = db_url.split(':').first if db_url.present? && encrypted_db_url_changed?
+  end
+
+  def track_plan_migration
+    self.plan_migrations ||= []
+    last_plan = nil
+    if self.plan_migrations.last
+      last_plan = self.plan_migrations.last[:plan]
+    end
+    if last_plan.nil? || last_plan != self.plan
+      self.plan_migrations.push({migrated_at:Time.now, plan: self.plan})
+    end
   end
 
 end
