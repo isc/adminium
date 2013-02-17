@@ -21,7 +21,7 @@ if ActiveRecord::Migrator.current_version != version
       t.timestamps
     end
     create_table :comments do |t|
-      t.string :title, :default => "" 
+      t.string :title, :default => ""
       t.text :comment
       t.references :commentable, :polymorphic => true
       t.references :user
@@ -44,13 +44,16 @@ if ActiveRecord::Migrator.current_version != version
       t.references :user
     end
   end
-  class UserFromTest < ActiveRecord::Base
+end
+
+
+# load some models
+
+class UserFromTest < ActiveRecord::Base
     self.table_name = 'users'
   end
-  class CommentFromTest < ActiveRecord::Base
-    self.table_name = 'comments'
-  end
-  u = UserFromTest.create! pseudo: 'bob'
-  2.times { CommentFromTest.create! user_id: u.id, title: 'My comment'}
+class CommentFromTest < ActiveRecord::Base
+  self.table_name = 'comments'
 end
+
 ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations[Rails.env]

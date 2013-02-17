@@ -5,8 +5,9 @@ class AdvancedSearch
   constructor: ->
     $('table.filters span.btn').live 'click', ->
       $(this).parents('tr').remove()
-    $('table.filters select').live 'change', @selectedOperator
-    for select in $('table.filters select')
+    selects = $('table.filters td.operators select')
+    selects.live 'change', @selectedOperator
+    for select in selects
       @updateFilterForm $(select)
     $("#new_filter").bind 'change', (event) =>
       column_name = $('#new_filter option:selected').val()
@@ -14,7 +15,7 @@ class AdvancedSearch
       $('#new_filter').val('')
       $.get "/settings/#{table}?column_name=#{column_name}", (resp) =>
         filterDiv = $("<tr>").append(resp).appendTo($(".filters"))
-        selectFilter = filterDiv.find('select')
+        selectFilter = filterDiv.find('td.operators select')
         @updateFilterForm(selectFilter)
         $('.datepicker').datepicker onClose: (dateText, inst) ->
           $("##{inst.id}_1i").val(inst.selectedYear)

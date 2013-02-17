@@ -15,11 +15,30 @@ end
 
 class ActionDispatch::IntegrationTest
   include Capybara::DSL
-  
+
   def login account = nil
     account ||= Factory :account
     page.set_rack_session :account => account.id
     account
   end
-  
+
+end
+
+class FixtureFactory
+
+  def initialize(name, options = {})
+    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['fixture']
+    Factory "#{name}_from_test", options
+    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
+  end
+
+
+  def self.clear_db
+    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['fixture']
+    %w(users comments).each do |table_name|
+      ActiveRecord::Base.connection.execute("TRUNCATE TABLE #{table_name}")
+    end
+    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
+  end
+
 end

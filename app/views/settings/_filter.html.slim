@@ -1,15 +1,19 @@
+- g = rand(1000)
+td.grouping_kind
+  select(name="filters[#{g}][grouping]")
+    = options_for_select([['and', 'and'],['or', 'or']], filter['grouping'] || 'and')
 td
-  - g = rand(1000)
   input(type="hidden" name="filters[#{g}][column]" value=filter["column"])
   input(type="hidden" name="filters[#{g}][type]" value=filter['type'])
   label
     = filter["column"]
-td
+td.operators
   - filter_type = filter['type'].to_s
   - filter_type = 'integer' if %w(decimal float).include? filter_type
+  - filter_type = 'date' if %(date datetime).include? filter_type
   - filter_type = 'string' if filter_type == 'text'
   = render partial: "/settings/filters/#{filter_type}", locals: {g: g, operator: filter["operator"]}
-td.span2
+td.span1
   - options = {class: 'operand'}
   - options[:class] += ' datepicker' if %w(datetime date).include? filter_type
   - options['data-type'] = filter_type
