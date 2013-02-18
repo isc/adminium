@@ -12,7 +12,6 @@
         - if reflection.class_name.constantize.count <= 25
           = f.association reflection.name, options.merge(collection: reflection.klass.all(order: reflection.klass.settings.label_column))
         - else
-          - collection = reflection.klass.all(order: reflection.klass.settings.label_column, limit: 10)
           - reflection_id = @item[name]
           - record = reflection.klass.where(reflection.klass.primary_key => reflection_id).first
           .control-group.adminium-association.optional
