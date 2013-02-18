@@ -1,6 +1,6 @@
 = simple_form_for @item, url: @form_url, html: {class: 'form-horizontal resource-form'}, defaults: {input_html: {class: 'span6'}} do |f|
   - @item.class.settings.columns[:form].each do |name|
-    - next if @item.class.settings.column_type(name).to_s == 'binary' 
+    - next if @item.class.settings.column_type(name).to_s == 'binary'
     - options = {label: @item.class.column_display_name(name)}
     - if enum_value = @item.class.settings.enum_values_for(name)
       - enum_collection = enum_value.to_a.map {|v| [v[1]['label'], v[0]]}
@@ -9,7 +9,27 @@
       - if reflection.options[:polymorphic]
         = f.input name, options
       - else
-        = f.association reflection.name, options
+        - if reflection.class_name.constantize.count <= 25
+          = f.association reflection.name, options.merge(collection: reflection.klass.all(order: reflection.klass.settings.label_column))
+        - else
+          - collection = reflection.klass.all(order: reflection.klass.settings.label_column, limit: 10)
+          - reflection_id = @item[name]
+          - record = reflection.klass.where(reflection.klass.primary_key => reflection_id).first
+          .control-group.adminium-association.optional
+            =  f.label reflection.name, options[:label], :class=>'control-label'
+            .controls
+              span.record_selected(class="#{'hide' if record.nil?}")
+                span= record.try :adminium_label
+                i.icon.icon-remove-sign
+              br
+              = f.hidden_field name
+              .input-prepend.input-append
+                span.add-on Search
+                input(type='search' data-autocomplete-url=search_resources_path(reflection.klass.table_name) autocomplete='off' class='span4 search-query' placeholder="#{reflection.klass.settings.columns[:search].map(&:humanize).join(', ').downcase}")
+                span.add-on
+                  i.icon.icon-refresh.icon-spin
+              ul.span6
+                li
     - else
       - options.merge! readonly: (@item.class.columns.detect{|c|c.name == name}.primary || @item.class.primary_key == name)
       - options.merge!(boolean_input_options(@item.class, name)) if @item.class.settings.column_type(name).to_s == 'boolean'
@@ -20,4 +40,3 @@
     = f.submit 'Save and create another', class: 'btn', data: {disable_with: 'Sending...'}, name: 'then_redirect'
     '
     = f.submit 'Save and continue editing', class: 'btn', data: {disable_with: 'Sending...'}, name: 'then_redirect'
-    

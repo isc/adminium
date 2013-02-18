@@ -11,6 +11,7 @@ Adminium::Application.routes.draw do
     get :import, on: :collection
     get :check_existence, on: :collection
     post :perform_import, on: :collection
+    get :search, on: :collection
   end
 
   resources :settings do

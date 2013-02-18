@@ -221,3 +221,63 @@
     border-top:none;
   }
 }
+
+.adminium-association {
+  .record_selected {
+    background: #FFF;
+    border-radius: 2px;
+    padding: 7px;
+    border: 1px solid rgb(204, 204, 204);
+    padding-right: 27px;
+    position: relative;
+    i {
+      position: absolute;
+      top: 4px;
+      right: 2px;
+      color: #CCC;
+      &:hover {
+        color: #555;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .input-prepend {
+    margin-top: 7px;
+  }
+  .icon-refresh {
+    color: #CCC;
+    &.loading {
+      visibility: visible;
+    }
+    visibility: hidden;
+  }
+  ul {
+    background: white;
+    border: 1px solid #DDD;
+    height: 150px;
+    margin: 0px;
+    margin-top: -2px;
+    margin-left: -1px;
+    overflow: scroll;
+    li {
+      list-style-type: none;
+      color: #666;
+      padding: 1px 3px 1px 2px;
+      span.highlight {
+        background: lighten(@orange, 60%);
+        border-radius: 2px;
+        text-decoration: none;
+      }
+      span.other_attrs {
+        margin-left: 5px;
+        i {
+          color: #999;
+        }
+      }
+      &.selected {
+        background: #DDD;
+      }
+    }
+  }
+}

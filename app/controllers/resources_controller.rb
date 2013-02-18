@@ -7,25 +7,30 @@ class ResourcesController < ApplicationController
   include ActionView::Helpers::DateHelper
   include ResourcesHelper
 
-  before_filter :table_access_limitation
+  before_filter :table_access_limitation, except: [:search]
   before_filter :check_permissions
   before_filter :apply_serialized_columns, only: [:index, :show]
   before_filter :apply_validations, only: [:create, :update, :new, :edit]
   before_filter :fetch_item, only: [:show, :edit, :update, :destroy]
   helper_method :user_can?
 
-  respond_to :json, only: [:perform_import, :check_existence]
+  respond_to :json, only: [:perform_import, :check_existence, :search]
   respond_to :json, :html, only: [:index, :update]
   respond_to :csv, only: :index
+
+  def search
+    @items = clazz.select("#{quoted_table_name}.*")
+    params[:order] = clazz.settings.label_column
+    apply_search if params[:search].present?
+    apply_order
+    render json: @items.page(1).per(37).to_json(methods: :adminium_label, :only => ([clazz.primary_key] + clazz.settings.columns[:search]).uniq)
+  end
 
   def index
     @items = clazz.select("#{quoted_table_name}.*")
     @current_filter = clazz.settings.filters[params[:asearch]] || []
     @widget = current_account.widgets.where(table: params[:table], advanced_search: params[:asearch]).first
 
-    #@current_filter.each do |filter|
-    #  @items = build_statement(@items, filter)
-    #end
     @items = @items.where(params[:where]) if params[:where].present?
     apply_filters
     apply_includes
@@ -251,7 +256,7 @@ class ResourcesController < ApplicationController
 
   def user_can? action_name, table
     return true if @permissions.nil?
-    action_to_perm = {'index' => 'read', 'show' => 'read', 'edit' => 'update', 'update' => 'update', 'new' => 'create', 'create' => 'create', 'destroy' => 'delete', 'bulk_destroy' => 'delete', 'import' => 'create', 'perform_import' => 'create', 'check_existence' => 'read'}
+    action_to_perm = {'index' => 'read', 'show' => 'read', 'search' => 'read', 'edit' => 'update', 'update' => 'update', 'new' => 'create', 'create' => 'create', 'destroy' => 'delete', 'bulk_destroy' => 'delete', 'import' => 'create', 'perform_import' => 'create', 'check_existence' => 'read'}
     @permissions[table] && @permissions[table][action_to_perm[action_name]]
   end
 
@@ -432,56 +437,6 @@ class ResourcesController < ApplicationController
     return operation[:replace_right].gsub('_', value) if operation.has_key?(:replace_right)
     return value.to_date if operation[:right_function] == 'to_date'
     return value
-  end
-
-  def build_statement scope, filter
-    c = "#{quoted_table_name}.#{quote_column_name filter['column']}"
-    params = nil
-    unary_operator = UNARY_OPERATOR_DEFINITIONS[filter['operator']]
-    if unary_operator
-      return scope.where(unary_operator.gsub('_', c))
-    end
-    case filter['type']
-      when 'integer', 'float', 'decimal'
-        raise "Unsupported" unless INTEGER_OPERATORS.include?(filter['operator'])
-        if filter['operand'].present?
-          params = if filter['operator'] == 'IN'
-            ["#{c} IN (?)", filter['operand'].split(',')]
-          else
-            ["#{c} #{filter['operator']} ?", filter['operand']]
-          end
-        end
-      when 'string', 'text'
-        operand = STRING_LIKE_OPERATOR_DEFINITIONS[filter['operator']]
-        if operand
-          like_operator = @generic.mysql? ? 'LIKE' : 'ILIKE'
-          params = ["#{c} #{like_operator} ?", operand.gsub('_', filter['operand'])]
-        end
-        params = ["#{c} != ?", filter['operand']] if filter['operator'] == 'not'
-        operand = STRING_OPERATOR_DEFINITIONS[filter['operator']]
-        params = operand.gsub('_', c) if operand
-      when 'boolean'
-        raise "Unsupported" unless BOOLEAN_OPERATORS.include?(filter['operator'])
-        params = ["#{c} = ?", filter['operator'] == "is_true"]
-      when 'datetime', 'date'
-        raise "Unsupported #{filter['operator']}" unless DATETIME_OPERATORS.include?(filter['operator'])
-        ranges = {'today' => [0, 'day'], 'yesterday' => [1, 'day'], 'this_week' => [0, 'week'], 'last_week' => [1, 'week']}
-        range = ranges[filter['operator']]
-        if range
-          day = range.first.send(range.last).ago.to_date
-          values = (range.last == 'week') ? [day.beginning_of_week, day.end_of_week] : [day, day]
-          values = [values.first.beginning_of_day, values.last.end_of_day]
-          params = ["#{c} BETWEEN ? AND ?", *values]
-        end
-        operators = {'after' => '>', 'before' => '<', 'on' => '='}
-        if (operator = operators[filter['operator']]) && filter['operand'].match(/(\d{2}\/\d{2}\/\d{4})/)
-          date = Date.strptime($1, '%m/%d/%Y')
-          params = ["#{c} #{operator} ?", date]
-        end
-      else
-        raise "Unsupported"
-    end
-    scope.where(params)
   end
 
   def table_access_limitation
