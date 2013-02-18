@@ -9,7 +9,7 @@
       - if reflection.options[:polymorphic]
         = f.input name, options
       - else
-        - if reflection.class_name.constantize.count <= 25
+        - if reflection.klass.count <= 25
           = f.association reflection.name, options.merge(collection: reflection.klass.all(order: reflection.klass.settings.label_column))
         - else
           - reflection_id = @item[name]
@@ -27,6 +27,7 @@
                 input(type='search' data-autocomplete-url=search_resources_path(reflection.klass.table_name) autocomplete='off' class='span4 search-query' placeholder="#{reflection.klass.settings.columns[:search].map(&:humanize).join(', ').downcase}")
                 span.add-on
                   i.icon.icon-refresh.icon-spin
+              br
               ul.span6
                 li
     - else
