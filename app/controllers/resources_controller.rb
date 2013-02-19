@@ -21,6 +21,8 @@ class ResourcesController < ApplicationController
   def search
     @items = clazz.select("#{quoted_table_name}.*")
     params[:order] = clazz.settings.label_column
+    clazz.settings.columns[:search] = [clazz.primary_key, clazz.settings.label_column] + clazz.settings.columns[:search]
+    clazz.settings.columns[:search].compact!.uniq!
     apply_search if params[:search].present?
     apply_order
     render json: @items.page(1).per(37).to_json(methods: :adminium_label, :only => ([clazz.primary_key] + clazz.settings.columns[:search]).uniq)

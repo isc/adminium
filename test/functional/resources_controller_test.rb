@@ -6,10 +6,13 @@ class ResourcesControllerTest < ActionController::TestCase
     @account = Factory :account, plan: 'startup'
     session[:account] = @account.id
     FixtureFactory.clear_db
+    @fixtures = []
     ['Michel', 'Martin', nil].each_with_index do |pseudo, index|
-      FixtureFactory.new :user, :pseudo => pseudo, :admin => false, :age => (17 + index), :activated_at => (2 * (index - 1)).week.ago
+     user = FixtureFactory.new :user, :pseudo => pseudo, :admin => false, :age => (17 + index), :activated_at => (2 * (index - 1)).week.ago
+     @fixtures.push user
     end
-    FixtureFactory.new :user, :pseudo => 'Loulou', :last_name => '', :admin => true, :age => 18, :activated_at => 1.hour.ago
+    user = FixtureFactory.new :user, :pseudo => 'Loulou', :last_name => '', :admin => true, :age => 18, :activated_at => 1.hour.ago
+    @fixtures.push user
   end
 
   def teardown
@@ -76,6 +79,12 @@ class ResourcesControllerTest < ActionController::TestCase
     FixtureFactory.new :user, :pseudo => 'Johnny'
     get :index, :table => 'users', :search => 'Halliday'
     assert_equal 0, assigns[:items].length
+  end
+
+  def test_bulk_edit
+    @records = @fixtures.map &:save!
+    get :bulk_edit, :table => 'users', :record_ids => @records.map(&:id)
+    assert_equal @records.map(&:id), assigns[:record_ids].map(&:to_i)
   end
 
   private

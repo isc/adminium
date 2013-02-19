@@ -28,8 +28,15 @@ class FixtureFactory
 
   def initialize(name, options = {})
     ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['fixture']
-    Factory "#{name}_from_test", options
+    @factory = Factory "#{name}_from_test", options
     ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
+  end
+
+  def save!
+    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['fixture']
+    @factory.save!
+    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
+    @factory
   end
 
 

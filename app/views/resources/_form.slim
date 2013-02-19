@@ -20,14 +20,13 @@
               span.record_selected(class="#{'hide' if record.nil?}")
                 span= record.try :adminium_label
                 i.icon.icon-remove-sign
-              br
+              .clear
               = f.hidden_field name
               .input-prepend.input-append
                 span.add-on Search
                 input(type='search' data-autocomplete-url=search_resources_path(reflection.klass.table_name) autocomplete='off' class='span4 search-query' placeholder="#{reflection.klass.settings.columns[:search].map(&:humanize).join(', ').downcase}")
                 span.add-on
                   i.icon.icon-refresh.icon-spin
-              br
               ul.span6
                 li
     - else

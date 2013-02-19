@@ -1,10 +1,11 @@
-class AutocompleteAssociationsForm
+class window.AutocompleteAssociationsForm
 
   @setup: =>
     for search_input in $("input[data-autocomplete-url]")
       new AutocompleteAssociationsForm($(search_input))
 
   constructor: (search_input) ->
+    return if search_input.data('autocomplete-association') == 'done'
     control = search_input.parents('div.controls')
     @hidden_input = control.find('input[type=hidden]')
     @record_selected_area = control.find('.record_selected')
@@ -16,6 +17,7 @@ class AutocompleteAssociationsForm
     @record_selected_area.find('.icon-remove-sign').on 'click', @clearSelected
     @url = search_input.data('autocomplete-url')
     @current_requests = 0
+    @search_input.data('autocomplete-association', 'done')
 
   clearSelected: =>
     @record_selected_area.toggle(false)

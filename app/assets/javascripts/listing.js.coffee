@@ -17,6 +17,7 @@ class BulkActions
       path = $("#bulk-edit-modal").attr("data-remote-path")
       $.get "#{path}?#{item_ids}", (data) =>
         $("#bulk-edit-modal").html(data)
+        AutocompleteAssociationsForm.setup()
         $('.datepicker').datepicker onClose: (dateText, inst) ->
           $("##{inst.id}_1i").val(inst.selectedYear)
           $("##{inst.id}_2i").val(inst.selectedMonth + 1)

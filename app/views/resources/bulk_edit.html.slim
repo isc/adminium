@@ -15,16 +15,35 @@
         br
         'Leave the other inputs empty to preserve the original record values.
     - @item.class.settings.columns[:form].each do |name|
+      - next if @item.class.settings.column_type(name).to_s == 'binary'
       - options = {label: @item.class.column_display_name(name)}
       - if  enum_value = @item.class.settings.enum_values_for(name)
         - enum_collection = enum_value.to_a.map {|v| [v[1]['label'], v[0]]}
         = f.input name, options.merge(as: :select, collection: enum_collection)
-      - elsif @item.class.foreign_key? name
-        - assoc_name = name.gsub(/_id$/, '').to_sym
-        - if @item.reflections[assoc_name].options[:polymorphic]
+      - elsif reflection = @item.class.foreign_key?(name)
+        - if reflection.options[:polymorphic]
           = f.input name, options
         - else
-          = f.association assoc_name, options
+          - if reflection.klass.count <= 25
+            = f.association reflection.name, options.merge(collection: reflection.klass.all(order: reflection.klass.settings.label_column))
+          - else
+            - reflection_id = @item[name]
+            - record = nil
+            .control-group.adminium-association.optional
+              =  f.label reflection.name, options[:label], :class=>'control-label'
+              .controls
+                span.record_selected(class="#{'hide' if record.nil?}")
+                  span= record.try :adminium_label
+                  i.icon.icon-remove-sign
+                .clear
+                = f.hidden_field name
+                .input-prepend.input-append
+                  span.add-on Search
+                  input(type='search' data-autocomplete-url=search_resources_path(reflection.klass.table_name) autocomplete='off' class='span2 search-query' placeholder="#{reflection.klass.settings.columns[:search].map(&:humanize).join(', ').downcase}")
+                  span.add-on
+                    i.icon.icon-refresh.icon-spin
+                ul.span4
+                  li
       - else
         - options.merge! readonly: (@item.class.columns.detect{|c|c.name == name}.primary || @item.class.primary_key == name)
         - options.merge!(boolean_input_options(@item.class, name)) if @item.class.settings.column_type(name).to_s == "boolean"
