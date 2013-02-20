@@ -151,8 +151,8 @@ module ResourcesHelper
     end
   end
 
-  def display_number key, item
-    value = item[key]
+  def display_number key, item, value=nil
+    value ||= item[key]
     options = item.class.settings.column_options(key)
     number_options = {:unit => "", :significant => true}
     opts = [:unit, :delimiter, :separator, :precision]
@@ -198,7 +198,7 @@ module ResourcesHelper
     opts[:class] = "column #{opts[:class]}"
     content_tag wrapper_tag, content, opts
   end
-  
+
   def boolean_input_options clazz, key
     column_options = clazz.settings.column_options(key)
     opts = [[column_options['boolean_true'].presence || 'Yes', true], [column_options['boolean_false'].presence || 'No', false]]
@@ -222,11 +222,11 @@ module ResourcesHelper
       ]
     end
   end
-  
+
   def unescape_name_value_pair param
     [CGI.unescape(param.split('=').first), CGI.unescape(param.split('=').last)]
   end
-  
+
   def options_for_custom_columns clazz
     res = [['belongs_to', clazz.reflect_on_all_associations(:belongs_to).map{|r|[r.original_name, r.original_plural_name] unless r.options[:polymorphic]}.compact]]
     res << ['has_many', clazz.reflect_on_all_associations(:has_many).map{|r|["#{r.original_name.to_s.humanize} count", r.original_name]}]

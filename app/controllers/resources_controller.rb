@@ -28,7 +28,7 @@ class ResourcesController < ApplicationController
   end
 
   def index
-    @items = clazz.select("#{quoted_table_name}.*")
+    @items = clazz
     @current_filter = clazz.settings.filters[params[:asearch]] || []
     @widget = current_account.widgets.where(table: params[:table], advanced_search: params[:asearch]).first
 
@@ -37,15 +37,19 @@ class ResourcesController < ApplicationController
     apply_includes
     apply_has_many_counts
     apply_search if params[:search].present?
-    apply_order
     update_export_settings
     respond_with @items do |format|
       format.html do
         check_per_page_setting
+        apply_statitiscs
+        apply_order
         @items = @items.page(params[:page]).per(clazz.settings.per_page)
+        @items.select("#{quoted_table_name}.*")
       end
       format.json do
         @items = @items.page(1).per(10)
+        apply_order
+        @items.select("#{quoted_table_name}.*")
         render json: {
           widget: render_to_string(partial: 'items', locals: {items: @items.to_a, actions_cell: false}),
           id: params[:widget_id],
@@ -53,6 +57,8 @@ class ResourcesController < ApplicationController
         }
       end
       format.csv do
+        @items.select("#{quoted_table_name}.*")
+        apply_order
         send_data generate_csv, type: 'text/csv'
       end
     end
@@ -285,6 +291,31 @@ class ResourcesController < ApplicationController
     clazz.original_name.underscore.humanize
   end
 
+  def apply_statitiscs
+    statistics_columns = []
+    clazz.columns_hash.each do |name,c|
+      if [:integer, :float, :decimal].include?(c.type) && !name.ends_with?('_id') && clazz.settings.enum_values_for(name).nil?
+        statistics_columns.push name
+      end
+    end
+    statistics_columns -= clazz.reflections.values.map(&:foreign_key)
+    statistics_columns -= [clazz.primary_key]
+    arel = clazz.arel_table
+    projections = statistics_columns.map do |column_name|
+      ['max', 'min', 'avg'].map do |calculation|
+        Arel::Nodes::NamedFunction.new(calculation.upcase, [arel[column_name]]).as("#{column_name}_#{calculation}").to_sql
+      end.join(', ')
+    end.join(', ')
+    @statistics = {}
+    clazz.connection.execute(@items.select(projections).to_sql).to_a[0].each do |key, value|
+      calculation = key[-3, 3]
+      column = key[0..(key.length - 5)]
+      @statistics[column] ||= {}
+      value = (value || "").index('.') ? ((value.to_f * 100).round / 100.0).to_s : value
+      @statistics[column][calculation] = value
+    end
+  end
+
   def apply_search
     columns = clazz.settings.columns[:search]
     query, datas = [], []
@@ -333,8 +364,11 @@ class ResourcesController < ApplicationController
     #   order_column = "#{order_column.split('.').first.singularize}.#{order_column.split('.').last}"
     # end
     # params[:order] = clazz.primary_key unless clazz.settings.columns[settings_type].include? order_column
-    params[:order] = "#{quoted_table_name}.#{params[:order]}" unless params[:order][/[.\/]/]
-    @items = @items.order(params[:order])
+    unless params[:order][/[.\/]/]
+      params[:order] = "#{quoted_table_name}.#{params[:order]}"
+    end
+    nulllasts = @generic.postgresql? ? ' NULLS LAST' : ''
+    @items = @items.order(params[:order] + nulllasts)
   end
 
   def apply_serialized_columns

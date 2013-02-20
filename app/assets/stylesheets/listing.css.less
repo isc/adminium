@@ -98,6 +98,31 @@
 }
 
 .items-list {
+  tfoot {
+    tr {
+
+      &:hover td, &:hover th, td, th {
+        background: lighten(@orange, 20%) !important;
+        color: white;
+        border-color: lighten(@orange, 20%);
+        text-transform: uppercase;
+        text-align: right;
+      }
+      dl {
+        margin: 0px;
+      }
+
+      dd {
+        font-size: 90%;
+        font-family: "Monaco";
+      }
+      dt {
+        float: left;
+        font-size: 70%;
+        color: lighten(@orange, 50%);
+      }
+    }
+  }
   td[data-column-name] {
     padding-right:20px;
     position:relative;

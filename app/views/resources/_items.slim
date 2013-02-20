@@ -27,7 +27,20 @@
           th.column_header
             == header_link name
             i.column_settings.icon-cog(rel=name)
-  
+    - if @statistics.present?
+      tfoot
+        tr
+          - if actions_cell
+            th(colspan=2)
+          - clazz.settings.columns[:listing].each do |name|
+            td
+              dl
+                - if @statistics.has_key?(name)
+                  - @statistics[name].each do |calculation, value|
+                    dt= calculation
+                    dd= display_number name, clazz.new, value
+
+
     tbody
       - items.each do |item|
         tr data-item-id=item[item.class.primary_key]
