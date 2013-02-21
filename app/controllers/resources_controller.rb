@@ -300,7 +300,7 @@ class ResourcesController < ApplicationController
       values.each_with_index do |value, index|
         column, calculation = @select_values[index]
         @statistics[column] ||= {}
-        value = value.index('.') ? ((value.to_f * 100).round / 100.0) : value.to_i if value.present?
+        value = value.to_s.index('.') ? ((value.to_f * 100).round / 100.0) : value.to_i if value.present?
         @statistics[column][calculation] = value
       end
     rescue => ex
