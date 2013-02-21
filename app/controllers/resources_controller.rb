@@ -20,7 +20,7 @@ class ResourcesController < ApplicationController
 
   def search
     @items = clazz.select("#{quoted_table_name}.*")
-    params[:order] = clazz.settings.label_column
+    params[:order] = clazz.settings.label_column if clazz.settings.label_column.present?
     clazz.settings.columns[:search] = [clazz.primary_key, clazz.settings.label_column].compact.map(&:to_s) | clazz.settings.columns[:search]
     apply_search if params[:search].present?
     apply_order
