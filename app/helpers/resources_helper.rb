@@ -91,7 +91,7 @@ module ResourcesHelper
       return value if assoc_type.blank?
       class_name, path = assoc_type, resource_path(assoc_type.to_s.tableize, value)
       begin
-        foreign_clazz = @generic.table class_name.tableize
+        foreign_clazz = @generic.table class_name.to_s.tableize
       rescue Generic::TableNotFoundException
         return value
       end
