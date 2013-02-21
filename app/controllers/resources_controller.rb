@@ -290,23 +290,25 @@ class ResourcesController < ApplicationController
 
   def apply_statitiscs
     @projections = []
+    @select_values = []
     apply_number_statistics
     apply_boolean_statitics
     return if @projections.empty?
     @statistics = {}
     begin
-      clazz.connection.execute(@items_for_stats.select(@projections.join(", ")).to_sql).to_a[0].each do |key, value|
-        index = key.rindex('_')
-        calculation = key[(index+1)..-1]
-        column = key[0..(index-1)]
+      values=clazz.connection.select_rows(@items_for_stats.select(@projections.join(", ")).to_sql).first
+      values.each_with_index do |value, index|
+        column, calculation = @select_values[index]
         @statistics[column] ||= {}
-        if value.present?
-          value = value.index('.') ? ((value.to_f * 100).round / 100.0) : value.to_i
-        end
+        value = value.index('.') ? ((value.to_f * 100).round / 100.0) : value.to_i if value.present?
         @statistics[column][calculation] = value
       end
     rescue => ex
-      notify_honeybadger(ex)
+      if Rails.env.production?
+        notify_honeybadger(ex)
+      else
+        raise ex
+      end
     end
   end
 
@@ -315,6 +317,9 @@ class ResourcesController < ApplicationController
     clazz.columns_hash.each do |name,c|
       next if c.type != :boolean
       @projections.push statement.gsub('X', quote_column_name(name)).gsub('Y', name)
+      ['true', 'false', 'null'].each do |calculation|
+        @select_values.push [name, calculation]
+      end
     end
   end
 
@@ -329,8 +334,10 @@ class ResourcesController < ApplicationController
     statistics_columns -= [clazz.primary_key]
     arel = clazz.arel_table
     @projections += statistics_columns.map do |column_name|
+      quoted_column = "#{quoted_table_name}.#{quote_column_name(column_name)}"
       ['max', 'min', 'avg'].map do |calculation|
-        Arel::Nodes::NamedFunction.new(calculation.upcase, [arel[column_name]]).as("#{column_name}_#{calculation}").to_sql
+        @select_values.push [column_name, calculation]
+        "#{calculation.upcase}(#{quoted_column})"
       end
     end.flatten
   end
