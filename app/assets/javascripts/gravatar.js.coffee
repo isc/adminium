@@ -18,7 +18,7 @@ class window.Gravatar
     return unless email
     emailCells = $("td[data-column-name='#{email}']")
     return if emailCells.length is 0
-    $("<th>").insertAfter $('th.checkboxes')
+    $("<th>").insertAfter $('th.checkboxes, .items-list tfoot th')
     for elt in emailCells
       here = $(elt).parent('tr').find('.click_checkbox')
       value = $(elt).text()

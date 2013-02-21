@@ -289,6 +289,32 @@ class ResourcesController < ApplicationController
   end
 
   def apply_statitiscs
+    @projections = []
+    apply_number_statistics
+    apply_boolean_statitics
+    return if @projections.empty?
+    @statistics = {}
+    clazz.connection.execute(@items_for_stats.select(@projections.join(", ")).to_sql).to_a[0].each do |key, value|
+      index = key.rindex('_')
+      calculation = key[(index+1)..-1]
+      column = key[0..(index-1)]
+      @statistics[column] ||= {}
+      if value.present?
+        value = value.index('.') ? ((value.to_f * 100).round / 100.0) : value.to_i
+      end
+      @statistics[column][calculation] = value
+    end
+  end
+
+  def apply_boolean_statitics
+    statement = "SUM(CASE WHEN X THEN 1 ELSE 0 END) as Y_true, SUM(CASE WHEN X THEN 0 ELSE 1 END) as Y_false, SUM(CASE WHEN X IS NULL THEN 1 ELSE 0 END) as Y_null"
+    clazz.columns_hash.each do |name,c|
+      next if c.type != :boolean
+      @projections.push statement.gsub('X', quote_column_name(name)).gsub('Y', name)
+    end
+  end
+
+  def apply_number_statistics
     statistics_columns = []
     clazz.columns_hash.each do |name,c|
       if [:integer, :float, :decimal].include?(c.type) && !name.ends_with?('_id') && clazz.settings.enum_values_for(name).nil?
@@ -298,20 +324,11 @@ class ResourcesController < ApplicationController
     statistics_columns -= clazz.reflections.values.map(&:foreign_key)
     statistics_columns -= [clazz.primary_key]
     arel = clazz.arel_table
-    projections = statistics_columns.map do |column_name|
+    @projections += statistics_columns.map do |column_name|
       ['max', 'min', 'avg'].map do |calculation|
         Arel::Nodes::NamedFunction.new(calculation.upcase, [arel[column_name]]).as("#{column_name}_#{calculation}").to_sql
-      end.join(', ')
-    end.join(', ')
-    @statistics = {}
-    return if projections.empty?
-    clazz.connection.execute(@items_for_stats.select(projections).to_sql).to_a[0].each do |key, value|
-      calculation = key[-3, 3]
-      column = key[0..(key.length - 5)]
-      @statistics[column] ||= {}
-      value = (value || "").index('.') ? ((value.to_f * 100).round / 100.0).to_s : value
-      @statistics[column][calculation] = value
-    end
+      end
+    end.flatten
   end
 
   def apply_search

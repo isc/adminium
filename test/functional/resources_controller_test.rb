@@ -110,7 +110,10 @@ class ResourcesControllerTest < ActionController::TestCase
   def test_statistics
     @records = @fixtures.map &:save!
     get :index, :table => 'users'
-    assert_equal({"age"=>{"max"=>"19", "min"=>"17", "avg"=>"18.0"}}, assigns(:statistics))
+    assert_equal({
+      "age"=>{"max"=>19, "min"=>17, "avg"=>18.0},
+      "admin"=>{"true"=>1, "false"=>3, "null"=>0}
+      }, assigns(:statistics))
   end
 
   private

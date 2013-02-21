@@ -115,11 +115,54 @@
       dd {
         font-size: 90%;
         font-family: "Monaco";
+        &.zero {
+          color: lighten(@orange, 30%);
+        }
       }
       dt {
         float: left;
         font-size: 70%;
         color: lighten(@orange, 50%);
+
+        &.true {
+          border-left: 4px solid lighten(@orange, 50%);
+          padding-left: 4px
+        }
+        &.false {
+          border-left: 4px solid lighten(@orange, 40%);
+          padding-left: 4px
+        }
+        &.null {
+          border-left: 4px solid lighten(@orange, 30%);
+          padding-left: 4px
+        }
+      }
+
+      .boolean_bar {
+        margin-top: 2px;
+        width: 100%;
+        height: 15px;
+        background: lighten(@orange, 30%);
+        div {
+          height: 100%;
+          float: left;
+          font-size: 80%;
+          text-align: left;
+          overflow: hidden;
+          span {
+            padding-left: 4px;
+          }
+        }
+        .true {
+          background: lighten(@orange, 50%);
+          color: lighten(@orange, 30%);
+        }
+        .null {
+          color: lighten(@orange, 50%)
+        }
+        .false {
+          background: lighten(@orange, 40%);
+        }
       }
     }
   }

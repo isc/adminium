@@ -37,8 +37,14 @@
               dl
                 - if @statistics.has_key?(name)
                   - @statistics[name].each do |calculation, value|
-                    dt= calculation
-                    dd= display_number name, clazz.new, value
+                    dt(class=calculation)= calculation
+                    dd(title=value class="#{(value.to_i == 0) ? 'zero' : ''}")= display_number name, clazz.new, value
+              - if clazz.columns_hash[name].try(:type) == :boolean
+                div.boolean_bar
+                  - @statistics[name].each do |calculation, value|
+                    - percent = value.to_f / @statistics[name].values.map(&:to_f).sum * 100
+                    div(class=calculation style="width:#{percent}%")
+                      span= "#{percent.round}%" if percent > 5
 
 
     tbody
