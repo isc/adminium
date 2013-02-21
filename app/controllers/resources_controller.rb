@@ -294,15 +294,19 @@ class ResourcesController < ApplicationController
     apply_boolean_statitics
     return if @projections.empty?
     @statistics = {}
-    clazz.connection.execute(@items_for_stats.select(@projections.join(", ")).to_sql).to_a[0].each do |key, value|
-      index = key.rindex('_')
-      calculation = key[(index+1)..-1]
-      column = key[0..(index-1)]
-      @statistics[column] ||= {}
-      if value.present?
-        value = value.index('.') ? ((value.to_f * 100).round / 100.0) : value.to_i
+    begin
+      clazz.connection.execute(@items_for_stats.select(@projections.join(", ")).to_sql).to_a[0].each do |key, value|
+        index = key.rindex('_')
+        calculation = key[(index+1)..-1]
+        column = key[0..(index-1)]
+        @statistics[column] ||= {}
+        if value.present?
+          value = value.index('.') ? ((value.to_f * 100).round / 100.0) : value.to_i
+        end
+        @statistics[column][calculation] = value
       end
-      @statistics[column][calculation] = value
+    rescue => ex
+      notify_honeybadger(ex)
     end
   end
 
