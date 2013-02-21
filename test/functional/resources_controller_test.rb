@@ -19,7 +19,7 @@ class ResourcesControllerTest < ActionController::TestCase
     assert_response :success
   end
 
-  def test_asearch
+  def test_advanced_search_operators
     generic = Generic.new @account
     @settings = generic.table('users').settings
     @expectations = {}
@@ -43,7 +43,7 @@ class ResourcesControllerTest < ActionController::TestCase
     add_filter_to_test 'string_ends_with', ['Martin'], [{"column" => 'pseudo', "type" => "integer", "operator"=>"ends_with", "operand" => "tin"}]
     add_filter_to_test 'string_not_like', ['Loulou', 'Martin'], [{"column" => 'pseudo', "type" => "integer", "operator"=>"not_like", "operand" => "iche"}]
 
-    #add_filter_to_test 'date_today', ['Loulou', 'Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"today", "operand" => ""}]
+    add_filter_to_test 'date_today', ['Loulou', 'Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"today", "operand" => ""}]
     add_filter_to_test 'date_yesterday', [], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"yesterday", "operand" => ""}]
     add_filter_to_test 'date_this_week', ['Loulou', 'Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"this_week", "operand" => ""}]
     add_filter_to_test 'date_last_week', [], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"last_week", "operand" => ""}]
@@ -68,6 +68,19 @@ class ResourcesControllerTest < ActionController::TestCase
     get :index, :table => 'users'
     items = assigns[:items]
     assert_equal 4, items.length
+  end
+
+  def test_json_response
+    get :index, :table => 'users', :order=> 'pseudo', :format => 'json'
+    data = JSON.parse(@response.body)
+    assert_equal ["Loulou", "Martin", "Michel", nil], assigns[:items].map(&:pseudo)
+    assert_equal 4, data['total_count']
+  end
+
+  def test_csv_response
+    get :index, :table => 'users', :order=> 'pseudo', :format => 'csv'
+    lines = @response.body.split("\n")
+    assert_equal 5, lines.length
   end
 
   def test_search_found
