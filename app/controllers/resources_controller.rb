@@ -292,6 +292,7 @@ class ResourcesController < ApplicationController
     @projections = []
     @select_values = []
     apply_number_statistics
+    apply_enum_statistics
     apply_boolean_statitics
     return if @projections.empty?
     @statistics = {}
@@ -313,7 +314,7 @@ class ResourcesController < ApplicationController
   end
 
   def apply_boolean_statitics
-    statement = "SUM(CASE WHEN X THEN 1 ELSE 0 END) as Y_true, SUM(CASE WHEN X THEN 0 ELSE 1 END) as Y_false, SUM(CASE WHEN X IS NULL THEN 1 ELSE 0 END) as Y_null"
+    statement = "SUM(CASE WHEN X THEN 1 ELSE 0 END), SUM(CASE WHEN X THEN 0 ELSE 1 END), SUM(CASE WHEN X IS NULL THEN 1 ELSE 0 END)"
     clazz.columns_hash.each do |name,c|
       next if c.type != :boolean
       @projections.push statement.gsub('X', quote_column_name(name)).gsub('Y', name)
@@ -323,16 +324,28 @@ class ResourcesController < ApplicationController
     end
   end
 
+  def apply_enum_statistics
+    statement = "SUM(CASE WHEN #C# = #X# THEN 1 ELSE 0 END)"
+    statistics_columns = []
+    clazz.columns_hash.each do |name,c|
+      enum_values = clazz.settings.enum_values_for(name)
+      next if enum_values.blank?
+      enum_values.each do |key, value|
+        value = "'#{value}'" if [:string, :text].include? c.type
+        @projections.push statement.gsub('#C#', quote_column_name(name)).gsub('#X#', key)
+        @select_values.push [name, value]
+      end
+    end
+  end
+
   def apply_number_statistics
     statistics_columns = []
     clazz.columns_hash.each do |name,c|
-      if [:integer, :float, :decimal].include?(c.type) && !name.ends_with?('_id') && clazz.settings.enum_values_for(name).nil?
+      if [:integer, :float, :decimal].include?(c.type) && !name.ends_with?('_id') &&
+        clazz.settings.enum_values_for(name).nil? && clazz.settings.columns[:listing].include?(name)
         statistics_columns.push name
       end
     end
-    statistics_columns -= clazz.reflections.values.map(&:foreign_key)
-    statistics_columns -= [clazz.primary_key]
-    arel = clazz.arel_table
     @projections += statistics_columns.map do |column_name|
       quoted_column = "#{quoted_table_name}.#{quote_column_name(column_name)}"
       ['max', 'min', 'avg'].map do |calculation|
@@ -565,7 +578,7 @@ class ResourcesController < ApplicationController
 
   def after_save_redirection
     return :back if params[:return_to] == 'back'
-    redirection = case params[:then_redirect]
+    case params[:then_redirect]
     when /edit/
       edit_resource_path(params[:table], @item)
     when /create/
