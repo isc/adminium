@@ -1,7 +1,7 @@
 conn_spec = ActiveRecord::Base.configurations['fixture']
 ActiveRecord::Base.establish_connection conn_spec
 ActiveRecord::Schema.verbose = false
-version = 12
+version = 13
 if ActiveRecord::Migrator.current_version != version
   ActiveRecord::Base.connection.tables.each do |table|
     ActiveRecord::Base.connection.drop_table table
@@ -12,6 +12,8 @@ if ActiveRecord::Migrator.current_version != version
       t.integer :group_id, :age
       t.datetime :activated_at
       t.boolean :admin
+      t.string :role
+      t.integer :kind
       t.integer :user_profile_id
       t.date :birthdate
       t.binary :file

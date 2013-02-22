@@ -331,8 +331,8 @@ class ResourcesController < ApplicationController
       enum_values = clazz.settings.enum_values_for(name)
       next if enum_values.blank?
       enum_values.each do |key, value|
-        value = "'#{value}'" if [:string, :text].include? c.type
-        @projections.push statement.gsub('#C#', quote_column_name(name)).gsub('#X#', key)
+        key = "'#{key}'" if [:string, :text].include? c.type
+        @projections.push statement.gsub('#C#', quote_column_name(name)).gsub("#X#", key)
         @select_values.push [name, value]
       end
     end
