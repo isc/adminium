@@ -342,7 +342,8 @@ class ResourcesController < ApplicationController
     statistics_columns = []
     clazz.columns_hash.each do |name,c|
       if [:integer, :float, :decimal].include?(c.type) && !name.ends_with?('_id') &&
-        clazz.settings.enum_values_for(name).nil? && clazz.settings.columns[:listing].include?(name)
+        clazz.settings.enum_values_for(name).nil? && clazz.settings.columns[:listing].include?(name) &&
+        clazz.primary_key != name
         statistics_columns.push name
       end
     end
