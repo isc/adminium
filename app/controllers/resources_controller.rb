@@ -465,7 +465,7 @@ class ResourcesController < ApplicationController
     }
     type = clazz.columns_hash[filter['column']].type
     operators.merge! datetime_operators if [:date, :datetime].index(type)
-    operators.merge! string_operators if [:string].index(type)
+    operators.merge! string_operators if [:string, :text].index(type)
     column = clazz.arel_table[filter['column']]
     operation = operators[filter['operator']]
     if operation[:named_function]
