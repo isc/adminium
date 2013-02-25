@@ -45,7 +45,7 @@ class ResourcesController < ApplicationController
       format.html do
         check_per_page_setting
         @items = @items.page(params[:page]).per(clazz.settings.per_page)
-        apply_statitiscs
+        apply_statistics
       end
       format.json do
         @items = @items.page(1).per(10)
@@ -288,7 +288,7 @@ class ResourcesController < ApplicationController
     clazz.original_name.underscore.humanize
   end
 
-  def apply_statitiscs
+  def apply_statistics
     @projections = []
     @select_values = []
     apply_number_statistics
