@@ -17,11 +17,7 @@ class ResourcesController < ApplicationController
   respond_to :json, only: [:perform_import, :check_existence, :search]
   respond_to :json, :html, only: [:index, :update]
   respond_to :csv, only: :index
-  
-  def exception
-    raise 'crap'
-  end
-  
+
   def search
     @items = clazz.select("#{quoted_table_name}.*")
     params[:order] = clazz.settings.label_column if clazz.settings.label_column.present?
