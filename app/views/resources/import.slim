@@ -45,35 +45,35 @@ table.table-striped.table-bordered.table.items-list data-table=params[:table] da
   tbody
 input type="file" id="import_file" name="file" class='hide'
 .well.importHelp
-  h2 How does importing works ?
+  h2 How does importing work ?
   p
-    'This import feature let you easily insert many rows at a time and update existing records. Select a file just up here and it we be read locally on your browser for you to review it.
+    'This import feature lets you easily insert many rows at a time and update existing records. Select a file just up here and it will be read locally on your browser for you to review it.
     br
-    'When your confortable with the review, you can actually import the data.
+    'When you are comfortable with the review, you can actually import the data.
   h3 File and formatting
   p
-    'You must provide a CSV file containing a row header describing all the column you want to update.
+    'You must provide a CSV file containing a row header describing all the columns you want to update.
     'It either can be the original database column names or the displayed column names configured in Adminium.
     br
-    'Empty cells will be considered as NULL value for every column type except for string and text columns where it will be considered as empty string.
+    'Empty cells will be considered as NULL values for every column type except for <i>string</i> and <i>text</i> columns where it will be considered as empty strings.
     br
-    'Boolean cells will be treated as boolean if the value looks like true or false, or can be specific if you have provided a custom displayed value for this column.
+    'Boolean cells will be treated as boolean if the value looks like <i>true</i> or <i>false</i>, or can be specific if you have provided a custom displayed value for this column.
   h3 <code>INSERT</code> or <code>UPDATE</code>
   p
     'If your CSV file contains the ID column (more precisely, the primary key column), each row that has this cell set will be updated accordingly.
     br
-    'A check will be performed to be sure that the records does exists avoiding any failing update.
+    'A check will be performed to be sure that the records do exist in order to avoid any failing update.
     br
     'If no ID column is detected or if the ID cell of a row is blank, it will be considered as a new row to insert.
     br
-    'A summary of how many row will be inserted and updated will be displayed.
+    'A summary of how many rows will be inserted and updated will be displayed.
   h3 Transactional import
   p
-    'Your import runs in a transaction, meaning if your import fails at some point because an SQL error (constraint violation, invalid content), all the import will be rollbacked
+    'Your import runs in a transaction, meaning if your import fails at some point because of an SQL error (constraint violation, invalid content), all the import will be rollbacked.
   h3 Magic Timestamp
   p
-    'If your table contains a <code>created_at</code> or <code>updated_at</code> datetime column, records will be automatically updated according to the Ruby On Rails convention.
+    'If your table contains a <code>created_at</code> or <code>updated_at</code> datetime column, records will be automatically updated according to the Ruby on Rails convention.
   h3 Limitations
   p
     'For now, you can import up to 500 rows at a time.
-    'We recommend you to be careful and review the data you wish to import as we do not perform every check possible and your import could fail at some point (uniqueness violation, not allowed null value, ...)
+    'We recommend you to be careful and review the data you wish to import as we do not perform every possible check and your import could fail at some point (uniqueness violation, not allowed null value, ...)
