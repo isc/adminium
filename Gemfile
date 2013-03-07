@@ -24,6 +24,8 @@ gem 'composite_primary_keys', '5.0.10'
 gem 'bootstrap-wysihtml5-rails', require: 'bootstrap-wysihtml5-rails',
   git: 'git://github.com/Nerian/bootstrap-wysihtml5-rails.git'
 
+gem 'newrelic_rpm'
+
 group :assets do
   gem 'sass-rails',   '~> 3.2.3'
   gem 'coffee-rails', '~> 3.2.1'
@@ -43,7 +45,6 @@ end
 
 group :production do
   gem 'puma'
-  gem 'newrelic_rpm'
 end
 
 group :test do
