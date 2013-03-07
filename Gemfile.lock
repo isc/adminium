@@ -141,7 +141,7 @@ GEM
       metaclass (~> 0.0.1)
     multi_json (1.5.0)
     mysql2 (0.3.11)
-    newrelic_rpm (3.3.0)
+    newrelic_rpm (3.5.8.72)
     nokogiri (1.5.0)
     omniauth (1.0.2)
       hashie (~> 1.2)
@@ -275,7 +275,7 @@ DEPENDENCIES
   launchy
   mocha
   mysql2
-  newrelic_rpm
+  newrelic_rpm (= 3.5.8.72)
   omniauth-openid
   pg
   populator
