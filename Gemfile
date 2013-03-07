@@ -44,7 +44,7 @@ group :development do
 end
 
 group :production do
-  gem 'puma'
+  gem 'puma', '1.6.3'
 end
 
 group :test do
