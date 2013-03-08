@@ -8,18 +8,6 @@
     p It is however different in how it operates and thus allows different things. Rails admin and active admin are gems to be used with a Rails 3 application whereas Adminium is an Heroku add-on which can be used with any Heroku application, no matter the Rails version, the framework or even the language.
     p It also differs in the way it is configured ; rails / active admin use DSLs and thus require to write code and deploy the application to modify the configuration of the admin, whereas all the configuration in Adminium is done via the interface independently of the lifecycle of the target application and also allowing non technical users to be in charge of it.
 
-  = accordion.pane "How can I control how relationships are displayed ?" do
-    p By default relationships are displayed using the humanized table name and the primary key (for instance User #37). However you can configure a specific column to be used for labeling these links. You might have for instance a pseudo column on a users table.
-    p
-      'To choose the
-      b Label column
-      '  for a table, go to the listing view of the table and click on the cog button to bring up the settings modal window.
-      ' In there you will find a pane titled
-      b Miscellaneous
-      ' , which contains the
-      b Label column
-      '  option.
-
   = accordion.pane "How can I access PostgreSQL schemas other than public ?" do
     p In PostgreSQL, tables are searched by default in a schema named "public".
     p If you need to access tables in a different schema, you can customize the search path by specifying it in your database URL (Edit Account -> Database Connection pane) :

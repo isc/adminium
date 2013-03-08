@@ -1,4 +1,8 @@
 FEATURES:
+
+pouvoir plus facilement ajouter un nouveau record a une association
+tweaker le page title
+utiliser rack-timeout
 validations avec arguments
 colonnes calculees
 conf des associations / foreign_keys
@@ -12,7 +16,7 @@ help popin pour la keyboard navigation
 i18n
 support pour les images
 optim de la clause select sql (jarter les text / binaries non selectionnes par les settings)
-sortable table for dashboard
+
 more ajax (destroy) / pjax
 for pg 9.2 users ; https://github.com/will/datascope
 advanced search definition improvements :
@@ -22,8 +26,6 @@ advanced search definition improvements :
 gerer joliment les 404 sur le show d'une table existante d'un user (genre "There is no user with id 3442")
 
 gerer les colonnes binary (file field for upload ?)
-
-import de datas
 
 TODOS:
 attr_accessible avec role pour proteger plan sur account

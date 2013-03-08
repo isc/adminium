@@ -1,0 +1,15 @@
+- @tip_title = "Welcome On Board!"
+p
+  '  Your account
+  b= current_account.name
+  '  is now correctly configured and we have detected
+  = pluralize @table_sizes.length, 'table'
+  '  in your database. To get started, just <u>press 'S'</u> and type one of your table names to see some data.
+- if @account.pet_project?
+  h4 The Pet Project Plan
+  p
+    'You chose our free plan designed for pet projects meaning you may only access the 5 first tables of your schema.
+    'If you need more, you will have to upgrade to our startup plan that allows administration of all your tables !
+h4 Need help ?
+p
+  ' If you have any questions about using Adminium, please let us know using the bottom-left feedback-button, we'll be glad to help.

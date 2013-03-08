@@ -1,0 +1,11 @@
+.modal.hide#welcome-modal
+  .modal-header
+    a.close data-dismiss="modal" ×
+    h3
+      - if @small_title
+        small Tip&nbsp;
+      = @tip_title
+  .modal-body
+    = yield :tip
+  .modal-footer
+    a.btn.btn-primary.btn-large data-dismiss="modal" Close
