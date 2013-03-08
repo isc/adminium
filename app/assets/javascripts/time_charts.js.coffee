@@ -20,7 +20,7 @@ class Charts
     chart_data.shift()
     data.addRows chart_data
     wrapper = $('#chart_div')
-    options = {'width': wrapper.parent().css('width'), 'height':300}
+    options = {width: wrapper.parent().css('width'), height:300, colors: ['#7d72bd']}
     chart = new google.visualization.ColumnChart(wrapper.get(0))
     chart.draw(data, options)
   
