@@ -110,12 +110,8 @@ class ColumnSettings
       this.settings.target.val(color)
 
     $(".column_settings").click (evt) =>
-      @column_name = $(evt.currentTarget).attr("rel")
-      path = $("#column-settings").attr("data-remote-path") + "?column=#{@column_name}"
-      $("#column-settings").html($(".loading_modal").html())
-      $("#column-settings").modal('show')
-      $.get path, (data) =>
-        $("#column-settings").html(data)
+      @column_name = $(evt.currentTarget).closest('.column_header').data('column-name')
+      remoteModal '#column-settings', {column: @column_name}, =>
         @setupEnumConfigurationPanel()
 
   setupEnumConfigurationPanel: =>
