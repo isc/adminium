@@ -19,6 +19,8 @@ class Account < ActiveRecord::Base
 
   attr_encryptor :db_url, key: (ENV['ENCRYPTION_KEY'] || 'shablagoo')
 
+  TIPS = ['basic_search', 'editing', 'enumerable', 'export_import', 'displayed_record', 'advanced_search', 'serialized', 'relationships']
+
   class Plan
     PET_PROJECT = 'petproject'
     STARTUP = 'startup'
@@ -81,6 +83,21 @@ class Account < ActiveRecord::Base
     self.plan = Plan::DELETED
     self.deleted_at = Time.now
     self.save!
+  end
+
+  def displayed_next_tip
+    return unless tips_opt_in
+    tips = ['welcome'] + Account::TIPS
+    tip = nil
+    if last_tip_at.nil? || last_tip_at < 1.day.ago
+      tip = tips[(tips.index(last_tip_identifier) || -1) + 1]
+    end
+    if tip
+      self.last_tip_at = Time.now
+      self.last_tip_identifier = tip
+      save!
+    end
+    tip
   end
 
   private

@@ -1,4 +1,3 @@
-- @tips = ['basic_search', 'editing', 'displayed_record', 'enumerable', 'export_import', 'advanced_search', 'relationships', 'serialized']
 .row-fluid#documentation
   .span3.well
     ul.nav.nav-list
@@ -53,7 +52,7 @@
         'or by visiting the
         == link_to "Heroku apps web interface", "https://dashboard.heroku.com/apps", :target => '_blank'
         ' and selecting your application and then selecting Adminium from the add-ons menu.
-    - @tips.each do |tip|
+    - Account::TIPS.each do |tip|
       - tip_body = render partial: "/docs/tips/#{tip}"
       section.feature-description.well(id=tip)
         h2== @tip_title

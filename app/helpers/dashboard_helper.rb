@@ -1,7 +1,8 @@
 module DashboardHelper
 
   def display_a_tip
-    tip = ['welcome', 'basic_search', 'editing', 'enumerable', 'export_import', 'displayed_record', 'advanced_search', 'serialized', 'relationships'].last
+    tip = current_account.displayed_next_tip
+    return unless tip
     content_for :tip do
       render partial: "/docs/tips/#{tip}"
     end

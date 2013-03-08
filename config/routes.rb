@@ -40,6 +40,7 @@ Adminium::Application.routes.draw do
   end
   resource :account, only: [:edit, :update] do
     get :db_url_presence, on: :member
+    post :cancel_tips, on: :member
   end
   resources :roles
   resource :dashboard
