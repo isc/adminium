@@ -2,7 +2,7 @@ doctype html
 html lang="en"
   head
     meta charset="utf-8"
-    title= content_for?(:title) ? yield(:title) : "Adminium"
+    = head_title
     = csrf_meta_tags
     /[if lt IE 9]
       = javascript_include_tag "http://html5shim.googlecode.com/svn/trunk/html5.js"
