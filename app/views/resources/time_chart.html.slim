@@ -2,7 +2,7 @@
   a.close data-dismiss="modal" ×
   h3== "Time chart for column #{params[:column]}"
 .modal-body
-  = select_tag 'grouping', options_for_select(TimeChartBuilder::DEFAULT_GROUPING, grouping)
+  = select_tag 'grouping', options_for_select(TimeChartBuilder::DEFAULT_GROUPING + TimeChartBuilder::DEFAULT_GROUPING_PERIODIC, grouping)
   #chart_div
   javascript:
     chart_data = #{{@data.map{|e|[e[0], e[1].to_i]}.to_json}}

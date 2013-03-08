@@ -122,7 +122,7 @@ module TimeChartBuilder
   def periodic_format date
     return date if grouping == 'hour'
     date = date.to_i
-    date -= 1 if grouping == 'dow' && generic.mysql?
+    date -= 1 if grouping == 'dow' && clazz.generic.mysql?
     {
       'dow' => I18n.t('date.day_names'),
       'month' => I18n.t('date.month_names')
