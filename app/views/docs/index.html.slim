@@ -5,7 +5,7 @@
         a href="#demo" Sandbox account
       li.nav-header Setup
       li
-        a href="#installation" Addon Install
+        a href="#installation" Add-on Install
       li#features.nav-header Features
 
       li.divider
@@ -19,11 +19,11 @@
       p
         'If you want to try Adminium with minimum effort, we've setup for you a sandbox account with some populated data.
         br
-        'Feel free to edit, destroy, add records and customize the interface, everything will be reset wihtin the hour.
+        'Feel free to edit, destroy, add records and customize the interface, everything will be reset within the hour.
       p
         = link_to "Check out the demo account", start_demo_docs_path, :class => "btn btn-success btn-large"
     section#installation.well
-      h2 Addon Install
+      h2 Add-on Install
       p In order to use Adminium with your own data, we need to access your database. There are two simple ways to achieve this.
       h4 Command line installation
       p Adminium can be installed to a Heroku application via the CLI:
@@ -32,14 +32,14 @@
       pre="heroku plugins:install git://github.com/isc/heroku-adminium\nheroku adminium"
       p The plugin execution will store an encrypted version of the DATABASE_URL of your application in the Adminium database. Your DATABASE_URL is sent using SSL and is never logged in the Adminium application logs. Removing the add-on from your application will delete that info from the Adminium database.
       h4 Browser installation
-      p== "visit the #{link_to "adminium page", 'https://addons.heroku.com/marketplace/addons/adminium', :target=>'_blank'} on Heroku's marketplace and select a plan and your project"
+      p== "Visit the #{link_to "adminium page", 'https://addons.heroku.com/marketplace/addons/adminium', :target=>'_blank'} on Heroku's marketplace and select a plan and your project."
       h4 Find your Heroku Postgres database url
-      p Go to the resources page of your application and click on your Heroku Postgres database add-on
+      p Go to the resources page of your application and click on your Heroku Postgres database add-on.
       = image_tag 'herokuresources-panel.png'
       p
         'In the <code>Connection settings</code> section, use the <i class="icon-cog"></i> button to switch to
         i URL
-        '  display and copy the connection string
+        '  display and copy the connection string.
       = image_tag 'herokupostgres-panel.png', width: '420px'
       h4 Integration
       p
@@ -49,9 +49,9 @@
       p The interface can be accessed via the CLI:
       pre= "heroku addons:open adminium"
       p
-        'or by visiting the
+        'Or by visiting the
         == link_to "Heroku apps web interface", "https://dashboard.heroku.com/apps", :target => '_blank'
-        ' and selecting your application and then selecting Adminium from the add-ons menu.
+        '  , selecting your application and then selecting Adminium from the add-ons menu.
     - Account::TIPS.each do |tip|
       - tip_body = render partial: "/docs/tips/#{tip}"
       section.feature-description.well(id=tip)
