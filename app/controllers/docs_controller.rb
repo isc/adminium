@@ -4,6 +4,7 @@ class DocsController < ApplicationController
   skip_filter :connect_to_db, :unless => :valid_db_url?
 
   def index
+    @full_title = "Documentation | Adminium"
   end
 
   def homepage

@@ -59,17 +59,25 @@ module ApplicationHelper
   def format_param_for_removal k, v
     "#{CGI.escape("where[#{k}]")}=#{CGI.escape(v)}"
   end
-  
+
   def upgrade_to_enterprise_notice account
     content_tag :div, class: 'alert notice' do
       "<a class=\"btn btn-warning\" href=\"#{account.upgrade_link}\">Upgrade</a> to the enterprise plan ($25 per month) and add as many collaborators you need to access your data. Moreover, you can define roles to each collaborators to limit what tables they may access, or prevent them from editing or deleting rows.".html_safe
     end
   end
-  
+
   def setup_mailto_href account
     res = 'mailto:?'
     res << "subject=#{URI::encode("Need your help setting up Adminium for #{account.name}")}"
     res << "&body=#{URI::encode "Hi there,\n\nCan you please help me setup the Adminium add-on for #{account.name} ? You need to login to Heroku, select the app and click on Adminium in the resources to get to the instructions.\n\nThanks a lot,"}"
+  end
+
+  def head_title
+    if @full_title
+      content_tag :title, @full_title
+    else
+      content_tag :title, [@title, current_account.try(:name), 'Adminium'].compact.join(' | ')
+    end
   end
 
 end

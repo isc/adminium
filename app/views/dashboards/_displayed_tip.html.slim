@@ -1,11 +1,17 @@
-.modal.hide#welcome-modal
+.modal.fade.hide#welcome-modal
   .modal-header
     a.close data-dismiss="modal" ×
     h3
       - if @small_title
-        small Tip&nbsp;
+        small TIP&nbsp;
       = @tip_title
   .modal-body
     = yield :tip
   .modal-footer
-    a.btn.btn-primary.btn-large data-dismiss="modal" Close
+    .span3.cancelTip
+      'One tip is displayed every day.
+      br
+      = link_to 'click here', cancel_tips_account_path(current_account), method: 'POST', remote: true, :id => 'cancel_tip'
+      '  to stop.
+    .span2.pull-right
+      a.btn.btn-primary.btn-large data-dismiss="modal" Close

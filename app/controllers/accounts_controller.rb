@@ -10,13 +10,19 @@ class AccountsController < ApplicationController
   def update
     if current_account.update_attributes params[:account]
       if params[:install]
-        redirect_to dashboard_path(:step=>'done')
+        redirect_to dashboard_path
       else
         redirect_to edit_account_path, notice: 'Changes saved.'
       end
     else
       render :edit
     end
+  end
+
+  def cancel_tips
+    current_account.tips_opt_in = false
+    res = current_account.save
+    render json: res
   end
 
   def db_url_presence

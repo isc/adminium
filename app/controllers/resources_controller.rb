@@ -30,6 +30,7 @@ class ResourcesController < ApplicationController
   end
 
   def index
+    @title = params[:table]
     @current_filter = clazz.settings.filters[params[:asearch]] || []
     @widget = current_account.widgets.where(table: params[:table], advanced_search: params[:asearch]).first
 
@@ -64,13 +65,16 @@ class ResourcesController < ApplicationController
   end
 
   def show
+    @title = "Show #{@item.adminium_label}"
   end
 
   def edit
+    @title = "Edit #{@item.adminium_label}"
     @form_url = resource_path(@item, table: params[:table])
   end
 
   def import
+    @title = 'Import'
   end
 
   def perform_import
@@ -147,6 +151,7 @@ class ResourcesController < ApplicationController
   end
 
   def new
+    @title = "New #{clazz.original_name.humanize}"
     @form_url = resources_path(params[:table])
     @item = clazz.new
   end

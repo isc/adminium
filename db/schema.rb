@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130215181827) do
+ActiveRecord::Schema.define(:version => 20130308143526) do
 
   create_table "accounts", :force => true do |t|
     t.string   "plan"
@@ -22,11 +22,14 @@ ActiveRecord::Schema.define(:version => 20130215181827) do
     t.string   "owner_email"
     t.string   "encrypted_db_url"
     t.string   "adapter"
-    t.datetime "created_at",       :null => false
-    t.datetime "updated_at",       :null => false
+    t.datetime "created_at",                            :null => false
+    t.datetime "updated_at",                            :null => false
     t.integer  "tables_count"
     t.datetime "deleted_at"
     t.text     "plan_migrations"
+    t.datetime "last_tip_at"
+    t.string   "last_tip_identifier"
+    t.boolean  "tips_opt_in",         :default => true
   end
 
   create_table "collaborators", :force => true do |t|

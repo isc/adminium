@@ -50,6 +50,7 @@ end
 group :test do
   gem 'capybara'
   gem 'launchy'
+  gem 'timecop'
   gem 'mocha', require: false
   gem 'factory_girl_rails'
   gem 'rack_session_access'
