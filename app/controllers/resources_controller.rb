@@ -6,6 +6,7 @@ class ResourcesController < ApplicationController
   include ActionView::Helpers::NumberHelper
   include ActionView::Helpers::DateHelper
   include ResourcesHelper
+  include TimeChartBuilder
 
   before_filter :table_access_limitation, except: [:search]
   before_filter :check_permissions
@@ -13,6 +14,7 @@ class ResourcesController < ApplicationController
   before_filter :apply_validations, only: [:create, :update, :new, :edit]
   before_filter :fetch_item, only: [:show, :edit, :update, :destroy]
   helper_method :user_can?
+  helper_method :grouping
 
   respond_to :json, only: [:perform_import, :check_existence, :search]
   respond_to :json, :html, only: [:index, :update]
@@ -234,7 +236,7 @@ class ResourcesController < ApplicationController
     end
     redirect_to :back, flash: {success: "#{items.length} rows has been updated"}
   end
-
+    
   def test_threads
     Account.find_by_sql 'select pg_sleep(10)'
     render json: @generic.table('accounts').first.inspect

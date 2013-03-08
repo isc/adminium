@@ -24,9 +24,11 @@
             - if user_can? 'destroy', params[:table]
               input type="checkbox"
         - clazz.settings.columns[:listing].each do |name|
-          th.column_header
+          th.column_header data-column-name=name
             == header_link name
-            i.column_settings.icon-cog(rel=name)
+            - if clazz.settings.is_date_column? name
+              i.time-chart.icon-bar-chart
+            i.column_settings.icon-cog
     - if @statistics.present?
       tfoot
         tr

@@ -159,7 +159,11 @@ module Settings
     def is_text_column?(column_name)
       [:string, :text].include? column_type(column_name)
     end
-
+    
+    def is_date_column? column_name
+      [:datetime, :date, :timestamp].include? column_type(column_name)
+    end
+    
     def string_or_text_column_names
       find_all_columns_for_types(:string, :text).map(&:name)
     end

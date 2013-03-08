@@ -4,14 +4,17 @@ Adminium::Application.routes.draw do
   match '/signout' => 'sessions#destroy', as: :signout
 
   resources :resources, path: "/resources/:table" do
-    get 'page/:page', action: :index, on: :collection
-    post :bulk_destroy, on: :collection
-    post :bulk_update, on: :collection
-    get :bulk_edit, on: :collection
-    get :import, on: :collection
-    get :check_existence, on: :collection
-    post :perform_import, on: :collection
-    get :search, on: :collection
+    collection do
+      get 'page/:page', action: :index
+      post :bulk_destroy
+      post :bulk_update
+      get :bulk_edit
+      get :import
+      get :check_existence
+      post :perform_import
+      get :search
+      get :time_chart
+    end
   end
 
   resources :settings do
