@@ -21,6 +21,9 @@ class Generic
 
   def cleanup
     self.class.send :remove_const, @account_module.name.demodulize if @account_module
+    ActiveSupport::DescendantsTracker.send(:class_variable_get, '@@direct_descendants').delete_if do |key, value|
+      key.name.match 'Generic::'
+    end
   end
 
   def discover_classes_and_associations! connection_specification
