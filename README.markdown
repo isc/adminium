@@ -1,5 +1,5 @@
 FEATURES:
-
+freaking TIMEZONES !!
 pouvoir plus facilement ajouter un nouveau record a une association
 tweaker le page title
 utiliser rack-timeout
