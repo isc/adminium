@@ -49,7 +49,7 @@ common: &default_settings
   # log level here.
   log_level: info
   
-  dispatcher: puma
+  # dispatcher: puma
 
   # Optionally set the path to the log file This is expanded from the
   # root directory (may be relative or absolute, e.g. 'log/' or
