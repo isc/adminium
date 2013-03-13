@@ -23,9 +23,9 @@ html lang="en"
             span.icon-bar
             span.icon-bar
             span.icon-bar
-          = link_to "#{current_account.try(:name) || 'Adminium'}", dashboard_path, class: 'brand'
+          = link_to "#{current_account? && current_account.name || 'Adminium'}", dashboard_path, class: 'brand'
           .container-fluid.nav-collapse
-            - if current_account && current_account.db_url.present?
+            - if current_account? && current_account.db_url.present?
               form#search-table.navbar-search action=resources_path('')
                 input.search-query type="search" data-provide='typeahead' data-trigger='manual' data-placement="bottom" rel="tooltip" data-original-title="Loading ..."  data-source="#{@tables.inspect}" autocomplete="off" placeholder="go to table (press s)"
             = render 'layouts/menu'
@@ -72,4 +72,4 @@ html lang="en"
     #blockG_3.facebook_blockG
 
 javascript:
-  adminium_account = #{{current_account.to_json(only: ['plan', 'name'])}}
+  adminium_account = #{{current_account? ? current_account.to_json(only: ['plan', 'name']) : 'null'}}
