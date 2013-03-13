@@ -25,13 +25,20 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     # save_and_open_page
   end
 
+  test "save the date" do
+    login
+    visit new_resource_path(:documents)
+    click_button 'Save'
+    assert "", find('dd[data-column-name=start_date]').text
+  end
+
   test "custom column has_many" do
     login
     Settings::Base.any_instance.stubs(:columns).returns listing: ['has_many/comments'], serialized: [], search: []
     visit resources_path(:users)
     assert page.has_css?('td.hasmany a', :text => '2')
   end
-  
+
   test "custom column belongs_to" do
     login
     Settings::Base.any_instance.stubs(:columns).returns listing: ['user.pseudo'], serialized: [], search: []

@@ -205,6 +205,10 @@ module ResourcesHelper
     {as: :select, collection: opts}
   end
 
+  def date_input_options
+    {include_blank: true}
+  end
+
   def page_entries_info(collection, options = {})
     entry_name = options[:entry_name] || (collection.empty? ? 'entry' : collection.first.class.name.underscore.sub('_', ' '))
     if collection.num_pages < 2

@@ -1,7 +1,7 @@
 conn_spec = ActiveRecord::Base.configurations['fixture']
 ActiveRecord::Base.establish_connection conn_spec
 ActiveRecord::Schema.verbose = false
-version = 13
+version = 15
 if ActiveRecord::Migrator.current_version != version
   ActiveRecord::Base.connection.tables.each do |table|
     ActiveRecord::Base.connection.drop_table table
@@ -22,6 +22,17 @@ if ActiveRecord::Migrator.current_version != version
     create_table :groups do |t|
       t.string :name
       t.timestamps
+    end
+    create_table :documents do |t|
+      t.datetime :created_at
+      t.datetime :updated_at
+
+      t.date :start_date, :end_date, :delete_on
+      t.text :description
+      t.datetime :some_datetime
+      t.string :alpha_2, :alpha_2, :file
+      t.integer :range_1, :range_2
+      t.boolean :digital
     end
     create_table :comments do |t|
       t.string :title, :default => ""
