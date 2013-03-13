@@ -47,6 +47,7 @@
       - else
         - options.merge! readonly: (@item.class.columns.detect{|c|c.name == name}.primary || @item.class.primary_key == name)
         - options.merge!(boolean_input_options(@item.class, name)) if @item.class.settings.column_type(name).to_s == "boolean"
+        - options.merge!(date_input_options) if @item.class.settings.column_type(name).to_s == "boolean"
         = f.input name, options
   .modal-footer
     - submit_tag_label = @item.persisted? ? "Update #{params[:table].humanize} ##{@item[clazz.primary_key]}" : "Update #{@record_ids.length} #{params[:table].humanize}"
