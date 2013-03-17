@@ -1,6 +1,6 @@
 h3= "Table #{params[:table]}"
 h4
-  = "#{clazz.columns_hash.keys.length} columns,"
+  = "#{clazz.columns_hash.keys.length} columns, "
   = link_to "#{clazz.count} records", resources_path(params[:table])
 br
 table.table.table-striped.black
@@ -34,10 +34,14 @@ table.table.table-striped.black
       th Index name
       th Columns
       th Uniqueness
-  - clazz.connection.indexes(params[:table]).each do |index|
+  - if @indices.any?
+    - @indices.each do |index|
+      tr
+        th
+        th
+          i= index.name
+        td== index.columns.join("<br/>")
+        td= "UNIQUE" if index.unique
+  - else
     tr
-      th
-      th
-        i= index.name
-      td== index.columns.join("<br/>")
-      td= "UNIQUE" if index.unique
+      td colspan=4 No indices on this table.
