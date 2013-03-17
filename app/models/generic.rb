@@ -48,7 +48,7 @@ class Generic
         else
           references = res.column_names.find_all {|c| c.ends_with? '_id'}
           references = res.column_names.find_all {|c| c =~ /\wId$/} if references.empty?
-          if references.any?
+          if references.size > 1
             res.primary_keys = references
           else
             res.primary_key = res.column_names.first

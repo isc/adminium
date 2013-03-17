@@ -97,7 +97,7 @@ class InPlaceEditing
 
   submitCallback: (data) =>
     if data.result is "success"
-      td = $(".items-list tr[data-item-id=#{data.id}] td=[data-column-name=#{data.column}]").replaceWith(data.value)
+      td = $(".items-list tr[data-item-id=#{data.id}] td[data-column-name=#{data.column}]").replaceWith(data.value)
       new_td = $(".items-list tr[data-item-id=#{data.id}] td=[data-column-name=#{data.column}]")
       new_td.bind 'hover', @setupEditableColumn
     else
