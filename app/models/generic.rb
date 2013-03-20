@@ -176,7 +176,7 @@ class Generic
     if mysql?
       return [] if table_list.try(:empty?)
       cond = "AND table_name in (#{table_list.map{|t|"'#{t}'"}.join(', ')})" if table_list.present?
-      res = Base.connection.execute "select table_name, data_length + index_length, data_length from information_schema.TABLES WHERE table_schema = '#{db_name}' #{cond}"
+      Base.connection.execute("select table_name, data_length + index_length, data_length from information_schema.TABLES WHERE table_schema = '#{db_name}' #{cond}").to_a
     else
       tables.map do |table|
         next if table_list && !table_list.include?(table)
