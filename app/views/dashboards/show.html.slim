@@ -42,9 +42,9 @@
         td Totals
         td= number_to_human_size @table_sizes.sum{|e|e[1].to_i}
         td= number_to_human_size @table_sizes.sum{|e|e[2].to_i}
-        td= number_with_delimiter @table_sizes.sum{|e|e[3]}
+        td.total_table_count data-value='0' 0
     tbody
-      - @table_sizes.each do |table, fulltblsize, tblsize, record_count|
+      - @table_sizes.each do |table, fulltblsize, tblsize|
         tr
           td
             = link_to schema_path(table) do
@@ -54,7 +54,7 @@
           td= link_to table, resources_path(table)
           td data-value=fulltblsize = number_to_human_size fulltblsize
           td data-value=tblsize = number_to_human_size tblsize
-          td data-value=record_count = number_with_delimiter record_count
+          td data-table-name=table data-status='loading' data-value=0 = '-'
 
   = "Database size #{number_to_human_size @db_size}"
 

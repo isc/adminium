@@ -58,7 +58,7 @@ class Generic
       res
     end
   end
-  
+
   def discover_associations
     models.each do |klass|
       if foreign_keys[klass.table_name].present?
@@ -68,7 +68,7 @@ class Generic
       end
     end
   end
-  
+
   def discover_associations_through_foreign_keys klass
     foreign_keys[klass.table_name].each do |foreign_key|
       options = {primary_key: foreign_key[:primary_key], foreign_key: foreign_key[:column]}
@@ -100,7 +100,7 @@ class Generic
       Rails.logger.warn "Association discovery failed for #{klass.name} : #{e.message}"
     end
   end
-  
+
   def foreign_keys
     @foreign_keys ||= Rails.cache.fetch "foreign_keys:#{@account_id}", expires_in: 2.minutes do
       query = postgresql? ? postgresql_foreign_keys_query : mysql_foreign_keys_query
@@ -113,7 +113,7 @@ class Generic
       foreign_keys
     end
   end
-  
+
   def mysql_foreign_keys_query
     %{
       SELECT fk.referenced_table_name as 'to_table'
@@ -126,7 +126,7 @@ class Generic
         AND fk.table_schema = '#{db_name}'
     }
   end
-  
+
   def postgresql_foreign_keys_query
     %{
       SELECT t2.relname AS to_table, a1.attname AS column, a2.attname AS primary_key, t1.relname as table_name
@@ -167,7 +167,7 @@ class Generic
       Base.connection.execute(sql).first['fulldbsize']
     end
   end
-  
+
   def connection
     Base.connection
   end
@@ -177,13 +177,11 @@ class Generic
       return [] if table_list.try(:empty?)
       cond = "AND table_name in (#{table_list.map{|t|"'#{t}'"}.join(', ')})" if table_list.present?
       res = Base.connection.execute "select table_name, data_length + index_length, data_length from information_schema.TABLES WHERE table_schema = '#{db_name}' #{cond}"
-      res.map {|table_row| table_row + [table(table_row.first).count] }
     else
       tables.map do |table|
         next if table_list && !table_list.include?(table)
         res = [table]
         res += Base.connection.execute("select pg_total_relation_size('\"#{table}\"') as fulltblsize, pg_relation_size('\"#{table}\"') as tblsize").first.values
-        res << table(table).count
       end.compact
     end
   end

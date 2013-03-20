@@ -46,7 +46,9 @@ Adminium::Application.routes.draw do
     post :cancel_tips, on: :member
   end
   resources :roles
-  resource :dashboard
+  resource :dashboard do
+    get :tables_count, on: :collection
+  end
   resources :collaborators
 
   namespace :heroku do
