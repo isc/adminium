@@ -2,14 +2,14 @@ source 'http://rubygems.org'
 
 ruby '1.9.3'
 
-gem 'rails', '3.2.11'
+gem 'rails', '3.2.13'
 
 gem 'pg'
 gem 'mysql2'
 gem "activerecord-import", ">= 0.2.0"
-gem "hiredis", "~> 0.3.1"
+gem "hiredis", "0.4.5"
 gem "redis", ">= 2.2.0", require: ["redis", "redis/connection/hiredis"]
-gem 'configatron'
+gem 'configatron', '2.10.0'
 gem 'jquery-rails', '2.0.1'
 gem 'slim-rails'
 gem 'kaminari'
@@ -27,7 +27,7 @@ gem 'bootstrap-wysihtml5-rails', require: 'bootstrap-wysihtml5-rails',
 gem 'newrelic_rpm', '3.5.8.72'
 
 group :assets do
-  gem 'sass-rails',   '~> 3.2.3'
+  gem 'sass-rails',   '~> 3.2.6'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier', '>= 1.0.3'
   gem 'twitter-bootstrap-rails', '~> 2.0.4'
@@ -40,7 +40,7 @@ group :development do
   gem 'populator'
   gem 'faker'
   gem 'better_errors'
-  gem 'binding_of_caller'
+  gem 'binding_of_caller', '0.7.1'
 end
 
 group :production do
