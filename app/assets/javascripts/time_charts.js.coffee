@@ -14,6 +14,9 @@ class Charts
       remoteModal '#time-chart', {column: "#{@column_name}&grouping=#{e.currentTarget.value}"}, @graphData
   
   graphData: =>
+    if chart_data is null
+      $('#chart_div').text "No data to chart for this grouping value."
+      return
     data = new google.visualization.DataTable()
     data.addColumn('string', 'Date')
     data.addColumn('number', 'Count')
