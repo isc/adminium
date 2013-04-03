@@ -6,6 +6,9 @@
           strong= link_to params[:table].humanize, resources_path(params[:table])
           span.divider >
           ' New #{@item.class.model_name.human}
+          - if params.has_key? :clone_id
+            small
+              == "| cloning #{link_to "#{@item.class.model_name.human} ##{params[:clone_id]}", resource_path(params[:table], params[:clone_id])}"
         .span1
           a.btn data-toggle="modal" href="#settings" title="Form Settings" data-placement="bottom" rel="tooltip"
             i.icon-cog

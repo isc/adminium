@@ -1,6 +1,5 @@
 FEATURES:
 freaking TIMEZONES !!
-pouvoir plus facilement ajouter un nouveau record a une association
 utiliser rack-timeout
 validations avec arguments
 colonnes calculees
