@@ -513,7 +513,7 @@ class ResourcesController < ApplicationController
   def right_value operation, value
     return operation[:right] if operation.has_key?(:right)
     return operation[:replace_right].gsub('_', value) if operation.has_key?(:replace_right)
-    return value.to_date if operation[:right_function] == 'to_date'
+    return Date.strptime(value, '%m/%d/%Y') if operation[:right_function] == 'to_date'
     return value
   end
 
