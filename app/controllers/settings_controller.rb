@@ -27,7 +27,7 @@ class SettingsController < ApplicationController
 
   def values
     render json: @generic.table(params[:id]).select("distinct(#{params[:column_name]})").
-      limit(50).order(params[:column_name]).pluck(params[:column_name])
+      limit(50).order(params[:column_name]).map{|d| d[params[:column_name]]}
   end
 
   def columns
