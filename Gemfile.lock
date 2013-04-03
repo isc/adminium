@@ -140,7 +140,7 @@ GEM
       nokogiri (>= 1.2.1)
     metaclass (0.0.1)
     mime-types (1.21)
-    mocha (0.10.0)
+    mocha (0.13.3)
       metaclass (~> 0.0.1)
     multi_json (1.7.1)
     mysql2 (0.3.11)
@@ -282,7 +282,7 @@ DEPENDENCIES
   kaminari
   kensa
   launchy
-  mocha
+  mocha (= 0.13.3)
   mysql2
   newrelic_rpm (= 3.5.8.72)
   omniauth-openid

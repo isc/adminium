@@ -52,7 +52,7 @@ group :test do
   gem 'capybara'
   gem 'launchy'
   gem 'timecop'
-  gem 'mocha', require: false
+  gem 'mocha', '0.13.3', require: false
   gem 'factory_girl_rails'
   gem 'rack_session_access'
 end
