@@ -21,8 +21,6 @@ for pg 9.2 users ; https://github.com/will/datascope
 advanced search definition improvements :
   - select input for column with enum values defined
 
-gerer joliment les 404 sur le show d'une table existante d'un user (genre "There is no user with id 3442")
-
 gerer les colonnes binary (file field for upload ?)
 
 TODOS:

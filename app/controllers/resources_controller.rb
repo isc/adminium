@@ -237,7 +237,7 @@ class ResourcesController < ApplicationController
     end
     redirect_to :back, flash: {success: "#{items.length} rows has been updated"}
   end
-    
+
   def test_threads
     Account.find_by_sql 'select pg_sleep(10)'
     render json: @generic.table('accounts').first.inspect
@@ -269,6 +269,8 @@ class ResourcesController < ApplicationController
 
   def fetch_item
     @item = clazz.find params[:id]
+  rescue ActiveRecord::RecordNotFound
+    redirect_to resources_path(params[:table]), notice: "#{class_name} ##{params[:id]} does not exist."
   end
 
   def check_per_page_setting
