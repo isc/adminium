@@ -72,10 +72,10 @@ class Generic
   def discover_associations_through_foreign_keys klass
     foreign_keys[klass.table_name].each do |foreign_key|
       options = {primary_key: foreign_key[:primary_key], foreign_key: foreign_key[:column]}
-      assoc_name = "_adminium_#{foreign_key[:to_table].downcase.singularize}".to_sym
       owner_model = models.find{|model|model.table_name.downcase == foreign_key[:to_table].downcase}
-      klass.belongs_to assoc_name, options.merge(class_name: owner_model.name)
-      owner_model.has_many "_adminium_#{klass.table_name}".to_sym, options.merge(class_name: klass.name)
+      klass.belongs_to assoc_name(foreign_key[:to_table].downcase.singularize),
+        options.merge(class_name: owner_model.name)
+      owner_model.has_many assoc_name(klass.table_name), options.merge(class_name: klass.name)
     end
   end
 
@@ -86,11 +86,10 @@ class Generic
         owner = column.name.gsub(/_id$/, '')
         begin
           if tables.include? owner.tableize
-            plural_assoc = "_adminium_#{klass.table_name}".to_sym
-            account_module.const_get(class_name owner).has_many plural_assoc, class_name: klass.name
-            klass.belongs_to "_adminium_#{owner}".to_sym, class_name: class_name(owner), foreign_key: column.name
+            account_module.const_get(class_name owner).has_many assoc_name(klass.table_name), class_name: klass.name
+            klass.belongs_to assoc_name(owner), class_name: class_name(owner), foreign_key: column.name
           elsif klass.column_names.include? "#{owner}_type"
-            klass.belongs_to "_adminium_#{owner}".to_sym, polymorphic: true, foreign_key: column.name
+            klass.belongs_to assoc_name(owner), polymorphic: true, foreign_key: column.name
           end
         rescue NameError => e
           Rails.logger.warn "Failed for #{klass.table_name} belongs_to #{owner} : #{e.message}"
@@ -99,6 +98,10 @@ class Generic
     rescue => e
       Rails.logger.warn "Association discovery failed for #{klass.name} : #{e.message}"
     end
+  end
+  
+  def assoc_name name
+    "_adminium_#{name.gsub('-', '_')}".to_sym
   end
 
   def class_name table
