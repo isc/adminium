@@ -1,5 +1,5 @@
 $ ->
-  for feature in $('.feature-description')
+  for feature in $('.feature-description').toArray().reverse()
     id = $(feature).attr('id')
     title = $(feature).find('h2').text()
     li = $("<li><a href='##{id}'>#{title}</a></li>")

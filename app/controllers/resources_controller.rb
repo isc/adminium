@@ -2,10 +2,6 @@ require "activerecord-import/base"
 
 class ResourcesController < ApplicationController
 
-  include ActionView::Helpers::TagHelper
-  include ActionView::Helpers::NumberHelper
-  include ActionView::Helpers::DateHelper
-  include ResourcesHelper
   include TimeChartBuilder
 
   before_filter :table_access_limitation, except: [:search]
@@ -178,7 +174,7 @@ class ResourcesController < ApplicationController
         end
         format.json do
           column_name = item_params.keys.first
-          value = display_attribute :td, @item, column_name
+          value = view_context.display_attribute :td, @item, column_name
           render json: {result: :success, value: value, column: column_name, id: @item[clazz.primary_key]}
         end
       end
