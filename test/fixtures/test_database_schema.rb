@@ -68,6 +68,7 @@ class UserFromTest < ActiveRecord::Base
   end
 class CommentFromTest < ActiveRecord::Base
   self.table_name = 'comments'
+  belongs_to :user_from_test, foreign_key: :user_id
 end
 
 ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations[Rails.env]

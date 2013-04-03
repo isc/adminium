@@ -12,7 +12,7 @@ FactoryGirl.define do
 
   factory :comment_from_test do
     title "My Comment"
-    association :user, factory: :user_from_test
+    association :user_from_test
   end
 
 end

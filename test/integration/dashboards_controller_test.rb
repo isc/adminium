@@ -15,7 +15,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
       visit dashboard_path
       assert page.has_content?('Basic Search')
     end
-
+    Timecop.return
   end
 
 end

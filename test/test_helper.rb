@@ -25,7 +25,9 @@ class ActionDispatch::IntegrationTest
 end
 
 class FixtureFactory
-
+  
+  attr_reader :factory
+  
   def initialize(name, options = {})
     ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['fixture']
     @factory = Factory "#{name}_from_test", options

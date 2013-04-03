@@ -1,8 +1,13 @@
 require 'test_helper'
 
 class ResourcesTest < ActionDispatch::IntegrationTest
-
+  
+  def setup
+    FixtureFactory.clear_db
+  end
+  
   test "index on resources for users table" do
+    FixtureFactory.new(:user)
     login
     visit resources_path(:users)
     assert page.has_css?('table.items-list')
@@ -33,6 +38,8 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
 
   test "custom column has_many" do
+    user = FixtureFactory.new(:user).factory
+    2.times { FixtureFactory.new :comment, user_from_test: user }
     login
     Settings::Base.any_instance.stubs(:columns).returns listing: ['has_many/comments'], serialized: [], search: []
     visit resources_path(:users)
@@ -40,6 +47,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
 
   test "custom column belongs_to" do
+    FixtureFactory.new(:comment, user_from_test: FixtureFactory.new(:user, pseudo: 'bob').factory)
     login
     Settings::Base.any_instance.stubs(:columns).returns listing: ['user.pseudo'], serialized: [], search: []
     visit resources_path(:comments)
