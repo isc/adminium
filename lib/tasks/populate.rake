@@ -1,36 +1,30 @@
-task :populate => :environment do
-  ActiveRecord::Base.establish_connection 'fixture'
-  class Post < ActiveRecord::Base
-  end
-  class Comment < ActiveRecord::Base
-    belongs_to :commentable, polymorphic: true
-    belongs_to :user
-  end
-  class User < ActiveRecord::Base
-  end
-  [User, Comment, Post].each(&:delete_all)
-  User.populate 80 do |user|
-    user.pseudo = Faker::Name.name
-    user.first_name = Faker::Name.first_name
-    user.last_name = Faker::Name.last_name
-    user.birthdate = 50.years.ago..10.years.ago
-  end
-  Post.populate 100 do |post|
-    post.title = Faker::Lorem.sentence
-    post.author = Faker::Name.name
-    post.body = Faker::Lorem.paragraphs
-  end
-  Comment.populate 50 do |comment|
-    comment.title = Faker::Lorem.sentence
-    comment.comment = Faker::Lorem.paragraphs
-  end
-  Comment.find_each do |comment|
-    comment.commentable = if [true, false].sample
-      User.order('random()').first
-    else
-      Post.order('random()').first
-    end
-    comment.user = User.order('random()').first
-    comment.save
-  end
+task :reset_adminium_demo_settings => :environment do
+  account_id = ENV['DEMO_ACCOUNT_ID']
+  return if account_id.nil?
+  account = Account.find(account_id)
+  account.widgets.delete_all
+
+  REDIS.del "account:#{account_id}:settings:Payment", "account:#{account_id}:settings:Users", "account:#{account_id}:settings:Partners"
+
+  account.time_chart_widgets.create! table: 'payments', columns: "created_at", grouping: "dow"
+  account.table_widgets.create! table: 'payments', order: 'amount desc'
+  account.table_widgets.create! table: 'users', order: 'created_at desc'
+  account.table_widgets.create! table: 'partners'
+
+  payments_settings = Generic.new(account).table('payments').settings
+  payments_settings.enum_values = [{"column_name"=>"status", "values"=>{"4"=>{"color"=>"#999999", "label"=>"refunded"}, "1"=>{"color"=>"#33CC66", "label"=>"completed"}, "0"=>{"color"=>"#3366FF", "label"=>"in progress"}, "3"=>{"color"=>"#CC3300", "label"=>"failed"}, "2"=>{"color"=>"#FF9900", "label"=>"verified"}}}]
+  payments_settings.columns[:listing]=["id", "user.email", "user_id", "amount", "status", "created_at", "updated_at"]
+  payments_settings.save
+  payments_settings.update_column_options 'amount', {"rename"=>"", "number_separator"=>"", "number_delimiter"=>"", "number_unit"=>"$", "number_precision"=>""}
+  payments_settings.update_column_options "created_at", {"rename"=>"", "format"=>"time_ago_in_words"}
+
+  users_settings = Generic.new(account).table('users').settings
+  users_settings.label_column = 'pseudo'
+  users_settings.columns[:listing] = ["id", "pseudo", "email", "partner_id", "has_many/payments"]
+  users_settings.save
+
+  partners_settings = Generic.new(account).table('partners').settings
+  partners_settings.columns[:listing] = ["id", "name", "has_many/users", "created_at"]
+  partners_settings.label_column = 'name'
+  partners_settings.save
 end
