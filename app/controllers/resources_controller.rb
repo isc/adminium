@@ -32,7 +32,7 @@ class ResourcesController < ApplicationController
   def index
     @title = params[:table]
     @current_filter = clazz.settings.filters[params[:asearch]] || []
-    @widget = current_account.widgets.where(table: params[:table], advanced_search: params[:asearch]).first
+    @widget = current_account.table_widgets.where(table: params[:table], advanced_search: params[:asearch]).first
 
     @items = clazz
     @items = @items.where(params[:where]) if params[:where].present?

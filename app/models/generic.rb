@@ -35,7 +35,7 @@ class Generic
   def discover_models
     account_module.constants(false).each {|const| account_module.send :remove_const, const }
     self.models = tables.map do |table|
-      res = account_module.const_set table.classify, Class.new(Base)
+      res = account_module.const_set class_name(table), Class.new(Base)
       res.adminium_account_id = @account_id
       res.generic = self
       res.table_name = table
@@ -87,8 +87,8 @@ class Generic
         begin
           if tables.include? owner.tableize
             plural_assoc = "_adminium_#{klass.table_name}".to_sym
-            account_module.const_get(owner.classify).has_many plural_assoc, class_name: klass.name
-            klass.belongs_to "_adminium_#{owner}".to_sym, class_name: owner.classify, foreign_key: column.name
+            account_module.const_get(class_name owner).has_many plural_assoc, class_name: klass.name
+            klass.belongs_to "_adminium_#{owner}".to_sym, class_name: class_name(owner), foreign_key: column.name
           elsif klass.column_names.include? "#{owner}_type"
             klass.belongs_to "_adminium_#{owner}".to_sym, polymorphic: true, foreign_key: column.name
           end
@@ -99,6 +99,10 @@ class Generic
     rescue => e
       Rails.logger.warn "Association discovery failed for #{klass.name} : #{e.message}"
     end
+  end
+
+  def class_name table
+    table.gsub('-', '_').classify
   end
 
   def foreign_keys
@@ -148,7 +152,7 @@ class Generic
 
   def table table_name
     if tables.include? table_name
-      account_module.const_get table_name.classify, false
+      account_module.const_get class_name(table_name), false
     else
       raise TableNotFoundException.new(table_name)
     end
@@ -176,7 +180,7 @@ class Generic
     if mysql?
       return [] if table_list.try(:empty?)
       cond = "AND table_name in (#{table_list.map{|t|"'#{t}'"}.join(', ')})" if table_list.present?
-      res = Base.connection.execute "select table_name, data_length + index_length, data_length from information_schema.TABLES WHERE table_schema = '#{db_name}' #{cond}"
+      Base.connection.execute("select table_name, data_length + index_length, data_length from information_schema.TABLES WHERE table_schema = '#{db_name}' #{cond}").to_a
     else
       tables.map do |table|
         next if table_list && !table_list.include?(table)

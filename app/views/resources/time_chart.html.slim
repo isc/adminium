@@ -1,10 +1,23 @@
 .modal-header
   a.close data-dismiss="modal" ×
-  h3== "Time chart for column #{params[:column]}"
+  h3
+    == "Time chart for column #{params[:column]} "
+    - if @widget
+      i.icon-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
+    - else
+      i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom" data-form="#time-chart form"
 .modal-body
+  = form_for Widget.new, remote: true do |t|
+    = t.hidden_field :type, value: 'TimeChartWidget'
+    = t.hidden_field :table, value: params[:table]
+    = t.hidden_field :columns, value: params[:column]
+    = t.hidden_field :grouping, value: params[:grouping]
+    = t.hidden_field :advanced_search, value: params[:asearch] if params[:asearch].present?
+
   = select_tag 'grouping', options_for_select(TimeChartBuilder::DEFAULT_GROUPING + TimeChartBuilder::DEFAULT_GROUPING_PERIODIC, grouping)
   #chart_div
   javascript:
-    chart_data = #{{@data.map{|e|[e[0], e[1].to_i]}.to_json}}
+    chart_data = #{{@data ? @data.map{|e|[e[0], e[1].to_i]}.to_json : 'null'}}
 .modal-footer
   .btn.btn-primary.pull-right data-dismiss="modal" Close
+  

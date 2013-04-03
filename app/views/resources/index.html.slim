@@ -51,6 +51,7 @@ javascript:
 
   #nav_searches.tabbable.tabs-below
     = form_for Widget.new, remote: true do |t|
+      = t.hidden_field :type, value: 'TableWidget'
       = t.hidden_field :table, value: params[:table]
       = t.hidden_field :advanced_search, value: params[:asearch] if params[:asearch].present?
 
@@ -62,7 +63,7 @@ javascript:
             - if @widget
               i.icon-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
             - else
-              i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom"
+              i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom" data-form="#nav_searches form"
       - else
         li= link_to 'All', params.merge(asearch: nil)
       - clazz.settings.filters.keys.each do |key|

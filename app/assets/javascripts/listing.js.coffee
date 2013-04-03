@@ -151,13 +151,6 @@ class ColumnSettings
       $(input).attr('name', $(input).attr('name').replace(previous_id, new_id))
     $('.template_line input').eq(1).focus()
 
-class AdvanceSearchNavBar
-  constructor: ->
-    $('#nav_searches i.add_widget').click (evt) ->
-      $(evt.currentTarget).addClass('active').removeClass('add_widget')
-      $('#nav_searches form').submit()
-
-
 class UIListing
   constructor: ->
     $('span.label span.remove, i.remove').click ->
@@ -181,4 +174,3 @@ $ ->
   new CustomColumns('#select-exported-fields_pane')
   new UIListing()
   new ColumnSettings()
-  new AdvanceSearchNavBar()
