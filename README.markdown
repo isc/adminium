@@ -1,7 +1,6 @@
 FEATURES:
 freaking TIMEZONES !!
 pouvoir plus facilement ajouter un nouveau record a une association
-tweaker le page title
 utiliser rack-timeout
 validations avec arguments
 colonnes calculees
@@ -22,7 +21,6 @@ for pg 9.2 users ; https://github.com/will/datascope
 advanced search definition improvements :
   - select input for column with enum values defined
 
-404 moche quand on tape un faux nom de table en haut
 gerer joliment les 404 sur le show d'une table existante d'un user (genre "There is no user with id 3442")
 
 gerer les colonnes binary (file field for upload ?)

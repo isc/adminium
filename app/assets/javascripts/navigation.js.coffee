@@ -10,8 +10,13 @@ class Navigation
     $(document).on 'change', @selector, ->
       if $(this).data('source').indexOf(this.value) isnt -1
         this.form.action = this.form.action + this.value
-        this.form.submit()
         $(this).tooltip('show')
+        this.form.submit()
+
+    $("#search-table").on 'submit', ->
+      this.action = this.action + $(this).find('input').val()
+      $(this).tooltip('show')
+
     $(document).keypress (e) =>
       return if $(event.target).is(':input')
       if e.which is 115 # 's' key
