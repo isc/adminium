@@ -63,6 +63,7 @@
     a.close data-dismiss="modal" x
     h3 New dashboard widget
   = simple_form_for Widget.new, html: {class: 'form-horizontal'} do |f|
+    = f.hidden_field :type, value: 'TableWidget'
     .modal-body
       = f.input :table, as: :select, collection: @generic.tables
       .hide
