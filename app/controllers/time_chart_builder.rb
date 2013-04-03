@@ -153,7 +153,7 @@ module TimeChartBuilder
   end
   
   def grouping
-    params[:grouping] || 'daily'
+    params[:grouping].presence || 'daily'
   end
   
   def incomplete_periods?
