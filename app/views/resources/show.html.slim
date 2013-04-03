@@ -39,5 +39,8 @@
             = link_to assoc.original_name, resources_path(assoc.original_name, where: {assoc.foreign_key => @item[@item.class.primary_key]})
             '
             span.badge.badge-warning = count
+            '
+            = link_to new_resource_path(assoc.klass.table_name, attributes: {assoc.foreign_key => @item[@item.class.primary_key]}), class: 'btn btn-mini', rel: "tooltip", title: "Create a new associated #{assoc.original_name.singularize}" do
+              i.icon-plus
 
 = render 'resources/panels/show_settings'

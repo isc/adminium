@@ -149,7 +149,7 @@ class ResourcesController < ApplicationController
   def new
     @title = "New #{clazz.original_name.humanize}"
     @form_url = resources_path(params[:table])
-    @item = clazz.new
+    @item = clazz.new params[:attributes]
   end
 
   def create
