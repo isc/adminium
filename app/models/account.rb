@@ -9,6 +9,8 @@ class Account < ActiveRecord::Base
   has_many :users, through: :collaborators
   has_many :roles
   has_many :widgets, dependent: :destroy
+  has_many :table_widgets
+  has_many :time_chart_widgets
   has_many :sign_ons
 
   validates_format_of :db_url, with: /^((mysql2?)|(postgres(ql)?)):\/\/.*/, allow_blank: true

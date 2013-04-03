@@ -1,0 +1,2 @@
+class TimeChartWidget < Widget
+end

@@ -13,7 +13,19 @@ module TimeChartBuilder
     query = query.where(params[:column] => date_range) unless periodic_grouping?
     aggregation clazz.generic.connection.execute(query.to_sql)
     add_missing_zeroes if grouping == 'daily' && @data.present?
-    render layout: false
+    @widget = current_account.time_chart_widgets
+      .where(table: params[:table], columns: params[:column], grouping: grouping).first
+    respond_to do |format|
+      format.html do
+        render layout: false
+      end
+      format.json do
+        render json: {
+          graph_data: @data.map{|e|[e[0], e[1].to_i]},
+          id: params[:widget_id]
+        }
+      end
+    end
   end
   
   private

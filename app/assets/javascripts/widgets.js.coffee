@@ -3,10 +3,11 @@ class Widget
   constructor: ->
     @setupSorting()
     @fetchAllContent()
-    @setupCreation()
+    @setupCreationFromDashboard()
+    @setupCreationFromListing()
     @setupDeletion()
 
-  setupCreation: ->
+  setupCreationFromDashboard: ->
     if $('#plan').text() is 'petproject'
       for option, i in $('#widget_table').find('option') when i > 5
         $(option).attr('disabled', 'disabled')
@@ -17,14 +18,22 @@ class Widget
           $('<option>').text(search).val(search).appendTo('#widget_advanced_search')
         $('#widget_advanced_search').closest('.control-group').parent().show()
 
+  setupCreationFromListing: ->
+    $('#nav_searches, #time-chart').on 'click', 'i.add_widget', (evt) ->
+      $(evt.currentTarget).addClass('active').removeClass('add_widget')
+      $($(evt.currentTarget).data('form')).submit()
+
   fetchAllContent: ->
     @fetchContent widget for widget in $('.widget')
 
   fetchContent: (widget) ->
-    $.get $(widget).data('query-url'), (data) =>
+    $.getJSON $(widget).data('query-url'), (data) =>
       widget = $(".widget[data-widget-id=#{data.id}]")
-      widget.find('.content').html(data.widget)
-      widget.find('h4 small').show().find('span').text(data.total_count)
+      if data.widget
+        widget.find('.content').html(data.widget)
+        widget.find('h4 small').show().find('span').text(data.total_count)
+      else
+        time_charts.graphData data.graph_data, widget.find('.content')
 
   setupDeletion: ->
     $('.widget .btn-mini').bind 'ajax:success', ->

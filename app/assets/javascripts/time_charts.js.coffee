@@ -1,4 +1,4 @@
-class Charts
+class TimeCharts
   
   constructor: ->
     @setupTimeChartsCreation()
@@ -8,27 +8,31 @@ class Charts
     $('th i.time-chart').click (e) =>
       @column_name = $(e.currentTarget).closest('.column_header').data('column-name')
       remoteModal '#time-chart', {column: @column_name}, @graphData
-  
+      _gaq.push ['_trackPageview', '/time_chart'] if window['_gaq']
+
   setupGroupingChange: ->
     $(document).on 'change', '#time-chart.modal #grouping', (e) =>
       remoteModal '#time-chart', {column: "#{@column_name}&grouping=#{e.currentTarget.value}"}, @graphData
   
-  graphData: =>
-    if chart_data is null
-      $('#chart_div').text "No data to chart for this grouping value."
+  graphData: (data, container) =>
+    data ||= chart_data
+    container ||= '#chart_div'
+    if data is null
+      $(container).text "No data to chart for this grouping value."
       return
-    data = new google.visualization.DataTable()
-    data.addColumn('string', 'Date')
-    data.addColumn('number', 'Count')
-    chart_data.shift()
-    data.addRows chart_data
-    wrapper = $('#chart_div')
-    options = {width: wrapper.parent().css('width'), height:300, colors: ['#7d72bd']}
+    dataTable = new google.visualization.DataTable()
+    dataTable.addColumn('string', 'Date')
+    dataTable.addColumn('number', 'Count')
+    data.shift()
+    dataTable.addRows data
+    wrapper = $(container)
+    options = {width: wrapper.parent().css('width'), height:300, colors: ['#7d72bd'], legend: 'none'}
     chart = new google.visualization.ColumnChart(wrapper.get(0))
-    chart.draw(data, options)
+    chart.draw(dataTable, options)
+    $('#time-chart i[rel=tooltip]').tooltip()
   
 $ ->
-  new Charts()
+  window.time_charts = new TimeCharts()
 
 
 window.remoteModal = (selector, params, callback) ->
