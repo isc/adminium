@@ -1,6 +1,5 @@
 FEATURES:
 freaking TIMEZONES !!
-pouvoir plus facilement ajouter un nouveau record a une association
 utiliser rack-timeout
 validations avec arguments
 colonnes calculees
@@ -25,7 +24,7 @@ gerer les colonnes binary (file field for upload ?)
 
 TODOS:
 attr_accessible avec role pour proteger plan sur account
-account deprovision ; pour le moment ca supprime la row, on la garde ? que fait-on des collaborators associés ? des données stockées dans redis ?
+données stockées dans redis pour les comptes deprovisionnés ?
 unset le focus eventuel d'un element de la popin quand on la ferme, sinon le "press s" ne fonctionne plus
 
 BUGS:

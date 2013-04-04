@@ -10,6 +10,8 @@
           - if user_can? 'create', params[:table]
             = link_to new_resource_path(table:params[:table]), class: "btn create", rel: "tooltip", title: "Create a new row", "data-placement" => "bottom" do
               i.icon-file
+            = link_to new_resource_path(table:params[:table], clone_id: @item[@item.class.primary_key]), class: "btn create", rel: "tooltip", title: "Clone", "data-placement" => "bottom" do
+              i.icon-copy
           - if user_can? 'edit', params[:table]
             = link_to content_tag(:i, nil, class: 'icon-pencil'), edit_resource_path(@item.class.table_name, @item), title: 'Edit', rel: 'tooltip', :'data-placement' => "bottom", class: 'btn'
           - if user_can? 'destroy', params[:table]
@@ -39,5 +41,8 @@
             = link_to assoc.original_name, resources_path(assoc.klass.table_name, where: {assoc.foreign_key => @item[@item.class.primary_key]})
             '
             span.badge.badge-warning = count
+            '
+            = link_to new_resource_path(assoc.klass.table_name, attributes: {assoc.foreign_key => @item[@item.class.primary_key]}), class: 'btn btn-mini', rel: "tooltip", title: "Create a new associated #{assoc.original_name.singularize}" do
+              i.icon-plus
 
 = render 'resources/panels/show_settings'

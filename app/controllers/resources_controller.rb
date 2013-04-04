@@ -149,7 +149,11 @@ class ResourcesController < ApplicationController
   def new
     @title = "New #{clazz.original_name.humanize}"
     @form_url = resources_path(params[:table])
-    @item = clazz.new
+    @item = if params.has_key? :clone_id
+      clazz.find(params[:clone_id]).dup
+    else
+      clazz.new params[:attributes]
+    end
   end
 
   def create
