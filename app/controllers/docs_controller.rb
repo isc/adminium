@@ -13,7 +13,9 @@ class DocsController < ApplicationController
   end
 
   def show
-    render params[:id]
+    options = {}
+    options[:layout] = false if params[:no_layout]
+    render params[:id], options
   end
 
   def start_demo

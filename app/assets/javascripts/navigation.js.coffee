@@ -1,6 +1,7 @@
 class Navigation
 
   constructor: ->
+    @helpShown = false
     @itemList()
     @tableSelection()
     @searchBar()
@@ -24,7 +25,26 @@ class Navigation
         e.preventDefault()
       if e.which is 99 # 'c' for create
         location.href = $('a.btn.create')[0].href if $('a.btn.create').length
+      if e.which is 63 # '?' for help
+        @toggleKeyboardShortcutsHelp()
 
+  toggleKeyboardShortcutsHelp: ->
+    selector = '#keyboard-shortcuts-help'
+    if @helpShown
+      $(selector).modal('hide')
+      @helpShown = false
+    else
+      if $(selector).length
+        $(selector).modal('show')
+      else
+        docs_url = '/docs/keyboard_shortcuts?no_layout=true'
+        $('<div>').attr('id', selector.replace('#', '')).addClass('modal')
+          .appendTo('body').html($(".loading_modal").html()).modal('show')
+        $.get docs_url, (data) => $(selector).html(data)
+        $(selector).on 'hidden', => @helpShown = false
+        _gaq.push ['_trackPageview', docs_url] if window['_gaq']
+      @helpShown = true
+  
   searchBar: ->
     $(document).keypress (e) =>
       return if $(event.target).is(':input')

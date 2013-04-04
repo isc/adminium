@@ -11,10 +11,10 @@ in-place editing sur les belongs_to / custom columns
 mass editing / editing ; nullifier des champs
 support pour l'édition des associations has many
 audit with papertrail
-help popin pour la keyboard navigation
 i18n
 support pour les images
 optim de la clause select sql (jarter les text / binaries non selectionnes par les settings)
+supprimer plusieurs pages de records en une action
 
 more ajax (destroy) / pjax
 for pg 9.2 users ; https://github.com/will/datascope
