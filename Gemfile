@@ -27,7 +27,6 @@ gem 'bootstrap-wysihtml5-rails', require: 'bootstrap-wysihtml5-rails',
 gem 'newrelic_rpm', '3.5.8.72'
 
 group :assets do
-  gem 'sass-rails',   '~> 3.2.6'
   gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier', '>= 1.0.3'
   gem 'twitter-bootstrap-rails', '~> 2.0.4'
