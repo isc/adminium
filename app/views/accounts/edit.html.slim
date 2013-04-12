@@ -11,7 +11,7 @@
       '  to the startup plan ($10 per month) to access your full schema with Adminium.
 
 = tabs do |tabs|
-  - tabs.pane 'Database connection' do
+  - tabs.pane 'Database connection', active: true do
     = simple_form_for @account, html: {class: 'form-horizontal'} do |f|
       - if @account.errors.any?
         .row
