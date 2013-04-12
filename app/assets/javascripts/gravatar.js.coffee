@@ -1,10 +1,10 @@
 class window.Gravatar
 
   @picture: (email, size) ->
-    "http://www.gravatar.com/avatar/#{md5(email)}.jpg?d=blank&s=#{size || 50}"
+    "//www.gravatar.com/avatar/#{md5(email)}.jpg?d=blank&s=#{size || 50}"
 
   @profile: (email) ->
-    "http://www.gravatar.com/#{md5(email)}"
+    "//www.gravatar.com/#{md5(email)}"
 
   @emailColumnDetect: ->
     return unless window.hasOwnProperty('columns_hash')
