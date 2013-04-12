@@ -54,13 +54,14 @@
         tr data-item-id=item[item.class.primary_key]
           - if actions_cell
             td.actions
-              = link_to content_tag('i', nil, class: 'icon-eye-open'), resource_path(params[:table], item)
-              - if user_can? 'edit', params[:table]
-                = link_to content_tag('i', nil, class: 'icon-pencil'), edit_resource_path(params[:table], item)
-              - if user_can? 'destroy', params[:table]
-                = link_to content_tag('i', nil, class: 'icon-trash'), resource_path(params[:table], item), method: :delete, data: {confirm: 'You sure?'}
-              td.checkboxes.click_checkbox
-                - if user_can?('destroy', params[:table]) || user_can?('update', params[:table])
-                  input type="checkbox"
+              - if item[item.class.primary_key]
+                = link_to content_tag('i', nil, class: 'icon-eye-open'), resource_path(params[:table], item)
+                - if user_can? 'edit', params[:table]
+                  = link_to content_tag('i', nil, class: 'icon-pencil'), edit_resource_path(params[:table], item)
+                - if user_can? 'destroy', params[:table]
+                  = link_to content_tag('i', nil, class: 'icon-trash'), resource_path(params[:table], item), method: :delete, data: {confirm: 'You sure?'}
+            td.checkboxes.click_checkbox
+              - if user_can?('destroy', params[:table]) || user_can?('update', params[:table])
+                input type="checkbox"
           - clazz.settings.columns[:listing].each do |name|
               == display_attribute :td, item, name
