@@ -26,6 +26,7 @@ class Heroku::ResourcesController < ApplicationController
       render text: 'bad token', status: 403 and return
     end
     app = Account.find_by_api_key! params[:id]
+    app.update_column :name, params[:app] if app.name != params[:app]
     session[:account] = app.id
     SignOn.create account_id: app.id, plan: app.plan,
       remote_ip: request.remote_ip, kind: SignOn::Kind::HEROKU
