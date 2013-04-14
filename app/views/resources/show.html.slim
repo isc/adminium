@@ -29,15 +29,17 @@
             tr
               th.span3= @item.class.column_display_name name
               == display_attribute :td, @item, name
-    table.table.table-condensed.type_text
-      - item_attributes_type([:text]).each do |name|
-        tr
-          th= @item.class.column_display_name name
-        tr
-          - if @item.class.settings.columns[:serialized].include?(name)
-            == display_attribute :td, @item, name
-          - else
-            td== @item[name]
+    - columns = item_attributes_type([:text])
+    - if columns.present?
+      table.table.table-condensed.type_text
+        - columns.each do |name|
+          tr
+            th= @item.class.column_display_name name
+          tr
+            - if @item.class.settings.columns[:serialized].include?(name)
+              == display_attribute :td, @item, name
+            - else
+              td== @item[name]
   .span5
     table.table.table-condensed
       - ([@item.class.primary_key] + item_attributes_type([:date, :datetime, :time, :timestamp])).each do |name|
