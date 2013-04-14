@@ -28,12 +28,23 @@ module ResourcesHelper
     end
     res << (link_to clazz.column_display_name(original_key), params.merge(order:order), title: title, rel:'tooltip')
   end
+  
+  def item_attributes_type types
+    columns = @item.class.columns.select {|c| types.include? c.type }.map &:name
+    columns & @item.class.settings.columns[:show]
+    columns - [@item.class.primary_key] - @item.reflections.values.map(&:foreign_key)
+  end
 
   def display_attribute wrapper_tag, item, key, relation = false, original_key = nil
     is_editable = nil
     return display_associated_column item, key, wrapper_tag if key.include? '.'
     return display_associated_count item, key, wrapper_tag if key.starts_with? 'has_many/'
-    value = item[key]
+    begin
+      value = item[key]
+    rescue
+      value = item.attributes_before_type_cast[key]
+    end
+    
     if value && item.class.foreign_key?(key)
       content = display_belongs_to item, key, value
       css_class = 'foreignkey'
@@ -114,6 +125,11 @@ module ResourcesHelper
       label = "#{class_name} ##{value}"
     end
     link_to label, path
+  end
+  
+  def display_item item
+    label = item.adminium_label
+    link_to label, resource_path(item.class.table_name, item)
   end
 
   def display_value item, key

@@ -13,7 +13,7 @@ html lang="en"
     meta name="keywords" content="Adminium, database, administration, interface, export, heroku, add-on"
     link href="/images/favicon.ico" rel="shortcut icon"
     /script type="text/javascript" src="http://www.google.com/jsapi"
-  body class=controller.controller_name
+  body class="#{controller.controller_name} #{controller.action_name}"
     - if session[:account]
       div#plan style="display:none" = current_account.plan
     = render partial: '/layouts/demo'
