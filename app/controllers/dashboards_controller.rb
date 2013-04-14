@@ -7,9 +7,6 @@ class DashboardsController < ApplicationController
     table_list = @permissions.map {|key, value| key if value['read']}.compact if @permissions
     @table_sizes = @generic.table_sizes table_list
     @widgets = current_account.widgets
-    # ObjectSpace.garbage_collect
-    # GC.start()
-    # render text: ObjectSpace.each_object(Class).map{|c|c.name}.find_all{|c| c.to_s.match 'Generic'}
   end
 
   def tables_count
@@ -19,14 +16,13 @@ class DashboardsController < ApplicationController
       res[table_name] = @generic.table(table_name).count
       break if Time.now > timeout
     end
-    render json: res.to_json
+    render json: res
   end
 
   protected
 
   def fetch_permissions
-    return if admin?
-    @permissions = current_collaborator.permissions
+    @permissions = current_collaborator.permissions unless admin?
   end
 
 end

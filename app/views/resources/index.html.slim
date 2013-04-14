@@ -1,6 +1,6 @@
 javascript:
-  columns_hash = #{clazz.columns_hash.to_json.html_safe}
-  adminium_column_options = #{clazz.adminium_column_options.to_json.html_safe}
+  columns_hash = #{settings.schema.to_json.html_safe}
+  adminium_column_options = #{settings.adminium_column_options.to_json.html_safe}
 
 - content_for :subnav do
   header.jumbotron.subhead
@@ -10,14 +10,14 @@ javascript:
           strong
             = params[:table].humanize
 
-        - if clazz.settings.columns[:search].any?
+        - if settings.columns[:search].any?
           .span4
             form.form-inline.subnav-search
               - request.query_string.to_s.split('&').each do |param|
                 - name, value = unescape_name_value_pair param
                 - next if name == 'search'
                 input type="hidden" name=name value=value
-              input.span3 name="search" type='text' value=params[:search] placeholder="search on #{clazz.settings.columns[:search].map(&:humanize).join(', ').downcase}"
+              input.span3 name="search" type='text' value=params[:search] placeholder="search on #{settings.columns[:search].map{|e|e.to_s.humanize}.join(', ').downcase}"
               '
               .btn-group
                 button.btn
@@ -66,7 +66,7 @@ javascript:
               i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom" data-form="#nav_searches form"
       - else
         li= link_to 'All', params.merge(asearch: nil)
-      - clazz.settings.filters.keys.each do |key|
+      - settings.filters.keys.each do |key|
         - if params[:asearch] == key
           li.active
             span
@@ -82,7 +82,7 @@ javascript:
         - else
           li= link_to key, params.merge(asearch: key)
       li.add_view
-        a data-toggle="modal" href="#advanced_search" title="#{clazz.settings.filters.keys.length > 0 ? 'Add another view' : 'Create a custom view'}" rel="tooltip" data-placement="bottom"
+        a data-toggle="modal" href="#advanced_search" title="#{settings.filters.keys.length > 0 ? 'Add another view' : 'Create a custom view'}" rel="tooltip" data-placement="bottom"
           i.icon-plus-sign
 
   - if params[:search].present? || params[:where]
@@ -101,7 +101,7 @@ javascript:
 = render partial: '/resources/panels/listing_settings'
 = render partial: '/resources/panels/export'
 = render partial: '/resources/panels/advanced_search'
-= render partial: '/resources/panels/manage_searches', locals: {searches: clazz.settings.filters.keys}
+= render partial: '/resources/panels/manage_searches', locals: {searches: settings.filters.keys}
 #column-settings.modal.hide.fade data-remote-path=column_setting_path(params[:table], column: '{column}')
 #time-chart.modal.hide.fade data-remote-path=time_chart_resources_path(table: params[:table], column: '{column}')
 #bulk-edit-modal.modal.hide.fade(data-remote-path=bulk_edit_resources_path(table: params[:table]))

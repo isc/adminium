@@ -7,6 +7,8 @@ gem 'rails', '3.2.13'
 gem 'pg'
 gem 'mysql2'
 gem "activerecord-import", ">= 0.2.0"
+gem 'sequel', '3.46.0', require: false
+gem 'sequel_pg', require: false
 gem "hiredis", "0.4.5"
 gem "redis", ">= 2.2.0", require: ["redis", "redis/connection/hiredis"]
 gem 'configatron', '2.10.0'
@@ -35,7 +37,6 @@ end
 group :development do
   gem 'kensa'
   gem 'heroku'
-  gem 'taps'
   gem 'populator'
   gem 'faker'
   gem 'better_errors'

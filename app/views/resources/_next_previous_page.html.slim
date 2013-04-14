@@ -2,11 +2,11 @@
   - unless scope.current_page == 1
     = link_to params.merge(:page => (scope.current_page - 1)), rel: 'tooltip', title: 'Previous page', :"data-placement" => 'bottom', class: 'btn' do
       i.icon-arrow-left
-  - unless (scope.current_page == scope.num_pages) || scope.num_pages.zero?
+  - unless (scope.current_page == scope.page_count) || scope.page_count.zero?
     = link_to params.merge(:page => (scope.current_page + 1)), rel: 'tooltip', title: 'Next page', :"data-placement" => 'bottom', class: 'btn' do
       i.icon-arrow-right
-- if scope.num_pages.nonzero?
-  - warning_class = scope.current_page > scope.num_pages ? 'btn-danger' : ''
+- if scope.page_count.nonzero?
+  - warning_class = scope.current_page > scope.page_count ? 'btn-danger' : ''
   .btn-group
     = link_to "#", :class => "btn dropdown-toggle #{warning_class}", :'data-toggle' => 'dropdown' do
       = page_entries_info(scope, entry_name: 'record').html_safe
@@ -17,14 +17,14 @@
         li
           = link_to "Go to first page", params.merge(page: 1)
       - ((scope.current_page - 3)..(scope.current_page + 3)).each do |page|
-        - if page > 1 && page <= scope.num_pages && page != scope.current_page && (page + 1) != scope.current_page && (page - 1) != scope.current_page
+        - if page > 1 && page <= scope.page_count && page != scope.current_page && (page + 1) != scope.current_page && (page - 1) != scope.current_page
           li
             = link_to "Go to page #{page}", params.merge(page: page)
-      - if scope.current_page != scope.num_pages
+      - if scope.current_page != scope.page_count
         li
-          = link_to "Go to last page (page #{scope.num_pages})", params.merge(:page => (scope.num_pages))
+          = link_to "Go to last page (page #{scope.page_count})", params.merge(:page => (scope.page_count))
       li.divider
       li.nav-header rows per page
-      - ([25, 50, 100, 200, 500] + [clazz.settings.per_page.to_i]).uniq.sort.each do |per_page|
-        li(class="#{'active' if clazz.settings.per_page == per_page}")
+      - ([25, 50, 100, 200, 500] + [settings.per_page.to_i]).uniq.sort.each do |per_page|
+        li(class="#{'active' if settings.per_page == per_page}")
           = link_to per_page, params.merge(:per_page => per_page)

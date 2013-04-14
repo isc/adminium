@@ -6,11 +6,11 @@ class ResourcesController < ApplicationController
 
   before_filter :table_access_limitation, except: [:search]
   before_filter :check_permissions
-  before_filter :apply_serialized_columns, only: [:index, :show]
+  # before_filter :apply_serialized_columns, only: [:index, :show]
   before_filter :apply_validations, only: [:create, :update, :new, :edit]
   before_filter :fetch_item, only: [:show, :edit, :update, :destroy]
   helper_method :user_can?
-  helper_method :grouping
+  helper_method :grouping, :settings
 
   respond_to :json, only: [:perform_import, :check_existence, :search]
   respond_to :json, :html, only: [:index, :update]
@@ -18,32 +18,32 @@ class ResourcesController < ApplicationController
 
   def search
     @items = clazz.select("#{quoted_table_name}.*")
-    params[:order] = clazz.settings.label_column if clazz.settings.label_column.present?
-    clazz.settings.columns[:search] = [clazz.primary_key, clazz.settings.label_column].compact.map(&:to_s) | clazz.settings.columns[:search]
+    params[:order] = settings.label_column if settings.label_column.present?
+    settings.columns[:search] = [clazz.primary_key, settings.label_column].compact.map(&:to_s) | settings.columns[:search]
     apply_search if params[:search].present?
     apply_order
-    render json: @items.page(1).per(37).to_json(methods: :adminium_label, :only => ([clazz.primary_key] + clazz.settings.columns[:search]).uniq)
+    render json: @items.paginate(1, 37).to_json(methods: :adminium_label, :only => ([clazz.primary_key] + settings.columns[:search]).uniq)
   end
 
   def index
     @title = params[:table]
-    @current_filter = clazz.settings.filters[params[:asearch]] || []
+    @current_filter = settings.filters[params[:asearch]] || []
     @widget = current_account.table_widgets.where(table: params[:table], advanced_search: params[:asearch]).first
 
     @items = clazz
     @items = @items.where(params[:where]) if params[:where].present?
     apply_filters
-    apply_includes
+    # apply_includes
     apply_search if params[:search].present?
     @items_for_stats = @items
-    @items = @items.select("#{quoted_table_name}.*")
-    apply_has_many_counts
+    @items = @items.select(qualify params[:table], '*')
+    # apply_has_many_counts
     apply_order
     update_export_settings
     respond_with @items do |format|
       format.html do
         check_per_page_setting
-        @items = @items.page(params[:page]).per(clazz.settings.per_page)
+        @items = @items.paginate(params[:page] || 1, settings.per_page)
         apply_statistics
       end
       format.json do
@@ -130,8 +130,8 @@ class ResourcesController < ApplicationController
         import_filter.push "column" => pkey, "type"=>"integer", "operator"=>"IN", "operand" => updated_ids.join(',')
       end
     end
-    clazz.settings.filters['last_import'] =  import_filter
-    clazz.settings.save
+    settings.filters['last_import'] =  import_filter
+    settings.save
   end
 
   def check_existence
@@ -251,9 +251,9 @@ class ResourcesController < ApplicationController
 
   def update_export_settings
     if params[:export_columns].present?
-      clazz.settings.columns[:export] = params[:export_columns].delete_if {|e|e.empty?}
-      clazz.settings.csv_options = params[:csv_options]
-      clazz.settings.save
+      settings.columns[:export] = params[:export_columns].delete_if {|e|e.empty?}
+      settings.csv_options = params[:csv_options]
+      settings.save
     end
   end
 
@@ -279,9 +279,9 @@ class ResourcesController < ApplicationController
 
   def check_per_page_setting
     per_page = params.delete(:per_page).to_i
-    if per_page > 0 && clazz.settings.per_page != per_page
-      clazz.settings.per_page = per_page
-      clazz.settings.save
+    if per_page > 0 && settings.per_page != per_page
+      settings.per_page = per_page
+      settings.save
     end
   end
 
@@ -300,9 +300,9 @@ class ResourcesController < ApplicationController
   def apply_statistics
     @projections = []
     @select_values = []
-    apply_number_statistics
-    apply_enum_statistics
-    apply_boolean_statitics
+    # apply_number_statistics
+    # apply_enum_statistics
+    # apply_boolean_statitics
     return if @projections.empty?
     @statistics = {}
     begin
@@ -337,7 +337,7 @@ class ResourcesController < ApplicationController
     statement = "SUM(CASE WHEN #C# = #X# THEN 1 ELSE 0 END)"
     statistics_columns = []
     clazz.columns_hash.each do |name,c|
-      enum_values = clazz.settings.enum_values_for(name)
+      enum_values = settings.enum_values_for(name)
       next if enum_values.blank?
       enum_values.each do |key, value|
         key = "'#{key}'" if [:string, :text].include? c.type
@@ -349,15 +349,15 @@ class ResourcesController < ApplicationController
 
   def apply_number_statistics
     statistics_columns = []
-    clazz.columns_hash.each do |name,c|
-      if [:integer, :float, :decimal].include?(c.type) && !name.ends_with?('_id') &&
-        clazz.settings.enum_values_for(name).nil? && clazz.settings.columns[:listing].include?(name) &&
-        clazz.primary_key != name
+    settings.schema.each do |name, info|
+      if [:integer, :float, :decimal].include?(info[:type]) && !name.to_s.ends_with?('_id') &&
+        settings.enum_values_for(name).nil? && settings.columns[:listing].include?(name) &&
+        settings.primary_key != name
         statistics_columns.push name
       end
     end
     @projections += statistics_columns.map do |column_name|
-      quoted_column = "#{quoted_table_name}.#{quote_column_name(column_name)}"
+      quoted_column = qualify(params[:table], column_name).sql
       ['max', 'min', 'avg'].map do |calculation|
         @select_values.push [column_name, calculation]
         "#{calculation.upcase}(#{quoted_column})"
@@ -366,16 +366,16 @@ class ResourcesController < ApplicationController
   end
 
   def apply_search
-    columns = clazz.settings.columns[:search]
+    columns = settings.columns[:search]
     query, datas = [], []
     columns.each do |column|
       quoted_column = quote_column_name column
-      if clazz.settings.is_number_column?(column)
+      if settings.is_number_column?(column)
         if params[:search].match(/\A\-?\d+\Z/)
           query.push "#{quoted_table_name}.#{quoted_column} = ?"
           datas.push params[:search].to_i
         end
-      elsif clazz.settings.is_text_column?(column)
+      elsif settings.is_text_column?(column)
         query.push "upper(#{quoted_table_name}.#{quoted_column}) like ?"
         datas.push "%#{params[:search]}%".upcase
       end
@@ -384,8 +384,8 @@ class ResourcesController < ApplicationController
   end
 
   def apply_includes
-    assocs = clazz.settings.columns[settings_type].find_all {|c| c.include?('.')}.map {|c| c.split('.').first}
-    assocs += clazz.settings.columns[settings_type].map {|c| clazz.foreign_key?(c)}.compact
+    assocs = settings.columns[settings_type].find_all {|c| c.include?('.')}.map {|c| c.split('.').first}
+    assocs += settings.columns[settings_type].map {|c| clazz.foreign_key?(c)}.compact
     assocs.each do |assoc|
       next if !assoc.is_a?(String) && assoc.options[:polymorphic]
       @items = @items.includes(assoc.is_a?(String) ? "_adminium_#{assoc}".to_sym : assoc.name)
@@ -393,12 +393,12 @@ class ResourcesController < ApplicationController
   end
 
   def apply_has_many_counts
-    clazz.settings.columns[settings_type].find_all {|c| c.starts_with? 'has_many/'}.each do |column|
+    settings.columns[settings_type].find_all {|c| c.starts_with? 'has_many/'}.each do |column|
       assoc = column.gsub('has_many/', '')
       _, reflection = clazz.reflections.detect {|m, r| r.original_name == assoc}
       next if reflection.nil?
-      grouping_column = "#{quoted_table_name}.#{quote_column_name clazz.primary_key}"
-      count_on = "#{quote_table_name assoc}.#{quote_column_name @generic.table(assoc).primary_key}"
+      grouping_column = qualify params[:table], settings.primary_key
+      count_on = qualify assoc, @generic.table(assoc).primary_key
       outer_join = "#{quote_table_name assoc}.#{quote_column_name reflection.foreign_key} = #{grouping_column}"
       @items = @items.joins("left outer join #{assoc} on #{outer_join}").select("count(distinct #{count_on}) as #{quote_column_name column}")
       @items = @items.group(grouping_column) unless @items.group_values.include? grouping_column
@@ -406,28 +406,28 @@ class ResourcesController < ApplicationController
   end
 
   def apply_order
-    params[:order] ||= clazz.settings.default_order
+    params[:order] ||= settings.default_order
     # FIXME Not that clean. Removing quotes is for has_many/things sorting (not quoted in settings.columns)
     # order_column = params[:order].gsub(/ (desc|asc)/, '').gsub('"', '')
     # if order_column.include? '.'
     #   order_column = "#{order_column.split('.').first.singularize}.#{order_column.split('.').last}"
     # end
-    # params[:order] = clazz.primary_key unless clazz.settings.columns[settings_type].include? order_column
+    # params[:order] = clazz.primary_key unless settings.columns[settings_type].include? order_column
     unless params[:order][/[.\/]/]
-      params[:order] = "#{quoted_table_name}.#{params[:order]}"
+      params[:order] = qualify params[:table], params[:order]
     end
     nulllasts = @generic.postgresql? ? ' NULLS LAST' : ''
     @items = @items.order(params[:order] + nulllasts)
   end
 
   def apply_serialized_columns
-    clazz.settings.columns[:serialized].each do |column|
+    settings.columns[:serialized].each do |column|
       clazz.serialize column
     end
   end
 
   def apply_validations
-    clazz.settings.validations.each do |validation|
+    settings.validations.each do |validation|
       clazz.send validation['validator'], validation['column_name']
     end
     if clazz.primary_keys.present?
@@ -451,8 +451,7 @@ class ResourcesController < ApplicationController
         end
       end
     end
-    @items = @items.where(predication)
-    logger.info @items.to_sql
+    @items = @items.where(predication) if predication
   end
 
   def apply_filter filter
@@ -544,9 +543,9 @@ class ResourcesController < ApplicationController
   end
 
   def generate_csv
-    keys = clazz.settings.columns[:export]
-    options = {col_sep: clazz.settings.export_col_sep}
-    out = if clazz.settings.export_skip_header
+    keys = settings.columns[:export]
+    options = {col_sep: settings.export_col_sep}
+    out = if settings.export_skip_header
       ''
     else
       keys.map { |k| clazz.column_display_name k }.to_csv(options)
@@ -570,16 +569,8 @@ class ResourcesController < ApplicationController
     out
   end
 
-  def quote_column_name column_name
-    @generic.connection.quote_column_name column_name
-  end
-
-  def quote_table_name table_name
-    @generic.connection.quote_table_name table_name
-  end
-
-  def quoted_table_name
-    @quoted_table_name ||= quote_table_name clazz.table_name
+  def qualify table, column
+    Sequel.qualify table, column
   end
 
   def settings_type
@@ -608,6 +599,10 @@ class ResourcesController < ApplicationController
       clazz.find(id).update_attributes! attrs
       id
     end
+  end
+  
+  def settings
+    @settings = Settings::Base.new @generic, params[:table]
   end
 
 end

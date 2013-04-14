@@ -1,3 +1,7 @@
+Sequel Migration TODOS / FIXMES :
+- migration des données Redis ; "account:17:settings:PhoneNumber" => "account:17:settings:phone_numbers"
+- un 500 laisse la connexion ouverte on dirait, moult 500 menent a "PG::Error: FATAL:  sorry, too many clients already"
+
 FEATURES:
 freaking TIMEZONES !!
 utiliser rack-timeout

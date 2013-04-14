@@ -1,62 +1,24 @@
-require 'cgi'
 require 'uri'
+require 'sequel'
+Sequel.extension :pagination
 
 class Generic
-  attr_accessor :models
+  attr_accessor :models, :db_name, :account_id, :db
   attr_reader :current_adapter
 
   def initialize account
     @account_id = account.id
-    connection = build_connection_from_db_url account.db_url
-    discover_classes_and_associations! connection
-  end
-
-  def account_module
-    return @account_module if @account_module
-    module_name = "Account_#{@account_id}"
-    @account_module = self.class.const_get module_name, false
-  rescue NameError
-    @account_module = self.class.const_set module_name, Module.new
+    establish_connection account.db_url
+    # discover_classes_and_associations
   end
 
   def cleanup
-    self.class.send :remove_const, @account_module.name.demodulize if @account_module
-    ActiveSupport::DescendantsTracker.send(:class_variable_get, '@@direct_descendants').delete_if do |key, value|
-      key.name.match 'Generic::'
-    end
+    @db.disconnect
   end
 
-  def discover_classes_and_associations! connection_specification
-    Base.establish_connection connection_specification
+  def discover_classes_and_associations
     discover_models
     discover_associations
-  end
-
-  def discover_models
-    account_module.constants(false).each {|const| account_module.send :remove_const, const }
-    self.models = tables.map do |table|
-      res = account_module.const_set class_name(table), Class.new(Base)
-      res.adminium_account_id = @account_id
-      res.generic = self
-      res.table_name = table
-      def res.abstract_class?
-        false
-      end
-      if res.primary_key.nil?
-        if res.column_names.include? 'id'
-          res.primary_key = 'id'
-        else
-          references = res.column_names.find_all {|c| c.ends_with? '_id'}
-          references = res.column_names.find_all {|c| c =~ /\wId$/} if references.empty?
-          if references.size > 1
-            res.primary_keys = references
-          else
-            res.primary_key = res.column_names.first
-          end
-        end
-      end
-      res
-    end
   end
 
   def discover_associations
@@ -100,22 +62,14 @@ class Generic
     end
   end
   
-  def assoc_name name
-    "_adminium_#{name.gsub('-', '_')}".to_sym
-  end
-
-  def class_name table
-    table.gsub('-', '_').classify
-  end
-
   def foreign_keys
     @foreign_keys ||= Rails.cache.fetch "foreign_keys:#{@account_id}", expires_in: 2.minutes do
       query = postgresql? ? postgresql_foreign_keys_query : mysql_foreign_keys_query
-      fk_info = Base.connection.select_all query
+      fk_info = @db[query]
       foreign_keys = {}
       fk_info.each do |row|
-        foreign_keys[row['table_name']] ||= []
-        foreign_keys[row['table_name']] << {column: row['column'], to_table: row['to_table'], primary_key: row['primary_key']}
+        foreign_keys[row[:table_name]] ||= []
+        foreign_keys[row[:table_name]] << {column: row[:column], to_table: row[:to_table], primary_key: row[:primary_key]}
       end
       foreign_keys
     end
@@ -150,63 +104,52 @@ class Generic
   end
 
   def tables
-    @tables ||= Base.connection.tables.sort
+    @tables ||= @db.tables.sort
   end
 
   def table table_name
+    table_name = table_name.to_sym
     if tables.include? table_name
-      account_module.const_get class_name(table_name), false
+      @db[table_name]
     else
       raise TableNotFoundException.new(table_name)
     end
   end
 
-  def db_name
-    Base.connection.instance_variable_get('@config')[:database]
-  end
-
   def db_size
-    if mysql?
-      sql = "select sum(data_length + index_length) as fulldbsize FROM information_schema.TABLES WHERE table_schema = '#{db_name}'"
-      Base.connection.execute(sql).first.first
+    sql = if mysql?
+      "select sum(data_length + index_length) as fulldbsize FROM information_schema.TABLES WHERE table_schema = '#{db_name}'"
     else
-      sql = "select pg_database_size('#{db_name}') as fulldbsize"
-      Base.connection.execute(sql).first['fulldbsize']
+      "select pg_database_size('#{db_name}') as fulldbsize"
     end
-  end
-
-  def connection
-    Base.connection
+    @db[sql].first[:fulldbsize]
   end
 
   def table_sizes table_list
+    table_list ||= tables
     if mysql?
       return [] if table_list.try(:empty?)
       cond = "AND table_name in (#{table_list.map{|t|"'#{t}'"}.join(', ')})" if table_list.present?
       Base.connection.execute("select table_name, data_length + index_length, data_length from information_schema.TABLES WHERE table_schema = '#{db_name}' #{cond}").to_a
     else
-      tables.map do |table|
-        next if table_list && !table_list.include?(table)
+      table_list.map do |table|
         res = [table]
-        res += Base.connection.execute("select pg_total_relation_size('\"#{table}\"') as fulltblsize, pg_relation_size('\"#{table}\"') as tblsize").first.values
+        res += @db["select pg_total_relation_size('\"#{table}\"') as fulltblsize, pg_relation_size('\"#{table}\"') as tblsize"].first.values
       end.compact
     end
   end
 
-  def build_connection_from_db_url db_url
+  def establish_connection db_url
     uri = URI.parse db_url
-    connection = { adapter: uri.scheme, username: uri.user, password: uri.password,
-      host: uri.host, port: uri.port, database: (uri.path || "").split("/")[1] }
-    connection[:adapter] = 'postgresql' if connection[:adapter] == 'postgres'
-    connection[:adapter] = 'mysql2' if connection[:adapter] == 'mysql'
-    @current_adapter = connection[:adapter]
-    params = CGI.parse(uri.query || '')
-    params.each {|k, v| connection[k] = v.first }
-    connection
+    uri.scheme = 'postgres' if uri.scheme == 'postgresql'
+    uri.scheme = 'mysql2' if uri.scheme == 'mysql'
+    @db_name = (uri.path || "").split("/")[1]
+    @current_adapter = uri.scheme
+    @db = Sequel.connect uri.to_s
   end
 
   def postgresql?
-    current_adapter == 'postgresql'
+    current_adapter == 'postgres'
   end
 
   def mysql?

@@ -1,9 +1,5 @@
 module Settings
 
-  def settings
-    @settings ||= Base.new(self)
-  end
-
   class Global
 
     DEFAULTS = {per_page: 25, date_format: :long, datetime_format: :long, export_col_sep: ',', export_skip_header: false}
@@ -34,13 +30,13 @@ module Settings
 
     attr_accessor :filters, :default_order, :enum_values, :validations, :label_column, :export_col_sep, :export_skip_header
 
-    def initialize clazz
-      @clazz = clazz
+    def initialize generic, table
+      @generic, @table = generic, table
       load
     end
 
     def load
-      @globals = Global.new @clazz.adminium_account_id
+      @globals = Global.new @generic.account_id
       value = REDIS.get settings_key
       if value.nil?
         @column, @columns, @enum_values, @validations = {}, {}, [], []
@@ -62,11 +58,23 @@ module Settings
         @export_skip_header = datas[:export_skip_header]
         @export_col_sep = datas[:export_col_sep]
       end
-      @default_order ||= "#{@clazz.primary_key} desc" if @clazz.primary_key
+      @default_order ||= "#{primary_key} desc" if primary_key.any?
       set_missing_columns_conf
       @filters ||= {}
     end
-
+    
+    def primary_key
+      schema.find_all {|c, info| info[:primary_key]}
+    end
+    
+    def schema
+      @schema ||= @generic.db.schema(@table)
+    end
+    
+    def column_names
+      schema.map {|c, _| c}
+    end
+    
     def save
       settings = {columns: @columns, column:@column, filters: @filters, validations: @validations,
         default_order: @default_order, enum_values: @enum_values, label_column: @label_column,
@@ -76,7 +84,7 @@ module Settings
     end
 
     def settings_key
-      "account:#{@clazz.adminium_account_id}:settings:#{@clazz.original_name}"
+      "account:#{@generic.account_id}:settings:#{@table}"
     end
 
     def csv_options= options
@@ -133,23 +141,24 @@ module Settings
       return @columns[type] if opts[:only_checked]
       case type
       when :search
-        column_names = searchable_column_names
+        names = searchable_column_names
       when :serialized
-        column_names = string_or_text_column_names
+        names = string_or_text_column_names
       else
-        column_names = @clazz.column_names
+        names = column_names
       end
-      non_checked = (column_names - @columns[type]).map {|n|[n, false]}
+      non_checked = (names - @columns[type]).map {|n|[n, false]}
       checked = @columns[type].map {|n|[n, true]}
       checked + non_checked
     end
 
     def string_column_names
-      @clazz.columns.find_all{|c|c.type == :string}.map(&:name)
+      schema.find_all{|c, info|info[:type] == :string}.map(&:first)
     end
 
     def column_type(column_name)
-      @clazz.columns.detect{|c|c.name == column_name}.try(:type)
+      info = schema.detect{|c, _| c == column_name}.try(:second)
+      info[:type] if info
     end
 
     def is_number_column?(column_name)
@@ -165,26 +174,26 @@ module Settings
     end
     
     def string_or_text_column_names
-      find_all_columns_for_types(:string, :text).map(&:name)
-    end
-
-    def find_all_columns_for_types *types
-      @clazz.columns.find_all{|c| types.include? c.type}
+      find_all_columns_for_types(:string, :text).map(&:first)
     end
 
     def searchable_column_names
-      find_all_columns_for_types(:string, :text, :integer, :decimal).map(&:name)
+      find_all_columns_for_types(:string, :text, :integer, :decimal).map(&:first)
+    end
+
+    def find_all_columns_for_types *types
+      schema.find_all{|_, info| types.include? info[:type]}
     end
 
     def set_missing_columns_conf
       [:listing, :show, :form, :search, :serialized, :export].each do |type|
         if @columns[type]
-          @columns[type].delete_if {|name| !association_column?(name) && !(@clazz.column_names.include? name) }
+          @columns[type].delete_if {|name| !association_column?(name) && !(column_names.include? name) }
         else
           @columns[type] =
-          {listing: @clazz.column_names, show: @clazz.column_names,
-            form: (@clazz.column_names - %w(created_at updated_at id)),
-            export: @clazz.column_names,
+          {listing: column_names, show: column_names,
+            form: (column_names - %w(created_at updated_at id)),
+            export: column_names,
             search: searchable_column_names, serialized: []}[type]
         end
       end
@@ -200,7 +209,41 @@ module Settings
     end
 
     def possible_enum_columns
-      @clazz.columns.find_all {|c| c.possible_enum_column }
+      schema.find_all {|_, info| possible_enum_column info }
+    end
+
+    def possible_enum_column info
+      !info[:primary_key] && ![:date, :datetime, :text, :float].include?(info[:type])
+    end
+
+    def possible_serializable_column info
+      [:text, :string].include? info[:type]
+    end
+
+    def adminium_column_options
+      res = {}
+      column_names.each do |column|
+        res[column] = column_options(column) || {is_enum: false}
+        enum = enum_values_for column
+        res[column].merge! is_enum: true, values: enum if enum
+        res[column].merge! displayed_column_name: column_display_name(column)
+      end
+      res
+    end
+
+    def column_display_name key
+      value = column_options(key)['rename']
+      if value.present?
+        value
+      else
+        key = key.to_s
+        if key.starts_with? 'has_many/'
+          key = key.gsub 'has_many/', ''
+          "#{key.humanize} count"
+        else
+          key.humanize
+        end
+      end
     end
 
   end

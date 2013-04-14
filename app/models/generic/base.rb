@@ -22,31 +22,6 @@ class Generic::Base < ActiveRecord::Base
     label || "#{self.class.original_name.humanize} ##{self[self.class.primary_key]}"
   end
 
-  def self.adminium_column_options
-    res = {}
-    column_names.each do |column|
-      res[column] = settings.column_options(column) || {is_enum: false}
-      enum = settings.enum_values_for column
-      res[column].merge! is_enum: true, values: enum if enum
-      res[column].merge! displayed_column_name: column_display_name(column)
-    end
-    res
-  end
-
-  def self.column_display_name key
-    value = settings.column_options(key)['rename']
-    if value.present?
-      value
-    else
-      if key.starts_with? 'has_many/'
-        key = key.gsub 'has_many/', ''
-        "#{key.humanize} count"
-      else
-        key.humanize
-      end
-    end
-  end
-
   # workaround to allow column names like save, changes.
   # can't edit those columns though
   def self.instance_method_already_implemented?(method)
