@@ -31,7 +31,7 @@ module ResourcesHelper
   
   def item_attributes_type types
     columns = @item.class.columns.select {|c| types.include? c.type }.map &:name
-    columns & @item.class.settings.columns[:show]
+    columns &= @item.class.settings.columns[:show]
     columns - [@item.class.primary_key] - @item.reflections.values.map(&:foreign_key)
   end
 
@@ -128,7 +128,7 @@ module ResourcesHelper
   end
   
   def display_item item
-    label = item.adminium_label
+    label = item.adminium_label || "##{item[item.class.primary_key]}"
     link_to label, resource_path(item.class.table_name, item)
   end
 

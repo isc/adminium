@@ -21,15 +21,14 @@
             i.icon-cog
 .row-fluid
   .span7
-    table.table.table-condensed
-      - item_attributes_type([:string]).each do |name|
-        tr
-          th.span3= @item.class.column_display_name name
-          == display_attribute :td, @item, name
-      - item_attributes_type([:integer, :float, :decimal]).each do |name|
-        tr
-          th= @item.class.column_display_name name
-          == display_attribute :td, @item, name
+    - [[:string], [:integer, :float, :decimal]].each do |types|
+      - columns = item_attributes_type(types)
+      - if columns.present?
+        table.table.table-condensed
+          - columns.each do |name|
+            tr
+              th.span3= @item.class.column_display_name name
+              == display_attribute :td, @item, name
     table.table.table-condensed.type_text
       - item_attributes_type([:text]).each do |name|
         tr
@@ -45,35 +44,37 @@
         tr
           th.span3= @item.class.column_display_name name
           == display_attribute :td, @item, name
-    table.table.table-condensed
-      - item_attributes_type([:boolean]).each do |name|
-        tr
-          th.span3= @item.class.column_display_name name
-          == display_attribute :td, @item, name
-    
-    table.table.table-condensed
-      - @item.reflections.each do |name, assoc|
-        tr
-        - if assoc.belongs_to?
-          th title=assoc.macro.to_s.humanize = assoc.original_name.humanize
-          - foreign_key_value = @item[assoc.foreign_key]
-          - if foreign_key_value
-            td(colspan=2)= display_belongs_to @item, assoc.foreign_key, foreign_key_value
+    - columns = item_attributes_type([:boolean])
+    - if columns.present?
+      table.table.table-condensed
+        - columns.each do |name|
+          tr
+            th.span3= @item.class.column_display_name name
+            == display_attribute :td, @item, name
+    - if @item.reflections.present?
+      table.table.table-condensed
+        - @item.reflections.each do |name, assoc|
+          tr
+          - if assoc.belongs_to?
+            th title=assoc.macro.to_s.humanize = assoc.original_name.humanize
+            - foreign_key_value = @item[assoc.foreign_key]
+            - if foreign_key_value
+              td(colspan=2)= display_belongs_to @item, assoc.foreign_key, foreign_key_value
+            - else
+              td.nilclass null
           - else
-            td.nilclass null
-        - else
-          - count = @item.send(name).count
-          th.span2= assoc.original_name.humanize
-          td
-            = link_to resources_path(assoc.klass.table_name, where: {assoc.foreign_key => @item[@item.class.primary_key]}) do
-              span.badge.badge-warning = count
-          td
-            == @item.send(assoc.name).limit(5).map {|i|display_item(i)}.join(", ")
-            - if count > 5
-              '  
-              = link_to "...", resources_path(assoc.klass.table_name, where: {assoc.foreign_key => @item[@item.class.primary_key]})
-          td
-            = link_to new_resource_path(assoc.klass.table_name, attributes: {assoc.foreign_key => @item[@item.class.primary_key]}), class: 'btn btn-mini', rel: "tooltip", title: "Create a new associated #{assoc.original_name.singularize}" do
-              i.icon-plus
+            - count = @item.send(name).count
+            th.span2= assoc.original_name.humanize
+            td
+              = link_to resources_path(assoc.klass.table_name, where: {assoc.foreign_key => @item[@item.class.primary_key]}) do
+                span.badge.badge-warning = count
+            td
+              == @item.send(assoc.name).limit(5).map {|i|display_item(i)}.join(", ")
+              - if count > 5
+                '  
+                = link_to "...", resources_path(assoc.klass.table_name, where: {assoc.foreign_key => @item[@item.class.primary_key]})
+            td
+              = link_to new_resource_path(assoc.klass.table_name, attributes: {assoc.foreign_key => @item[@item.class.primary_key]}), class: 'btn btn-mini', rel: "tooltip", :"data-placement" => :left,  title: "Create a new associated #{assoc.original_name.singularize}" do
+                i.icon-plus
 
 = render 'resources/panels/show_settings'
