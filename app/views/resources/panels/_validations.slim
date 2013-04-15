@@ -5,7 +5,7 @@ table.table.table-bordered
       th Column
       th
   tbody
-    - clazz.settings.validations.each do |validation|
+    - resource.validations.each do |validation|
       tr
         td= validation['validator'].humanize
         td= validation['column_name']
@@ -19,14 +19,14 @@ table.table.table-bordered
         option value=validator = validator.humanize
 input type="hidden" name="validations[]"
 .params.hide
-  - clazz.settings.validations.each do |validation|
+  - resource.validations.each do |validation|
     = hidden_field_tag 'validations[][validator]', validation['validator']
     = hidden_field_tag 'validations[][column_name]', validation['column_name']
 .control-group
   label Column
   .controls
     select
-      - clazz.settings.columns_options(:form, only_checked: true).each do |name|
+      - resource.columns_options(:form, only_checked: true).each do |name|
         option value=name = name
 .control-group
   .controls

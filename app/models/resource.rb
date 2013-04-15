@@ -1,4 +1,4 @@
-module Settings
+module Resource
 
   class Global
 
@@ -28,10 +28,10 @@ module Settings
 
   class Base
 
-    attr_accessor :filters, :default_order, :enum_values, :validations, :label_column, :export_col_sep, :export_skip_header
+    attr_accessor :filters, :default_order, :enum_values, :validations, :label_column, :export_col_sep, :export_skip_header, :table
 
     def initialize generic, table
-      @generic, @table = generic, table
+      @generic, @table = generic, table.to_sym
       load
     end
 
@@ -58,17 +58,21 @@ module Settings
         @export_skip_header = datas[:export_skip_header]
         @export_col_sep = datas[:export_col_sep]
       end
-      @default_order ||= "#{primary_key} desc" if primary_key.any?
+      @default_order ||= "#{primary_key} desc" if primary_key
       set_missing_columns_conf
       @filters ||= {}
     end
     
     def primary_key
-      schema.find_all {|c, info| info[:primary_key]}
+      schema.detect {|c, info| info[:primary_key]}.try(:first)
     end
     
     def schema
       @schema ||= @generic.db.schema(@table)
+    end
+    
+    def query
+      @generic.db[@table]
     end
     
     def column_names
@@ -199,6 +203,16 @@ module Settings
       end
     end
     
+    def foreign_key? name
+      table_fks = @generic.foreign_keys[@table]
+      return if table_fks.nil?
+      table_fks.detect {|h| h[:column] == name.to_s}
+    end
+    
+    def human_name
+      table.to_s.humanize.singularize
+    end
+    
     def association_column? name
       name.include?('.') || name.starts_with?('has_many/')
     end
@@ -245,7 +259,37 @@ module Settings
         end
       end
     end
+    
+    def item_label item
+      return item[label_column] if label_column
+      "#{human_name} ##{item[primary_key]}"
+    end
 
+  end
+  
+  class Wrapper
+    
+    def initialize attributes, resource
+      @attributes, @resource = attributes, resource
+    end
+    
+    def self.model_name
+      @model_name ||= OpenStruct.new param_key: 'attributes'
+    end
+    
+    def to_key
+      [@attributes[@resource.primary_key]]
+    end
+    
+    def [] key
+      @attributes[key]
+    end
+    
+    def method_missing meth, *args
+      return @attributes[meth] if @resource.column_names.include? meth
+      super
+    end
+    
   end
 
 end

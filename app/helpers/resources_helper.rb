@@ -26,18 +26,18 @@ module ResourcesHelper
         content_tag('i', '', class: "icon-chevron-#{direction} #{active}")
       end
     end
-    res << (link_to settings.column_display_name(original_key), params.merge(order:order), title: title, rel:'tooltip')
+    res << (link_to resource.column_display_name(original_key), params.merge(order:order), title: title, rel:'tooltip')
   end
 
-  def display_attribute wrapper_tag, item, key, relation = false, original_key = nil
-    is_editable, key = nil, key.to_s
-    return display_associated_column item, key, wrapper_tag if key.include? '.'
-    return display_associated_count item, key, wrapper_tag if key.starts_with? 'has_many/'
+  def display_attribute wrapper_tag, item, key, resource, relation = false, original_key = nil
+    is_editable, key = nil, key
+    return display_associated_column item, key, wrapper_tag if key.to_s.include? '.'
+    return display_associated_count item, key, wrapper_tag if key.to_s.starts_with? 'has_many/'
     value = item[key]
-    if value && item.class.foreign_key?(key)
+    if value && resource.foreign_key?(key)
       content = display_belongs_to item, key, value
       css_class = 'foreignkey'
-    elsif enum_values = settings.enum_values_for(key)
+    elsif enum_values = resource.enum_values_for(key)
       is_editable = true
       if value.nil?
         content, css_class = 'null', 'nilclass'
@@ -52,14 +52,14 @@ module ResourcesHelper
         end
         css_class = 'enum'
       end
-    elsif settings.columns[:serialized].include? key
+    elsif resource.columns[:serialized].include? key
       css_class, content = 'serialized', content_tag(:pre, value.inspect, :class => 'sh_ruby')
     else
-      css_class, content = display_value item, key
+      css_class, content = display_value item, key, resource
       is_editable = true
     end
     opts = {class: css_class}
-    is_editable = false if settings.primary_key == key || key == 'updated_at' || relation
+    is_editable = false if resource.primary_key == key || key == 'updated_at' || relation
     if is_editable
       opts.merge! "data-column-name" => key
       opts.merge! "data-raw-value" => item[key].to_s unless item[key].is_a?(String) && css_class != 'enum'
@@ -101,7 +101,7 @@ module ResourcesHelper
       # and has settings already loaded in it that may be outdated
       foreign_clazz = @generic.table(reflection.klass.table_name)
     end
-    label_column = foreign_clazz.settings.label_column
+    label_column = foreign_clazz.resource.label_column
     if label_column.present?
       item = if reflection.options[:polymorphic]
         foreign_clazz.where(foreign_clazz.primary_key => value).first
@@ -116,7 +116,7 @@ module ResourcesHelper
     link_to label, path
   end
 
-  def display_value item, key
+  def display_value item, key, resource
     value = item[key]
     css_class = value.class.to_s.parameterize
     content = case value
@@ -130,9 +130,9 @@ module ResourcesHelper
     when ActiveSupport::TimeWithZone, Date
       display_datetime value, column: key, clazz: item.class
     when Fixnum, BigDecimal, Float
-      display_number key, item
+      display_number key, item, resource
     when TrueClass, FalseClass
-      display_boolean key, item
+      display_boolean key, item, resource
     when nil
       'null'
     else
@@ -141,9 +141,9 @@ module ResourcesHelper
     [css_class, content]
   end
 
-  def display_boolean key, item
+  def display_boolean key, item, resource
     value = item[key]
-    options = item.class.settings.column_options(key)
+    options = resource.column_options key
     if options["boolean_#{value}"].present?
       options["boolean_#{value}"]
     else
@@ -151,10 +151,10 @@ module ResourcesHelper
     end
   end
 
-  def display_number key, item, value=nil
+  def display_number key, item, resource, value = nil
     value ||= item[key]
-    options = item.class.settings.column_options(key)
-    number_options = {:unit => "", :significant => true}
+    options = resource.column_options key
+    number_options = {unit: "", significant: true}
     opts = [:unit, :delimiter, :separator, :precision]
     if value.is_a? Fixnum
       number_options[:precision] = 0
@@ -199,8 +199,8 @@ module ResourcesHelper
     content_tag wrapper_tag, content, opts
   end
 
-  def boolean_input_options clazz, key
-    column_options = clazz.settings.column_options(key)
+  def boolean_input_options resource, key
+    column_options = resource.column_options key
     opts = [[column_options['boolean_true'].presence || 'Yes', true], [column_options['boolean_false'].presence || 'No', false]]
     {as: :select, collection: opts}
   end
@@ -227,7 +227,7 @@ module ResourcesHelper
     [CGI.unescape(param.split('=').first), CGI.unescape(param.split('=').last)]
   end
 
-  def options_for_custom_columns clazz
+  def options_for_custom_columns resource
     return # refactoring in progress
     res = [['belongs_to', clazz.reflect_on_all_associations(:belongs_to).map{|r|[r.original_name, r.original_plural_name] unless r.options[:polymorphic]}.compact]]
     res << ['has_many', clazz.reflect_on_all_associations(:has_many).map{|r|["#{r.original_name.to_s.humanize} count", r.original_name]}]

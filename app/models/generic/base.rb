@@ -15,13 +15,6 @@ class Generic::Base < ActiveRecord::Base
     reflections.values.find {|reflection| reflection.macro == :belongs_to && reflection.foreign_key == column_name }
   end
 
-  def adminium_label
-    if (label_column = self.class.settings.label_column)
-      label = self[label_column]
-    end
-    label || "#{self.class.original_name.humanize} ##{self[self.class.primary_key]}"
-  end
-
   # workaround to allow column names like save, changes.
   # can't edit those columns though
   def self.instance_method_already_implemented?(method)

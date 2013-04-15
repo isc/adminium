@@ -9,8 +9,8 @@
     .modal-body
       = accordion do |accordion|
         = accordion.pane 'Select exported fields' do
-          = render partial: 'resources/panels/column_listing', locals: {clazz: clazz, type: :export, sortable: true}
-          = render partial: 'resources/panels/extra_columns', locals: {clazz: clazz}
+          = render partial: 'resources/panels/column_listing', locals: {resource: resource, type: :export, sortable: true}
+          = render partial: 'resources/panels/extra_columns', locals: {resource: resource}
         = accordion.pane 'CSV file options' do
           .control-group
             - guessed_encoding = (Rails.configuration.database_configuration[Rails.env]['encoding'].presence rescue 'UTF-8') || 'UTF-8'
@@ -22,13 +22,13 @@
           .control-group
             label.control-label for="csv_options_skip_header"= t('export.csv.skip_header')
             .controls
-              = check_box_tag 'csv_options[skip_header]', 'checked', settings.export_skip_header
+              = check_box_tag 'csv_options[skip_header]', 'checked', resource.export_skip_header
               p.help-block= t('export.csv.skip_header_help')
 
           .control-group
             label.control-label for="csv_options_generator_col_sep"= t('export.csv.col_sep')
             .controls
-              = select_tag 'csv_options[col_sep]', options_for_select({"<comma> ','" => ',', "<semicolon> ';'" => ';', '<tabs>' => "\t" }, settings.export_col_sep)
+              = select_tag 'csv_options[col_sep]', options_for_select({"<comma> ','" => ',', "<semicolon> ';'" => ';', '<tabs>' => "\t" }, resource.export_col_sep)
               p.help-block= t('export.csv.col_sep_help', :value => t('export.csv.default_col_sep'))
 
 

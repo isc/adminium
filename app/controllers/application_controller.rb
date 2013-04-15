@@ -64,11 +64,7 @@ class ApplicationController < ActionController::Base
   def cleanup_generic
     @generic.try :cleanup
   end
-
-  def clazz
-    @clazz ||= @generic.table(params[:table])
-  end
-
+  
   def global_db_error exception
     msg = "There was a database error, it might be a problem with your database url. The error was : <pre>#{exception.message}</pre>".html_safe
     redirect_to edit_account_url, :flash => {:error => msg}

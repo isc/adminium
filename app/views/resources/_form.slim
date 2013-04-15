@@ -1,11 +1,11 @@
-= simple_form_for @item, url: @form_url, html: {class: 'form-horizontal resource-form'}, defaults: {input_html: {class: 'span6'}} do |f|
-  - @item.class.settings.columns[:form].each do |name|
-    - next if @item.class.settings.column_type(name).to_s == 'binary'
-    - options = {label: @item.class.column_display_name(name)}
-    - if enum_value = @item.class.settings.enum_values_for(name)
+= simple_form_for Resource::Wrapper.new(@item, resource), url: @form_url, html: {class: 'form-horizontal resource-form'}, defaults: {input_html: {class: 'span6'}} do |f|
+  - resource.columns[:form].each do |name|
+    - next if resource.column_type(name).to_s == 'binary'
+    - options = {label: resource.column_display_name(name)}
+    - if enum_value = resource.enum_values_for(name)
       - enum_collection = enum_value.to_a.map {|v| [v[1]['label'], v[0]]}
       = f.input name, options.merge(as: :select, collection: enum_collection)
-    - elsif reflection = @item.class.foreign_key?(name)
+    - elsif reflection = resource.foreign_key?(name)
       - if reflection.options[:polymorphic]
         = f.input name, options
       - else
@@ -31,9 +31,9 @@
                 li
     - else
 
-      - options.merge! readonly: (@item.class.columns.detect{|c|c.name == name}.primary || @item.class.primary_key == name)
-      - options.merge!(boolean_input_options(@item.class, name)) if @item.class.settings.column_type(name).to_s == 'boolean'
-      = f.input name, options
+      / - options.merge! readonly: (resource.columns.detect{|c|c.name == name}.primary || @item.class.primary_key == name)
+      - options.merge!(boolean_input_options(resource, name)) if resource.column_type(name).to_s == 'boolean'
+      = f.input name, options.merge(as: resource.column_type(name))
   .form-actions
     = f.submit 'Save', class: 'btn-primary', data: {disable_with: 'Sending...'}, name: 'then_redirect'
     '

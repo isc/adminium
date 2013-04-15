@@ -9,7 +9,7 @@
         .controls
           select#new_filter.span2 data-table=params[:table]
             option value="" disabled="disabled" selected="selected" = "choose a column"
-            - settings.column_names.each do |name|
+            - resource.column_names.each do |name|
               option value=name = name
 
       table.table.table-condensed.filters

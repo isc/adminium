@@ -1,14 +1,14 @@
 .control-group
   = label_tag :per_page, 'Items per page', class: 'control-label'
   .controls
-    input.span2#per_page type="number" step=25 min=25 max=250 name="per_page" value=settings.per_page
+    input.span2#per_page type="number" step=25 min=25 max=250 name="per_page" value=resource.per_page
 .control-group
   = label_tag 'default_order[]', 'Default order', class: 'control-label'
   .controls
     = select_tag 'default_order[]', \
-      options_from_collection_for_select(settings.schema, :first, :first, settings.default_order.split(' ').first)
-    = select_tag 'default_order[]', options_for_select(%w(asc desc), settings.default_order.split(' ').second)
+      options_from_collection_for_select(resource.schema, :first, :first, resource.default_order.split(' ').first)
+    = select_tag 'default_order[]', options_for_select(%w(asc desc), resource.default_order.split(' ').second)
 .control-group
   = label_tag 'label_column', nil, class: 'control-label'
   .controls
-    = select_tag 'label_column', options_from_collection_for_select(settings.schema, :first, :first, settings.label_column), include_blank: true
+    = select_tag 'label_column', options_from_collection_for_select(resource.schema, :first, :first, resource.label_column), include_blank: true

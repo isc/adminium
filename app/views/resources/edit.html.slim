@@ -5,14 +5,14 @@
         .span3
           strong= link_to params[:table].humanize, resources_path(params[:table])
           span.divider >
-          = "Editing #{@item.class.model_name.human} ##{@item[@item.class.primary_key]}"
+          = "Editing #{resource.item_label @item}"
         .btn-group.span8
-          = link_to content_tag(:i, nil, class: 'icon-eye-open'), resource_path(@item.class.table_name, @item), class: 'btn', :'data-placement' => 'bottom', rel: 'tooltip', title: 'Show'
+          = link_to content_tag(:i, nil, class: 'icon-eye-open'), resource_path(resource.table, @item), class: 'btn', :'data-placement' => 'bottom', rel: 'tooltip', title: 'Show'
           - if user_can? 'create', params[:table]
-            = link_to new_resource_path(table:params[:table], clone_id: @item[@item.class.primary_key]), class: "btn create", rel: "tooltip", title: "Clone", "data-placement" => "bottom" do
+            = link_to new_resource_path(table:params[:table], clone_id: @item[resource.primary_key]), class: "btn create", rel: "tooltip", title: "Clone", "data-placement" => "bottom" do
               i.icon-copy
           - if user_can? 'destroy', params[:table]
-            = link_to content_tag(:i, nil, class: 'icon-trash'), resource_path(@item.class.table_name, @item, redirect: 'index'), method: :delete, confirm: 'You sure?', class: 'btn', title: 'Destroy', rel: 'tooltip', 'data-placement' => 'bottom'
+            = link_to content_tag(:i, nil, class: 'icon-trash'), resource_path(resource.table, @item, redirect: 'index'), method: :delete, confirm: 'You sure?', class: 'btn', title: 'Destroy', rel: 'tooltip', 'data-placement' => 'bottom'
         .span1
           a.btn data-toggle="modal" href="#settings" title="Form Settings" data-placement="bottom" rel="tooltip"
             i.icon-cog
