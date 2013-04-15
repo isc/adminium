@@ -151,6 +151,8 @@ GEM
     pg (0.13.1)
     polyglot (0.3.3)
     populator (1.0.0)
+    quiet_assets (1.0.2)
+      railties (>= 3.1, < 5.0)
     rack (1.4.5)
     rack-cache (1.2)
       rack (>= 0.4)
@@ -271,6 +273,7 @@ DEPENDENCIES
   omniauth-openid
   pg
   populator
+  quiet_assets
   rack_session_access
   rails (= 3.2.13)
   redis (>= 2.2.0)

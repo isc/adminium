@@ -41,6 +41,7 @@ group :development do
   gem 'faker'
   gem 'better_errors'
   gem 'binding_of_caller', '0.7.1'
+  gem 'quiet_assets'
 end
 
 group :production do

@@ -7,7 +7,7 @@ class ResourcesController < ApplicationController
   before_filter :table_access_limitation, except: [:search]
   before_filter :check_permissions
   # before_filter :apply_serialized_columns, only: [:index, :show]
-  before_filter :apply_validations, only: [:create, :update, :new, :edit]
+  # before_filter :apply_validations, only: [:create, :update, :new, :edit]
   before_filter :fetch_item, only: [:show, :edit, :update, :destroy]
   helper_method :user_can?
   helper_method :grouping, :settings
@@ -22,7 +22,7 @@ class ResourcesController < ApplicationController
     settings.columns[:search] = [clazz.primary_key, settings.label_column].compact.map(&:to_s) | settings.columns[:search]
     apply_search if params[:search].present?
     apply_order
-    render json: @items.paginate(1, 37).to_json(methods: :adminium_label, :only => ([clazz.primary_key] + settings.columns[:search]).uniq)
+    render json: @items.paginate(1, 37).to_json(methods: :adminium_label, only: ([clazz.primary_key] + settings.columns[:search]).uniq)
   end
 
   def index
@@ -36,14 +36,15 @@ class ResourcesController < ApplicationController
     # apply_includes
     apply_search if params[:search].present?
     @items_for_stats = @items
-    @items = @items.select(qualify params[:table], '*')
+    # @items = @items.select(qualify params[:table], nil)
     # apply_has_many_counts
-    apply_order
+    # apply_order
     update_export_settings
     respond_with @items do |format|
       format.html do
         check_per_page_setting
-        @items = @items.paginate(params[:page] || 1, settings.per_page)
+        page = (params[:page].presence || 1).to_i
+        @items = @items.paginate(page, settings.per_page)
         apply_statistics
       end
       format.json do
@@ -147,7 +148,7 @@ class ResourcesController < ApplicationController
   end
 
   def new
-    @title = "New #{clazz.original_name.humanize}"
+    @title = "New #{params[:table].humanize.singularize}"
     @form_url = resources_path(params[:table])
     @item = if params.has_key? :clone_id
       clazz.find(params[:clone_id]).dup

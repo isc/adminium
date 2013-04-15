@@ -1,7 +1,7 @@
 module ResourcesHelper
 
   def header_link original_key
-    key = original_key
+    key = original_key.to_s
     if key.include? '.'
       parts = key.split('.')
       parts[0] = parts.first.tableize
@@ -26,18 +26,18 @@ module ResourcesHelper
         content_tag('i', '', class: "icon-chevron-#{direction} #{active}")
       end
     end
-    res << (link_to clazz.column_display_name(original_key), params.merge(order:order), title: title, rel:'tooltip')
+    res << (link_to settings.column_display_name(original_key), params.merge(order:order), title: title, rel:'tooltip')
   end
 
   def display_attribute wrapper_tag, item, key, relation = false, original_key = nil
-    is_editable = nil
+    is_editable, key = nil, key.to_s
     return display_associated_column item, key, wrapper_tag if key.include? '.'
     return display_associated_count item, key, wrapper_tag if key.starts_with? 'has_many/'
     value = item[key]
     if value && item.class.foreign_key?(key)
       content = display_belongs_to item, key, value
       css_class = 'foreignkey'
-    elsif enum_values = item.class.settings.enum_values_for(key)
+    elsif enum_values = settings.enum_values_for(key)
       is_editable = true
       if value.nil?
         content, css_class = 'null', 'nilclass'
@@ -52,14 +52,14 @@ module ResourcesHelper
         end
         css_class = 'enum'
       end
-    elsif item.class.settings.columns[:serialized].include? key
+    elsif settings.columns[:serialized].include? key
       css_class, content = 'serialized', content_tag(:pre, value.inspect, :class => 'sh_ruby')
     else
       css_class, content = display_value item, key
       is_editable = true
     end
     opts = {class: css_class}
-    is_editable = false if item.class.primary_key == key || key == 'updated_at' || relation
+    is_editable = false if settings.primary_key == key || key == 'updated_at' || relation
     if is_editable
       opts.merge! "data-column-name" => key
       opts.merge! "data-raw-value" => item[key].to_s unless item[key].is_a?(String) && css_class != 'enum'
@@ -207,18 +207,18 @@ module ResourcesHelper
 
   def page_entries_info(collection, options = {})
     entry_name = options[:entry_name] || (collection.empty? ? 'entry' : collection.first.class.name.underscore.sub('_', ' '))
-    if collection.num_pages < 2
+    if collection.page_count < 2
       case collection.total_count
       when 0; "0 #{entry_name.pluralize}"
       when 1; "<b>1</b> #{entry_name}"
       else;   "<b>#{collection.total_count}</b> #{entry_name.pluralize}"
       end
     else
-      offset = (collection.current_page - 1) * collection.limit_value
+      offset = (collection.current_page - 1) * collection.page_size
       %{<b>%d&nbsp;-&nbsp;%d</b> of <b>%d</b>} % [
         offset + 1,
-        offset + collection.limit_value,
-        collection.total_count
+        offset + collection.page_size,
+        collection.pagination_record_count
       ]
     end
   end
@@ -228,6 +228,7 @@ module ResourcesHelper
   end
 
   def options_for_custom_columns clazz
+    return # refactoring in progress
     res = [['belongs_to', clazz.reflect_on_all_associations(:belongs_to).map{|r|[r.original_name, r.original_plural_name] unless r.options[:polymorphic]}.compact]]
     res << ['has_many', clazz.reflect_on_all_associations(:has_many).map{|r|["#{r.original_name.to_s.humanize} count", r.original_name]}]
     grouped_options_for_select res

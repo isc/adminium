@@ -140,12 +140,13 @@ class Generic
   end
 
   def establish_connection db_url
+    # TODO there is a read_timeout option for mysql
     uri = URI.parse db_url
     uri.scheme = 'postgres' if uri.scheme == 'postgresql'
     uri.scheme = 'mysql2' if uri.scheme == 'mysql'
     @db_name = (uri.path || "").split("/")[1]
     @current_adapter = uri.scheme
-    @db = Sequel.connect uri.to_s
+    @db = Sequel.connect uri.to_s, logger: Rails.logger
   end
 
   def postgresql?
