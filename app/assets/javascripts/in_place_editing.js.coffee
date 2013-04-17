@@ -1,8 +1,7 @@
 class InPlaceEditing
 
   constructor: ->
-    @table = $('.items-list').attr("data-table")
-    @model = $('.items-list').attr("data-model")
+    @table = $('.items-list').data('table')
     $(".items-list td[data-column-name]:not([data-mode=editing])").bind 'hover', @setupEditableColumn
     $('.items-list').on 'click', 'td[data-column-name] i.icon-pencil', @switchToEditionMode
 
@@ -17,7 +16,7 @@ class InPlaceEditing
     raw_value = td.attr("data-raw-value")
     raw_value = td.text() unless raw_value || td.hasClass('nilclass') || td.hasClass('emptystring')
     column = td.attr('data-column-name')
-    name = "#{@model}[#{column}]"
+    name = "#{@table}[#{column}]"
     type = columns_hash[column].type
     type = 'enum' if adminium_column_options[column].is_enum
     if td.find('a i.icon-plus-sign').length
@@ -86,13 +85,13 @@ class InPlaceEditing
     spinner = $("#facebookG").clone()
     form.find('.btn').replaceWith(spinner)
     form.find('a').remove()
-    $.ajax({
-      type: 'POST',
-      url: "/resources/#{@table}/#{id}",
-      data: "#{form.serialize()}&_method=PUT",
-      success: @submitCallback,
+    $.ajax
+      type: 'POST'
+      url: "/resources/#{@table}/#{id}"
+      data: "#{form.serialize()}&_method=PUT"
+      success: @submitCallback
       error: @errorCallback
-    })
+      dataType: 'json'
     false
 
   submitCallback: (data) =>
@@ -107,6 +106,7 @@ class InPlaceEditing
 
   errorCallback: (data) =>
     alert('internal error : failed to update this field')
+    @restoreOriginalValue $('td[data-mode=editing]')
 
   cancelEditionMode: (elt) =>
     td = $(elt.currentTarget).parents('td')

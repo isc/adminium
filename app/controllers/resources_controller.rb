@@ -6,9 +6,10 @@ class ResourcesController < ApplicationController
 
   before_filter :table_access_limitation, except: [:search]
   before_filter :check_permissions
+  before_filter :dates_from_params
   # before_filter :apply_serialized_columns, only: [:index, :show]
   # before_filter :apply_validations, only: [:create, :update, :new, :edit]
-  before_filter :fetch_item, only: [:show, :edit, :update, :destroy]
+  before_filter :fetch_item, only: [:show, :edit]
   helper_method :user_can?
   helper_method :grouping, :resource
 
@@ -62,12 +63,13 @@ class ResourcesController < ApplicationController
   end
 
   def show
-    @title = "Show #{@item.adminium_label}"
+    @title = "Show #{resource.item_label @item}"
   end
 
   def edit
     @title = "Edit #{resource.item_label @item}"
-    @form_url = resource_path(@item, table: params[:table])
+    @form_url = resource_path(@item[resource.primary_key], table: params[:table])
+    @form_method = 'put'
   end
 
   def import
@@ -172,15 +174,15 @@ class ResourcesController < ApplicationController
   end
 
   def update
-    if @item.update_attributes item_params
-      respond_with(@item) do |format|
+    if resource.update_item params[:id], item_params
+      respond_to do |format|
         format.html do
           redirect_to after_save_redirection, flash: {success: "#{object_name} successfully updated."}
         end
         format.json do
-          column_name = item_params.keys.first
-          value = view_context.display_attribute :td, @item, column_name
-          render json: {result: :success, value: value, column: column_name, id: @item[clazz.primary_key]}
+          column_name = item_params.keys.first.to_sym
+          value = view_context.display_attribute :td, resource.find(params[:id]), column_name, resource
+          render json: {result: :success, value: value, column: column_name, id: params[:id]}
         end
       end
     else
@@ -191,16 +193,16 @@ class ResourcesController < ApplicationController
         end
         format.json do
           column_name = item_params.keys.first
-          render json: {result: :failed, message: @item.errors.full_messages, column: column_name, id: @item[clazz.primary_key]}
+          render json: {result: :failed, message: @item.errors.full_messages, column: column_name, id: params[:id]}
         end
       end
     end
   rescue ActiveRecord::StatementInvalid => e
-    respond_with @item do |format|
+    respond_to do |format|
       format.html {redirect_to :back, flash: {error: e.message}}
       format.json do
         column_name = item_params.keys.first
-        render json: {result: :failed, message: e.message, column: column_name, id: @item[clazz.primary_key]}
+        render json: {result: :failed, message: e.message, column: column_name, id: params[:id]}
       end
     end
   end
@@ -216,7 +218,7 @@ class ResourcesController < ApplicationController
   def bulk_destroy
     params[:item_ids].map! {|id| id.split(',')} if clazz.primary_key.is_a?(Array)
     clazz.destroy params[:item_ids]
-    redirect_to :back, flash: {success: "#{params[:item_ids].size} #{class_name.pluralize} successfully destroyed."}
+    redirect_to :back, flash: {success: "#{params[:item_ids].size} #{human_name.pluralize} successfully destroyed."}
   rescue ActiveRecord::StatementInvalid => e
     redirect_to :back, flash: {error: e.message}
   end
@@ -273,9 +275,9 @@ class ResourcesController < ApplicationController
   end
 
   def fetch_item
-    @item = resource.query.where(resource.primary_key => params[:id]).first
+    @item = resource.find params[:id]
   rescue ActiveRecord::RecordNotFound
-    redirect_to resources_path(params[:table]), notice: "#{class_name} ##{params[:id]} does not exist."
+    redirect_to resources_path(params[:table]), notice: "#{human_name} ##{params[:id]} does not exist."
   end
 
   def check_per_page_setting
@@ -287,15 +289,11 @@ class ResourcesController < ApplicationController
   end
 
   def item_params
-    params[clazz.name.underscore.gsub('/', '_')]
+    params[resource.table]
   end
 
   def object_name
-    "#{class_name} ##{@item[clazz.primary_key]}"
-  end
-
-  def class_name
-    clazz.original_name.underscore.humanize
+    "#{resource.human_name} ##{params[:id] || @item[resource.primary_key]}"
   end
 
   def apply_statistics
@@ -582,11 +580,11 @@ class ResourcesController < ApplicationController
     return :back if params[:return_to] == 'back'
     case params[:then_redirect]
     when /edit/
-      edit_resource_path(params[:table], @item)
+      edit_resource_path(params[:table], params[:id])
     when /create/
       new_resource_path(params[:table])
     else
-      resource_path(params[:table], @item)
+      resource_path(params[:table], params[:id] || @item[resource.primary_key])
     end
   end
 
@@ -604,6 +602,20 @@ class ResourcesController < ApplicationController
   
   def resource
     @resource ||= Resource::Base.new @generic, params[:table]
+  end
+  
+  def dates_from_params
+    return unless item_params.present?
+    item_params.each do |key, value|
+      if value.is_a? Hash
+        date = "#{value['1i']}-#{value['2i']}-#{value['3i']}"
+        item_params[key] = if value['4i']
+          Time.parse("#{date} #{value['4i']}:#{value['5i']}")
+        else
+          Date.parse date
+        end
+      end
+    end
   end
 
 end

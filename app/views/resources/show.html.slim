@@ -5,29 +5,29 @@
         .span3
           strong= link_to params[:table].humanize, resources_path(params[:table])
           span.divider >
-          = "#{@item.class.model_name.human} ##{@item[@item.class.primary_key]}"
+          = "#{resource.human_name} ##{params[:id]}"
         .btn-group.span8
           - if user_can? 'create', params[:table]
             = link_to new_resource_path(table:params[:table]), class: "btn create", rel: "tooltip", title: "Create a new row", "data-placement" => "bottom" do
               i.icon-file
-            = link_to new_resource_path(table:params[:table], clone_id: @item[@item.class.primary_key]), class: "btn create", rel: "tooltip", title: "Clone", "data-placement" => "bottom" do
+            = link_to new_resource_path(table:params[:table], clone_id: params[:id]), class: "btn create", rel: "tooltip", title: "Clone", "data-placement" => "bottom" do
               i.icon-copy
           - if user_can? 'edit', params[:table]
-            = link_to content_tag(:i, nil, class: 'icon-pencil'), edit_resource_path(@item.class.table_name, @item), title: 'Edit', rel: 'tooltip', :'data-placement' => "bottom", class: 'btn'
+            = link_to content_tag(:i, nil, class: 'icon-pencil'), edit_resource_path(resource.table, params[:id]), title: 'Edit', rel: 'tooltip', :'data-placement' => "bottom", class: 'btn'
           - if user_can? 'destroy', params[:table]
-            = link_to content_tag(:i, nil, class: 'icon-trash'), resource_path(@item.class.table_name, @item, redirect: 'index'), method: :delete, data: {confirm: 'You sure?'}, class: 'btn', title: 'Destroy', rel: 'tooltip', 'data-placement' => 'bottom'
+            = link_to content_tag(:i, nil, class: 'icon-trash'), resource_path(resource.table, params[:id], redirect: 'index'), method: :delete, data: {confirm: 'You sure?'}, class: 'btn', title: 'Destroy', rel: 'tooltip', 'data-placement' => 'bottom'
         .span1.pull-right
           a.btn data-toggle="modal" href="#settings" title="Show Settings" data-placement="bottom" rel="tooltip"
             i.icon-cog
 .row-fluid
   .span6
     dl
-      - @item.class.settings.columns[:show].each do |name|
-        dt= @item.class.column_display_name name
-        == display_attribute :dd, @item, name
+      - resource.columns[:show].each do |name|
+        dt= resource.column_display_name name
+        == display_attribute :dd, @item, name, resource
   .span6
     dl
-      - @item.reflections.each do |name, assoc|
+      - resource.reflections.each do |name, assoc|
         dt= assoc.macro.to_s.humanize
         - if assoc.belongs_to?
           - foreign_key_value = @item[assoc.foreign_key]
@@ -38,11 +38,11 @@
         - else
           - count = @item.send(name).count
           dd
-            = link_to assoc.original_name, resources_path(assoc.klass.table_name, where: {assoc.foreign_key => @item[@item.class.primary_key]})
+            = link_to assoc.original_name, resources_path(assoc.klass.table_name, where: {assoc.foreign_key => params[:id]})
             '
             span.badge.badge-warning = count
             '
-            = link_to new_resource_path(assoc.klass.table_name, attributes: {assoc.foreign_key => @item[@item.class.primary_key]}), class: 'btn btn-mini', rel: "tooltip", title: "Create a new associated #{assoc.original_name.singularize}" do
+            = link_to new_resource_path(assoc.klass.table_name, attributes: {assoc.foreign_key => params[:id]}), class: 'btn btn-mini', rel: "tooltip", title: "Create a new associated #{assoc.original_name.singularize}" do
               i.icon-plus
 
 = render 'resources/panels/show_settings'

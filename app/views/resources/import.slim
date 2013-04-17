@@ -1,7 +1,7 @@
 javascript:
-  columns_hash = #{clazz.columns_hash.to_json.html_safe}
-  adminium_column_options = #{clazz.adminium_column_options.to_json.html_safe}
-  primary_key = '#{clazz.primary_key}'
+  columns_hash = #{resource.schema_hash.to_json.html_safe}
+  adminium_column_options = #{resource.adminium_column_options.to_json.html_safe}
+  primary_key = '#{resource.primary_key}'
 
 - content_for :subnav do
   h4== "#{link_to(params[:table].capitalize, resources_path(params[:table]))} | New import"
@@ -24,7 +24,7 @@ javascript:
           .hint
         #import-success.span3.hide
           h5 Step 3 of 3
-          = link_to "see imported data", resources_path(params[:table], asearch: 'last_import', order: clazz.primary_key), class: 'btn btn-large btn-success'
+          = link_to "see imported data", resources_path(params[:table], asearch: 'last_import', order: resource.primary_key), class: 'btn btn-large btn-success'
           .hint your data has been successfuly imported
         .span6.file-description
           p
@@ -39,7 +39,7 @@ javascript:
             span
           p.status
 
-table.table-striped.table-bordered.table.items-list data-table=params[:table] data-model=clazz.to_s.underscore.gsub('/', '_')
+table.table-striped.table-bordered.table.items-list data-table=params[:table]
   thead
     tr
   tbody

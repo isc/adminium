@@ -1,21 +1,21 @@
 class ColumnSettingsController < ApplicationController
 
   layout false
-  helper_method :clazz, :column, :settings, :association_clazz, :has_many_count_column
+  helper_method :column, :resource, :association_clazz, :has_many_count_column
 
   def show
-    @hidden = !settings.columns[:listing].include?(params[:column])
-    @serialized = settings.columns[:serialized].include?(params[:column])
-    @enum = settings.enum_values_for params[:column]
+    @hidden = !resource.columns[:listing].include?(params[:column])
+    @serialized = resource.columns[:serialized].include?(params[:column])
+    @enum = resource.enum_values_for params[:column]
   end
 
   def create
-    settings.update_column_options params[:column], params[:column_options]
-    settings.update_enum_values params
+    resource.update_column_options params[:column], params[:column_options]
+    resource.update_enum_values params
     if params[:label_column]
-      settings = @generic.table(params[:label_column][:table]).settings
-      settings.label_column = params[:label_column][:label_column]
-      settings.save
+      resource = Resource::Base.new @generic, params[:label_column][:table]
+      resource.label_column = params[:label_column][:label_column]
+      resource.save
     end
     redirect_to :back
   end
@@ -41,12 +41,12 @@ class ColumnSettingsController < ApplicationController
     @clazz ||= @generic.table params[:id]
   end
 
-  def settings
-    @settings ||= clazz.settings
+  def resource
+    @resource ||= Resource::Base.new @generic, params[:id]
   end
 
   def column
-    @column ||= clazz.columns.detect{|c|c.name == params[:column]}
+    @column ||= resource.schema.detect{|name, _|name.to_s == params[:column]}.second
   end
 
 end

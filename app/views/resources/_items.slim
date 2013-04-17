@@ -15,7 +15,7 @@
     .alert.alert-info
       'No records were found.
 - else
-  table.table-striped.table-bordered.table.items-list data-table=params[:table] data-model=resource.table
+  table.table-striped.table-bordered.table.items-list data-table=params[:table]
     thead
       tr
         - if actions_cell
@@ -57,7 +57,7 @@
               - if item[resource.primary_key]
                 = link_to content_tag('i', nil, class: 'icon-eye-open'), resource_path(params[:table], item)
                 - if user_can? 'edit', params[:table]
-                  = link_to content_tag('i', nil, class: 'icon-pencil'), edit_resource_path(params[:table], item)
+                  = link_to content_tag('i', nil, class: 'icon-pencil'), edit_resource_path(params[:table], item[resource.primary_key])
                 - if user_can? 'destroy', params[:table]
                   = link_to content_tag('i', nil, class: 'icon-trash'), resource_path(params[:table], item), method: :delete, data: {confirm: 'You sure?'}
             td.checkboxes.click_checkbox

@@ -63,12 +63,17 @@ module Resource
       @filters ||= {}
     end
     
+    # TODO composite primary key
     def primary_key
       schema.detect {|c, info| info[:primary_key]}.try(:first)
     end
     
     def schema
       @schema ||= @generic.db.schema(@table)
+    end
+    
+    def schema_hash
+      Hash[schema]
     end
     
     def query
@@ -80,7 +85,7 @@ module Resource
     end
     
     def save
-      settings = {columns: @columns, column:@column, filters: @filters, validations: @validations,
+      settings = {columns: @columns, column: @column, filters: @filters, validations: @validations,
         default_order: @default_order, enum_values: @enum_values, label_column: @label_column,
         export_col_sep: @export_col_sep, export_skip_header: @export_skip_header}
       settings.merge! per_page: @per_page if @globals.per_page != @per_page
@@ -160,9 +165,13 @@ module Resource
       schema.find_all{|c, info|info[:type] == :string}.map(&:first)
     end
 
-    def column_type(column_name)
-      info = schema.detect{|c, _| c == column_name}.try(:second)
+    def column_type column_name
+      info = column_info column_name
       info[:type] if info
+    end
+    
+    def column_info column_name
+      schema.detect{|c, _| c == column_name}.try(:second)
     end
 
     def is_number_column?(column_name)
@@ -192,11 +201,12 @@ module Resource
     def set_missing_columns_conf
       [:listing, :show, :form, :search, :serialized, :export].each do |type|
         if @columns[type]
+          @columns[type] = @columns[type].map(&:to_sym)
           @columns[type].delete_if {|name| !association_column?(name) && !(column_names.include? name) }
         else
           @columns[type] =
           {listing: column_names, show: column_names,
-            form: (column_names - %w(created_at updated_at id)),
+            form: (column_names - [:created_at, :updated_at, :id]),
             export: column_names,
             search: searchable_column_names, serialized: []}[type]
         end
@@ -204,6 +214,7 @@ module Resource
     end
     
     def foreign_key? name
+      # reflections.values.find {|reflection| reflection.macro == :belongs_to && reflection.foreign_key == column_name }
       table_fks = @generic.foreign_keys[@table]
       return if table_fks.nil?
       table_fks.detect {|h| h[:column] == name.to_s}
@@ -214,11 +225,11 @@ module Resource
     end
     
     def association_column? name
-      name.include?('.') || name.starts_with?('has_many/')
+      name.to_s.include?('.') || name.to_s.starts_with?('has_many/')
     end
 
     def enum_values_for column_name
-      return unless enum_value = @enum_values.detect {|enum_value| enum_value['column_name'] == column_name}
+      return unless enum_value = @enum_values.detect {|enum_value| enum_value['column_name'] == column_name.to_s}
       enum_value['values']
     end
 
@@ -260,9 +271,26 @@ module Resource
       end
     end
     
+    def required_column? name
+      return true if name == primary_key
+      validations.detect {|val| val['validator'] == 'validates_presence_of' && val['column_name'] == name.to_s}
+    end
+    
     def item_label item
-      return item[label_column] if label_column
-      "#{human_name} ##{item[primary_key]}"
+      res = item[label_column] if label_column
+      res || "#{human_name} ##{item[primary_key]}"
+    end
+    
+    def update_item primary_key_value, updated_values
+      query.where(primary_key => primary_key_value).update updated_values
+    end
+    
+    def find primary_key_value
+      query.where(primary_key => primary_key_value).first
+    end
+    
+    def reflections
+      {}
     end
 
   end

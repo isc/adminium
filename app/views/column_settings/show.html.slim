@@ -16,17 +16,17 @@
         .control-group
           label.control-label for="column_options_rename" Column displayed name
           .controls
-            = text_field_tag 'column_options[rename]', settings.column_options(params[:column])['rename']
+            = text_field_tag 'column_options[rename]', resource.column_options(params[:column])['rename']
             p.help-block
               'Override the column name in the user interface.
               br
               = "Default is \"#{params[:column].humanize}\""
-      - unless association_clazz || has_many_count_column || clazz.foreign_key?(params[:column])
-        - partial = {float: :decimal, timestamp: :datetime}[column.type] || column.type
+      - unless association_clazz || has_many_count_column || resource.foreign_key?(params[:column])
+        - partial = {float: :decimal, timestamp: :datetime}[column[:type]] || column[:type]
         - if partial != :string
           = accordion.pane "#{partial.to_s.pluralize.humanize} display" do
             = render partial: "/column_settings/types/#{partial}"
-        - if column.possible_serializable_column
+        - if resource.possible_serializable_column column
           = accordion.pane "Serialized data" do
             .row-fluid
               .span1
@@ -35,12 +35,12 @@
                 label for="column_options_serialized"
                   'Check this if your data represents a serialized Ruby Core Class
                 
-        - if column.possible_enum_column
+        - if resource.possible_enum_column column
           = accordion.pane "Enumerable data" do
             = render partial: "/column_settings/enum"
 
       - else
-        - if clazz.foreign_key?(params[:column])
+        - if resource.foreign_key?(params[:column])
           = accordion.pane 'Association discovery' do
             - foreign_clazz = foreign_class(clazz, params[:column])
             .control-group

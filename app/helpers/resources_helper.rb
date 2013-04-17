@@ -30,7 +30,7 @@ module ResourcesHelper
   end
 
   def display_attribute wrapper_tag, item, key, resource, relation = false, original_key = nil
-    is_editable, key = nil, key
+    is_editable, key = nil, key.to_sym
     return display_associated_column item, key, wrapper_tag if key.to_s.include? '.'
     return display_associated_count item, key, wrapper_tag if key.to_s.starts_with? 'has_many/'
     value = item[key]
@@ -201,8 +201,7 @@ module ResourcesHelper
 
   def boolean_input_options resource, key
     column_options = resource.column_options key
-    opts = [[column_options['boolean_true'].presence || 'Yes', true], [column_options['boolean_false'].presence || 'No', false]]
-    {as: :select, collection: opts}
+    [[column_options['boolean_true'].presence || 'Yes', true], [column_options['boolean_false'].presence || 'No', false]]
   end
 
   def page_entries_info(collection, options = {})

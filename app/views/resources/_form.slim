@@ -1,42 +1,44 @@
-= simple_form_for Resource::Wrapper.new(@item, resource), url: @form_url, html: {class: 'form-horizontal resource-form'}, defaults: {input_html: {class: 'span6'}} do |f|
+= form_tag @form_url, class: 'form-horizontal resource-form' do
+  = hidden_field_tag '_method', 'put' if @form_method == 'put'
   - resource.columns[:form].each do |name|
-    - next if resource.column_type(name).to_s == 'binary'
-    - options = {label: resource.column_display_name(name)}
-    - if enum_value = resource.enum_values_for(name)
-      - enum_collection = enum_value.to_a.map {|v| [v[1]['label'], v[0]]}
-      = f.input name, options.merge(as: :select, collection: enum_collection)
-    - elsif reflection = resource.foreign_key?(name)
-      - if reflection.options[:polymorphic]
-        = f.input name, options
-      - else
-        - if reflection.klass.count <= 25
-          = f.association reflection.name, options.merge(collection: reflection.klass.all(order: reflection.klass.settings.label_column))
-        - else
-          - reflection_id = @item[name]
-          - record = reflection.klass.where(reflection.klass.primary_key => reflection_id).first
-          .control-group.adminium-association.optional
-            =  f.label reflection.name, options[:label], :class=>'control-label'
-            .controls
-              span.record_selected(class="#{'hide' if record.nil?}")
-                span= record.try :adminium_label
-                i.icon.icon-remove-sign
-              .clear
-              = f.hidden_field name
-              .input-prepend.input-append
-                span.add-on Search
-                input(type='search' data-autocomplete-url=search_resources_path(reflection.klass.table_name) autocomplete='off' class='span4 search-query' placeholder="#{reflection.klass.settings.columns[:search].map(&:humanize).join(', ').downcase}")
-                span.add-on
-                  i.icon.icon-refresh.icon-spin
-              ul.span6
-                li
-    - else
-
-      / - options.merge! readonly: (resource.columns.detect{|c|c.name == name}.primary || @item.class.primary_key == name)
-      - options.merge!(boolean_input_options(resource, name)) if resource.column_type(name).to_s == 'boolean'
-      = f.input name, options.merge(as: resource.column_type(name))
+    .control-group
+      label.control-label for="#{resource.table}_#{name}"
+        - if resource.required_column? name
+          abbr title="required" *
+          ' 
+        = resource.column_display_name name
+      .controls
+        = input resource, name
   .form-actions
-    = f.submit 'Save', class: 'btn-primary', data: {disable_with: 'Sending...'}, name: 'then_redirect'
+    = submit_tag 'Save', class: 'btn-primary', data: {disable_with: 'Sending...'}, name: 'then_redirect'
     '
-    = f.submit 'Save and create another', class: 'btn', data: {disable_with: 'Sending...'}, name: 'then_redirect'
+    = submit_tag 'Save and create another', class: 'btn', data: {disable_with: 'Sending...'}, name: 'then_redirect'
     '
-    = f.submit 'Save and continue editing', class: 'btn', data: {disable_with: 'Sending...'}, name: 'then_redirect'
+    = submit_tag 'Save and continue editing', class: 'btn', data: {disable_with: 'Sending...'}, name: 'then_redirect'\
+    
+    
+    
+    / - elsif reflection = resource.foreign_key?(name)
+    /   - if reflection.options[:polymorphic]
+    /     = f.input name, options
+    /   - else
+    /     - if reflection.klass.count <= 25
+    /       = f.association reflection.name, options.merge(collection: reflection.klass.all(order: reflection.klass.settings.label_column))
+    /     - else
+    /       - reflection_id = @item[name]
+    /       - record = reflection.klass.where(reflection.klass.primary_key => reflection_id).first
+    /       .control-group.adminium-association.optional
+    /         =  f.label reflection.name, options[:label], :class=>'control-label'
+    /         .controls
+    /           span.record_selected(class="#{'hide' if record.nil?}")
+    /             span= record.try :adminium_label
+    /             i.icon.icon-remove-sign
+    /           .clear
+    /           = f.hidden_field name
+    /           .input-prepend.input-append
+    /             span.add-on Search
+    /             input(type='search' data-autocomplete-url=search_resources_path(reflection.klass.table_name) autocomplete='off' class='span4 search-query' placeholder="#{reflection.klass.settings.columns[:search].map(&:humanize).join(', ').downcase}")
+    /             span.add-on
+    /               i.icon.icon-refresh.icon-spin
+    /           ul.span6
+    /             li

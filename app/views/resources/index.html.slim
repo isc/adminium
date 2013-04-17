@@ -1,5 +1,5 @@
 javascript:
-  columns_hash = #{resource.schema.to_json.html_safe}
+  columns_hash = #{resource.schema_hash.to_json.html_safe}
   adminium_column_options = #{resource.adminium_column_options.to_json.html_safe}
 
 - content_for :subnav do

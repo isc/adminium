@@ -10,8 +10,8 @@ module ApplicationHelper
 
   # FIXME n+1 queries perf issue with label_column option
 
-  def foreign_class clazz, key
-    reflection = clazz.reflections.values.find {|r| r.foreign_key == key}
+  def foreign_class resource, key
+    reflection = resource.reflections.values.find {|r| r.foreign_key == key}
     # clazz.reflections[assoc_name.to_sym].klass is a leftover class that should have been garbage collected
     # and has settings already loaded in it that may be outdated
     @generic.table(reflection.klass.table_name)

@@ -1,18 +1,17 @@
 class SettingsController < ApplicationController
 
   def update
-    settings = @generic.table(params[:id]).settings
     [:listing, :form, :show, :search, :serialized, :export].each do |type|
       param_key = "#{type}_columns".to_sym
-      settings.columns[type] = params[param_key].delete_if {|e|e.empty?} if params.has_key? param_key
+      resource.columns[type] = params[param_key].delete_if(&:empty?) if params.has_key? param_key
     end
     [:validations].each do |setting|
-      settings.send "#{setting}=", params[setting].delete_if {|e|e.empty?} if params.has_key? setting
+      resource.send "#{setting}=", params[setting].delete_if(&:empty?) if params.has_key? setting
     end
-    settings.per_page = params[:per_page] if params[:per_page]
-    settings.label_column = params[:label_column] if params[:label_column]
-    settings.default_order = params[:default_order].join(' ') if params[:default_order].present?
-    settings.save
+    resource.per_page = params[:per_page] if params[:per_page]
+    resource.label_column = params[:label_column] if params[:label_column]
+    resource.default_order = params[:default_order].join(' ') if params[:default_order].present?
+    resource.save
     if params[:back_to]
       redirect_to params[:back_to]
       return
@@ -26,12 +25,19 @@ class SettingsController < ApplicationController
   end
 
   def values
-    render json: @generic.table(params[:id]).select("distinct(#{params[:column_name]})").
-      limit(50).order(params[:column_name]).map{|d| d[params[:column_name]]}
+    column_name = params[:column_name].to_sym
+    render json: @generic.table(params[:id]).select(column_name).distinct.
+      limit(50).order(column_name).map{|d| d[column_name]}
   end
 
   def columns
     render json: @generic.table(params[:table]).column_names
+  end
+  
+  private
+  
+  def resource
+    @resource ||= Resource::Base.new @generic, params[:id]
   end
 
 end
