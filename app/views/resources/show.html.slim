@@ -1,3 +1,7 @@
+javascript:
+  columns_hash = #{clazz.columns_hash.to_json.html_safe}
+  adminium_column_options = #{clazz.adminium_column_options.to_json.html_safe}
+
 - content_for :subnav do
   header.jumbotron.subhead
     .breadcrumb
@@ -19,7 +23,7 @@
         .span1.pull-right
           a.btn data-toggle="modal" href="#settings" title="Show Settings" data-placement="bottom" rel="tooltip"
             i.icon-cog
-.row-fluid
+.row-fluid data-table=params[:table] data-model=clazz.to_s.underscore.gsub('/', '_') data-item-id=@item[clazz.primary_key]
   .span7
     - [[:string], [:integer, :float, :decimal]].each do |types|
       - columns = item_attributes_type(types)
@@ -36,10 +40,7 @@
           tr
             th= @item.class.column_display_name name
           tr
-            - if @item.class.settings.columns[:serialized].include?(name)
-              == display_attribute :td, @item, name
-            - else
-              td== @item[name]
+            == display_attribute :td, @item, name
   .span5
     table.table.table-condensed
       - ([@item.class.primary_key] + item_attributes_type([:date, :datetime, :time, :timestamp])).each do |name|

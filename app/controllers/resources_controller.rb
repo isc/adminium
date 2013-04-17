@@ -62,6 +62,7 @@ class ResourcesController < ApplicationController
 
   def show
     @title = "Show #{@item.adminium_label}"
+    @prevent_truncate = true
   end
 
   def edit

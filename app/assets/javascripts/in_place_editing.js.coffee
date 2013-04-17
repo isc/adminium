@@ -1,19 +1,28 @@
 class InPlaceEditing
 
   constructor: ->
-    @table = $('.items-list').attr("data-table")
-    @model = $('.items-list').attr("data-model")
-    $(".items-list td[data-column-name]:not([data-mode=editing])").bind 'hover', @setupEditableColumn
-    $('.items-list').on 'click', 'td[data-column-name] i.icon-pencil', @switchToEditionMode
+    @table = $('*[data-table]').attr("data-table")
+    @model = $('*[data-model]').attr("data-model")
+    console.log(@table, @model)
+    $("td[data-column-name]:not([data-mode=editing])").bind 'hover', @setupEditableColumn
+    $('.items-list, .resources.show table').on 'click', 'td[data-column-name] i.icon-pencil', @switchToEditionModeByClickingIcon
+    $('.items-list, .resources.show table').on 'dblclick', 'td[data-column-name]', @switchToEditionModeByDblClicking
 
   setupEditableColumn: (elt) =>
     td = $(elt.currentTarget)
     if td.find('i.icon-pencil').length is 0 and td.attr('data-mode') isnt 'editing'
       $("<i class='icon-pencil'>").appendTo(td)
 
-  switchToEditionMode: (elt) =>
-    $(".items-list td[data-mode=editing] a").click()
+  switchToEditionModeByClickingIcon: (elt) =>
     td = $(elt.currentTarget).parents("td")
+    @switchToEditionMode(td)
+    
+  switchToEditionModeByDblClicking: (elt) =>
+    td = $(elt.currentTarget)
+    @switchToEditionMode(td)
+  
+  switchToEditionMode: (td) =>
+    $("td[data-mode=editing] a").click()
     raw_value = td.attr("data-raw-value")
     raw_value = td.text() unless raw_value || td.hasClass('nilclass') || td.hasClass('emptystring')
     column = td.attr('data-column-name')
@@ -83,6 +92,8 @@ class InPlaceEditing
   submitColumnEdition: (elt) =>
     form = $(elt.currentTarget)
     id = form.parents('tr').attr("data-item-id")
+    id = $('.row-fluid[data-item-id]').attr('data-item-id') unless id
+    console.log(id)
     spinner = $("#facebookG").clone()
     form.find('.btn').replaceWith(spinner)
     form.find('a').remove()
@@ -96,14 +107,19 @@ class InPlaceEditing
     false
 
   submitCallback: (data) =>
+    console.log('submitCallback')
+    if $(".items-list").length
+      td_css_path = ".items-list tr[data-item-id=#{data.id}] td=[data-column-name=#{data.column}]"
+    else
+      td_css_path = "td[data-column-name=#{data.column}]"
+    console.log(td_css_path)
     if data.result is "success"
-      td = $(".items-list tr[data-item-id=#{data.id}] td[data-column-name=#{data.column}]").replaceWith(data.value)
-      new_td = $(".items-list tr[data-item-id=#{data.id}] td=[data-column-name=#{data.column}]")
-      new_td.bind 'hover', @setupEditableColumn
+      td = $(td_css_path).replaceWith(data.value)
+      console.log(td)
+      $(td_css_path).bind 'hover', @setupEditableColumn
     else
       alert(data.message)
-      td = $(".items-list tr[data-item-id=#{data.id}] td=[data-column-name=#{data.column}]")
-      @restoreOriginalValue td
+      @restoreOriginalValue $(td_css_path)
 
   errorCallback: (data) =>
     alert('internal error : failed to update this field')
@@ -121,4 +137,4 @@ class InPlaceEditing
 $ ->
   new InPlaceEditing()
   $(document).keyup (ev) ->
-    $(".items-list td[data-mode=editing] a").click() if ev.keyCode is 27
+    $("td[data-mode=editing] a").click() if ev.keyCode is 27
