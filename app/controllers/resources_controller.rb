@@ -64,6 +64,7 @@ class ResourcesController < ApplicationController
 
   def show
     @title = "Show #{resource.item_label @item}"
+    @prevent_truncate = true
   end
 
   def edit

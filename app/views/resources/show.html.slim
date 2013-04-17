@@ -1,3 +1,7 @@
+javascript:
+  columns_hash = #{resource.schema_hash.to_json.html_safe}
+  adminium_column_options = #{resource.adminium_column_options.to_json.html_safe}
+
 - content_for :subnav do
   header.jumbotron.subhead
     .breadcrumb
@@ -19,30 +23,62 @@
         .span1.pull-right
           a.btn data-toggle="modal" href="#settings" title="Show Settings" data-placement="bottom" rel="tooltip"
             i.icon-cog
-.row-fluid
-  .span6
-    dl
-      - resource.columns[:show].each do |name|
-        dt= resource.column_display_name name
-        == display_attribute :dd, @item, name, resource
-  .span6
-    dl
-      - resource.reflections.each do |name, assoc|
-        dt= assoc.macro.to_s.humanize
-        - if assoc.belongs_to?
-          - foreign_key_value = @item[assoc.foreign_key]
-          - if foreign_key_value
-            dd= display_belongs_to @item, assoc.foreign_key, foreign_key_value
+
+.row-fluid data-table=params[:table] data-item-id=params[:id]
+  .span7
+    - [[:string], [:integer, :float, :decimal]].each do |types|
+      - columns = item_attributes_type types, resource
+      - if columns.present?
+        table.table.table-condensed
+          - columns.each do |name|
+            tr
+              th.span3= resource.column_display_name name
+              == display_attribute :td, @item, name, resource
+    - columns = item_attributes_type([:text], resource)
+    - if columns.present?
+      table.table.table-condensed.type_text
+        - columns.each do |name|
+          tr
+            th= resource.column_display_name name
+          tr
+            == display_attribute :td, @item, name, resource
+  .span5
+    table.table.table-condensed
+      - ([resource.primary_key] + item_attributes_type([:date, :datetime, :time, :timestamp], resource)).each do |name|
+        tr
+          th.span3= resource.column_display_name name
+          == display_attribute :td, @item, name, resource
+    - columns = item_attributes_type([:boolean], resource)
+    - if columns.present?
+      table.table.table-condensed
+        - columns.each do |name|
+          tr
+            th.span3= resource.column_display_name name
+            == display_attribute :td, @item, name, resource
+    - if resource.reflections.present?
+      table.table.table-condensed
+        - resource.reflections.each do |name, assoc|
+          tr
+          - if assoc.belongs_to?
+            th title=assoc.macro.to_s.humanize = assoc.original_name.humanize
+            - foreign_key_value = @item[assoc.foreign_key]
+            - if foreign_key_value
+              td(colspan=2)= display_belongs_to @item, assoc.foreign_key, foreign_key_value
+            - else
+              td.nilclass null
           - else
-            dd.nilclass null
-        - else
-          - count = @item.send(name).count
-          dd
-            = link_to assoc.original_name, resources_path(assoc.klass.table_name, where: {assoc.foreign_key => params[:id]})
-            '
-            span.badge.badge-warning = count
-            '
-            = link_to new_resource_path(assoc.klass.table_name, attributes: {assoc.foreign_key => params[:id]}), class: 'btn btn-mini', rel: "tooltip", title: "Create a new associated #{assoc.original_name.singularize}" do
-              i.icon-plus
+            - count = @item.send(name).count
+            th.span2= assoc.original_name.humanize
+            td
+              = link_to resources_path(assoc.klass.table_name, where: {assoc.foreign_key => @item[@item.class.primary_key]}) do
+                span.badge.badge-warning = count
+            td
+              == @item.send(assoc.name).limit(5).map {|i|display_item(i)}.join(", ")
+              - if count > 5
+                '  
+                = link_to "...", resources_path(assoc.klass.table_name, where: {assoc.foreign_key => @item[@item.class.primary_key]})
+            td
+              = link_to new_resource_path(assoc.klass.table_name, attributes: {assoc.foreign_key => @item[@item.class.primary_key]}), class: 'btn btn-mini', rel: "tooltip", :"data-placement" => :left,  title: "Create a new associated #{assoc.original_name.singularize}" do
+                i.icon-plus
 
 = render 'resources/panels/show_settings'

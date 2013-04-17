@@ -28,6 +28,12 @@ module ResourcesHelper
     end
     res << (link_to resource.column_display_name(original_key), params.merge(order:order), title: title, rel:'tooltip')
   end
+  
+  def item_attributes_type types, resource
+    columns = resource.find_all_columns_for_types(*types).map(&:first)
+    columns &= resource.columns[:show]
+    columns - [resource.primary_key] - resource.reflections.values.map(&:foreign_key)
+  end
 
   def display_attribute wrapper_tag, item, key, resource, relation = false, original_key = nil
     is_editable, key = nil, key.to_sym
@@ -115,6 +121,11 @@ module ResourcesHelper
     end
     link_to label, path
   end
+  
+  def display_item item
+    label = item.adminium_label || "##{item[item.class.primary_key]}"
+    link_to label, resource_path(item.class.table_name, item)
+  end
 
   def display_value item, key, resource
     value = item[key]
@@ -170,12 +181,12 @@ module ResourcesHelper
   end
 
   def truncate_with_popover value, key
-    if value.length > 100
+    if @prevent_truncate || value.length < 100
+      value
+    else
       popover = content_tag :a, content_tag(:i, nil, class:'icon-plus-sign'),
         data: {content:ERB::Util.h(value), title:key}, class: 'text-more'
       (ERB::Util.h(value.truncate(100)) + popover).html_safe
-    else
-      value
     end
   end
 
