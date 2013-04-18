@@ -273,6 +273,7 @@ module Resource
     
     def required_column? name
       return true if name == primary_key
+      return true if schema_hash[name][:allow_null] == false
       validations.detect {|val| val['validator'] == 'validates_presence_of' && val['column_name'] == name.to_s}
     end
     
@@ -286,6 +287,7 @@ module Resource
     end
     
     def update_item primary_key_value, updated_values
+      updated_values = typecasted_values updated_values
       magic_timestamps updated_values, false
       pk_filter(primary_key_value).update updated_values
     end
@@ -305,11 +307,13 @@ module Resource
       @generic.db.typecast_value col_schema[:type], value
     end
     
-    def insert values
+    def typecasted_values values
       values = values.symbolize_keys
-      values.each do |key, value|
-        values[key] = typecast_value key, value
-      end
+      values.each {|key, value| values[key] = typecast_value key, value}
+    end
+    
+    def insert values
+      values = typecasted_values values
       magic_timestamps values, true
       primary_key_value = query.insert values
     end

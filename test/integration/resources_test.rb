@@ -63,22 +63,31 @@ class ResourcesTest < ActionDispatch::IntegrationTest
 
   test "save new" do
     visit new_resource_path(:users)
-    fill_in :pseudo, with: 'Bobulus'
+    fill_in 'Pseudo', with: 'Bobulus'
     click_button 'Save'
     assert page.has_content?('successfully created')
     assert_equal 'Bobulus', find('td[data-column-name=pseudo]').text
   end
+  
+  test "failed save due to value out of range for db" do
+    visit new_resource_path(:users)
+    fill_in 'Age', with: '83829384728832'
+    click_button 'Save'
+    assert page.has_css?('.alert.alert-error')
+    assert page.has_content?('New User')
+    assert_equal '83829384728832', find('input[type=number][name="users[age]"]').value
+  end
 
   test "save new and create another" do
     visit new_resource_path(:users)
-    fill_in :pseudo, with: 'Bobulus'
+    fill_in 'Pseudo', with: 'Bobulus'
     click_button 'Save and create another'
     assert page.has_content?("New User")
   end
   
   test "save new and continue editing" do
     visit new_resource_path(:users)
-    fill_in :pseudo, with: 'Bobulus'
+    fill_in 'Pseudo', with: 'Bobulus'
     click_button 'Save and continue editing'
     assert_equal 'Bobulus', find('input[type=text][name="users[pseudo]"]').value
   end
@@ -86,20 +95,20 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test "save the date" do
     visit new_resource_path(:documents)
     click_button 'Save'
-    assert_equal "", find('dd[data-column-name=start_date]').text
+    assert_equal 'null', find('td[data-column-name=start_date]').text
   end
 
   test "custom column has_many" do
     user = FixtureFactory.new(:user).factory
     2.times { FixtureFactory.new :comment, user_from_test: user }
-    Settings::Base.any_instance.stubs(:columns).returns listing: ['has_many/comments'], serialized: [], search: []
+    Resource::Base.any_instance.stubs(:columns).returns listing: ['has_many/comments'], serialized: [], search: []
     visit resources_path(:users)
     assert page.has_css?('td.hasmany a', text: '2')
   end
 
   test "custom column belongs_to" do
     FixtureFactory.new(:comment, user_from_test: FixtureFactory.new(:user, pseudo: 'bob').factory)
-    Settings::Base.any_instance.stubs(:columns).returns listing: ['user.pseudo'], serialized: [], search: []
+    Resource::Base.any_instance.stubs(:columns).returns listing: ['user.pseudo'], serialized: [], search: []
     visit resources_path(:comments)
     assert page.has_css?('td', text: 'bob')
   end
@@ -123,6 +132,29 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_equal "Cloned Boy", find('td[data-column-name=pseudo]').text
     assert_equal "5", find('td[data-column-name=age]').text
     assert_equal user.id + 1, find('div[data-table=users]')['data-item-id'].to_i
+  end
+  
+  test "update from edit" do
+    user = FixtureFactory.new(:user, pseudo: 'Bob', age: 36).factory
+    visit edit_resource_path(:users, user)
+    assert_equal 'Bob', find('input[type=text][name="users[pseudo]"]').value
+    assert_equal '36', find('input[type=number][name="users[age]"]').value
+    fill_in 'Pseudo', with: 'Bobulus'
+    fill_in 'Age', with: '37'
+    click_button 'Save'
+    assert_equal 'Bobulus', find('td[data-column-name=pseudo]').text
+    assert_equal '37', find('td[data-column-name=age]').text
+  end
+  
+  test "failed update" do
+    user = FixtureFactory.new(:user).factory
+    out_of_range_int = '3241234234141234'
+    visit edit_resource_path(:users, user)
+    fill_in 'Age', with: out_of_range_int
+    click_button 'Save'
+    assert page.has_css?('.alert.alert-error')
+    assert page.has_content?("Editing User ##{user.id}")
+    assert_equal out_of_range_int, find('input[type=number][name="users[age]"]').value
   end
 
 end
