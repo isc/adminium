@@ -20,8 +20,9 @@ class SettingsController < ApplicationController
   end
 
   def show
-    @column = @generic.table(params[:id]).columns.detect{|c|c.name == params[:column_name]}
-    render partial: '/settings/filter', locals: {filter: {'column' => @column.name, 'type' => @column.type}}
+    column_name = params[:column_name].to_sym
+    @column = resource.column_info column_name
+    render partial: '/settings/filter', locals: {filter: {'column' => column_name, 'type' => @column[:type]}}
   end
 
   def values
