@@ -28,18 +28,18 @@ module FormHelper
     when :timestamp, :datetime
       :datetime
     when :date
-      nil
+      :date
     when :boolean
       [:select, boolean_input_options(resource, name)]
     when :string, nil
       return :text_area if info[:db_type] == 'text'
       case name.to_s
-      when /password/  then :password
+      when /password/  then :password_field
       when /time_zone/ then :time_zone
       when /country/   then :country
-      when /email/     then :email
-      when /phone/     then :tel
-      when /url/       then :url
+      when /email/     then :email_field
+      when /phone/     then :telephone_field
+      when /url/       then :url_field
       else
         :text_field
       end
@@ -49,7 +49,6 @@ module FormHelper
   end
 
   def datetime_input input_options, input_value, input_name, input_id, input_type
-    # input_name = input_name[0..-2]
     input_options[:class] = 'datepicker span2'
     value_string = input_value ? input_value.to_date.strftime('%m/%d/%Y') : ''
     res = text_field_tag nil, value_string, input_options
