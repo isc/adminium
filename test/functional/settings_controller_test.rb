@@ -16,6 +16,13 @@ class SettingsControllerTest < ActionController::TestCase
     get :values, id: 'users', column_name: 'pseudo'
     assert_equal ["bob", "michel"], JSON.parse(@response.body)
   end
+  
+  def test_partials
+    [:id, :created_at, :pseudo].each do |column|
+      get :show, id: 'users', column_name: column
+      assert_response :success
+    end
+  end
 
 
 end
