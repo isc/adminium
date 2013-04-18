@@ -35,7 +35,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
 
   test "save new" do
     visit new_resource_path(:users)
-    fill_in :pseudo, with: 'Bobulus'
+    fill_in 'Pseudo', with: 'Bobulus'
     click_button 'Save'
     assert page.has_content?('successfully created')
     assert_equal 'Bobulus', find('td[data-column-name=pseudo]').text
@@ -43,14 +43,14 @@ class ResourcesTest < ActionDispatch::IntegrationTest
 
   test "save new and create another" do
     visit new_resource_path(:users)
-    fill_in :pseudo, with: 'Bobulus'
+    fill_in 'Pseudo', with: 'Bobulus'
     click_button 'Save and create another'
     assert page.has_content?("New User")
   end
   
   test "save new and continue editing" do
     visit new_resource_path(:users)
-    fill_in :pseudo, with: 'Bobulus'
+    fill_in 'Pseudo', with: 'Bobulus'
     click_button 'Save and continue editing'
     assert_equal 'Bobulus', find('input[type=text][name="users[pseudo]"]').value
   end
@@ -95,6 +95,19 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_equal "Cloned Boy", find('td[data-column-name=pseudo]').text
     assert_equal "5", find('td[data-column-name=age]').text
     assert_equal user.id + 1, find('div[data-table=users]')['data-item-id'].to_i
+  end
+  
+  test "update from edit" do
+    user = FixtureFactory.new(:user, pseudo: 'Bob', age: 36).factory
+    visit edit_resource_path(:users, user)
+    assert_equal 'Bob', find('input[type=text][name="users[pseudo]"]').value
+    assert_equal '36', find('input[type=number][name="users[age]"]').value
+    fill_in 'Pseudo', with: 'Bobulus'
+    fill_in 'Age', with: '37'
+    save_and_open_page
+    click_button 'Save'
+    assert_equal 'Bobulus', find('td[data-column-name=pseudo]').text
+    assert_equal '37', find('td[data-column-name=age]').text
   end
 
 end

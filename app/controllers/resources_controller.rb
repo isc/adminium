@@ -612,11 +612,15 @@ class ResourcesController < ApplicationController
     return unless item_params.present?
     item_params.each do |key, value|
       if value.is_a? Hash
-        date = "#{value['1i']}-#{value['2i']}-#{value['3i']}"
-        item_params[key] = if value['4i']
-          Time.parse("#{date} #{value['4i']}:#{value['5i']}")
+        if value['1i'].blank?
+          item_params[key] = nil
         else
-          Date.parse date
+          date = "#{value['1i']}-#{value['2i']}-#{value['3i']}"
+          item_params[key] = if value['4i']
+            Time.parse("#{date} #{value['4i']}:#{value['5i']}")
+          else
+            Date.parse date
+          end
         end
       end
     end
