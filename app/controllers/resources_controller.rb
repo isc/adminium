@@ -247,7 +247,7 @@ class ResourcesController < ApplicationController
 
   def update_export_settings
     if params[:export_columns].present?
-      resource.columns[:export] = params[:export_columns].delete_if {|e|e.empty?}
+      resource.columns[:export] = params[:export_columns].delete_if{|e|e.empty?}.map &:to_sym
       resource.csv_options = params[:csv_options]
       resource.save
     end
@@ -541,18 +541,18 @@ class ResourcesController < ApplicationController
     out = if resource.export_skip_header
       ''
     else
-      keys.map { |k| clazz.column_display_name k }.to_csv(options)
+      keys.map { |k| resource.column_display_name k }.to_csv(options)
     end
-    @items.find_each do |item|
+    @items.each do |item|
       out << keys.map do |key|
-        if key.include? "."
+        if key.to_s.include? "."
           parts = key.split('.')
           pitem = item.send(parts.first)
           pitem[parts.second] if pitem
-        elsif key.starts_with? 'has_many/'
+        elsif key.to_s.starts_with? 'has_many/'
           key = key.gsub 'has_many/', ''
           foreign_key_name = item.class.original_name.underscore + '_id'
-          foreign_key_value = item[item.class.primary_key]
+          foreign_key_value = item[resource.primary_key]
           item.class.generic.table(key).where(foreign_key_name => foreign_key_value).count
         else
           item[key]

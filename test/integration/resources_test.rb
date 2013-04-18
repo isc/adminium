@@ -156,5 +156,12 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert page.has_content?("Editing User ##{user.id}")
     assert_equal out_of_range_int, find('input[type=number][name="users[age]"]').value
   end
+  
+  test "export rows" do
+    user = FixtureFactory.new(:user, pseudo: "bobleponge")
+    visit resources_path(:users)
+    click_button 'Export 1 users to csv'
+    assert page.has_content?('bobleponge')
+  end
 
 end
