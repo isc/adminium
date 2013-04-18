@@ -70,5 +70,8 @@ class CommentFromTest < ActiveRecord::Base
   self.table_name = 'comments'
   belongs_to :user_from_test, foreign_key: :user_id
 end
+class GroupFromTest < ActiveRecord::Base
+  self.table_name = 'groups'
+end
 
 ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations[Rails.env]

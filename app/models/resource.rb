@@ -286,7 +286,7 @@ module Resource
     end
     
     def item_label item
-      res = item[label_column] if label_column
+      res = item[label_column.to_sym] if label_column
       res || "#{human_name} ##{item[primary_key]}"
     end
     
@@ -340,6 +340,19 @@ module Resource
     
     def associations
       @generic.associations[@table]
+    end
+    
+    def assoc_query item, name
+      assoc = associations[:has_many][name]
+      @generic.db[name].where(assoc[:foreign_key] => item[assoc[:primary_key]])
+    end
+    
+    def has_many_count item, assoc_name
+      assoc_query(item, assoc_name).count
+    end
+    
+    def fetch_associated_items item, assoc_name, limit
+      assoc_query(item, assoc_name).limit(limit)
     end
     
   end
