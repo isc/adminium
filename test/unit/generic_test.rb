@@ -21,7 +21,14 @@ class GenericTest < ActiveSupport::TestCase
   end
   
   test "foreign keys" do
-    @generic.foreign_keys
+    assert_equal(nil, @generic.foreign_keys[:users])
+  end
+  
+  test "associations" do
+    assert_equal({foreign_key: :user_profile_id, table: :user_profiles, primary_key: :id},
+      @generic.associations[:users][:belongs_to][:user_profile])
+    assert_equal({foreign_key: :user_profile_id, table: :user_profiles, primary_key: :id},
+      @generic.associations[:user_profiles][:has_many][:users])
   end
   
   def expected_tables

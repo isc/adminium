@@ -36,16 +36,16 @@ module ResourcesHelper
       a,z = ['A', 'Z']
     end
     if ascend
-      "sort by #{display_name} #{a} &rarr; #{z}"
+      "Sort by #{display_name} #{a} &rarr; #{z}"
     else
-      "sort by #{display_name} #{z} &rarr; #{a}"
+      "Sort by #{display_name} #{z} &rarr; #{a}"
     end
   end
   
   def item_attributes_type types, resource
     columns = resource.find_all_columns_for_types(*types).map(&:first)
     columns &= resource.columns[:show]
-    columns - [resource.primary_key] - resource.reflections.values.map(&:foreign_key)
+    columns - [resource.primary_key] - (resource.associations[:belongs_to].values.map {|assoc|assoc[:foreign_key]})
   end
 
   def display_attribute wrapper_tag, item, key, resource, relation = false, original_key = nil
@@ -87,7 +87,7 @@ module ResourcesHelper
   end
 
   def display_associated_column item, key, wrapper_tag
-    parts = key.split('.')
+    parts = key.to_s.split('.')
     item = item.send "_adminium_#{parts.first}"
     return column_content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
     display_attribute wrapper_tag, item, parts.second, true, [item.class.table_name, parts.second].join('.')

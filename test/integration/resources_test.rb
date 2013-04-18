@@ -21,9 +21,9 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, pseudo: 'Alberto' )
     FixtureFactory.new(:user, pseudo: 'Zoé' )
     visit resources_path(:users)
-    find('a[title="sort by Pseudo A &rarr; Z"]').click
+    find('a[title="Sort by Pseudo A &rarr; Z"]').click
     assert_equal 'Zoé', find(".items-list tr:nth-child(2) td[data-column-name=pseudo]").text
-    find('a[title="sort by Pseudo Z &rarr; A"]').click
+    find('a[title="Sort by Pseudo Z &rarr; A"]').click
     assert_equal 'Alberto', find(".items-list tr:nth-child(2) td[data-column-name=pseudo]").text
   end
 

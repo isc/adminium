@@ -9,56 +9,46 @@ class Generic
   def initialize account
     @account_id = account.id
     establish_connection account.db_url
-    # discover_classes_and_associations
   end
 
   def cleanup
     @db.disconnect
   end
-
-  def discover_classes_and_associations
-    discover_models
-    discover_associations
-  end
-
-  def discover_associations
-    models.each do |klass|
-      if foreign_keys[klass.table_name].present?
-        discover_associations_through_foreign_keys klass
+  
+  def associations
+    return @associations if @associations
+    @associations = Hash[tables.map {|t| [t, {belongs_to: {}, has_many: {}}]}]
+    tables.each do |table|
+      if foreign_keys[table].present?
+        discover_associations_through_foreign_keys table
       else
-        discover_associations_through_conventions klass
+        discover_associations_through_conventions table
       end
+    end
+    @associations
+  end
+
+  def discover_associations_through_foreign_keys table
+    foreign_keys[table].each do |foreign_key|
+      @associations[table][:belongs_to][foreign_key[:to_table].downcase.singularize] =
+        @associations[foreign_key[:to_table]][:has_many][table] =
+        {foreign_key: foreign_key[:column], primary_key: foreign_key[:primary_key], table: foreign_key[:to_table]}
     end
   end
 
-  def discover_associations_through_foreign_keys klass
-    foreign_keys[klass.table_name].each do |foreign_key|
-      options = {primary_key: foreign_key[:primary_key], foreign_key: foreign_key[:column]}
-      owner_model = models.find{|model|model.table_name.downcase == foreign_key[:to_table].downcase}
-      klass.belongs_to assoc_name(foreign_key[:to_table].downcase.singularize),
-        options.merge(class_name: owner_model.name)
-      owner_model.has_many assoc_name(klass.table_name), options.merge(class_name: klass.name)
-    end
-  end
-
-  def discover_associations_through_conventions klass
-    begin
-      klass.columns.each do |column|
-        next unless (column.name.ends_with? '_id') && (column.type == :integer)
-        owner = column.name.gsub(/_id$/, '')
-        begin
-          if tables.include? owner.tableize
-            account_module.const_get(class_name owner).has_many assoc_name(klass.table_name), class_name: klass.name
-            klass.belongs_to assoc_name(owner), class_name: class_name(owner), foreign_key: column.name
-          elsif klass.column_names.include? "#{owner}_type"
-            klass.belongs_to assoc_name(owner), polymorphic: true, foreign_key: column.name
-          end
-        rescue NameError => e
-          Rails.logger.warn "Failed for #{klass.table_name} belongs_to #{owner} : #{e.message}"
-        end
+  def discover_associations_through_conventions table
+    schema(table).each do |name, info|
+      next unless (name.to_s.ends_with? '_id') && (info[:type] == :integer)
+      owner = name.to_s.gsub(/_id$/, '')
+      owner_table = owner.tableize.to_sym
+      if tables.include? owner_table
+        @associations[table][:belongs_to][owner.to_sym] =
+          @associations[owner_table][:has_many][table] =
+          {foreign_key: name, primary_key: :id, table: owner_table}
+        # TODO polymorphic associations
+        # elsif klass.column_names.include? "#{owner}_type"
+        #   klass.belongs_to assoc_name(owner), polymorphic: true, foreign_key: column.name
       end
-    rescue => e
-      Rails.logger.warn "Association discovery failed for #{klass.name} : #{e.message}"
     end
   end
   
@@ -105,6 +95,11 @@ class Generic
 
   def tables
     @tables ||= @db.tables.sort
+  end
+  
+  def schema table
+    @schema ||= {}
+    @schema[table] || (@schema[table] = @db.schema(table))
   end
 
   def table table_name

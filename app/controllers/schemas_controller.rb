@@ -3,7 +3,7 @@ class SchemasController < ApplicationController
   def show
     @title = 'Schema'
     params[:table] = params[:id]
-    @indices = clazz.connection.indexes(params[:table])
+    @resource = Resource::Base.new @generic, params[:table]
   end
 
 end
