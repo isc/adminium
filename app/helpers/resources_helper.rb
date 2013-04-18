@@ -11,7 +11,7 @@ module ResourcesHelper
     if key.starts_with? 'has_many/'
       key = "\"#{key}\""
     end
-    params[:order] ||= 'id'
+    params[:order] = params[:order] || clazz.settings.default_order || clazz.primary_key
     if params[:order] == key
       order = "#{key} desc"
       ascend = false
