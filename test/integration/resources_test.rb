@@ -64,14 +64,14 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test "custom column has_many" do
     user = FixtureFactory.new(:user).factory
     2.times { FixtureFactory.new :comment, user_from_test: user }
-    Settings::Base.any_instance.stubs(:columns).returns listing: ['has_many/comments'], serialized: [], search: []
+    Resource::Base.any_instance.stubs(:columns).returns listing: ['has_many/comments'], serialized: [], search: []
     visit resources_path(:users)
     assert page.has_css?('td.hasmany a', text: '2')
   end
 
   test "custom column belongs_to" do
     FixtureFactory.new(:comment, user_from_test: FixtureFactory.new(:user, pseudo: 'bob').factory)
-    Settings::Base.any_instance.stubs(:columns).returns listing: ['user.pseudo'], serialized: [], search: []
+    Resource::Base.any_instance.stubs(:columns).returns listing: ['user.pseudo'], serialized: [], search: []
     visit resources_path(:comments)
     assert page.has_css?('td', text: 'bob')
   end
@@ -104,7 +104,6 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_equal '36', find('input[type=number][name="users[age]"]').value
     fill_in 'Pseudo', with: 'Bobulus'
     fill_in 'Age', with: '37'
-    save_and_open_page
     click_button 'Save'
     assert_equal 'Bobulus', find('td[data-column-name=pseudo]').text
     assert_equal '37', find('td[data-column-name=age]').text
