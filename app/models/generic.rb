@@ -58,8 +58,8 @@ class Generic
       fk_info = @db[query]
       foreign_keys = {}
       fk_info.each do |row|
-        foreign_keys[row[:table_name]] ||= []
-        foreign_keys[row[:table_name]] << {column: row[:column], to_table: row[:to_table], primary_key: row[:primary_key]}
+        foreign_keys[row[:table_name].to_sym] ||= []
+        foreign_keys[row[:table_name].to_sym] << {column: row[:column], to_table: row[:to_table], primary_key: row[:primary_key]}
       end
       foreign_keys
     end
