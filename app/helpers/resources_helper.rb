@@ -36,7 +36,7 @@ module ResourcesHelper
       a,z = ['A', 'Z']
     end
     if ascend
-      "sort by #{display_name}  #{a} &rarr; #{z}"
+      "sort by #{display_name} #{a} &rarr; #{z}"
     else
       "sort by #{display_name} #{z} &rarr; #{a}"
     end

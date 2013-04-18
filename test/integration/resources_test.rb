@@ -16,6 +16,16 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     click_button 'Save settings'
     assert !page.has_css?('th a', text: 'First name')
   end
+  
+  test "sorted index by pseudo desc" do
+    FixtureFactory.new(:user, pseudo: 'Alberto' )
+    FixtureFactory.new(:user, pseudo: 'Zoé' )
+    visit resources_path(:users)
+    find('a[title="sort by Pseudo A &rarr; Z"]').click
+    assert_equal 'Zoé', find(".items-list tr:nth-child(2) td[data-column-name=pseudo]").text
+    find('a[title="sort by Pseudo Z &rarr; A"]').click
+    assert_equal 'Alberto', find(".items-list tr:nth-child(2) td[data-column-name=pseudo]").text
+  end
 
   test "creating a comment (polymorphic belongs_to)" do
     visit resources_path(:comments)

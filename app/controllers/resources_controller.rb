@@ -39,7 +39,7 @@ class ResourcesController < ApplicationController
     @items_for_stats = @items
     # @items = @items.select(qualify params[:table], nil)
     # apply_has_many_counts
-    #apply_order
+    apply_order
     update_export_settings
     respond_with @items do |format|
       format.html do
@@ -409,6 +409,7 @@ class ResourcesController < ApplicationController
 
   def apply_order
     order  = params[:order] || resource.default_order
+    column, descending = order.split(" ")
     # FIXME Not that clean. Removing quotes is for has_many/things sorting (not quoted in settings.columns)
     # order_column = params[:order].gsub(/ (desc|asc)/, '').gsub('"', '')
     # if order_column.include? '.'
@@ -416,10 +417,10 @@ class ResourcesController < ApplicationController
     # end
     # params[:order] = clazz.primary_key unless clazz.settings.columns[settings_type].include? order_column
     unless order[/[.\/]/]
-      order = qualify params[:table], params[:order]
+      order = qualify params[:table], column
     end
-    nulllasts = @generic.postgresql? ? ' NULLS LAST' : ''
-    @items = @items.order(Sequel.lit(order + nulllasts))
+    #nulllasts = @generic.postgresql? ? ' NULLS LAST' : ''
+    @items = @items.order(Sequel::SQL::OrderedExpression.new(order, !!descending, nulls: :last))
   end
 
   def apply_serialized_columns
