@@ -163,46 +163,36 @@ class ResourcesController < ApplicationController
   end
 
   def create
-    if (pk_value = resource.insert item_params)
-      params[:id] = pk_value
-      redirect_to after_save_redirection, flash: {success: "#{object_name} successfully created."}
-    else
-      @form_url = resources_path params[:table]
-      render :new
-    end
-  rescue ActiveRecord::StatementInvalid => e
+    pk_value = resource.insert item_params
+    params[:id] = pk_value
+    redirect_to after_save_redirection, flash: {success: "#{object_name} successfully created."}
+  rescue Sequel::DatabaseError => e
     flash.now[:error] = e.message
+    @item = item_params
     @form_url = resources_path params[:table]
     render :new
   end
 
   def update
-    if resource.update_item params[:id], item_params
-      respond_to do |format|
-        format.html do
-          redirect_to after_save_redirection, flash: {success: "#{object_name} successfully updated."}
-        end
-        format.json do
-          column_name = item_params.keys.first.to_sym
-          value = view_context.display_attribute :td, resource.find(params[:id]), column_name, resource
-          render json: {result: :success, value: value, column: column_name, id: params[:id]}
-        end
+    resource.update_item params[:id], item_params
+    respond_to do |format|
+      format.html do
+        redirect_to after_save_redirection, flash: {success: "#{object_name} successfully updated."}
       end
-    else
-      respond_with(@item) do |format|
-        format.html do
-          @form_url = resource_path(@item, table: params[:table])
-          render :edit
-        end
-        format.json do
-          column_name = item_params.keys.first
-          render json: {result: :failed, message: @item.errors.full_messages, column: column_name, id: params[:id]}
-        end
+      format.json do
+        column_name = item_params.keys.first.to_sym
+        value = view_context.display_attribute :td, resource.find(params[:id]), column_name, resource
+        render json: {result: :success, value: value, column: column_name, id: params[:id]}
       end
     end
-  rescue ActiveRecord::StatementInvalid => e
+  rescue Sequel::DatabaseError => e
     respond_to do |format|
-      format.html {redirect_to :back, flash: {error: e.message}}
+      format.html do
+        flash.now[:error] = e.message
+        @item = item_params.merge(resource.primary_key => params[:id])
+        @form_url = resource_path(params[:id], table: params[:table])
+        render :edit
+      end
       format.json do
         column_name = item_params.keys.first
         render json: {result: :failed, message: e.message, column: column_name, id: params[:id]}

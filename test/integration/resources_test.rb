@@ -40,6 +40,15 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert page.has_content?('successfully created')
     assert_equal 'Bobulus', find('td[data-column-name=pseudo]').text
   end
+  
+  test "failed save due to value out of range for db" do
+    visit new_resource_path(:users)
+    fill_in 'Age', with: '83829384728832'
+    click_button 'Save'
+    assert page.has_css?('.alert.alert-error')
+    assert page.has_content?('New User')
+    assert_equal '83829384728832', find('input[type=number][name="users[age]"]').value
+  end
 
   test "save new and create another" do
     visit new_resource_path(:users)
@@ -58,7 +67,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test "save the date" do
     visit new_resource_path(:documents)
     click_button 'Save'
-    assert_equal "", find('dd[data-column-name=start_date]').text
+    assert_equal 'null', find('td[data-column-name=start_date]').text
   end
 
   test "custom column has_many" do
@@ -107,6 +116,17 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     click_button 'Save'
     assert_equal 'Bobulus', find('td[data-column-name=pseudo]').text
     assert_equal '37', find('td[data-column-name=age]').text
+  end
+  
+  test "failed update" do
+    user = FixtureFactory.new(:user).factory
+    out_of_range_int = '3241234234141234'
+    visit edit_resource_path(:users, user)
+    fill_in 'Age', with: out_of_range_int
+    click_button 'Save'
+    assert page.has_css?('.alert.alert-error')
+    assert page.has_content?("Editing User ##{user.id}")
+    assert_equal out_of_range_int, find('input[type=number][name="users[age]"]').value
   end
 
 end

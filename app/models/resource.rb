@@ -273,6 +273,7 @@ module Resource
     
     def required_column? name
       return true if name == primary_key
+      return true if schema_hash[name][:allow_null] == false
       validations.detect {|val| val['validator'] == 'validates_presence_of' && val['column_name'] == name.to_s}
     end
     
