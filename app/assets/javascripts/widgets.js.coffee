@@ -31,6 +31,7 @@ class Widget
       widget = $(".widget[data-widget-id=#{data.id}]")
       if data.widget
         widget.find('.content').html(data.widget)
+        widget.find('.content a[rel*=tooltip]').tooltip()
         widget.find('.content tr td').click (evt) ->
           link = $(evt.currentTarget).find('a')
           if link.length

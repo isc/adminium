@@ -406,18 +406,18 @@ class ResourcesController < ApplicationController
   end
 
   def apply_order
-    params[:order] ||= resource.default_order
-    # FIXME Not that clean. Removing quotes is for has_many/things sorting (not quoted in resource.columns)
+    order  = params[:order] || resource.default_order
+    # FIXME Not that clean. Removing quotes is for has_many/things sorting (not quoted in settings.columns)
     # order_column = params[:order].gsub(/ (desc|asc)/, '').gsub('"', '')
     # if order_column.include? '.'
     #   order_column = "#{order_column.split('.').first.singularize}.#{order_column.split('.').last}"
     # end
-    # params[:order] = clazz.primary_key unless resource.columns[settings_type].include? order_column
-    unless params[:order][/[.\/]/]
-      params[:order] = qualify params[:table], params[:order]
+    # params[:order] = clazz.primary_key unless clazz.settings.columns[settings_type].include? order_column
+    unless order[/[.\/]/]
+      order = qualify params[:table], params[:order]
     end
     nulllasts = @generic.postgresql? ? ' NULLS LAST' : ''
-    @items = @items.order(params[:order] + nulllasts)
+    @items = @items.order(order + nulllasts)
   end
 
   def apply_serialized_columns
