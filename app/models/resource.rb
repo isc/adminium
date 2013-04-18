@@ -281,43 +281,33 @@ module Resource
       res || "#{human_name} ##{item[primary_key]}"
     end
     
+    def pk_filter primary_key_value
+      query.where(primary_key => primary_key_value)
+    end
+    
     def update_item primary_key_value, updated_values
-      query.where(primary_key => primary_key_value).update updated_values
+      pk_filter(primary_key_value).update updated_values
     end
     
     def find primary_key_value
-      query.where(primary_key => primary_key_value).first
+      pk_filter(primary_key_value).first || (raise RecordNotFound)
+    end
+    
+    def delete primary_key_value
+      pk_filter(primary_key_value).delete
+    end
+    
+    def insert values
+      query.insert values
     end
     
     def reflections
       {}
     end
-
+    
   end
   
-  class Wrapper
-    
-    def initialize attributes, resource
-      @attributes, @resource = attributes, resource
-    end
-    
-    def self.model_name
-      @model_name ||= OpenStruct.new param_key: 'attributes'
-    end
-    
-    def to_key
-      [@attributes[@resource.primary_key]]
-    end
-    
-    def [] key
-      @attributes[key]
-    end
-    
-    def method_missing meth, *args
-      return @attributes[meth] if @resource.column_names.include? meth
-      super
-    end
-    
+  class RecordNotFound < StandardError
   end
-
+  
 end

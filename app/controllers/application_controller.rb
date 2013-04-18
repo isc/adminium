@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
   end
 
   def global_settings
-    @global_settings ||= Settings::Global.new(session[:account])
+    @global_settings ||= Resource::Global.new(session[:account])
   end
 
   def require_authentication

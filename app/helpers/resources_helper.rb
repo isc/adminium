@@ -138,8 +138,8 @@ module ResourcesHelper
       else
         truncate_with_popover value, key
       end
-    when ActiveSupport::TimeWithZone, Date
-      display_datetime value, column: key, clazz: item.class
+    when Time, Date
+      display_datetime value, column: key, resource: resource
     when Fixnum, BigDecimal, Float
       display_number key, item, resource
     when TrueClass, FalseClass
@@ -192,8 +192,8 @@ module ResourcesHelper
 
   def display_datetime(value, opts={})
     return if value == nil
-    if opts[:column] && opts[:clazz]
-      opts[:format] = opts[:clazz].settings.column_options(opts[:column])['format']
+    if opts[:column] && opts[:resource]
+      opts[:format] = opts[:resource].column_options(opts[:column])['format']
       opts[:format] = nil if opts[:format].blank?
     end
     opts[:format] ||= global_settings.datetime_format
@@ -218,10 +218,10 @@ module ResourcesHelper
   def page_entries_info(collection, options = {})
     entry_name = options[:entry_name] || (collection.empty? ? 'entry' : collection.first.class.name.underscore.sub('_', ' '))
     if collection.page_count < 2
-      case collection.total_count
+      case collection.pagination_record_count
       when 0; "0 #{entry_name.pluralize}"
       when 1; "<b>1</b> #{entry_name}"
-      else;   "<b>#{collection.total_count}</b> #{entry_name.pluralize}"
+      else;   "<b>#{collection.pagination_record_count}</b> #{entry_name.pluralize}"
       end
     else
       offset = (collection.current_page - 1) * collection.page_size

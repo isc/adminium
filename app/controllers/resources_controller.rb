@@ -161,8 +161,7 @@ class ResourcesController < ApplicationController
   end
 
   def create
-    @item = clazz.new item_params
-    if @item.save
+    if (@item = resource.insert item_params)
       redirect_to after_save_redirection, flash: {success: "#{object_name} successfully created."}
     else
       @form_url = resources_path params[:table]
@@ -209,7 +208,7 @@ class ResourcesController < ApplicationController
   end
 
   def destroy
-    @item.destroy
+    resource.delete params[:id]
     redirection = params[:redirect] == 'index' ? resources_path(params[:table]) : :back
     redirect_to redirection, flash: {success: "#{object_name} successfully destroyed."}
   rescue ActiveRecord::StatementInvalid => e
@@ -277,8 +276,8 @@ class ResourcesController < ApplicationController
 
   def fetch_item
     @item = resource.find params[:id]
-  rescue ActiveRecord::RecordNotFound
-    redirect_to resources_path(params[:table]), notice: "#{human_name} ##{params[:id]} does not exist."
+  rescue Resource::RecordNotFound
+    redirect_to resources_path(params[:table]), notice: "#{resource.human_name} ##{params[:id]} does not exist."
   end
 
   def check_per_page_setting

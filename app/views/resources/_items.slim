@@ -1,5 +1,5 @@
 - if items.empty?
-  - if @items.current_page > @items.num_pages && @items.num_pages > 0
+  - if @items.current_page > @items.page_count && @items.page_count > 0
     .alert.alert-block
       h4 Warning!
       p
@@ -7,9 +7,9 @@
         br
         'Try to go to the
         = link_to "first page", params.merge(page: 1)
-        - if @items.num_pages > 1
+        - if @items.page_count > 1
           '  or the
-          = link_to "last page", params.merge(page: @items.num_pages)
+          = link_to "last page", params.merge(page: @items.page_count)
         = "."
   - else
     .alert.alert-info
