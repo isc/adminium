@@ -28,7 +28,7 @@
         - clazz.settings.columns[:listing].each do |name|
           th.column_header data-column-name=name
             == header_link name
-            - if clazz.settings.is_date_column? name
+            - if clazz.settings.is_date_column?(name) && actions_cell
               i.time-chart.icon-bar-chart
             i.column_settings.icon-cog
         

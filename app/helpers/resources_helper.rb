@@ -2,6 +2,7 @@ module ResourcesHelper
 
   def header_link original_key
     key = original_key
+    display_name = clazz.column_display_name(original_key)
     if key.include? '.'
       parts = key.split('.')
       parts[0] = parts.first.tableize
@@ -13,20 +14,32 @@ module ResourcesHelper
     params[:order] ||= 'id'
     if params[:order] == key
       order = "#{key} desc"
-      title = "Descend by #{key}"
+      ascend = false
     else
       order = key
-      title = "Ascend by #{key}"
+      ascend = true
     end
     res = ""
     {'up' => key, 'down' => "#{key} desc"}.each do |direction, dorder|
       active = dorder == params[:order] ? 'active' : nil
-      dtitle = direction == 'up' ? "Ascend by #{key}" : "Descend by #{key}"
-      res << link_to(params.merge(order: dorder), title: dtitle, rel: 'tooltip') do
+      res << link_to(params.merge(order: dorder), title: sort_title(display_name, direction=='up', original_key), rel: 'tooltip') do
         content_tag('i', '', class: "icon-chevron-#{direction} #{active}")
       end
     end
-    res << (link_to clazz.column_display_name(original_key), params.merge(order:order), title: title, rel:'tooltip')
+    res << (link_to display_name, params.merge(order:order), title: sort_title(display_name, ascend, original_key), rel:'tooltip')
+  end
+  
+  def sort_title display_name, ascend, original_key
+    if clazz.settings.is_number_column?(original_key) || original_key.starts_with?('has_many/')
+      a,z = [0,9]
+    else
+      a,z = ['A', 'Z']
+    end
+    if ascend
+      "sort by #{display_name}  #{a} &rarr; #{z}"
+    else
+      "sort by #{display_name} #{z} &rarr; #{a}"
+    end
   end
   
   def item_attributes_type types
