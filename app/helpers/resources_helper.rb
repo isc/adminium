@@ -54,25 +54,22 @@ module ResourcesHelper
     return display_associated_count item, key, wrapper_tag if key.to_s.starts_with? 'has_many/'
     value = item[key]
     if value && resource.foreign_key?(key)
-      content = display_belongs_to item, key, value
+      content = display_belongs_to item, key, value, resource
       css_class = 'foreignkey'
     elsif enum_values = resource.enum_values_for(key)
       is_editable = true
       if value.nil?
         content, css_class = 'null', 'nilclass'
       else
-        begin # link generation fails if rendered via json controller update
-          label = enum_values[value.to_s].try(:[], 'label') || value
-          user_defined_bg = enum_values[value.to_s].try(:[], 'color')
-          user_defined_bg = "background-color: #{user_defined_bg}" if user_defined_bg.present?
-          content = link_to label, params.merge(where: {(original_key || key) => value}), :class => 'label label-info', :style => user_defined_bg
-        rescue
-          content = content_tag :span, label, :class => 'label label-info', :style => user_defined_bg
-        end
+        label = enum_values[value.to_s].try(:[], 'label') || value
+        user_defined_bg = enum_values[value.to_s].try(:[], 'color')
+        user_defined_bg = "background-color: #{user_defined_bg}" if user_defined_bg.present?
+        # FIXME the link is screwed rendered in return of an in-place edit ; links to show instead of index
+        content = link_to label, params.merge(where: {(original_key || key) => value}), class: 'label label-info', style: user_defined_bg
         css_class = 'enum'
       end
     elsif resource.columns[:serialized].include? key
-      css_class, content = 'serialized', content_tag(:pre, value.inspect, :class => 'sh_ruby')
+      css_class, content = 'serialized', content_tag(:pre, value.inspect, class: 'sh_ruby')
     else
       css_class, content = display_value item, key, resource
       is_editable = true
@@ -103,24 +100,20 @@ module ResourcesHelper
     column_content_tag wrapper_tag, content, class: 'hasmany'
   end
 
-  def display_belongs_to item, key, value
-    reflection = item.class.reflections.values.find {|r| r.foreign_key == key}
-    if reflection.options[:polymorphic]
-      assoc_type = item.send key.gsub(/_id/, '_type')
-      return value if assoc_type.blank?
-      class_name, path = assoc_type, resource_path(assoc_type.to_s.tableize, value)
-      begin
-        foreign_clazz = @generic.table class_name.to_s.tableize
-      rescue Generic::TableNotFoundException
-        return value
-      end
-    else
-      class_name, path = reflection.klass.original_name, resource_path(reflection.table_name, value)
-      # reflection.klass is a leftover class that should have been garbage collected
-      # and has settings already loaded in it that may be outdated
-      foreign_clazz = @generic.table(reflection.klass.table_name)
-    end
-    label_column = foreign_clazz.resource.label_column
+  def display_belongs_to item, key, value, resource
+    assoc = resource.associations[:belongs_to].find {|_, info| info[:foreign_key] == key}.second
+    # if reflection.options[:polymorphic]
+    #       assoc_type = item.send key.gsub(/_id/, '_type')
+    #       return value if assoc_type.blank?
+    #       class_name, path = assoc_type, resource_path(assoc_type.to_s.tableize, value)
+    #       begin
+    #         foreign_clazz = @generic.table class_name.to_s.tableize
+    #       rescue Generic::TableNotFoundException
+    #         return value
+    #       end
+    # else
+    object_name, path = assoc[:table].to_s.singularize.humanize, resource_path(assoc[:table], value)
+    label_column = nil #foreign_clazz.resource.label_column
     if label_column.present?
       item = if reflection.options[:polymorphic]
         foreign_clazz.where(foreign_clazz.primary_key => value).first
@@ -130,16 +123,19 @@ module ResourcesHelper
       return value if item.nil?
       label = item.adminium_label
     else
-      label = "#{class_name} ##{value}"
+      label = "#{object_name} ##{value}"
     end
     link_to label, path
   end
   
-  def display_item item
-    label = item.adminium_label || "##{item[item.class.primary_key]}"
-    link_to label, resource_path(item.class.table_name, item)
+  def display_associated_items resource, item, assoc_name
+    items = resource.fetch_associated_items @item, assoc_name, 5
+    resource = Resource::Base.new @generic, assoc_name
+    items.map do |item|
+      link_to resource.item_label(item), resource_path(resource.table, item[resource.primary_key])
+    end.join(", ")
   end
-
+  
   def display_value item, key, resource
     value = item[key]
     css_class = value.class.to_s.parameterize

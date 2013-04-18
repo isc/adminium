@@ -63,27 +63,26 @@ javascript:
             th title="Belongs to" = name.to_s.humanize
             - foreign_key_value = @item[assoc[:foreign_key]]
             - if foreign_key_value
-              td= foreign_key_value
-              - #display_belongs_to @item, assoc.foreign_key, foreign_key_value
+              td= display_belongs_to @item, assoc[:foreign_key], foreign_key_value, resource
             - else
               td.nilclass null
 
-    - if resource.associations[:has_many].any? && false
+    - if resource.associations[:has_many].any?
       table.table.table-condensed
         - resource.associations[:has_many].each do |name, assoc|
           tr
-            - count = @item.send(name).count
-            th.span2= assoc.original_name.humanize
+            - count = resource.has_many_count @item, name
+            th.span2= name.to_s.humanize
             td
-              = link_to resources_path(assoc.klass.table_name, where: {assoc.foreign_key => @item[@item.class.primary_key]}) do
+              = link_to resources_path(name, where: {assoc[:foreign_key] => params[:id]}) do
                 span.badge.badge-warning = count
             td
-              == @item.send(assoc.name).limit(5).map {|i|display_item(i)}.join(", ")
+              == display_associated_items resource, @item, name
               - if count > 5
                 '  
-                = link_to "...", resources_path(assoc.klass.table_name, where: {assoc.foreign_key => @item[@item.class.primary_key]})
+                = link_to "...", resources_path(name, where: {assoc[:foreign_key] => params[:id]})
             td
-              = link_to new_resource_path(assoc.klass.table_name, attributes: {assoc.foreign_key => @item[@item.class.primary_key]}), class: 'btn btn-mini', rel: "tooltip", :"data-placement" => :left,  title: "Create a new associated #{assoc.original_name.singularize}" do
+              = link_to new_resource_path(name, attributes: {assoc[:foreign_key] => params[:id]}), class: 'btn btn-mini', rel: "tooltip", :"data-placement" => :left,  title: "Create a new associated #{name.to_s.singularize.humanize}" do
                 i.icon-plus
 
 = render 'resources/panels/show_settings'
