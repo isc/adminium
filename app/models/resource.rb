@@ -222,10 +222,10 @@ module Resource
     end
     
     def foreign_key? name
-      # reflections.values.find {|reflection| reflection.macro == :belongs_to && reflection.foreign_key == column_name }
+      return true if associations[:belongs_to].values.find {|assoc| assoc[:foreign_key] == name }
       table_fks = @generic.foreign_keys[@table]
       return if table_fks.nil?
-      table_fks.detect {|h| h[:column] == name.to_s}
+      table_fks.detect {|h| h[:column] == name}
     end
     
     def human_name

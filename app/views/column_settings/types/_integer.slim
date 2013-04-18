@@ -2,10 +2,10 @@
   .control-group
     label.control-label for="column_options_number_#{key}"= key.to_s.humanize
     .controls
-      = text_field_tag "column_options[number_#{key}]", settings.column_options(column.name)["number_#{key}"], class: "span1"
+      = text_field_tag "column_options[number_#{key}]", resource.column_options(params[:column])["number_#{key}"], class: "span1"
       p.help-block= description
 .control-group
   label.control-label for="column_options_number_unit_append" Append unit
   .controls
-    = check_box_tag "column_options[number_unit_append]", 'true', settings.column_options(column.name)["number_unit_append"]
+    = check_box_tag "column_options[number_unit_append]", 'true', resource.column_options(params[:column])["number_unit_append"]
     p.help-block By default, units are prepended to the value

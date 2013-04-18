@@ -54,25 +54,22 @@ module ResourcesHelper
     return display_associated_count item, key, wrapper_tag if key.to_s.starts_with? 'has_many/'
     value = item[key]
     if value && resource.foreign_key?(key)
-      content = display_belongs_to item, key, value
+      content = display_belongs_to item, key, value, resource
       css_class = 'foreignkey'
     elsif enum_values = resource.enum_values_for(key)
       is_editable = true
       if value.nil?
         content, css_class = 'null', 'nilclass'
       else
-        begin # link generation fails if rendered via json controller update
-          label = enum_values[value.to_s].try(:[], 'label') || value
-          user_defined_bg = enum_values[value.to_s].try(:[], 'color')
-          user_defined_bg = "background-color: #{user_defined_bg}" if user_defined_bg.present?
-          content = link_to label, params.merge(where: {(original_key || key) => value}), :class => 'label label-info', :style => user_defined_bg
-        rescue
-          content = content_tag :span, label, :class => 'label label-info', :style => user_defined_bg
-        end
+        label = enum_values[value.to_s].try(:[], 'label') || value
+        user_defined_bg = enum_values[value.to_s].try(:[], 'color')
+        user_defined_bg = "background-color: #{user_defined_bg}" if user_defined_bg.present?
+        # FIXME the link is screwed rendered in return of an in-place edit ; links to show instead of index
+        content = link_to label, params.merge(where: {(original_key || key) => value}), class: 'label label-info', style: user_defined_bg
         css_class = 'enum'
       end
     elsif resource.columns[:serialized].include? key
-      css_class, content = 'serialized', content_tag(:pre, value.inspect, :class => 'sh_ruby')
+      css_class, content = 'serialized', content_tag(:pre, value.inspect, class: 'sh_ruby')
     else
       css_class, content = display_value item, key, resource
       is_editable = true
