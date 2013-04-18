@@ -23,10 +23,26 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     link.click()
   end
 
-  test "save and create another" do
+  test "save new" do
+    visit new_resource_path(:users)
+    fill_in :pseudo, with: 'Bobulus'
+    click_button 'Save'
+    assert page.has_content?('successfully created')
+    assert_equal 'Bobulus', find('td[data-column-name=pseudo]').text
+  end
+
+  test "save new and create another" do
     visit new_resource_path(:users)
     fill_in :pseudo, with: 'Bobulus'
     click_button 'Save and create another'
+    assert page.has_content?("New User")
+  end
+  
+  test "save new and continue editing" do
+    visit new_resource_path(:users)
+    fill_in :pseudo, with: 'Bobulus'
+    click_button 'Save and continue editing'
+    assert_equal 'Bobulus', find('input[type=text][name="users[pseudo]"]').value
   end
 
   test "save the date" do

@@ -73,7 +73,7 @@ module Resource
     end
     
     def schema_hash
-      Hash[schema]
+      @schema_hash||= Hash[schema]
     end
     
     def query
@@ -286,6 +286,7 @@ module Resource
     end
     
     def update_item primary_key_value, updated_values
+      magic_timestamps updated_values, false
       pk_filter(primary_key_value).update updated_values
     end
     
@@ -297,8 +298,32 @@ module Resource
       pk_filter(primary_key_value).delete
     end
     
+    def typecast_value column, value
+      return value unless (col_schema = schema_hash[column])
+      value = nil if '' == value && ![:string, :blob].include?(col_schema[:type])
+      raise(InvalidValue, "nil/NULL is not allowed for the #{column} column") if value.nil? && !col_schema[:allow_null]
+      @generic.db.typecast_value col_schema[:type], value
+    end
+    
     def insert values
-      query.insert values
+      values = values.symbolize_keys
+      values.each do |key, value|
+        values[key] = typecast_value key, value
+      end
+      magic_timestamps values, true
+      primary_key_value = query.insert values
+    end
+    
+    def magic_timestamps values, creation
+      now = Time.now.utc
+      columns = [:updated_at, :updated_on]
+      columns += [:created_at, :created_on] if creation
+      columns.each do |column|
+        next if values.has_key? column
+        if schema_hash[column] && [:timestamp, :date, :datetime].include?(schema_hash[column][:type])
+          values[column] = now
+        end
+      end
     end
     
     def reflections
