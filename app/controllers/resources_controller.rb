@@ -32,7 +32,7 @@ class ResourcesController < ApplicationController
     @widget = current_account.table_widgets.where(table: params[:table], advanced_search: params[:asearch]).first
 
     @items = resource.query
-    @items = @items.where(params[:where]) if params[:where].present?
+    @items = @items.where(params[:where].symbolize_keys) if params[:where].present?
     apply_filters
     # apply_includes
     apply_search if params[:search].present?
