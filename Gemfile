@@ -3,14 +3,13 @@ source 'http://rubygems.org'
 ruby '1.9.3'
 
 gem 'rails', '3.2.13'
-
 gem 'pg'
 gem 'mysql2'
 gem "activerecord-import", ">= 0.2.0"
 gem 'sequel', '3.46.0', require: false
 gem 'sequel_pg', require: false
-gem "hiredis", "0.4.5"
-gem "redis", ">= 2.2.0", require: ["redis", "redis/connection/hiredis"]
+gem 'hiredis', '0.4.5'
+gem 'redis', '>= 2.2.0', require: ["redis", "redis/connection/hiredis"]
 gem 'configatron', '2.10.0'
 gem 'jquery-rails', '2.0.1'
 gem 'slim-rails'
@@ -25,7 +24,6 @@ gem 'bootstrap-components-helpers'
 gem 'composite_primary_keys', '5.0.10'
 gem 'bootstrap-wysihtml5-rails', require: 'bootstrap-wysihtml5-rails',
   git: 'git://github.com/Nerian/bootstrap-wysihtml5-rails.git'
-
 gem 'newrelic_rpm', '3.5.8.72'
 
 group :assets do

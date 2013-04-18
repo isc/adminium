@@ -54,21 +54,21 @@
 
     tbody
       - items.each do |item|
-        tr data-item-id=item[resource.primary_key]
+        - item_pk = item[resource.primary_key]
+        tr data-item-id=item_pk
           - if actions_cell
             td.actions
-              - if item[resource.primary_key]
-                = link_to content_tag('i', nil, class: 'icon-eye-open'), resource_path(params[:table], item)
+              - if item_pk
+                = link_to content_tag('i', nil, class: 'icon-eye-open'), resource_path(params[:table], item_pk)
                 - if user_can? 'edit', params[:table]
-                  = link_to content_tag('i', nil, class: 'icon-pencil'), edit_resource_path(params[:table], item[resource.primary_key])
+                  = link_to content_tag('i', nil, class: 'icon-pencil'), edit_resource_path(params[:table], item_pk)
                 - if user_can? 'destroy', params[:table]
-                  = link_to content_tag('i', nil, class: 'icon-trash'), resource_path(params[:table], item), method: :delete, data: {confirm: 'You sure?'}
+                  = link_to content_tag('i', nil, class: 'icon-trash'), resource_path(params[:table], item_pk), method: :delete, data: {confirm: 'You sure?'}
             td.checkboxes.click_checkbox
               - if user_can?('destroy', params[:table]) || user_can?('update', params[:table])
                 input type="checkbox"
           - else
-            - if item[resource.primary_key]
-              td= link_to content_tag('i', nil, class: 'icon-eye-open'), resource_path(params[:table], item.id)
-              
+            - if item_pk
+              td= link_to content_tag('i', nil, class: 'icon-eye-open'), resource_path(params[:table], item_pk)
           - resource.columns[:listing].each do |name|
             == display_attribute :td, item, name, resource

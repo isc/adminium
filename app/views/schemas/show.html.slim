@@ -1,7 +1,7 @@
 h3= "Table #{params[:table]}"
 h4
-  = "#{clazz.columns_hash.keys.length} columns, "
-  = link_to "#{clazz.count} records", resources_path(params[:table])
+  = "#{@resource.column_names.length} columns, "
+  = link_to "#{@resource.query.count} records", resources_path(params[:table])
 br
 table.table.table-striped.black
   thead
@@ -13,17 +13,17 @@ table.table.table-striped.black
       th Default
       th
 
-  - clazz.columns_hash.each do |name, column|
+  - @resource.schema.each do |name, column|
     tr
       th
-        - if column.primary
+        - if column[:primary_key]
           i.icon.icon-key.primaryKey
-        - elsif clazz.connection.index_exists?(params[:table], name)
+        - elsif @resource.index_exists? name
           i.icon.icon-link
-      th(data-value=column.name)= name
-      td(class="#{column.type}Type" data-value=column.sql_type)= column.sql_type
-      td(data-value="#{column.null ? 1 : 0}")= "NOT NULL" if column.null == false
-      td(class=column.type data-value=column.default)= column.default if column.default
+      th data-value=name = name
+      td(class="#{column[:type]}Type" data-value=column[:db_type])= column[:db_type]
+      td(data-value="#{column[:allow_null] ? 1 : 0}")= "NOT NULL" if column[:allow_null] == false
+      td(class=column[:type] data-value=column[:default])= column[:default] if column[:default]
       td
 
 table.table.table-striped.black
@@ -34,14 +34,14 @@ table.table.table-striped.black
       th Index name
       th Columns
       th Uniqueness
-  - if @indices.any?
-    - @indices.each do |index|
+  - if @resource.indexes.any?
+    - @resource.indexes.each do |name, info|
       tr
         th
         th
-          i= index.name
-        td== index.columns.join("<br/>")
-        td= "UNIQUE" if index.unique
+          i= name
+        td== info[:columns].join("<br/>")
+        td= "UNIQUE" if info[:unique]
   - else
     tr
       td colspan=4 No indices on this table.

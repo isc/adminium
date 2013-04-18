@@ -69,7 +69,7 @@ module Resource
     end
     
     def schema
-      @schema ||= @generic.db.schema(@table)
+      @generic.schema(@table)
     end
     
     def schema_hash
@@ -78,6 +78,14 @@ module Resource
     
     def query
       @generic.db[@table]
+    end
+    
+    def index_exists? name
+      indexes.values.detect {|info| info[:columns].include? name}
+    end
+    
+    def indexes
+      @indexes ||= @generic.db.indexes(@table)
     end
     
     def column_names
@@ -330,8 +338,8 @@ module Resource
       end
     end
     
-    def reflections
-      {}
+    def associations
+      @generic.associations[@table]
     end
     
   end
