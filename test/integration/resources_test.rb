@@ -17,7 +17,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert !page.has_css?('th a', text: 'First name')
   end
   
-  test "sorted index by pseudo desc" do
+  test "sorted index by column asc and desc" do
     FixtureFactory.new(:user, pseudo: 'Alberto' )
     FixtureFactory.new(:user, pseudo: 'Zoé' )
     visit resources_path(:users)
@@ -25,6 +25,34 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_equal 'Zoé', find(".items-list tr:nth-child(2) td[data-column-name=pseudo]").text
     find('a[title="sort by Pseudo Z &rarr; A"]').click
     assert_equal 'Alberto', find(".items-list tr:nth-child(2) td[data-column-name=pseudo]").text
+  end
+  
+  test "search a string in columns" do
+    FixtureFactory.new(:user, first_name: 'Johnny', last_name: 'Haliday', role: 'singer')
+    FixtureFactory.new(:user, first_name: 'Mariah', last_name: 'Carey', role: 'singer')
+    FixtureFactory.new(:user, first_name: 'Johnny', last_name: "Deep", role: "actor")
+    visit resources_path(:users)
+    fill_in 'search_input', with: "Johnny"
+    click_button 'search_btn'
+    assert page.has_content? 'Haliday'
+    assert page.has_content? 'Deep'
+    assert page.has_no_content? 'Carey'
+    
+    fill_in 'search_input', with: "Johnny singer"
+    click_button 'search_btn'
+    assert page.has_content? 'Haliday'
+    assert page.has_no_content? 'Deep'
+    assert page.has_no_content? 'Carey'
+  end
+  
+  test "search on integer columns" do
+    FixtureFactory.new(:user, first_name: 'Johnny', last_name: 'Haliday', age: 61)
+    FixtureFactory.new(:user, first_name: 'Mariah', last_name: 'Carey', age: 661)
+    visit resources_path(:users)
+    fill_in 'search_input', with: "61"
+    click_button 'search_btn'
+    assert page.has_content? 'Haliday'
+    assert page.has_no_content? 'Carey'
   end
 
   test "creating a comment (polymorphic belongs_to)" do
