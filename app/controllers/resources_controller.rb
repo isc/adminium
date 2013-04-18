@@ -358,21 +358,21 @@ class ResourcesController < ApplicationController
   end
 
   def apply_search
-    columns = resource.columns[:search]
-    query, datas = [], []
-    columns.each do |column|
-      quoted_column = quote_column_name column
-      if resource.is_number_column?(column)
-        if params[:search].match(/\A\-?\d+\Z/)
-          query.push "#{quoted_table_name}.#{quoted_column} = ?"
-          datas.push params[:search].to_i
-        end
-      elsif resource.is_text_column?(column)
-        query.push "upper(#{quoted_table_name}.#{quoted_column}) like ?"
-        datas.push "%#{params[:search]}%".upcase
+    
+    number_columns = resource.columns[:search].select{|c| resource.is_number_column?(c)}
+    if number_columns.present? && params[:search].match(/\A\-?\d+\Z/)
+      v = params[:search].to_i
+      @items = @items.where(false)
+      number_columns.each do |column|
+        @items = @items.or(column => v)
+      end
+    else
+      text_columns = resource.columns[:search].select{|c| resource.is_text_column?(c)}
+      if text_columns.present?
+        string_patterns = params[:search].split(" ").map {|pattern| pattern.include?("%") ? pattern : "%#{pattern}%" }
+        @items = @items.grep(text_columns, string_patterns, case_insensitive: true, all_patterns: true)
       end
     end
-    @items = @items.where([query.join(' OR '), datas].flatten)
   end
 
   def apply_includes
