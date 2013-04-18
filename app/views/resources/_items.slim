@@ -23,12 +23,15 @@
           th.checkboxes
             - if user_can? 'destroy', params[:table]
               input type="checkbox"
+        - else
+          th
         - resource.columns[:listing].each do |name|
           th.column_header data-column-name=name
             == header_link name
-            - if resource.is_date_column? name
+            - if resource.is_date_column?(name)
               i.time-chart.icon-bar-chart
             i.column_settings.icon-cog
+        
     - if @statistics.present?
       tfoot
         tr
@@ -63,5 +66,9 @@
             td.checkboxes.click_checkbox
               - if user_can?('destroy', params[:table]) || user_can?('update', params[:table])
                 input type="checkbox"
+          - else
+            - if item[resource.primary_key]
+              td= link_to content_tag('i', nil, class: 'icon-eye-open'), resource_path(params[:table], item.id)
+              
           - resource.columns[:listing].each do |name|
             == display_attribute :td, item, name, resource

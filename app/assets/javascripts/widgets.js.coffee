@@ -31,6 +31,11 @@ class Widget
       widget = $(".widget[data-widget-id=#{data.id}]")
       if data.widget
         widget.find('.content').html(data.widget)
+        widget.find('.content tr td').click (evt) ->
+          link = $(evt.currentTarget).find('a')
+          if link.length
+            link.replaceWith $("#facebookG").clone()
+            window.location.href = link.attr('href')
         widget.find('h4 small').show().find('span').text(data.total_count)
       else
         time_charts.graphData data.graph_data, widget.find('.content')
