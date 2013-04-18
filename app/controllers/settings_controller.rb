@@ -34,11 +34,5 @@ class SettingsController < ApplicationController
   def columns
     render json: @generic.table(params[:table]).column_names
   end
-  
-  private
-  
-  def resource
-    @resource ||= Resource::Base.new @generic, params[:id]
-  end
 
 end

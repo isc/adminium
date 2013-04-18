@@ -464,7 +464,7 @@ class ResourcesController < ApplicationController
       'blank' => {:specific => 'blank'},
       'present' => {:specific => 'present'}
     }
-    type = clazz.columns_hash[filter['column']].type
+    type = resource.column_info(filter['column'].to_sym)[:type]
     operators.merge! datetime_operators if [:date, :datetime].index(type)
     operators.merge! string_operators if [:string, :text].index(type)
     column = clazz.arel_table[filter['column']]

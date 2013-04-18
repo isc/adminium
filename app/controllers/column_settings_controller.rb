@@ -41,10 +41,6 @@ class ColumnSettingsController < ApplicationController
     @clazz ||= @generic.table params[:id]
   end
 
-  def resource
-    @resource ||= Resource::Base.new @generic, params[:id]
-  end
-
   def column
     @column ||= resource.schema.detect{|name, _|name.to_s == params[:column]}.second
   end

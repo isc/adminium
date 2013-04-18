@@ -2,9 +2,8 @@ class SearchesController < ApplicationController
 
   def update
     if params[:name] && params[:filters]
-      settings = @generic.table(params[:id]).settings
-      settings.filters[params[:name]] = params[:filters].values
-      settings.save
+      resource.filters[params[:name]] = params[:filters].values
+      resource.save
     end
     redirect_to resources_path(params[:id], asearch: params[:name])
   end
