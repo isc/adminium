@@ -39,7 +39,7 @@ class ResourcesController < ApplicationController
     @items_for_stats = @items
     # @items = @items.select(qualify params[:table], nil)
     # apply_has_many_counts
-    # apply_order
+    #apply_order
     update_export_settings
     respond_with @items do |format|
       format.html do
@@ -154,7 +154,9 @@ class ResourcesController < ApplicationController
     @title = "New #{params[:table].humanize.singularize}"
     @form_url = resources_path(params[:table])
     @item = if params.has_key? :clone_id
-      resource.query.find(params[:clone_id]).dup
+      attrs = resource.find(params[:clone_id])
+      attrs.delete resource.primary_key
+      attrs
     else
       params[:attributes] || {}
     end
@@ -417,7 +419,7 @@ class ResourcesController < ApplicationController
       order = qualify params[:table], params[:order]
     end
     nulllasts = @generic.postgresql? ? ' NULLS LAST' : ''
-    @items = @items.order(order + nulllasts)
+    @items = @items.order(Sequel.lit(order + nulllasts))
   end
 
   def apply_serialized_columns

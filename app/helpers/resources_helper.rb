@@ -1,8 +1,8 @@
 module ResourcesHelper
 
   def header_link original_key
-    key = original_key
-    display_name = clazz.column_display_name(original_key)
+    key = original_key.to_s
+    display_name = resource.column_display_name(original_key)
     if key.include? '.'
       parts = key.split('.')
       parts[0] = parts.first.tableize
@@ -11,7 +11,7 @@ module ResourcesHelper
     if key.starts_with? 'has_many/'
       key = "\"#{key}\""
     end
-    params[:order] = params[:order] || clazz.settings.default_order || clazz.primary_key
+    params[:order] = params[:order] || resource.default_order || resource.primary_key
     if params[:order] == key
       order = "#{key} desc"
       ascend = false
@@ -30,7 +30,7 @@ module ResourcesHelper
   end
   
   def sort_title display_name, ascend, original_key
-    if clazz.settings.is_number_column?(original_key) || original_key.starts_with?('has_many/')
+    if resource.is_number_column?(original_key) || original_key.to_s.starts_with?('has_many/')
       a,z = [0,9]
     else
       a,z = ['A', 'Z']

@@ -76,5 +76,15 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_equal resources_path(:users), page.current_path
     assert page.has_content?("does not exist")
   end
+  
+  test "clone from show" do
+    user = FixtureFactory.new(:user, pseudo: "Cloned Boy", age: 5).factory
+    visit resource_path(:users, user)
+    find("a[title=Clone]").click()
+    click_button "Save"
+    assert_equal "Cloned Boy", find('td[data-column-name=pseudo]').text
+    assert_equal "5", find('td[data-column-name=age]').text
+    assert_equal user.id + 1, find('div[data-table=users]')['data-item-id'].to_i
+  end
 
 end
