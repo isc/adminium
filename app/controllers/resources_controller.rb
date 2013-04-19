@@ -376,7 +376,7 @@ class ResourcesController < ApplicationController
   end
 
   def apply_includes
-    assocs = resource.columns[settings_type].find_all {|c| c.include?('.')}.map {|c| c.split('.').first}
+    assocs = resource.columns[settings_type].find_all {|c| c.to_s.include?('.')}.map {|c| c.to_s.split('.').first}
     assocs += resource.columns[settings_type].map {|c| clazz.foreign_key?(c)}.compact
     assocs.each do |assoc|
       next if !assoc.is_a?(String) && assoc.options[:polymorphic]
@@ -406,10 +406,10 @@ class ResourcesController < ApplicationController
     # end
     # params[:order] = clazz.primary_key unless clazz.settings.columns[settings_type].include? order_column
     unless order[/[.\/]/]
-      order = qualify params[:table], column
+      column = qualify params[:table], column
     end
-    #nulllasts = @generic.postgresql? ? ' NULLS LAST' : ''
-    @items = @items.order(Sequel::SQL::OrderedExpression.new(order, !!descending, nulls: :last))
+    @items = @items.order(Sequel::SQL::OrderedExpression.new(column.to_sym, !!descending, nulls: :last))
+    # raise @items.sql
   end
 
   def apply_serialized_columns
@@ -599,13 +599,7 @@ class ResourcesController < ApplicationController
   def resource
     resource_for params[:table]
   end
-  
-  def resource_for table
-    @resources ||= {} 
-    @resources[table] ||= Resource::Base.new @generic, table
-    @resources[table]
-  end
-  
+
   def dates_from_params
     return unless item_params.present?
     item_params.each do |key, value|

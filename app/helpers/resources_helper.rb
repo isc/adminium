@@ -85,6 +85,7 @@ module ResourcesHelper
 
   def display_associated_column item, key, wrapper_tag
     parts = key.to_s.split('.')
+    return
     item = item.send "_adminium_#{parts.first}"
     return column_content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
     display_attribute wrapper_tag, item, parts.second, true, [item.class.table_name, parts.second].join('.')

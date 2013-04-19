@@ -71,7 +71,12 @@ class ApplicationController < ActionController::Base
   end
   
   def resource
-    @resource ||= Resource::Base.new @generic, params[:id]
+    resource_for params[:id]
   end
-
+  
+  def resource_for table
+    @resources ||= {} 
+    @resources[table] ||= Resource::Base.new @generic, table
+  end
+  
 end

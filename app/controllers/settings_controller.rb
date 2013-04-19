@@ -32,7 +32,7 @@ class SettingsController < ApplicationController
   end
 
   def columns
-    render json: @generic.table(params[:table]).column_names
+    render json: resource_for(params[:table]).column_names
   end
 
 end
