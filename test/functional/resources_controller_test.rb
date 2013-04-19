@@ -12,7 +12,9 @@ class ResourcesControllerTest < ActionController::TestCase
       activated_at: (2 * (index - 1)).week.ago
      @fixtures.push user
     end
-    user = FixtureFactory.new :user, pseudo: 'Loulou', last_name: '', admin: true, age: 18, activated_at: 5.minutes.ago
+    group = FixtureFactory.new(:group, name: 'Admins').factory
+    user = FixtureFactory.new :user, pseudo: 'Loulou', last_name: '', admin: true, age: 18,
+      activated_at: 5.minutes.ago, group_id: group.id
     @fixtures.push user
   end
 
@@ -74,20 +76,36 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   def test_json_response
-    get :index, :table => 'users', :order=> 'pseudo', :format => 'json'
+    get :index, table: 'users', order: 'pseudo', format: 'json'
     data = JSON.parse(@response.body)
     assert_equal ["Loulou", "Martin", "Michel", nil], assigns[:items].map{|i|i[:pseudo]}
     assert_equal 4, data['total_count']
   end
 
   def test_csv_response
-    get :index, :table => 'users', :order=> 'pseudo', :format => 'csv'
+    get :index, table: 'users', order: 'pseudo', format: 'csv'
     lines = @response.body.split("\n")
     assert_equal 5, lines.length
   end
+  
+  def test_csv_response_with_belongs_to_column
+    Resource::Base.any_instance.stubs(:columns).returns(export: [:'groups.name'])
+    get :index, table: 'users', format: 'csv', order: 'id'
+    lines = @response.body.split("\n")
+    assert_equal 'Admins', lines[-1]
+  end
+  
+  def test_csv_response_with_has_many_count
+    FixtureFactory.new(:group)
+    Resource::Base.any_instance.stubs(:columns).returns(export: [:'has_many/users'])
+    get :index, table: 'groups', format: 'csv', order: 'id'
+    lines = @response.body.split("\n")
+    assert_equal '1', lines[-2]
+    assert_equal '0', lines[-1]
+  end
 
   def test_search_found
-    get :index, :table => 'users', :search => 'Michel'
+    get :index, table: 'users', search: 'Michel'
     assert_equal ['Michel'], assigns[:items].map{|i|i[:pseudo]}
   end
 

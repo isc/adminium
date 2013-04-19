@@ -61,6 +61,8 @@ class ResourcesController < ApplicationController
         }
       end
       format.csv do
+        @fetched_items = @items.to_a
+        fetch_associated_items
         send_data generate_csv, type: 'text/csv'
       end
     end
@@ -543,14 +545,10 @@ class ResourcesController < ApplicationController
     @items.each do |item|
       out << keys.map do |key|
         if key.to_s.include? "."
-          parts = key.split('.')
-          pitem = item.send(parts.first)
-          pitem[parts.second] if pitem
-        elsif key.to_s.starts_with? 'has_many/'
-          key = key.gsub 'has_many/', ''
-          foreign_key_name = item.class.original_name.underscore + '_id'
-          foreign_key_value = item[resource.primary_key]
-          item.class.generic.table(key).where(foreign_key_name => foreign_key_value).count
+          referenced_table, column = key.to_s.split('.').map(&:to_sym)
+          foreign_resource = resource_for referenced_table
+          pitem = @associated_items[referenced_table].find {|i| i[foreign_resource.primary_key]}
+          pitem[column] if pitem
         else
           item[key]
         end
