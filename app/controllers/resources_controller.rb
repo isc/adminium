@@ -5,7 +5,6 @@ class ResourcesController < ApplicationController
   before_filter :table_access_limitation, except: [:search]
   before_filter :check_permissions
   before_filter :dates_from_params
-  # before_filter :apply_serialized_columns, only: [:index, :show]
   # before_filter :apply_validations, only: [:create, :update, :new, :edit]
   before_filter :fetch_item, only: [:show, :edit]
   helper_method :user_can?
@@ -405,12 +404,6 @@ class ResourcesController < ApplicationController
     column, descending = order.split(" ")
     column = order[/[.\/]/] ? column.to_sym : (qualify params[:table], column)
     @items = @items.order(Sequel::SQL::OrderedExpression.new(column, !!descending, nulls: :last))
-  end
-
-  def apply_serialized_columns
-    resource.columns[:serialized].each do |column|
-      clazz.serialize column
-    end
   end
 
   def apply_validations

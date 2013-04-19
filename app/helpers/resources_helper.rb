@@ -65,8 +65,9 @@ module ResourcesHelper
         content = link_to label, params.merge(where: {(original_key || key) => value}), class: 'label label-info', style: user_defined_bg
         css_class = 'enum'
       end
-    elsif resource.columns[:serialized].include? key
-      css_class, content = 'serialized', content_tag(:pre, value.inspect, class: 'sh_ruby')
+    elsif value.present? && resource.columns[:serialized].include?(key)
+      content = value.present? ? (YAML.load(value).inspect rescue value) : value
+      css_class, content = 'serialized', content_tag(:pre, content, class: 'sh_ruby')
     else
       css_class, content = display_value item, key, resource
       is_editable = true
