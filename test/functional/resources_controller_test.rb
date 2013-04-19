@@ -23,7 +23,7 @@ class ResourcesControllerTest < ActionController::TestCase
     generic = Generic.new @account
     @resource = Resource::Base.new(generic, :users)
     @expectations = {}
-    
+
     add_filter_to_test 'null_pseudo', [nil], [{"column" => 'pseudo', "type" => "string", "operator"=>"null"}]
     add_filter_to_test 'not_null_pseudo', ['Loulou', 'Martin', 'Michel'], [{"column" => 'pseudo', "type" => "string", "operator"=>"not_null"}]
 
@@ -69,13 +69,13 @@ class ResourcesControllerTest < ActionController::TestCase
   def test_index_without_statements
     get :index, :table => 'users'
     items = assigns[:items]
-    assert_equal 4, items.length
+    assert_equal 4, items.count
   end
 
   def test_json_response
     get :index, :table => 'users', :order=> 'pseudo', :format => 'json'
     data = JSON.parse(@response.body)
-    assert_equal ["Loulou", "Martin", "Michel", nil], assigns[:items].map(&:pseudo)
+    assert_equal ["Loulou", "Martin", "Michel", nil], assigns[:items].map{|i|i[:pseudo]}
     assert_equal 4, data['total_count']
   end
 
