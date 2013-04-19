@@ -54,4 +54,5 @@ group :test do
   gem 'mocha', '0.13.3', require: false
   gem 'factory_girl_rails'
   gem 'rack_session_access'
+  gem 'simplecov', require: false
 end

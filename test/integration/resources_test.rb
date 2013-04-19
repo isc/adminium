@@ -1,3 +1,4 @@
+# encoding: UTF-8
 require 'test_helper'
 
 class ResourcesTest < ActionDispatch::IntegrationTest
@@ -169,6 +170,15 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     user = FixtureFactory.new(:user, group_id: group.id).factory
     visit resource_path(:users, user)
     click_link "Group ##{group.id}"
+    assert_equal resource_path(:groups, group), page.current_path
+  end
+  
+  test "show with belongs_to association with label_column set" do
+    Resource::Base.any_instance.stubs(:label_column).returns 'name'
+    group = FixtureFactory.new(:group, name: 'Admins').factory
+    user = FixtureFactory.new(:user, group_id: group.id).factory
+    visit resource_path(:users, user)
+    click_link 'Admins'
     assert_equal resource_path(:groups, group), page.current_path
   end
   

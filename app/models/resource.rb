@@ -289,6 +289,7 @@ module Resource
     end
     
     def item_label item
+      return unless item
       res = item[label_column.to_sym] if label_column
       res || "#{human_name} ##{item[primary_key]}"
     end

@@ -117,7 +117,11 @@ module ResourcesHelper
       item = if assoc[:polymorphic]
         foreign_clazz.where(foreign_clazz.primary_key => value).first
       else
-        @associated_items[foreign_resource.table].find {|i| i[assoc[:primary_key]] == value}
+        if @associated_items
+          @associated_items[foreign_resource.table].find {|i| i[assoc[:primary_key]] == value}
+        else
+          foreign_resource.find value
+        end
       end
       return value if item.nil?
       label = foreign_resource.item_label item

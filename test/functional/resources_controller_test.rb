@@ -8,15 +8,16 @@ class ResourcesControllerTest < ActionController::TestCase
     FixtureFactory.clear_db
     @fixtures = []
     ['Michel', 'Martin', nil].each_with_index do |pseudo, index|
-     user = FixtureFactory.new :user, :pseudo => pseudo, :admin => false, :age => (17 + index), :activated_at => (2 * (index - 1)).week.ago
+     user = FixtureFactory.new :user, pseudo: pseudo, admin: false, age: (17 + index),
+      activated_at: (2 * (index - 1)).week.ago
      @fixtures.push user
     end
-    user = FixtureFactory.new :user, :pseudo => 'Loulou', :last_name => '', :admin => true, :age => 18, :activated_at => 5.minutes.ago
+    user = FixtureFactory.new :user, pseudo: 'Loulou', last_name: '', admin: true, age: 18, activated_at: 5.minutes.ago
     @fixtures.push user
   end
 
   def teardown
-    assert_response :success
+    assert_response(@expected_response_code || :success)
   end
 
   def test_advanced_search_operators
@@ -87,13 +88,13 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_search_found
     get :index, :table => 'users', :search => 'Michel'
-    assert_equal ['Michel'], assigns[:items].map(&:pseudo)
+    assert_equal ['Michel'], assigns[:items].map{|i|i[:pseudo]}
   end
 
   def test_search_not_found
     FixtureFactory.new :user, :pseudo => 'Johnny'
     get :index, :table => 'users', :search => 'Halliday'
-    assert_equal 0, assigns[:items].length
+    assert_equal 0, assigns[:items].count
   end
 
   def test_bulk_edit
@@ -140,6 +141,7 @@ class ResourcesControllerTest < ActionController::TestCase
     assert_equal 'martine', assigns[:items].detect{|r| r[:id] == user.id}[:pseudo]
   end
   
+
   def test_check_existence
     user = FixtureFactory.new(:user).factory
     get :check_existence, table: 'users', :id => [user.id], :format => :json
@@ -151,10 +153,19 @@ class ResourcesControllerTest < ActionController::TestCase
     get :check_existence, table: 'users', :id => [12321]
     assert_equal({'error' => true, 'ids' => ['12321']}, JSON.parse(@response.body))
   end
+  
+  def test_bulk_destroy
+    request.env["HTTP_REFERER"] = 'plop'
+    post :bulk_destroy, table: :users, item_ids: [@fixtures[0].factory.id, @fixtures[1].factory.id]
+    assert_raise(ActiveRecord::RecordNotFound) { @fixtures[0].reload! }
+    assert_raise(ActiveRecord::RecordNotFound) { @fixtures[1].reload! }
+    assert_nothing_raised { @fixtures[2].reload! }
+    @expected_response_code = :redirect
+  end
 
   private
   def assert_asearch name, pseudos
-    get :index, :table => 'users', :asearch => name, :order => 'pseudo'
+    get :index, table: 'users', asearch: name, order: 'pseudo'
     assert_equal pseudos, assigns[:items].map{|r| r[:pseudo]}, assigns[:items]
   end
 
