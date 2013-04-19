@@ -25,9 +25,9 @@ class GenericTest < ActiveSupport::TestCase
   end
   
   test "associations" do
-    assert_equal({foreign_key: :user_profile_id, table: :user_profiles, primary_key: :id},
-      @generic.associations[:users][:belongs_to][:user_profile])
-    assert_equal({foreign_key: :user_profile_id, table: :user_profiles, primary_key: :id},
+    assert_equal({foreign_key: :user_profile_id, referenced_table: :user_profiles, primary_key: :id, table: :users},
+      @generic.associations[:users][:belongs_to][:user_profiles])
+    assert_equal({foreign_key: :user_profile_id, referenced_table: :user_profiles, primary_key: :id, table: :users},
       @generic.associations[:user_profiles][:has_many][:users])
   end
   
