@@ -208,9 +208,9 @@ class ResourcesController < ApplicationController
   end
 
   def bulk_destroy
-    params[:item_ids].map! {|id| id.split(',')} if clazz.primary_key.is_a?(Array)
-    clazz.destroy params[:item_ids]
-    redirect_to :back, flash: {success: "#{params[:item_ids].size} #{human_name.pluralize} successfully destroyed."}
+    params[:item_ids].map! {|id| id.split(',')} if resource.primary_key.is_a?(Array)
+    resource.delete params[:item_ids]
+    redirect_to :back, flash: {success: "#{params[:item_ids].size} #{resource.human_name.pluralize} successfully destroyed."}
   rescue ActiveRecord::StatementInvalid => e
     redirect_to :back, flash: {error: e.message}
   end
