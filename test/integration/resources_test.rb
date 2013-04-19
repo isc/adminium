@@ -108,7 +108,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
 
   test "custom column belongs_to" do
     FixtureFactory.new(:comment, user_from_test: FixtureFactory.new(:user, pseudo: 'bob').factory)
-    Resource::Base.any_instance.stubs(:columns).returns listing: ['user.pseudo'], serialized: [], search: []
+    Resource::Base.any_instance.stubs(:columns).returns listing: ['users.pseudo'], serialized: [], search: []
     visit resources_path(:comments)
     assert page.has_css?('td', text: 'bob')
   end
@@ -179,5 +179,5 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     click_link 'Create a new associated User'
     assert_equal new_resource_path(:users), page.current_path
   end
-
+  
 end

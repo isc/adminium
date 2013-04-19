@@ -34,7 +34,6 @@ class ResourcesController < ApplicationController
     @items = resource.query.select(qualify params[:table], Sequel.lit('*'))
     @items = @items.where(params[:where].symbolize_keys) if params[:where].present?
     apply_filters
-    # apply_includes
     apply_search if params[:search].present?
     @items_for_stats = @items
     # @items = @items.select(qualify params[:table], nil)
@@ -45,7 +44,9 @@ class ResourcesController < ApplicationController
       format.html do
         check_per_page_setting
         page = (params[:page].presence || 1).to_i
-        @items = @items.paginate(page, resource.per_page)
+        @items = @items.paginate page, resource.per_page
+        @fetched_items = @items.to_a
+        fetch_associated_items
         apply_statistics
       end
       format.json do
@@ -376,13 +377,19 @@ class ResourcesController < ApplicationController
     end
   end
 
-  def apply_includes
-    assocs = resource.columns[settings_type].find_all {|c| c.to_s.include?('.')}.map {|c| c.to_s.split('.').first}
-    assocs += resource.columns[settings_type].map {|c| clazz.foreign_key?(c)}.compact
-    assocs.each do |assoc|
-      next if !assoc.is_a?(String) && assoc.options[:polymorphic]
-      @items = @items.includes(assoc.is_a?(String) ? "_adminium_#{assoc}".to_sym : assoc.name)
+  def fetch_associated_items
+    @associated_items = {}
+    referenced_tables = resource.columns[settings_type].map {|c| c.to_s.split('.').first if c.to_s.include?('.')}
+    referenced_tables += resource.columns[settings_type].map {|c| resource.foreign_key?(c).try(:[], :referenced_table) }
+    referenced_tables.compact.uniq.map do |referenced_table|
+      referenced_table = referenced_table.to_sym
+      assoc_info = resource.associations[:belongs_to][referenced_table]
+      ids = @fetched_items.map {|i| i[assoc_info[:foreign_key]]}.uniq
+      resource = resource_for(assoc_info[:referenced_table])
+      @associated_items[referenced_table] = resource.query.where(resource.primary_key => ids).all
     end
+    # FIXME polymorphic stuff
+    #   next if !assoc.is_a?(String) && assoc.options[:polymorphic]
   end
 
   def apply_has_many_counts

@@ -1,5 +1,7 @@
 Sequel Migration TODOS / FIXMES :
-- migration des données Redis ; "account:17:settings:PhoneNumber" => "account:17:settings:phone_numbers"
+- migration des données Redis
+  - "account:17:settings:PhoneNumber" => "account:17:settings:phone_numbers"
+  - listing columns ; user.pseudo => users.pseudo
 - un 500 laisse la connexion ouverte on dirait, moult 500 menent a "PG::Error: FATAL:  sorry, too many clients already"
 - serialization
 - gestion des fails d'update

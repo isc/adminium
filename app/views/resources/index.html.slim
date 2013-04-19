@@ -97,7 +97,7 @@ javascript:
             == "where #{k} is <i>#{v}</i>"
             span.remove data-param=format_param_for_removal(k, v) x
 
-= render partial: 'items', locals: {items: @items.to_a, actions_cell: true}
+= render partial: 'items', locals: {items: @fetched_items, actions_cell: true}
 = render partial: '/resources/panels/listing_settings'
 = render partial: '/resources/panels/export'
 = render partial: '/resources/panels/advanced_search'

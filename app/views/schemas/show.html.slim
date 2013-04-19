@@ -20,7 +20,7 @@ table.table.table-striped.black
           i.icon.icon-key.primaryKey
         - elsif @resource.index_exists? name
           i.icon.icon-link
-        - if fk = @resource.foreign_key?(name)
+        - if fk = @resource.db_foreign_key?(name)
           i.icon.icon-key.foreignKey(title="foreign key to table #{fk[:to_table]}")
       th data-value=name = name
       td(class="#{column[:type]}Type" data-value=column[:db_type])= column[:db_type]

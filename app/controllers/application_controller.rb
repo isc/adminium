@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   before_filter :connect_to_db
   after_filter :cleanup_generic
 
-  helper_method :global_settings, :current_account, :current_user, :admin?, :current_account?
+  helper_method :global_settings, :current_account, :current_user, :admin?, :current_account?, :resource_for
 
   private
 

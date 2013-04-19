@@ -47,7 +47,7 @@ module ResourcesHelper
 
   def display_attribute wrapper_tag, item, key, resource, relation = false, original_key = nil
     is_editable, key = nil, key.to_sym
-    return display_associated_column item, key, wrapper_tag if key.to_s.include? '.'
+    return display_associated_column item, key, wrapper_tag, resource if key.to_s.include? '.'
     return display_associated_count item, key, wrapper_tag, resource if key.to_s.starts_with? 'has_many/'
     value = item[key]
     if value && resource.foreign_key?(key)
@@ -80,12 +80,12 @@ module ResourcesHelper
     column_content_tag wrapper_tag, content, opts
   end
 
-  def display_associated_column item, key, wrapper_tag
+  def display_associated_column item, key, wrapper_tag, resource
     parts = key.to_s.split('.')
-    return
-    item = item.send "_adminium_#{parts.first}"
+    assoc_info = resource.associations[:belongs_to][parts.first.to_sym]
+    item = @associated_items[parts.first.to_sym].find {|i| i[assoc_info[:primary_key]] == item[assoc_info[:foreign_key]]}
     return column_content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
-    display_attribute wrapper_tag, item, parts.second, true, [item.class.table_name, parts.second].join('.')
+    display_attribute wrapper_tag, item, parts.second, resource_for(assoc_info[:referenced_table]), true, key
   end
 
   def display_associated_count item, key, wrapper_tag, resource
@@ -99,7 +99,8 @@ module ResourcesHelper
   end
 
   def display_belongs_to item, key, value, resource
-    assoc = resource.associations[:belongs_to].find {|_, info| info[:foreign_key] == key}.second
+    assoc_name, assoc = resource.associations[:belongs_to].find {|_, info| info[:foreign_key] == key}
+    # FIXME polymorphic spot
     # if reflection.options[:polymorphic]
     #       assoc_type = item.send key.gsub(/_id/, '_type')
     #       return value if assoc_type.blank?
@@ -110,25 +111,26 @@ module ResourcesHelper
     #         return value
     #       end
     # else
-    object_name, path = assoc[:table].to_s.singularize.humanize, resource_path(assoc[:table], value)
-    label_column = nil #foreign_clazz.resource.label_column
+    foreign_resource = resource_for assoc[:referenced_table]
+    label_column = foreign_resource.label_column
     if label_column.present?
-      item = if reflection.options[:polymorphic]
+      item = if assoc[:polymorphic]
         foreign_clazz.where(foreign_clazz.primary_key => value).first
       else
-        item.send reflection.name
+        @associated_items[foreign_resource.table].find {|i| i[assoc[:primary_key]] == value}
       end
       return value if item.nil?
-      label = item.adminium_label
+      label = foreign_resource.item_label item
     else
+      object_name = assoc[:referenced_table].to_s.singularize.humanize
       label = "#{object_name} ##{value}"
     end
-    link_to label, path
+    link_to label, resource_path(assoc[:referenced_table], value)
   end
   
   def display_associated_items resource, item, assoc_name
     items = resource.fetch_associated_items @item, assoc_name, 5
-    resource = Resource::Base.new @generic, assoc_name
+    resource = resource_for assoc_name
     items.map do |item|
       link_to resource.item_label(item), resource_path(resource.table, item[resource.primary_key])
     end.join(", ")
@@ -234,7 +236,7 @@ module ResourcesHelper
       offset = (collection.current_page - 1) * collection.page_size
       %{<b>%d&nbsp;-&nbsp;%d</b> of <b>%d</b>} % [
         offset + 1,
-        offset + collection.page_size,
+        offset + collection.current_page_record_count,
         collection.pagination_record_count
       ]
     end
@@ -246,7 +248,7 @@ module ResourcesHelper
 
   def options_for_custom_columns resource
     # FIXME polymorphic stuff
-    res = [['belongs_to', resource.associations[:belongs_to].map{|name, assoc|[name.to_s.humanize, assoc[:table]] unless assoc[:polymorphic]}.compact]]
+    res = [['belongs_to', resource.associations[:belongs_to].map{|name, assoc|[name, assoc[:table]] unless assoc[:polymorphic]}.compact]]
     res << ['has_many', resource.associations[:has_many].map{|name, assoc|["#{name.to_s.humanize} count", name]}]
     grouped_options_for_select res
   end
