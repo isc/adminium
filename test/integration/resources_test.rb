@@ -190,4 +190,17 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_equal new_resource_path(:users), page.current_path
   end
   
+  test "bulk edit" do
+    users = 2.times.map { FixtureFactory.new(:user, age: 34, role: 'Developer').factory }
+    visit bulk_edit_resources_path(:users, record_ids: users.map(&:id))
+    fill_in 'Age', with: '37'
+    fill_in 'Role', with: 'CTO'
+    click_button 'Update 2 Users'
+    visit resources_path(:users)
+    users.each do |user|
+      assert_equal '37', page.find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=age]").text
+      assert_equal 'CTO', page.find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=role]").text
+    end
+  end
+  
 end

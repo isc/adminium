@@ -1,43 +1,9 @@
 = form_tag @form_url, class: 'form-horizontal resource-form' do
   = hidden_field_tag '_method', 'put' if @form_method == 'put'
-  - resource.columns[:form].each do |name|
-    .control-group
-      label.control-label for="#{resource.table}_#{name}"
-        - if resource.required_column? name
-          abbr title="required" *
-          ' 
-        = resource.column_display_name name
-      .controls
-        - if assoc_info = resource.foreign_key?(name)
-          - if assoc_info[:polymorphic]
-            / FIXME polymorphic stuff
-          - else
-            - foreign_resource = resource_for assoc_info[:referenced_table]
-            - if foreign_resource.query.count <= 25
-              = belongs_to_select_tag resource, foreign_resource, name
-            - else
-              - record = foreign_resource.find @item[name] if @item[name].present?
-              .adminium-association
-                  span.record_selected class="#{'hide' if record.nil?}"
-                    span= foreign_resource.item_label record
-                    i.icon.icon-remove-sign
-                  .clear
-                  = hidden_field_tag "#{resource.table}[#{name}]"
-                  .input-prepend.input-append
-                    span.add-on Search
-                    input(type='search' data-autocomplete-url=search_resources_path(foreign_resource.table) autocomplete='off' class='span4 search-query' placeholder="#{foreign_resource.columns[:search].map(&:to_s).map(&:humanize).join(', ').downcase}")
-                    span.add-on
-                      i.icon.icon-refresh.icon-spin
-                  ul.span6
-                    li
-        - else
-          = input resource, name
+  = render partial: 'form_fields', locals: {item: @item, input_class: 'span6'}
   .form-actions
     = submit_tag 'Save', class: 'btn-primary', data: {disable_with: 'Sending...'}, name: 'then_redirect'
     '
     = submit_tag 'Save and create another', class: 'btn', data: {disable_with: 'Sending...'}, name: 'then_redirect'
     '
     = submit_tag 'Save and continue editing', class: 'btn', data: {disable_with: 'Sending...'}, name: 'then_redirect'\
-    
-    
-          

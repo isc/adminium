@@ -117,7 +117,7 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_bulk_edit
     @records = @fixtures.map &:save!
-    get :bulk_edit, :table => 'users', :record_ids => @records.map(&:id)
+    get :bulk_edit, table: 'users', :record_ids => @records.map(&:id)
     assert_equal @records.map(&:id), assigns[:record_ids].map(&:to_i)
   end
 

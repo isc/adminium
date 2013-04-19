@@ -304,6 +304,13 @@ module Resource
       pk_filter(primary_key_value).update updated_values
     end
     
+    def update_multiple_items ids, updated_values
+      updated_values.reject!{|k,v|v.blank?}
+      updated_values = typecasted_values updated_values
+      magic_timestamps updated_values, false
+      query.where(primary_key => ids).update(updated_values)
+    end
+    
     def find primary_key_value
       pk_filter(primary_key_value).first || (raise RecordNotFound)
     end

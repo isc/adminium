@@ -1,53 +1,20 @@
-= simple_form_for @item, url: @form_url, html: {class: 'form-vertical'}, defaults: {input_html: {class: 'span4'}} do |f|
+= form_tag @form_url, class: 'form-vertical resource-form' do
   - @record_ids.each do |record_id|
     = hidden_field_tag "record_ids[]", record_id
   .modal-header
     a.close data-dismiss="modal" ×
     h3
-      - if @item.persisted?
-        == "Edit #{params[:table].singularize.humanize} ##{@item[clazz.primary_key]}"
+      - if @item.present?
+        == "Edit #{params[:table].singularize.humanize} ##{@item[resource.primary_key]}"
       -else
         == "Bulk Edit (#{@record_ids.length} #{params[:table].humanize} selected)"
   .modal-body
-    - unless @item.persisted?
+    - unless @item.present?
       .well
         'Fill in the inputs you want to update. All the records will have the same value.
         br
         'Leave the other inputs empty to preserve the original record values.
-    - @item.class.settings.columns[:form].each do |name|
-      - next if @item.class.settings.column_type(name).to_s == 'binary'
-      - options = {label: @item.class.column_display_name(name)}
-      - if  enum_value = @item.class.settings.enum_values_for(name)
-        - enum_collection = enum_value.to_a.map {|v| [v[1]['label'], v[0]]}
-        = f.input name, options.merge(as: :select, collection: enum_collection)
-      - elsif reflection = @item.class.foreign_key?(name)
-        - if reflection.options[:polymorphic]
-          = f.input name, options
-        - else
-          - if reflection.klass.count <= 25
-            = f.association reflection.name, options.merge(collection: reflection.klass.all(order: reflection.klass.settings.label_column))
-          - else
-            - reflection_id = @item[name]
-            - record = nil
-            .control-group.adminium-association.optional
-              =  f.label reflection.name, options[:label], :class=>'control-label'
-              .controls
-                span.record_selected(class="#{'hide' if record.nil?}")
-                  span= record.try :adminium_label
-                  i.icon.icon-remove-sign
-                .clear
-                = f.hidden_field name
-                .input-prepend.input-append
-                  span.add-on Search
-                  input(type='search' data-autocomplete-url=search_resources_path(reflection.klass.table_name) autocomplete='off' class='span2 search-query' placeholder="#{reflection.klass.settings.columns[:search].map(&:humanize).join(', ').downcase}")
-                  span.add-on
-                    i.icon.icon-refresh.icon-spin
-                ul.span4
-                  li
-      - else
-        - options.merge! readonly: (@item.class.columns.detect{|c|c.name == name}.primary || @item.class.primary_key == name)
-        - options.merge!(boolean_input_options(@item.class, name)) if @item.class.settings.column_type(name).to_s == "boolean"
-        = f.input name, options
+    = render partial: 'form_fields', locals: {item: @item, input_class: 'span4'}
   .modal-footer
-    - submit_tag_label = @item.persisted? ? "Update #{params[:table].humanize} ##{@item[clazz.primary_key]}" : "Update #{@record_ids.length} #{params[:table].humanize}"
+    - submit_tag_label = @item.present? ? "Update #{params[:table].humanize} ##{@item[resource.primary_key]}" : "Update #{@record_ids.length} #{params[:table].humanize}"
     = submit_tag submit_tag_label, class: 'btn-primary', data: {disable_with: 'Sending...'}

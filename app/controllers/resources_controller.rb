@@ -216,24 +216,22 @@ class ResourcesController < ApplicationController
 
   def bulk_edit
     @record_ids = params[:record_ids]
-    if clazz.where({clazz.primary_key => params[:record_ids]}).count != @record_ids.length
+    if resource.query.where(resource.primary_key => params[:record_ids]).count != @record_ids.length
       raise "BulkEditCheckRecordsFailed"
     end
     if @record_ids.length == 1
-      @item = clazz.find(@record_ids.shift)
-      @form_url = resource_path(@item, table: params[:table], return_to: :back)
+      @item = resource.find(@record_ids.shift)
+      @form_url = resource_path(@item[resource.primary_key], table: params[:table], return_to: :back)
     else
       @form_url = bulk_update_resources_path(params[:table])
-      @item = blank_object clazz.new
+      @item = {}
     end
     render layout: false
   end
 
   def bulk_update
-    items = clazz.find(params[:record_ids]).map do |item|
-      item.update_attributes!(item_params.reject{|k,v| v.blank?})
-    end
-    redirect_to :back, flash: {success: "#{items.length} rows has been updated"}
+    count = resource.update_multiple_items params[:record_ids], item_params
+    redirect_to :back, flash: {success: "#{count} rows has been updated"}
   end
 
   def test_threads
@@ -516,13 +514,6 @@ class ResourcesController < ApplicationController
         redirect_to dashboard_url, notice: notice
       end
     end
-  end
-
-  def blank_object object
-    object.attributes.keys.each do |key|
-      object[key] = nil
-    end
-    object
   end
 
   def generate_csv
