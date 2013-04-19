@@ -15,7 +15,7 @@ class SearchesController < ApplicationController
   end
 
   def show
-    render json: @generic.table(params[:id]).settings.filters.keys
+    render json: resource.filters.keys
   end
 
 end

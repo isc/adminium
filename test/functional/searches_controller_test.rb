@@ -12,6 +12,9 @@ class SearchesControllerTest < ActionController::TestCase
   def test_create_a_search
     put :update, {"filters"=>{"410"=>{"grouping"=>"and", "column"=>"pseudo", "type"=>"string", "operator"=>"null", "operand"=>""}}, "name"=>"last search", "id"=>"users"}
     assert_redirected_to resources_path(:users, asearch: "last search")
+    get :show, id: 'users'
+    assert_response :success
+    assert_equal ['last search'], JSON.parse(response.body)
   end
   
   def test_destroy_a_search
@@ -21,14 +24,6 @@ class SearchesControllerTest < ActionController::TestCase
     post :destroy, id: 'users', name: 'myass'
     assert_redirected_to resources_path(:users)
   end
-  
-  def test_partials
-    [:id, :created_at, :pseudo].each do |column|
-      get :show, id: 'users', column_name: column
-      assert_response :success
-    end
-  end
-
 
 end
 

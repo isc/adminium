@@ -24,5 +24,4 @@ class SettingsControllerTest < ActionController::TestCase
     end
   end
 
-
 end
