@@ -9,9 +9,8 @@ class SearchesController < ApplicationController
   end
 
   def destroy
-    settings = @generic.table(params[:id]).settings
-    settings.filters.delete params[:name]
-    settings.save
+    resource.filters.delete params[:name]
+    resource.save
     redirect_to resources_path(params[:id])
   end
 

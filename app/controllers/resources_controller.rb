@@ -431,81 +431,84 @@ class ResourcesController < ApplicationController
   end
 
   def apply_filters
-    predication = nil
-    @current_filter.each do |filter|
+    #predication = nil
+    @current_filter.each_with_index do |filter, index|
       clause = apply_filter filter
-      if predication.nil?
-        predication = clause
+      @items = if index.nonzero? && filter['grouping'] == 'or'
+        @items.or(clause)
       else
-        predication = if filter['grouping'] == 'or'
-          predication.or(clause)
-        else
-          predication.and(clause)
-        end
+        @items.where(clause)
       end
     end
-    @items = @items.where(predication) if predication
+    @items
   end
 
   def apply_filter filter
     operators = {
-      'null' => {:class => Arel::Nodes::Equality, :right => nil},
-      'not_null' => {:class => Arel::Nodes::NotEqual, :right => nil},
-      'is_true' => {:class => Arel::Nodes::Equality, :right => true},
-      'is_false' => {:class => Arel::Nodes::Equality, :right => false},
-      '!=' => {:class => Arel::Nodes::NotEqual},
-      '=' => {:class => Arel::Nodes::Equality},
-      '>' => {:class => Arel::Nodes::GreaterThan},
-      '>=' => {:class => Arel::Nodes::GreaterThanOrEqual},
-      '<' => {:class => Arel::Nodes::LessThan},
-      '<=' => {:class => Arel::Nodes::LessThanOrEqual},
-      'IN' => {:class => Arel::Nodes::In, :right => filter['operand'].to_s.split(',').map(&:strip)},
-      'is' => {:class => Arel::Nodes::Equality},
+      'null' => {:operator => :IS, :right => nil},
+      'not_null' => {:operator => :'IS NOT', :right => nil},
+      'is_true' => {:operator => :'=', :right => true},
+      'is_false' => {:operator => :'=', :right => false},
+      '!=' => {:operator => :'!='},
+      '=' => {:operator => :'='},
+      '>' => {:operator => :>},
+      '>=' => {:operator => :>=},
+      '<' => {:operator => :<},
+      '<=' => {:operator => :<=},
+      'IN' => {:operator => :IN, :right => filter['operand'].to_s.split(',').map(&:strip)},
+      'is' => {:operator => :IS},
       'blank' => {:specific => 'blank'},
       'present' => {:specific => 'present'}
     }
     type = resource.column_info(filter['column'].to_sym)[:type]
     operators.merge! datetime_operators if [:date, :datetime].index(type)
     operators.merge! string_operators if [:string, :text].index(type)
-    column = clazz.arel_table[filter['column']]
+    column = filter['column'].to_sym
     operation = operators[filter['operator']]
     if operation[:named_function]
-      column = Arel::Nodes::NamedFunction.new(operation[:named_function], [column])
+      column = Sequel.function operation[:named_function], column
     end
     return send("apply_filter_#{operation[:specific]}", column) if operation[:specific]
-    operation[:class].new column, right_value(operation, filter['operand'])
+    
+    return Sequel::SQL::BooleanExpression.from_value_pairs({column => operation[:right]}) if operation[:boolean_operator]
+    return Sequel::SQL::ComplexExpression.new operation[:operator], column, right_value(operation, filter['operand']) if operation[:operator]
+    
   end
 
   def string_operators
     {
-      'like' => {:class => Arel::Nodes::Matches, :replace_right => "%_%"},
-      'not_like' => {:class => Arel::Nodes::DoesNotMatch, :replace_right => '%_%'},
-      'starts_with' => {:class => Arel::Nodes::Matches, :replace_right => "_%"},
-      'ends_with' => {:class => Arel::Nodes::Matches, :replace_right => "%_"},
-      'not' => {:class => Arel::Nodes::NotEqual}
+      'like' => {:operator => :ILIKE, :replace_right => "%_%"},
+      'not_like' => {:operator => :'NOT ILIKE', :replace_right => '%_%'},
+      'starts_with' => {:operator => :ILIKE, :replace_right => "_%"},
+      'ends_with' => {:operator => :ILIKE, :replace_right => "%_"},
+      'not' => {:operator => :'!='}
     }
   end
 
   def datetime_operators
     today = Date.today
     {
-      'today' => {:class => Arel::Nodes::Equality, :right => today, :named_function => "DATE"},
-      'yesterday' => {:class => Arel::Nodes::Equality, :right => 1.day.ago.to_date, :named_function => "DATE"},
-      'this_week' => {:class => Arel::Nodes::Between, :right => Arel::Nodes::And.new([today.beginning_of_week, today.end_of_week])},
-      'last_week' => {:class => Arel::Nodes::Between, :right => Arel::Nodes::And.new([1.week.ago.beginning_of_week, 1.week.ago.end_of_week])},
-      'on' => {:class => Arel::Nodes::Equality, :named_function => "DATE", :right_function => 'to_date'},
-      'not' => {:class => Arel::Nodes::NotEqual, :named_function => "DATE", :right_function => 'to_date'},
-      'after' => {:class => Arel::Nodes::LessThan, :named_function => "DATE"},
-      'before' => {:class => Arel::Nodes::GreaterThan, :named_function => "DATE"}
+      'today' => {:operator => :'=', :right => today, :named_function => "DATE"},
+      'yesterday' => {:operator => :'=', :right => 1.day.ago.to_date, :named_function => "DATE"},
+      'this_week' => {:boolean_operator => true, :right => (today.beginning_of_week)..(today.end_of_week)},
+      'last_week' => {:boolean_operator => true, :right => (1.week.ago.beginning_of_week)..(1.week.ago.end_of_week)},
+      'on' => {:operator => :'=', :named_function => "DATE", :right_function => 'to_date'},
+      'not' => {:operator => :'!=', :named_function => "DATE", :right_function => 'to_date'},
+      'after' => {:operator => :'>', :named_function => "DATE"},
+      'before' => {:operator => :'<', :named_function => "DATE"}
     }
   end
 
   def apply_filter_blank column
-    column.eq(nil).or(column.eq(''))
+    is_null = Sequel::SQL::ComplexExpression.new(:'IS', column, nil)
+    is_blank = Sequel::SQL::ComplexExpression.new(:'=', column, '')
+    Sequel::SQL::ComplexExpression.new(:OR, is_null, is_blank)
   end
 
   def apply_filter_present column
-    column.not_eq(nil).and(column.not_eq(''))
+    is_not_null = Sequel::SQL::ComplexExpression.new(:'IS NOT', column, nil)
+    is_not_blank = Sequel::SQL::ComplexExpression.new(:'!=', column, '')
+    Sequel::SQL::ComplexExpression.new(:AND, is_not_null, is_not_blank)
   end
 
   def right_value operation, value

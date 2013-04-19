@@ -21,9 +21,9 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_advanced_search_operators
     generic = Generic.new @account
-    @settings = generic.table('users').settings
+    @resource = Resource::Base.new(generic, :users)
     @expectations = {}
-
+    
     add_filter_to_test 'null_pseudo', [nil], [{"column" => 'pseudo', "type" => "string", "operator"=>"null"}]
     add_filter_to_test 'not_null_pseudo', ['Loulou', 'Martin', 'Michel'], [{"column" => 'pseudo', "type" => "string", "operator"=>"not_null"}]
 
@@ -43,13 +43,15 @@ class ResourcesControllerTest < ActionController::TestCase
     add_filter_to_test 'string_ends_with', ['Martin'], [{"column" => 'pseudo', "type" => "integer", "operator"=>"ends_with", "operand" => "tin"}]
     add_filter_to_test 'string_not_like', ['Loulou', 'Martin'], [{"column" => 'pseudo', "type" => "integer", "operator"=>"not_like", "operand" => "iche"}]
 
-    add_filter_to_test 'date_today', ['Loulou', 'Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"today", "operand" => ""}]
+    add_filter_to_test 'date_before', [nil], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"before", "operand" => 1.hour.ago.strftime('%m/%d/%Y')}]
+    add_filter_to_test 'date_after', ['Loulou', 'Martin', 'Michel'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"after", "operand" => 1.hour.ago.strftime('%m/%d/%Y')}]
+
+    #add_filter_to_test 'date_today', ['Loulou', 'Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"today", "operand" => ""}]
     add_filter_to_test 'date_yesterday', [], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"yesterday", "operand" => ""}]
+    #add_filter_to_test 'date_on', ['Loulou','Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"on", "operand" => 1.hour.ago.strftime('%m/%d/%Y')}]
+    
     add_filter_to_test 'date_this_week', ['Loulou', 'Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"this_week", "operand" => ""}]
     add_filter_to_test 'date_last_week', [], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"last_week", "operand" => ""}]
-    add_filter_to_test 'date_on', ['Loulou','Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"on", "operand" => 1.hour.ago.strftime('%m/%d/%Y')}]
-    add_filter_to_test 'date_before', ['Michel'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"before", "operand" => 1.hour.ago.strftime('%m/%d/%Y')}]
-    add_filter_to_test 'date_after', [nil], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"after", "operand" => 1.hour.ago.strftime('%m/%d/%Y')}]
 
     add_filter_to_test 'string_blank', ["Loulou", "Martin", "Michel", nil], [{"column" => 'last_name', "type" => "string", "operator"=>"blank"}]
     add_filter_to_test 'string_present', [], [{"column" => 'last_name', "type" => "string", "operator"=>"present"}]
@@ -57,7 +59,7 @@ class ResourcesControllerTest < ActionController::TestCase
     add_filter_to_test 'and_grouping', ['Loulou'], [{"column" => 'pseudo', "type" => "string", "operator"=>"not_null"}, {"column" => 'admin', "type" => "boolean", "operator"=>"is_true"}]
     add_filter_to_test 'or_grouping', ['Loulou', 'Michel'], [{"column" => 'age', "type" => "integer", "operator"=>"=", 'operand' => 17}, {"column" => 'admin', "type" => "boolean", "operator"=>"is_true", 'grouping' => 'or'}]
 
-    @settings.save
+    @resource.save
 
     @expectations.each do |filter_name, expected_result|
       assert_asearch filter_name, expected_result
@@ -126,11 +128,11 @@ class ResourcesControllerTest < ActionController::TestCase
   private
   def assert_asearch name, pseudos
     get :index, :table => 'users', :asearch => name, :order => 'pseudo'
-    assert_equal pseudos, assigns[:items].map(&:pseudo), assigns[:items]
+    assert_equal pseudos, assigns[:items].map{|r| r[:pseudo]}, assigns[:items]
   end
 
   def add_filter_to_test name, result, description
-    @settings.filters[name] = description
+    @resource.filters[name] = description
     @expectations[name] = result
   end
 
