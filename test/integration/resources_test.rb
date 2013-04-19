@@ -173,6 +173,15 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_equal resource_path(:groups, group), page.current_path
   end
   
+  test "show with belongs_to association with label_column set" do
+    Resource::Base.any_instance.stubs(:label_column).returns 'name'
+    group = FixtureFactory.new(:group, name: 'Admins').factory
+    user = FixtureFactory.new(:user, group_id: group.id).factory
+    visit resource_path(:users, user)
+    click_link 'Admins'
+    assert_equal resource_path(:groups, group), page.current_path
+  end
+  
   test "show with has_many association" do
     group = FixtureFactory.new(:group).factory
     3.times { FixtureFactory.new(:user, group_id: group.id) }

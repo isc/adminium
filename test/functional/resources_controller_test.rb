@@ -87,13 +87,13 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_search_found
     get :index, :table => 'users', :search => 'Michel'
-    assert_equal ['Michel'], assigns[:items].map(&:pseudo)
+    assert_equal ['Michel'], assigns[:items].map{|i|i[:pseudo]}
   end
 
   def test_search_not_found
     FixtureFactory.new :user, :pseudo => 'Johnny'
     get :index, :table => 'users', :search => 'Halliday'
-    assert_equal 0, assigns[:items].length
+    assert_equal 0, assigns[:items].count
   end
 
   def test_bulk_edit

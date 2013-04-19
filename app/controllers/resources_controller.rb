@@ -20,10 +20,12 @@ class ResourcesController < ApplicationController
   def search
     @items = resource.query
     params[:order] = resource.label_column if resource.label_column.present?
-    resource.columns[:search] = [clazz.primary_key, resource.label_column].compact.map(&:to_s) | resource.columns[:search]
+    resource.columns[:search] = [resource.primary_key, resource.label_column.try(:to_sym)].compact | resource.columns[:search]
     apply_search if params[:search].present?
     apply_order
-    render json: @items.paginate(1, 37).to_json(methods: :adminium_label, only: ([clazz.primary_key] + resource.columns[:search]).uniq)
+    @items = @items.select *resource.columns[:search]
+    records = @items.paginate(1, 37).map {|h| h.merge(adminium_label: resource.item_label(h))}
+    render json: records.to_json(only: resource.columns[:search] + [:adminium_label])
   end
 
   def index
@@ -360,7 +362,6 @@ class ResourcesController < ApplicationController
   end
 
   def apply_search
-    
     number_columns = resource.columns[:search].select{|c| resource.is_number_column?(c)}
     if number_columns.present? && params[:search].match(/\A\-?\d+\Z/)
       v = params[:search].to_i
