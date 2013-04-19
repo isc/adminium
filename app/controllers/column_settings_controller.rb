@@ -13,7 +13,7 @@ class ColumnSettingsController < ApplicationController
     resource.update_column_options params[:column], params[:column_options]
     resource.update_enum_values params
     if params[:label_column]
-      resource = Resource::Base.new @generic, params[:label_column][:table]
+      resource = resource_for params[:label_column][:table]
       resource.label_column = params[:label_column][:label_column]
       resource.save
     end

@@ -17,12 +17,14 @@ class Generic
   
   def associations
     return @associations if @associations
-    @associations = Hash[tables.map {|t| [t, {belongs_to: {}, has_many: {}}]}]
-    tables.each do |table|
-      if foreign_keys[table].present?
-        discover_associations_through_foreign_keys table
-      else
-        discover_associations_through_conventions table
+    ActiveSupport::Notifications.instrument(:associations_discovery, at: Time.now) do
+      @associations = Hash[tables.map {|t| [t, {belongs_to: {}, has_many: {}}]}]
+      tables.each do |table|
+        if foreign_keys[table].present?
+          discover_associations_through_foreign_keys table
+        else
+          discover_associations_through_conventions table
+        end
       end
     end
     @associations
@@ -42,9 +44,9 @@ class Generic
       owner = name.to_s.gsub(/_id$/, '')
       owner_table = owner.tableize.to_sym
       if tables.include? owner_table
-        @associations[table][:belongs_to][owner.to_sym] =
+        @associations[table][:belongs_to][owner_table] =
           @associations[owner_table][:has_many][table] =
-          {foreign_key: name, primary_key: :id, table: owner_table}
+          {foreign_key: name, primary_key: :id, referenced_table: owner_table, table: table}
         # TODO polymorphic associations
         # elsif klass.column_names.include? "#{owner}_type"
         #   klass.belongs_to assoc_name(owner), polymorphic: true, foreign_key: column.name

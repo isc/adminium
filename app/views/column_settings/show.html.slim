@@ -21,7 +21,7 @@
               'Override the column name in the user interface.
               br
               = "Default is \"#{params[:column].humanize}\""
-      - unless association_clazz || has_many_count_column || resource.foreign_key?(params[:column])
+      - unless association_clazz || has_many_count_column || resource.foreign_key?(params[:column].to_sym)
         - partial = {float: :decimal, timestamp: :datetime}[column[:type]] || column[:type]
         - if partial != :string
           = accordion.pane "#{partial.to_s.pluralize.humanize} display" do
@@ -40,15 +40,15 @@
             = render partial: "/column_settings/enum"
 
       - else
-        - if resource.foreign_key?(params[:column])
+        - if resource.foreign_key? params[:column].to_sym
           = accordion.pane 'Association discovery' do
-            - foreign_clazz = foreign_class(clazz, params[:column])
+            - foreign_resource = foreign_resource(resource, params[:column])
             .control-group
-              = label_tag 'label_column', nil, class: 'control-label'
+              = label_tag 'label_column_label_column', 'Label column', class: 'control-label'
               .controls
-                = hidden_field_tag 'label_column[table]', foreign_clazz.table_name
-                = select_tag 'label_column[label_column]', options_from_collection_for_select(foreign_clazz.columns, :name, :name, foreign_clazz.settings.label_column), include_blank: true
+                = hidden_field_tag 'label_column[table]', foreign_resource.table
+                = select_tag 'label_column[label_column]', options_for_select(foreign_resource.column_names, foreign_resource.label_column), include_blank: true
                 p.help-block
-                  = "We detected this column as a foreign key on #{foreign_clazz.table_name}, you can decide which column of this table is the most relevant to represent the association, default is the primary key"
+                  = "We detected this column as a foreign key on #{foreign_resource.table}, you can decide which column of this table is the most relevant to represent the association, default is the primary key"
   .modal-footer
     = submit_tag "Save settings", class: "btn btn-primary"

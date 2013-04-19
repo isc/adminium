@@ -222,7 +222,10 @@ module Resource
     end
     
     def foreign_key? name
-      return true if associations[:belongs_to].values.find {|assoc| assoc[:foreign_key] == name }
+      return associations[:belongs_to].values.find {|assoc| assoc[:foreign_key] == name }
+    end
+    
+    def db_foreign_key? name
       table_fks = @generic.foreign_keys[@table]
       return if table_fks.nil?
       table_fks.detect {|h| h[:column] == name}

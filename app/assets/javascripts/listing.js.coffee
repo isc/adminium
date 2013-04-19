@@ -91,8 +91,9 @@ class CustomColumns
       ul = @addButton.parents(".custom-column").siblings("ul")
       type = ul.attr("data-type")
       if @type is 'belongs_to'
-        value = "#{@assocSelect.find('option:selected').text()}.#{@columnSelect.val()}"
-        text = value.replace(".", " ")
+        option = @assocSelect.find('option:selected')
+        value = "#{option.val()}.#{@columnSelect.val()}"
+        text = "#{option.text()}'s #{@columnSelect.val()}"
       else
         value = "has_many/#{@assocSelect.val()}"
         text = @assocSelect.find('option:selected').text()

@@ -10,11 +10,9 @@ module ApplicationHelper
 
   # FIXME n+1 queries perf issue with label_column option
 
-  def foreign_class resource, key
-    reflection = resource.reflections.values.find {|r| r.foreign_key == key}
-    # clazz.reflections[assoc_name.to_sym].klass is a leftover class that should have been garbage collected
-    # and has settings already loaded in it that may be outdated
-    @generic.table(reflection.klass.table_name)
+  def foreign_resource resource, key
+    assoc_info = resource.associations[:belongs_to].values.find {|assoc_info| assoc_info[:foreign_key] == key.to_sym}
+    resource_for(assoc_info[:referenced_table])
   end
 
   def display_datetime_control_group opts={}
