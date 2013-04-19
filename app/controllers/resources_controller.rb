@@ -1,5 +1,3 @@
-require "activerecord-import/base"
-
 class ResourcesController < ApplicationController
 
   include TimeChartBuilder

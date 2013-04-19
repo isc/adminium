@@ -5,7 +5,6 @@ ruby '1.9.3'
 gem 'rails', '3.2.13'
 gem 'pg'
 gem 'mysql2'
-gem "activerecord-import", ">= 0.2.0"
 gem 'sequel', '3.46.0', require: false
 gem 'sequel_pg', require: false
 gem 'hiredis', '0.4.5'
