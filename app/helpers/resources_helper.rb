@@ -8,9 +8,6 @@ module ResourcesHelper
       parts[0] = parts.first.tableize
       key = parts.join('.')
     end
-    if key.starts_with? 'has_many/'
-      key = "\"#{key}\""
-    end
     params[:order] = params[:order] || resource.default_order || resource.primary_key
     if params[:order] == key
       order = "#{key} desc"

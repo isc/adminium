@@ -399,17 +399,8 @@ class ResourcesController < ApplicationController
   def apply_order
     order  = params[:order] || resource.default_order
     column, descending = order.split(" ")
-    # FIXME Not that clean. Removing quotes is for has_many/things sorting (not quoted in settings.columns)
-    # order_column = params[:order].gsub(/ (desc|asc)/, '').gsub('"', '')
-    # if order_column.include? '.'
-    #   order_column = "#{order_column.split('.').first.singularize}.#{order_column.split('.').last}"
-    # end
-    # params[:order] = clazz.primary_key unless clazz.settings.columns[settings_type].include? order_column
-    unless order[/[.\/]/]
-      column = qualify params[:table], column
-    end
-    @items = @items.order(Sequel::SQL::OrderedExpression.new(column.to_sym, !!descending, nulls: :last))
-    # raise @items.sql
+    column = order[/[.\/]/] ? column.to_sym : (qualify params[:table], column)
+    @items = @items.order(Sequel::SQL::OrderedExpression.new(column, !!descending, nulls: :last))
   end
 
   def apply_serialized_columns

@@ -33,7 +33,7 @@
 
 
     .modal-footer
-      - if @items.present?
+      - if @items.pagination_record_count.nonzero?
         = submit_tag "Export #{@items.pagination_record_count} #{params[:table].humanize.downcase} to csv", class: "btn btn-primary"
       - else
         i There is nothing to export
