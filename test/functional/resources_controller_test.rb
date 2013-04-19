@@ -134,6 +134,10 @@ class ResourcesControllerTest < ActionController::TestCase
     }.to_json
     post :perform_import, table: :users, data: datas
     assert_response :success
+    assert_equal({'success' => true}, JSON.parse(@response.body))
+    get :index, :table => 'users', :asearch => 'last_import'
+    assert_equal 2, assigns[:items].count
+    assert_equal 'martine', assigns[:items].detect{|r| r[:id] == user.id}[:pseudo]
   end
 
   private
