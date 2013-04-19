@@ -137,8 +137,8 @@ class ResourcesController < ApplicationController
 
   def check_existence
      ids = params[:id].uniq
-     found_items = clazz.count :conditions => {:id => ids}, :group => clazz.primary_key
-     not_found_ids = ids - found_items.keys.map(&:to_s)
+     found_items_ids = resource.query.where(resource.primary_key => ids).select(resource.primary_key).map{|r|r[resource.primary_key].to_s}.uniq
+     not_found_ids = ids.map(&:to_s) - found_items_ids
      if not_found_ids.present?
        result = {error: true, ids: not_found_ids}
      else

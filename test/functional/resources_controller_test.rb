@@ -133,11 +133,23 @@ class ResourcesControllerTest < ActionController::TestCase
       headers: ["id", "pseudo", "first_name", "last_name", "group_id", "age", "activated_at", "admin", "role", "kind", "user_profile_id", "birthdate", "file", "created_at", "updated_at"]
     }.to_json
     post :perform_import, table: :users, data: datas
-    assert_response :success
+
     assert_equal({'success' => true}, JSON.parse(@response.body))
     get :index, :table => 'users', :asearch => 'last_import'
     assert_equal 2, assigns[:items].count
     assert_equal 'martine', assigns[:items].detect{|r| r[:id] == user.id}[:pseudo]
+  end
+  
+  def test_check_existence
+    user = FixtureFactory.new(:user).factory
+    get :check_existence, table: 'users', :id => [user.id], :format => :json
+    assert_equal({'success' => true}, JSON.parse(@response.body))
+    
+    get :check_existence, table: 'users', :id => [user.id.to_s], :format => :json
+    assert_equal({'success' => true}, JSON.parse(@response.body))
+    
+    get :check_existence, table: 'users', :id => [12321]
+    assert_equal({'error' => true, 'ids' => ['12321']}, JSON.parse(@response.body))
   end
 
   private
