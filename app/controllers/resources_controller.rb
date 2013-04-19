@@ -31,14 +31,14 @@ class ResourcesController < ApplicationController
     @current_filter = resource.filters[params[:asearch]] || []
     @widget = current_account.table_widgets.where(table: params[:table], advanced_search: params[:asearch]).first
 
-    @items = resource.query
+    @items = resource.query.select(qualify params[:table], Sequel.lit('*'))
     @items = @items.where(params[:where].symbolize_keys) if params[:where].present?
     apply_filters
     # apply_includes
     apply_search if params[:search].present?
     @items_for_stats = @items
     # @items = @items.select(qualify params[:table], nil)
-    # apply_has_many_counts
+    apply_has_many_counts
     apply_order
     update_export_settings
     respond_with @items do |format|
@@ -385,15 +385,14 @@ class ResourcesController < ApplicationController
   end
 
   def apply_has_many_counts
-    resource.columns[settings_type].find_all {|c| c.starts_with? 'has_many/'}.each do |column|
-      assoc = column.gsub('has_many/', '')
-      _, reflection = clazz.reflections.detect {|m, r| r.original_name == assoc}
-      next if reflection.nil?
-      grouping_column = qualify params[:table], resource.primary_key
-      count_on = qualify assoc, @generic.table(assoc).primary_key
-      outer_join = "#{quote_table_name assoc}.#{quote_column_name reflection.foreign_key} = #{grouping_column}"
-      @items = @items.joins("left outer join #{assoc} on #{outer_join}").select("count(distinct #{count_on}) as #{quote_column_name column}")
-      @items = @items.group(grouping_column) unless @items.group_values.include? grouping_column
+    resource.columns[settings_type].find_all {|c| c.to_s.starts_with? 'has_many/'}.each do |column|
+      assoc = column.to_s.gsub 'has_many/', ''
+      assoc_info = resource.associations[:has_many].detect {|name, info| name.to_s == assoc}.second
+      next if assoc_info.nil?
+      count_on = qualify(assoc, resource_for(assoc.to_sym).primary_key)
+      @items = @items.left_outer_join(assoc.to_sym, assoc_info[:foreign_key] => assoc_info[:primary_key])
+        .group(qualify params[:table], resource.primary_key)
+        .select_append(Sequel.function(:count, Sequel.function(:distinct, count_on)).as(column))
     end
   end
 
@@ -598,7 +597,13 @@ class ResourcesController < ApplicationController
   end
   
   def resource
-    @resource ||= Resource::Base.new @generic, params[:table]
+    resource_for params[:table]
+  end
+  
+  def resource_for table
+    @resources ||= {} 
+    @resources[table] ||= Resource::Base.new @generic, table
+    @resources[table]
   end
   
   def dates_from_params

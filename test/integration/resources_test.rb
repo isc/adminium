@@ -101,7 +101,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test "custom column has_many" do
     user = FixtureFactory.new(:user).factory
     2.times { FixtureFactory.new :comment, user_from_test: user }
-    Resource::Base.any_instance.stubs(:columns).returns listing: ['has_many/comments'], serialized: [], search: []
+    Resource::Base.any_instance.stubs(:columns).returns listing: [:'has_many/comments'], serialized: [], search: []
     visit resources_path(:users)
     assert page.has_css?('td.hasmany a', text: '2')
   end

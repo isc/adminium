@@ -51,7 +51,7 @@ module ResourcesHelper
   def display_attribute wrapper_tag, item, key, resource, relation = false, original_key = nil
     is_editable, key = nil, key.to_sym
     return display_associated_column item, key, wrapper_tag if key.to_s.include? '.'
-    return display_associated_count item, key, wrapper_tag if key.to_s.starts_with? 'has_many/'
+    return display_associated_count item, key, wrapper_tag, resource if key.to_s.starts_with? 'has_many/'
     value = item[key]
     if value && resource.foreign_key?(key)
       content = display_belongs_to item, key, value, resource
@@ -90,12 +90,12 @@ module ResourcesHelper
     display_attribute wrapper_tag, item, parts.second, true, [item.class.table_name, parts.second].join('.')
   end
 
-  def display_associated_count item, key, wrapper_tag
+  def display_associated_count item, key, wrapper_tag, resource
     value = item[key]
     return column_content_tag wrapper_tag, '', class: 'hasmany' if value.nil?
-    key = key.gsub 'has_many/', ''
-    foreign_key_name = item.class.reflections.values.find {|r| r.original_name.to_s == key }.foreign_key
-    foreign_key_value = item[item.class.primary_key]
+    key = key.to_s.gsub 'has_many/', ''
+    foreign_key_name = resource.associations[:has_many].find {|name, assoc| name.to_s == key }.second[:foreign_key]
+    foreign_key_value = item[resource.primary_key]
     content = link_to value, resources_path(key, where: {foreign_key_name => foreign_key_value}), class: 'badge badge-warning'
     column_content_tag wrapper_tag, content, class: 'hasmany'
   end
@@ -247,9 +247,9 @@ module ResourcesHelper
   end
 
   def options_for_custom_columns resource
-    return # refactoring in progress
-    res = [['belongs_to', clazz.reflect_on_all_associations(:belongs_to).map{|r|[r.original_name, r.original_plural_name] unless r.options[:polymorphic]}.compact]]
-    res << ['has_many', clazz.reflect_on_all_associations(:has_many).map{|r|["#{r.original_name.to_s.humanize} count", r.original_name]}]
+    # FIXME polymorphic stuff
+    res = [['belongs_to', resource.associations[:belongs_to].map{|name, assoc|[name.to_s.humanize, assoc[:table]] unless assoc[:polymorphic]}.compact]]
+    res << ['has_many', resource.associations[:has_many].map{|name, assoc|["#{name.to_s.humanize} count", name]}]
     grouped_options_for_select res
   end
 
