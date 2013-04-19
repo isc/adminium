@@ -124,6 +124,21 @@ class ResourcesControllerTest < ActionController::TestCase
       "admin"=>{"true"=>1, "false"=>3, "null"=>0}
       }, assigns(:statistics))
   end
+  
+  def test_import
+    user = FixtureFactory.new(:user, :pseudo => 'Johnny').factory
+    datas = {
+      create: [["juan", "Juan", "De La Motte", "1", "28", "2012-04-01 00:00:00 UTC", false, "DRH", "2", nil, "2013-03-13", nil, "2013-04-19 15:39:52 UTC", "2013-04-19 15:39:52 UTC"]],
+      update: [[user.id.to_s, "martine", "Martine", "De La Motte", "1", "28", "2013-04-01 00:00:00 UTC", true, "PDG", "2", nil, "2013-03-13", nil, "2013-04-19 15:39:52 UTC", "2013-04-19 15:39:52 UTC"]],
+      headers: ["id", "pseudo", "first_name", "last_name", "group_id", "age", "activated_at", "admin", "role", "kind", "user_profile_id", "birthdate", "file", "created_at", "updated_at"]
+    }.to_json
+    post :perform_import, table: :users, data: datas
+    assert_response :success
+    assert_equal({'success' => true}, JSON.parse(@response.body))
+    get :index, :table => 'users', :asearch => 'last_import'
+    assert_equal 2, assigns[:items].count
+    assert_equal 'martine', assigns[:items].detect{|r| r[:id] == user.id}[:pseudo]
+  end
 
   private
   def assert_asearch name, pseudos

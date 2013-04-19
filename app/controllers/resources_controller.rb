@@ -47,7 +47,6 @@ class ResourcesController < ApplicationController
         check_per_page_setting
         page = (params[:page].presence || 1).to_i
         @items = @items.paginate(page, resource.per_page.to_i)
-        @items = @items.paginate page, resource.per_page
         @fetched_items = @items.to_a
         fetch_associated_items
         apply_statistics
@@ -85,33 +84,28 @@ class ResourcesController < ApplicationController
   def perform_import
     data = JSON.parse(params[:data])
     columns = data['headers']
-    pkey = clazz.primary_key.to_s
+    pkey = resource.primary_key.to_s
     columns_without_pk = columns.clone
     columns_without_pk.delete pkey
     import_rows = data['create'].present? ? data['create'] : nil
     update_rows = data['update'].present? ? data['update'] : nil
-    ActiveRecord::Import.require_adapter(@generic.current_adapter)
     fromId = toId = 0
     updated_ids = []
     begin
-      clazz.transaction do
-        if import_rows
-          clazz.uncached do
-            fromId = clazz.select(pkey).last.try pkey || 0
-            clazz.import columns_without_pk, import_rows, :validate => false
-            toId = clazz.select(pkey).last.try pkey || 0
-          end
-        end
-        if update_rows
-          updated_ids = update_from_import(pkey, columns, update_rows)
-        end
+      if import_rows
+        fromId = resource.query.select(resource.primary_key).order(:id).last.try(:[], resource.primary_key) || 0
+        res = resource.query.import(columns_without_pk, import_rows)
+        toId = resource.query.select(resource.primary_key).order(:id).last.try(:[], resource.primary_key) || 0
+      end
+      if update_rows
+        updated_ids = update_from_import(pkey, columns, update_rows)
       end
     rescue => error
       render json: {error: error.to_s}.to_json
       return
     end
     if (import_rows && fromId == toId)
-      render json: {error: "No new record were imported"}.to_json
+      render json: {error: "No new record were imported (#{fromId} -> #{toId})"}.to_json
       return
     end
     if (update_rows && updated_ids.blank?)
@@ -124,10 +118,10 @@ class ResourcesController < ApplicationController
   end
 
   def set_last_import_filter import_rows, update_rows, fromId, toId, updated_ids
-    pkey = clazz.primary_key.to_s
+    pkey = resource.primary_key.to_s
     import_filter = []
     if import_rows && update_rows
-      created_ids = clazz.where(["(#{pkey} > ?) AND (#{pkey} <= ?)", fromId, toId]).count(:group => pkey).keys
+      created_ids = resource.query.where(resource.primary_key => (fromId+1)..toId).group_and_count(resource.primary_key).map{|r|r[resource.primary_key]}
       updated_ids += created_ids
       import_filter.push "column" => pkey, "type"=>"integer", "operator"=>"IN", "operand" => updated_ids.join(',')
     else
@@ -592,7 +586,7 @@ class ResourcesController < ApplicationController
         attrs[name] = row[index]
       end
       id = attrs.delete pk
-      clazz.find(id).update_attributes! attrs
+      resource.update_item id, attrs
       id
     end
   end
