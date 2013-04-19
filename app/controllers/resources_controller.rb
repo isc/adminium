@@ -49,11 +49,12 @@ class ResourcesController < ApplicationController
         apply_statistics
       end
       format.json do
-        @items = @items.page(1).per(10)
+        page = (params[:page].presence || 1).to_i
+        @items = @items.paginate(page, 10)
         render json: {
           widget: render_to_string(partial: 'items', locals: {items: @items.to_a, actions_cell: false}),
           id: params[:widget_id],
-          total_count: @items.total_count
+          total_count: @items.pagination_record_count
         }
       end
       format.csv do

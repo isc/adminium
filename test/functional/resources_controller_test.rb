@@ -23,7 +23,7 @@ class ResourcesControllerTest < ActionController::TestCase
     generic = Generic.new @account
     @resource = Resource::Base.new(generic, :users)
     @expectations = {}
-    
+
     add_filter_to_test 'null_pseudo', [nil], [{"column" => 'pseudo', "type" => "string", "operator"=>"null"}]
     add_filter_to_test 'not_null_pseudo', ['Loulou', 'Martin', 'Michel'], [{"column" => 'pseudo', "type" => "string", "operator"=>"not_null"}]
 
@@ -44,11 +44,11 @@ class ResourcesControllerTest < ActionController::TestCase
     add_filter_to_test 'string_not_like', ['Loulou', 'Martin'], [{"column" => 'pseudo', "type" => "integer", "operator"=>"not_like", "operand" => "iche"}]
 
     add_filter_to_test 'date_before', [nil], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"before", "operand" => 1.hour.ago.strftime('%m/%d/%Y')}]
-    add_filter_to_test 'date_after', ['Loulou', 'Martin', 'Michel'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"after", "operand" => 1.hour.ago.strftime('%m/%d/%Y')}]
+    add_filter_to_test 'date_after', ['Michel'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"after", "operand" => 1.hour.ago.strftime('%m/%d/%Y')}]
 
-    #add_filter_to_test 'date_today', ['Loulou', 'Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"today", "operand" => ""}]
+    add_filter_to_test 'date_today', ['Loulou', 'Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"today", "operand" => ""}]
     add_filter_to_test 'date_yesterday', [], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"yesterday", "operand" => ""}]
-    #add_filter_to_test 'date_on', ['Loulou','Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"on", "operand" => 1.hour.ago.strftime('%m/%d/%Y')}]
+    add_filter_to_test 'date_on', ['Loulou','Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"on", "operand" => 1.hour.ago.strftime('%m/%d/%Y')}]
     
     add_filter_to_test 'date_this_week', ['Loulou', 'Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"this_week", "operand" => ""}]
     add_filter_to_test 'date_last_week', [], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"last_week", "operand" => ""}]
@@ -69,13 +69,13 @@ class ResourcesControllerTest < ActionController::TestCase
   def test_index_without_statements
     get :index, :table => 'users'
     items = assigns[:items]
-    assert_equal 4, items.length
+    assert_equal 4, items.count
   end
 
   def test_json_response
     get :index, :table => 'users', :order=> 'pseudo', :format => 'json'
     data = JSON.parse(@response.body)
-    assert_equal ["Loulou", "Martin", "Michel", nil], assigns[:items].map(&:pseudo)
+    assert_equal ["Loulou", "Martin", "Michel", nil], assigns[:items].map{|i|i[:pseudo]}
     assert_equal 4, data['total_count']
   end
 
