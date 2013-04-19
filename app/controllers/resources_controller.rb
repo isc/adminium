@@ -46,6 +46,7 @@ class ResourcesController < ApplicationController
       format.html do
         check_per_page_setting
         page = (params[:page].presence || 1).to_i
+        @items = @items.paginate(page, resource.per_page.to_i)
         @items = @items.paginate page, resource.per_page
         @fetched_items = @items.to_a
         fetch_associated_items
