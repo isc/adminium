@@ -9,7 +9,7 @@ class SettingsControllerTest < ActionController::TestCase
     @fixtures = []
   end
 
-  def test_enum
+  test "enum" do
     FixtureFactory.new :user, pseudo: 'bob'
     FixtureFactory.new :user, pseudo: 'bob'
     FixtureFactory.new :user, pseudo: 'michel'
@@ -17,11 +17,17 @@ class SettingsControllerTest < ActionController::TestCase
     assert_equal ["bob", "michel"], JSON.parse(@response.body)
   end
   
-  def test_partials
+  test "partials" do
     [:id, :created_at, :pseudo].each do |column|
       get :show, id: 'users', column_name: column
       assert_response :success
     end
+  end
+  
+  test "columns" do
+    user = FixtureFactory.new(:user).factory
+    get :columns, table: 'users'
+    assert_equal user.attributes.keys.sort, JSON.parse(@response.body)
   end
 
 end
