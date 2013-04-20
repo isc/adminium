@@ -16,3 +16,4 @@
 config/database.yml
 .DS_Store
 public/capybara_test_assets
+coverage
