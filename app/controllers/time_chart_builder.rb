@@ -7,11 +7,11 @@ module TimeChartBuilder
   
   def time_chart
     aggregate = time_chart_aggregate params[:column]
-    query = clazz.group(aggregate).
-      select("#{aggregate} as chart_date, count(#{quoted_table_name}.#{quote_column_name clazz.primary_key})").
+    query = resource.query.group(aggregate).
+      select(aggregate.as('chart_date'), Sequel.function(:count, (qualify params[:table], resource.primary_key))).
       order(aggregate)
-    query = query.where(params[:column] => date_range) unless periodic_grouping?
-    aggregation clazz.generic.connection.execute(query.to_sql)
+    query = query.where(params[:column].to_sym => date_range) unless periodic_grouping?
+    aggregation query.all
     add_missing_zeroes if grouping == 'daily' && @data.present?
     @widget = current_account.time_chart_widgets
       .where(table: params[:table], columns: params[:column], grouping: grouping).first
@@ -31,13 +31,13 @@ module TimeChartBuilder
   private
   
   def time_chart_aggregate column
-    column = "#{quoted_table_name}.#{quote_column_name column}"
-    if clazz.generic.postgresql?
+    column = qualify params[:table], column
+    if @generic.postgresql?
       if periodic_grouping?
         "extract(#{grouping} from #{column})"
       else
         aggregate = {'daily' => 'day'}[grouping] || grouping.gsub('ly', '')
-        "date_trunc('#{aggregate}', #{column})"
+        Sequel.function(:date_trunc, aggregate, column)
       end
     else
       if periodic_grouping?
@@ -95,19 +95,18 @@ module TimeChartBuilder
   
   def aggregation records
     res = records.map do |attributes|
-      attributes = Hash[records.fields.zip attributes] unless attributes.is_a? Hash # MySQL / PG discrepancy
-      res = [format_date(attributes.delete('chart_date'))]
+      res = [format_date(attributes.delete(:chart_date))]
       attributes.each do |key, value|
         res << value
       end
       res
     end
-    @data = res.unshift ['chart_date', records.fields].flatten.uniq unless res.empty?
+    @data = res#.unshift [:chart_date, records.first.keys].flatten.uniq unless res.empty?
   end
   
   def format_date date
     return periodic_format date if periodic_grouping?
-    if clazz.generic.mysql?
+    if @generic.mysql?
       case grouping
       when 'monthly'
         date = date.to_s
@@ -142,12 +141,12 @@ module TimeChartBuilder
   end
   
   def add_missing_zeroes
-    num_values = @data[1].size - 1
+    num_values = @data.first.size - 1
     date_range.each_with_index do |date, index|
       next if date == date_range.end
       date = date.strftime DEFAULT_DATE_FORMATS[grouping]
-      if @data[index + 1].try(:first) != date
-        @data.insert(index + 1, [date, [0] * num_values].flatten)
+      if @data[index].try(:first) != date
+        @data.insert(index, [date, [0] * num_values].flatten)
       end
     end
   end
