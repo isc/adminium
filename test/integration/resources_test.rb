@@ -8,6 +8,12 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     login
   end
   
+  test "index on non existing table" do
+    visit resources_path(:shablagoos)
+    assert_equal dashboard_path, page.current_path
+    assert page.has_content?("The table shablagoos cannot be found.")
+  end
+  
   test "index on resources for users table" do
     FixtureFactory.new(:user)
     visit resources_path(:users)
