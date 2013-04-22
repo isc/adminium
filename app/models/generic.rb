@@ -32,9 +32,9 @@ class Generic
 
   def discover_associations_through_foreign_keys table
     foreign_keys[table].each do |foreign_key|
-      @associations[table][:belongs_to][foreign_key[:to_table].to_s.downcase.singularize] =
+      @associations[table][:belongs_to][foreign_key[:to_table]] =
         @associations[foreign_key[:to_table]][:has_many][table] =
-        {foreign_key: foreign_key[:column], primary_key: foreign_key[:primary_key], table: foreign_key[:to_table]}
+        {foreign_key: foreign_key[:column], primary_key: foreign_key[:primary_key], referenced_table: foreign_key[:to_table]}
     end
   end
 
