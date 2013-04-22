@@ -9,7 +9,7 @@ class DocsController < ApplicationController
 
   def homepage
     redirect_to dashboard_url and return if session[:account]
-    render :layout => 'homepage'
+    render layout: 'homepage'
   end
 
   def show

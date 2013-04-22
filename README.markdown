@@ -6,6 +6,7 @@ Sequel Migration TODOS / FIXMES :
 - composite primary keys
 - validations
 - reset_adminium_demo_settings
+- statistics
 
 FEATURES:
 freaking TIMEZONES !!

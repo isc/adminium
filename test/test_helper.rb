@@ -28,8 +28,16 @@ class ActionDispatch::IntegrationTest
 
   def login account = nil
     account ||= Factory :account
-    page.set_rack_session :account => account.id
+    page.set_rack_session account: account.id
     account
+  end
+  
+  def logout
+    page.set_rack_session account: nil
+  end
+  
+  teardown do
+    logout
   end
 
 end
