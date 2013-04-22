@@ -1,7 +1,8 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery
+  rescue_from Exception, with: :disconnect_on_exception
   rescue_from Generic::TableNotFoundException, with: :table_not_found
-  rescue_from PGError, Mysql2::Error, :with => :global_db_error
+  rescue_from PGError, Mysql2::Error, with: :global_db_error
   before_filter :fixed_account
   before_filter :require_authentication
   before_filter :connect_to_db
@@ -16,7 +17,7 @@ class ApplicationController < ActionController::Base
   end
 
   def global_settings
-    @global_settings ||= Resource::Global.new(session[:account])
+    @global_settings ||= Resource::Global.new session[:account]
   end
 
   def require_authentication
@@ -67,7 +68,12 @@ class ApplicationController < ActionController::Base
   
   def global_db_error exception
     msg = "There was a database error, it might be a problem with your database url. The error was : <pre>#{exception.message}</pre>".html_safe
-    redirect_to edit_account_url, :flash => {:error => msg}
+    redirect_to edit_account_url, flash: {error: msg}
+  end
+  
+  def disconnect_on_exception exception
+    @generic.try :cleanup
+    raise exception
   end
   
   def resource
