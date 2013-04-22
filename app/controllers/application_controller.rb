@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_account
-    @account ||= Account.find session[:account]
+    @account ||= Account.find session[:account] if session[:account]
   end
 
   def current_user

@@ -1,7 +1,7 @@
 class DocsController < ApplicationController
 
   skip_filter :require_authentication
-  skip_filter :connect_to_db, :unless => :valid_db_url?
+  skip_filter :connect_to_db, unless: :valid_db_url?
 
   def index
     @full_title = "Documentation | Adminium"
