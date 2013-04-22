@@ -101,36 +101,32 @@ module ResourcesHelper
 
   def display_belongs_to item, key, value, resource
     assoc_name, assoc = resource.associations[:belongs_to].find {|_, info| info[:foreign_key] == key}
-    # FIXME polymorphic spot
-    # if reflection.options[:polymorphic]
-    #       assoc_type = item.send key.gsub(/_id/, '_type')
-    #       return value if assoc_type.blank?
-    #       class_name, path = assoc_type, resource_path(assoc_type.to_s.tableize, value)
-    #       begin
-    #         foreign_clazz = @generic.table class_name.to_s.tableize
-    #       rescue Generic::TableNotFoundException
-    #         return value
-    #       end
-    # else
-    foreign_resource = resource_for assoc[:referenced_table]
+    if assoc[:polymorphic]
+      assoc_type = item[key.to_s.gsub(/_id/, '_type').to_sym]
+      return value if assoc_type.blank?
+      referenced_table = assoc_type.to_s.tableize
+      begin
+        foreign_resource = resource_for referenced_table
+      rescue Generic::TableNotFoundException
+        return value
+      end
+    else
+      foreign_resource, referenced_table = (resource_for assoc[:referenced_table]), assoc[:referenced_table]
+    end
     label_column = foreign_resource.label_column
     if label_column.present?
-      item = if assoc[:polymorphic]
-        foreign_clazz.where(foreign_clazz.primary_key => value).first
+      item = if @associated_items && !assoc[:polymorphic]
+        @associated_items[foreign_resource.table].find {|i| i[assoc[:primary_key]] == value}
       else
-        if @associated_items
-          @associated_items[foreign_resource.table].find {|i| i[assoc[:primary_key]] == value}
-        else
-          foreign_resource.find value
-        end
+        foreign_resource.find value
       end
       return value if item.nil?
       label = foreign_resource.item_label item
     else
-      object_name = assoc[:referenced_table].to_s.singularize.humanize
+      object_name = referenced_table.to_s.singularize.humanize
       label = "#{object_name} ##{value}"
     end
-    link_to label, resource_path(assoc[:referenced_table], value)
+    link_to label, resource_path(referenced_table, value)
   end
   
   def display_associated_items resource, item, assoc_name
@@ -252,7 +248,6 @@ module ResourcesHelper
   end
 
   def options_for_custom_columns resource
-    # FIXME polymorphic stuff
     res = [['belongs_to', resource.associations[:belongs_to].map{|name, assoc|[name, assoc[:table]] unless assoc[:polymorphic]}.compact]]
     res << ['has_many', resource.associations[:has_many].map{|name, assoc|["#{name.to_s.humanize} count", name]}]
     grouped_options_for_select res

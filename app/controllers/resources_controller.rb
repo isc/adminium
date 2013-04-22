@@ -373,6 +373,8 @@ class ResourcesController < ApplicationController
   def fetch_associated_items
     @associated_items = {}
     referenced_tables = resource.columns[settings_type].map {|c| c.to_s.split('.').first if c.to_s.include?('.')}
+    # FIXME polymorphic belongs_to generate N+1 queries (since no referenced_table in assoc_info) 
+    # FIXME we could check if there is a label column defined on the referenced_table before fetching records
     referenced_tables += resource.columns[settings_type].map {|c| resource.foreign_key?(c).try(:[], :referenced_table) }
     referenced_tables.compact.uniq.map do |referenced_table|
       referenced_table = referenced_table.to_sym
@@ -381,8 +383,6 @@ class ResourcesController < ApplicationController
       resource = resource_for(assoc_info[:referenced_table])
       @associated_items[referenced_table] = resource.query.where(resource.primary_key => ids).all
     end
-    # FIXME polymorphic stuff
-    #   next if !assoc.is_a?(String) && assoc.options[:polymorphic]
   end
 
   def apply_has_many_counts

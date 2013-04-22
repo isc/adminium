@@ -31,6 +31,11 @@ class GenericTest < ActiveSupport::TestCase
       @generic.associations[:user_profiles][:has_many][:users])
   end
   
+  test "polymorphic associations" do
+    assert_equal({foreign_key: :commentable_id, referenced_table: nil, primary_key: :id, table: :comments, polymorphic: true},
+    @generic.associations[:comments][:belongs_to][:commentables])
+  end
+  
   def expected_tables
     [:comments,  :documents,  :groups,  :posts,  :roles,  :roles_users,  :schema_migrations,  :user_profiles,  :users]
   end
