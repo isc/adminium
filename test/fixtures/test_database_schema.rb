@@ -37,7 +37,7 @@ if ActiveRecord::Migrator.current_version != version
     create_table :comments do |t|
       t.string :title, :default => ""
       t.text :comment
-      t.references :commentable, :polymorphic => true
+      t.references :commentable, polymorphic: true
       t.references :user
       t.timestamps
     end

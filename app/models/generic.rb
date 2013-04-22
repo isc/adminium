@@ -47,9 +47,9 @@ class Generic
         @associations[table][:belongs_to][owner_table] =
           @associations[owner_table][:has_many][table] =
           {foreign_key: name, primary_key: :id, referenced_table: owner_table, table: table}
-        # TODO polymorphic associations
-        # elsif klass.column_names.include? "#{owner}_type"
-        #   klass.belongs_to assoc_name(owner), polymorphic: true, foreign_key: column.name
+      elsif schema(table).map(&:first).include? "#{owner}_type".to_sym
+        @associations[table][:belongs_to][owner.pluralize.to_sym] =
+          {foreign_key: name, primary_key: :id, referenced_table: nil, table: table, polymorphic: true}
       end
     end
   end

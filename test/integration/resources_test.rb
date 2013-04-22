@@ -62,10 +62,35 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert page.has_no_content? 'Carey'
   end
 
+  test "links on index for polymorphic belongs to" do
+    user = FixtureFactory.new(:user).factory
+    group = FixtureFactory.new(:group).factory
+    first = FixtureFactory.new(:comment, commentable_type: 'User', commentable_id: user.id).factory
+    second = FixtureFactory.new(:comment, commentable_type: 'Group', commentable_id: group.id).factory
+    visit resources_path(:comments)
+    assert_equal "User ##{user.id}",
+      page.find("tr[data-item-id=\"#{first.id}\"] a[href=\"#{resource_path :users, user}\"]").text
+    assert_equal "Group ##{group.id}",
+      page.find("tr[data-item-id=\"#{second.id}\"] a[href=\"#{resource_path :groups, group}\"]").text
+  end
+  
+  test "link on index for polymorphic belongs to with label column setup" do
+    user = FixtureFactory.new(:user, pseudo: 'Ralph').factory
+    comment = FixtureFactory.new(:comment, commentable_type: 'User', commentable_id: user.id).factory
+    Resource::Base.any_instance.stubs(:label_column).returns 'pseudo'
+    visit resources_path(:comments)
+    assert_equal 'Ralph',
+      page.find("tr[data-item-id=\"#{comment.id}\"] a[href=\"#{resource_path :users, user}\"]").text
+  end
+  
   test "creating a comment (polymorphic belongs_to)" do
+    FixtureFactory.new(:comment, commentable_type: 'User')
+    FixtureFactory.new(:comment, commentable_type: 'Group')
     visit resources_path(:comments)
     link = find('a[title="Create a new row"]')
     link.click()
+    # not ideal support for polymorphic belongs_to at the moment
+    assert page.has_css?('input[type=number][name="comments[commentable_id]"]')
   end
 
   test "save new" do
@@ -177,6 +202,15 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit resource_path(:users, user)
     click_link "Group ##{group.id}"
     assert_equal resource_path(:groups, group), page.current_path
+  end
+  
+  test "show with polymorphic belongs_to association" do
+    user = FixtureFactory.new(:user, pseudo: 'Bobby').factory
+    comment = FixtureFactory.new(:comment, commentable_id: user.id, commentable_type: 'User').factory
+    Resource::Base.any_instance.stubs(:label_column).returns 'pseudo'
+    visit resource_path(:comments, comment)
+    assert_equal "Bobby",
+      page.find("a[href=\"#{resource_path :users, user.id}\"]").text
   end
   
   test "show with belongs_to association with label_column set" do
