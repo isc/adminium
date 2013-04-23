@@ -23,7 +23,7 @@ class TimeCharts
     dataTable = new google.visualization.DataTable()
     dataTable.addColumn('string', 'Date')
     dataTable.addColumn('number', 'Count')
-    data.shift()
+    row[0] = String(row[0]) for row in data
     dataTable.addRows data
     wrapper = $(container)
     options = {width: wrapper.parent().css('width'), height:300, colors: ['#7d72bd'], legend: 'none'}

@@ -34,7 +34,7 @@ module TimeChartBuilder
     column = qualify params[:table], column
     if @generic.postgresql?
       if periodic_grouping?
-        "extract(#{grouping} from #{column})"
+        column.extract grouping
       else
         aggregate = {'daily' => 'day'}[grouping] || grouping.gsub('ly', '')
         Sequel.function(:date_trunc, aggregate, column)
@@ -42,24 +42,24 @@ module TimeChartBuilder
     else
       if periodic_grouping?
         if grouping == 'dow'
-          "dayofweek(#{column})"
+          Sequel.function :dayofweek, column
         else
-          "extract(#{grouping} from #{column})"
+          column.extract grouping
         end
       else
         case grouping
         when 'yearly'
-          "year(#{column})"
+          Sequel.function :year, column
         when 'monthly'
-          "extract(year_month from #{column})"
+          column.extract 'year_month'
         when 'weekly'
-          "yearweek(#{column}, 1)"
+          Sequel.function :yearweek, column, 1
         when 'daily'
-          "date(#{column})"
+          Sequel.function :date, column
         when 'hourly'
-          "date_format(#{column}, '%Y-%m-%d %H')"
+          Sequel.function :date_format, column, '%Y-%m-%d %H'
         when 'minutely'
-          "date_format(#{column}, '%Y-%m-%d %H:%i')"
+          Sequel.function :date_format, column, '%Y-%m-%d %H:%i'
         end
       end
     end
@@ -133,7 +133,7 @@ module TimeChartBuilder
   def periodic_format date
     return date if grouping == 'hour'
     date = date.to_i
-    date -= 1 if grouping == 'dow' && clazz.generic.mysql?
+    date -= 1 if grouping == 'dow' && @generic.mysql?
     {
       'dow' => I18n.t('date.day_names'),
       'month' => I18n.t('date.month_names')
