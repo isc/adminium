@@ -6,7 +6,6 @@ class ResourcesController < ApplicationController
   before_filter :table_access_limitation, except: [:search]
   before_filter :check_permissions
   before_filter :dates_from_params
-  # before_filter :apply_validations, only: [:create, :update, :new, :edit]
   before_filter :fetch_item, only: [:show, :edit]
   before_filter :warn_if_no_primary_key, only: [:index, :new]
   helper_method :user_can?
@@ -95,8 +94,8 @@ class ResourcesController < ApplicationController
     pk_value = resource.insert item_params
     params[:id] = pk_value
     redirect_to after_save_redirection, flash: {success: "#{object_name} successfully created."}
-  rescue Sequel::DatabaseError, Sequel::Error::InvalidValue => e
-    flash.now[:error] = e.message
+  rescue Sequel::DatabaseError, Sequel::Error::InvalidValue, Resource::ValidationError => e
+    flash.now[:error] = e.message.html_safe
     @item = item_params
     @form_url = resources_path params[:table]
     render :new
@@ -114,12 +113,13 @@ class ResourcesController < ApplicationController
         render json: {result: :success, value: value, column: column_name, id: params[:id]}
       end
     end
-  rescue Sequel::DatabaseError => e
+  rescue Sequel::DatabaseError, Sequel::Error::InvalidValue, Resource::ValidationError => e
     respond_to do |format|
       format.html do
-        flash.now[:error] = e.message
+        flash.now[:error] = e.message.html_safe
         @item = item_params.merge(resource.primary_key_values_hash params[:id])
         @form_url = resource_path(params[:table], params[:id])
+        @form_method = 'put'
         render :edit
       end
       format.json do
@@ -345,17 +345,6 @@ class ResourcesController < ApplicationController
     @items = @items.order(Sequel::SQL::OrderedExpression.new(column, !!descending, opts))
     @items = @items.order_prepend(Sequel.case([[{column=>nil}, 1]], 0)) if @generic.mysql?
     @items
-  end
-
-  def apply_validations
-    resource.validations.each do |validation|
-      clazz.send validation['validator'], validation['column_name']
-    end
-    if clazz.primary_keys.present?
-      clazz.primary_keys.each do |primary_key|
-        clazz.send :validates_presence_of, primary_key
-      end
-    end
   end
 
   def apply_filters

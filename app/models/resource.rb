@@ -28,6 +28,10 @@ module Resource
 
   class Base
 
+    VALIDATES_PRESENCE_OF = 'validates_presence_of'
+    VALIDATES_UNIQUENESS_OF = 'validates_uniqueness_of'
+    VALIDATORS = [VALIDATES_PRESENCE_OF, VALIDATES_UNIQUENESS_OF]
+
     attr_accessor :filters, :default_order, :enum_values, :validations, :label_column, :export_col_sep, :export_skip_header, :table
 
     def initialize generic, table
@@ -322,7 +326,7 @@ module Resource
     def required_column? name
       return true if primary_keys.include? name
       return true if schema_hash[name][:allow_null] == false
-      validations.detect {|val| val['validator'] == 'validates_presence_of' && val['column_name'] == name.to_s}
+      validations.detect {|val| val['validator'] == VALIDATES_PRESENCE_OF && val['column_name'] == name.to_s}
     end
     
     def item_label item
@@ -340,9 +344,26 @@ module Resource
       q
     end
     
+    def validations_check primary_key_value, updated_values
+      validations.each do |validation|
+        next unless updated_values.keys.include? validation['column_name'].to_sym
+        case validation['validator']
+        when VALIDATES_PRESENCE_OF
+          if updated_values[validation['column_name'].to_sym].blank?
+            raise ValidationError.new "<b>#{column_display_name validation['column_name'].to_sym}</b> can't be blank."
+          end
+        when VALIDATES_UNIQUENESS_OF
+          unless pk_filter(primary_key_value).invert.where(validation['column_name'].to_sym => updated_values[validation['column_name'].to_sym]).empty?
+            raise ValidationError.new "<b>#{updated_values[validation['column_name'].to_sym]}</b> has already been taken."
+          end
+        end
+      end
+    end
+    
     def update_item primary_key_value, updated_values
       updated_values = typecasted_values updated_values
       magic_timestamps updated_values, false
+      validations_check primary_key_value, updated_values
       pk_filter(primary_key_value).update updated_values
     end
     
@@ -412,6 +433,8 @@ module Resource
   end
   
   class RecordNotFound < StandardError
+  end
+  class ValidationError < StandardError
   end
   
 end

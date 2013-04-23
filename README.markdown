@@ -1,6 +1,5 @@
 Sequel Migration TODOS / FIXMES :
-- composite primary keys
-- validations
+- composite primary keys for import, bulk edit
 
 FEATURES:
 freaking TIMEZONES !!
@@ -30,6 +29,8 @@ in-place edit improvements :
 	- belongs_to
 	- custom columns in index
 gestion de tables sans PK : pour le moment on peut creer, on pourrait supprimer (delete from table where <tous les attr> limit 1)
+
+fail on forms ameliorables (highlight des champs en erreur)
 
 TODOS:
 attr_accessible avec role pour proteger plan sur account

@@ -200,6 +200,19 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_equal out_of_range_int, find('input[type=number][name="users[age]"]').value
   end
   
+  test "validate uniqueness on update" do
+    FixtureFactory.new(:user, pseudo: 'Rob')
+    user = FixtureFactory.new(:user, pseudo: 'Bob').factory
+    Resource::Base.any_instance.stubs(:validations).returns [{'validator' => 'validates_uniqueness_of', 'column_name' => 'pseudo'}]
+    visit edit_resource_path(:users, user)
+    fill_in 'Pseudo', with: 'Rob'
+    click_button 'Save'
+    assert_match "Rob has already been taken.", page.find('.alert.alert-error').text
+    fill_in 'Pseudo', with: 'Robert'
+    click_button 'Save'
+    assert page.has_css?('.alert.alert-success')
+  end
+  
   test "export rows" do
     FixtureFactory.new(:user, pseudo: "bobleponge")
     visit resources_path(:users)

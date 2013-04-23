@@ -36,11 +36,6 @@ class ColumnSettingsController < ApplicationController
     params[:column].starts_with? 'has_many/'
   end
 
-  def clazz
-    detect_association_column
-    @clazz ||= @generic.table params[:id]
-  end
-
   def column
     @column ||= resource.schema.detect{|name, _|name.to_s == params[:column]}.second
   end
