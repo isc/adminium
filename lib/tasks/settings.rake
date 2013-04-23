@@ -1,22 +1,29 @@
 namespace :settings do
 
-  task :migrate_enum_data => :environment do
+  task :update_settings_keys => :environment do
     keys = REDIS.keys "account:*:settings:*"
     keys.each do |settings_key|
-      account_settings = REDIS.get settings_key
-      settings = JSON.parse(account_settings)
-      if settings["enum_values"].is_a?(Array)
-        settings["enum_values"].map do |setting|
-          values = setting["values"]
-          res = {}
-          values.split("\n").each do |t|
-            split = t.split(':').map &:strip
-            res[split[0]] = {'color' => '#3366FF', 'label' => split[1]}
-          end
-          setting["values"] = res
+      account_part, model_name = settings_key.split(":settings:")
+      updated_key_name = "#{account_part}:settings:#{model_name.tableize}"
+      if settings_key != updated_key_name
+        puts "#{settings_key} => #{updated_key_name}"
+        REDIS.rename(settings_key, updated_key_name)
+      end
+    end
+  end
+  
+  task :update_listings_keys => :environment do
+    keys = REDIS.keys "account:*:settings:*"
+    keys.each do |settings_key|
+      parsed_key = JSON.parse(REDIS.get(settings_key))
+      parsed_key["columns"]["listing"].each_with_index do |column, index|
+        if column.include?('.')
+          table_name, column = column.split('.')
+          next if table_name == table_name.pluralize
+          parsed_key["columns"]["listing"][index] = "#{table_name.pluralize}.#{column}"
+          puts REDIS.set settings_key, parsed_key.to_json
+          puts "#{settings_key} => #{parsed_key["columns"]["listing"][index]}"
         end
-        puts settings
-        REDIS.set settings_key, settings.to_json
       end
     end
   end

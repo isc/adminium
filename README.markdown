@@ -1,10 +1,6 @@
 Sequel Migration TODOS / FIXMES :
-- migration des données Redis
-  - "account:17:settings:PhoneNumber" => "account:17:settings:phone_numbers"
-  - listing columns ; user.pseudo => users.pseudo
 - composite primary keys
 - validations
-- statistics
 
 FEATURES:
 freaking TIMEZONES !!
