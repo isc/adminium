@@ -23,6 +23,7 @@ class ActiveSupport::TestCase
   self.use_transactional_fixtures = false
   teardown do
     REDIS.flushdb
+    Rails.cache.clear
   end
 end
 

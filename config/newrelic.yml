@@ -232,7 +232,8 @@ development:
   developer_mode: true
   
   # Enable textmate links
-  # textmate: true
+  textmate: true
+  dispatcher: pow
 
 test:
   <<: *default_settings

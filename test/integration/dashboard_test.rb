@@ -17,5 +17,14 @@ class DashboardTest < ActionDispatch::IntegrationTest
     end
     Timecop.return
   end
+  
+  test "view dashboard with widgets" do
+    account = Factory(:account)
+    Factory :time_chart_widget, account: account
+    Factory :table_widget, account: account
+    login account
+    visit dashboard_path
+    assert page.has_css?('li.widget', count: 2)
+  end
 
 end
