@@ -11,6 +11,22 @@ namespace :settings do
       end
     end
   end
+  
+  task :update_listings_keys => :environment do
+    keys = REDIS.keys "account:*:settings:*"
+    keys.each do |settings_key|
+      parsed_key = JSON.parse(REDIS.get(settings_key))
+      parsed_key["columns"]["listing"].each_with_index do |column, index|
+        if column.include?('.')
+          table_name, column = column.split('.')
+          next if table_name == table_name.pluralize
+          parsed_key["columns"]["listing"][index] = "#{table_name.pluralize}.#{column}"
+          puts REDIS.set settings_key, parsed_key.to_json
+          puts "#{settings_key} => #{parsed_key["columns"]["listing"][index]}"
+        end
+      end
+    end
+  end
 
   task :dump => :environment do
     keys = REDIS.keys "account:#{ENV['ACCOUNT_ID'] || ENV['DEMO_ACCOUNT_ID']}:settings:*"
