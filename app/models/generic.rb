@@ -120,7 +120,7 @@ class Generic
     else
       "select pg_database_size('#{db_name}') as fulldbsize"
     end
-    @db[sql].first[:fulldbsize]
+    @db[sql].first[:fulldbsize].to_i
   end
 
   def table_sizes table_list
@@ -128,7 +128,9 @@ class Generic
     if mysql?
       return [] if table_list.try(:empty?)
       cond = "AND table_name in (#{table_list.map{|t|"'#{t}'"}.join(', ')})" if table_list.present?
-      Base.connection.execute("select table_name, data_length + index_length, data_length from information_schema.TABLES WHERE table_schema = '#{db_name}' #{cond}").to_a
+      list = @db["select table_name, data_length + index_length, data_length from information_schema.TABLES WHERE table_schema = '#{db_name}' #{cond}"].map do |row|
+        v = row.values ; v[0] = v[0].to_sym; v
+      end
     else
       table_list.map do |table|
         res = [table]

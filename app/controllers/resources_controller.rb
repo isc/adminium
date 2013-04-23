@@ -402,7 +402,10 @@ class ResourcesController < ApplicationController
     order  = params[:order] || resource.default_order
     column, descending = order.split(" ")
     column = order[/[.\/]/] ? column.to_sym : (qualify params[:table], column)
-    @items = @items.order(Sequel::SQL::OrderedExpression.new(column, !!descending, nulls: :last))
+    opts = @generic.mysql? ? {} : {nulls: :last}
+    @items = @items.order(Sequel::SQL::OrderedExpression.new(column, !!descending, opts))
+    @items = @items.order_prepend(Sequel.case([[{column=>nil}, 1]], 0)) if @generic.mysql?
+    @items
   end
 
   def apply_validations
@@ -480,8 +483,8 @@ class ResourcesController < ApplicationController
       'last_week' => {:boolean_operator => true, :right => (1.week.ago.beginning_of_week)..(1.week.ago.end_of_week)},
       'on' => {:operator => :'=', :named_function => "DATE", :right_function => 'to_date'},
       'not' => {:operator => :'!=', :named_function => "DATE", :right_function => 'to_date'},
-      'after' => {:operator => :'>', :named_function => "DATE"},
-      'before' => {:operator => :'<', :named_function => "DATE"}
+      'after' => {:operator => :'>', :named_function => "DATE", :right_function => 'to_date'},
+      'before' => {:operator => :'<', :named_function => "DATE", :right_function => 'to_date'}
     }
   end
 

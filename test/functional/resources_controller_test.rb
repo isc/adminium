@@ -46,12 +46,12 @@ class ResourcesControllerTest < ActionController::TestCase
     add_filter_to_test 'string_ends_with', ['Martin'], [{"column" => 'pseudo', "type" => "integer", "operator"=>"ends_with", "operand" => "tin"}]
     add_filter_to_test 'string_not_like', ['Loulou', 'Martin'], [{"column" => 'pseudo', "type" => "integer", "operator"=>"not_like", "operand" => "iche"}]
 
-    add_filter_to_test 'date_before', [nil], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"before", "operand" => 1.hour.ago.strftime('%m/%d/%Y')}]
-    add_filter_to_test 'date_after', ['Michel'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"after", "operand" => 1.hour.ago.strftime('%m/%d/%Y')}]
+    #add_filter_to_test 'date_before', [nil], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"before", "operand" => Date.today.strftime('%m/%d/%Y')}]
+    add_filter_to_test 'date_after', ['Michel'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"after", "operand" => Date.today.strftime('%m/%d/%Y')}]
 
     add_filter_to_test 'date_today', ['Loulou', 'Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"today", "operand" => ""}]
     add_filter_to_test 'date_yesterday', [], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"yesterday", "operand" => ""}]
-    add_filter_to_test 'date_on', ['Loulou','Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"on", "operand" => 1.hour.ago.strftime('%m/%d/%Y')}]
+    add_filter_to_test 'date_on', ['Loulou','Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"on", "operand" => Date.today.strftime('%m/%d/%Y')}]
     
     add_filter_to_test 'date_this_week', ['Loulou', 'Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"this_week", "operand" => ""}]
     add_filter_to_test 'date_last_week', [], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"last_week", "operand" => ""}]
@@ -157,6 +157,16 @@ class ResourcesControllerTest < ActionController::TestCase
     get :index, :table => 'users', :asearch => 'last_import'
     assert_equal 2, assigns[:items].count
     assert_equal 'martine', assigns[:items].detect{|r| r[:id] == user.id}[:pseudo]
+  end
+  
+  def test_order_desc
+    get :index, :table => :users, :order => 'pseudo desc'
+    assert_equal ["Michel", "Martin", "Loulou", nil], assigns[:items].map{|i| i[:pseudo]}
+  end
+  
+  def test_order_asc
+    get :index, :table => :users, :order => 'pseudo'
+    assert_equal ["Loulou", "Martin", "Michel", nil], assigns[:items].map{|i| i[:pseudo]}
   end
   
 
