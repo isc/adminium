@@ -42,7 +42,7 @@ module ResourcesHelper
   def item_attributes_type types, resource
     columns = resource.find_all_columns_for_types(*types).map(&:first)
     columns &= resource.columns[:show]
-    columns - [resource.primary_key] - (resource.associations[:belongs_to].values.map {|assoc|assoc[:foreign_key]})
+    columns - resource.primary_keys - (resource.associations[:belongs_to].values.map {|assoc|assoc[:foreign_key]})
   end
 
   def display_attribute wrapper_tag, item, key, resource, relation = false, original_key = nil
@@ -73,7 +73,7 @@ module ResourcesHelper
       is_editable = true
     end
     opts = {class: css_class}
-    is_editable = false if resource.primary_key == key || key == 'updated_at' || relation || resource.primary_key.nil?
+    is_editable = false if resource.primary_keys.include?(key) || key == 'updated_at' || relation || resource.primary_keys.empty?
     if is_editable
       opts.merge! "data-column-name" => key
       opts.merge! "data-raw-value" => item[key].to_s unless item[key].is_a?(String) && css_class != 'enum'
@@ -94,7 +94,7 @@ module ResourcesHelper
     return column_content_tag wrapper_tag, '', class: 'hasmany' if value.nil?
     key = key.to_s.gsub 'has_many/', ''
     foreign_key_name = resource.associations[:has_many].find {|name, assoc| name.to_s == key }.second[:foreign_key]
-    foreign_key_value = item[resource.primary_key]
+    foreign_key_value = resource.primary_key_value item
     content = link_to value, resources_path(key, where: {foreign_key_name => foreign_key_value}), class: 'badge badge-warning'
     column_content_tag wrapper_tag, content, class: 'hasmany'
   end
@@ -133,7 +133,7 @@ module ResourcesHelper
     items = resource.fetch_associated_items @item, assoc_name, 5
     resource = resource_for assoc_name
     items.map do |item|
-      link_to resource.item_label(item), resource_path(resource.table, item[resource.primary_key])
+      link_to resource.item_label(item), resource_path(resource.table, resource.primary_key_value(item))
     end.join(", ")
   end
   

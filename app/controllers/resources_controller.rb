@@ -1,6 +1,7 @@
 class ResourcesController < ApplicationController
 
   include TimeChartBuilder
+  include Import
 
   before_filter :table_access_limitation, except: [:search]
   before_filter :check_permissions
@@ -18,7 +19,7 @@ class ResourcesController < ApplicationController
   def search
     @items = resource.query
     params[:order] = resource.label_column if resource.label_column.present?
-    resource.columns[:search] = [resource.primary_key, resource.label_column.try(:to_sym)].compact | resource.columns[:search]
+    resource.columns[:search] = [resource.primary_keys, resource.label_column.try(:to_sym)].flatten.compact | resource.columns[:search]
     apply_search if params[:search].present?
     apply_order
     @items = @items.select *resource.columns[:search]
@@ -74,80 +75,8 @@ class ResourcesController < ApplicationController
 
   def edit
     @title = "Edit #{resource.item_label @item}"
-    @form_url = resource_path(@item[resource.primary_key], table: params[:table])
+    @form_url = resource_path(params[:table], resource.primary_key_value(@item))
     @form_method = 'put'
-  end
-
-  def import
-    @title = 'Import'
-  end
-
-  def perform_import
-    data = JSON.parse(params[:data])
-    columns = data['headers']
-    pkey = resource.primary_key.to_s
-    columns_without_pk = columns.clone
-    columns_without_pk.delete pkey
-    import_rows = data['create'].present? ? data['create'] : nil
-    update_rows = data['update'].present? ? data['update'] : nil
-    fromId = toId = 0
-    updated_ids = []
-    begin
-      if import_rows
-        fromId = resource.query.select(resource.primary_key).order(:id).last.try(:[], resource.primary_key) || 0
-        res = resource.query.import(columns_without_pk, import_rows)
-        toId = resource.query.select(resource.primary_key).order(:id).last.try(:[], resource.primary_key) || 0
-      end
-      if update_rows
-        updated_ids = update_from_import(pkey, columns, update_rows)
-      end
-    rescue => error
-      render json: {error: error.to_s}.to_json
-      return
-    end
-    if (import_rows && fromId == toId)
-      render json: {error: "No new record were imported (#{fromId} -> #{toId})"}.to_json
-      return
-    end
-    if (update_rows && updated_ids.blank?)
-      render json: {error: "No records were updated"}.to_json
-      return
-    end
-    set_last_import_filter(import_rows, update_rows, fromId, toId, updated_ids)
-    result = {success: true}
-    render json: result.to_json
-  end
-
-  def set_last_import_filter import_rows, update_rows, fromId, toId, updated_ids
-    pkey = resource.primary_key.to_s
-    import_filter = []
-    if import_rows && update_rows
-      created_ids = resource.query.where(resource.primary_key => (fromId+1)..toId).group_and_count(resource.primary_key).map{|r|r[resource.primary_key]}
-      updated_ids += created_ids
-      import_filter.push "column" => pkey, "type"=>"integer", "operator"=>"IN", "operand" => updated_ids.join(',')
-    else
-      if import_rows
-        import_filter.push "column" => pkey, "type" => "integer", "operator"=>">", "operand" => fromId
-        import_filter.push "column" => pkey, "type" => "integer", "operator"=>"<=", "operand" => toId
-      end
-      if update_rows
-        import_filter.push "column" => pkey, "type"=>"integer", "operator"=>"IN", "operand" => updated_ids.join(',')
-      end
-    end
-    resource.filters['last_import'] =  import_filter
-    resource.save
-  end
-
-  def check_existence
-     ids = params[:id].uniq
-     found_items_ids = resource.query.where(resource.primary_key => ids).select(resource.primary_key).map{|r|r[resource.primary_key].to_s}.uniq
-     not_found_ids = ids.map(&:to_s) - found_items_ids
-     if not_found_ids.present?
-       result = {error: true, ids: not_found_ids}
-     else
-       result = {success: true}
-     end
-     render :json => result.to_json
   end
 
   def new
@@ -155,7 +84,7 @@ class ResourcesController < ApplicationController
     @form_url = resources_path(params[:table])
     @item = if params.has_key? :clone_id
       attrs = resource.find(params[:clone_id])
-      attrs.delete resource.primary_key
+      attrs.delete_if {|key, _| resource.primary_keys.include? key} 
       attrs
     else
       params[:attributes] || {}
@@ -189,8 +118,8 @@ class ResourcesController < ApplicationController
     respond_to do |format|
       format.html do
         flash.now[:error] = e.message
-        @item = item_params.merge(resource.primary_key => params[:id])
-        @form_url = resource_path(params[:id], table: params[:table])
+        @item = item_params.merge(resource.primary_key_values_hash params[:id])
+        @form_url = resource_path(params[:table], params[:id])
         render :edit
       end
       format.json do
@@ -209,7 +138,7 @@ class ResourcesController < ApplicationController
   end
 
   def bulk_destroy
-    params[:item_ids].map! {|id| id.split(',')} if resource.primary_key.is_a?(Array)
+    params[:item_ids].map! {|id| id.split(',')} if resource.composite_primary_key?
     resource.delete params[:item_ids]
     redirect_to :back, flash: {success: "#{params[:item_ids].size} #{resource.human_name.pluralize} successfully destroyed."}
   rescue ActiveRecord::StatementInvalid => e
@@ -222,8 +151,8 @@ class ResourcesController < ApplicationController
       raise "BulkEditCheckRecordsFailed"
     end
     if @record_ids.length == 1
-      @item = resource.find(@record_ids.shift)
-      @form_url = resource_path(@item[resource.primary_key], table: params[:table], return_to: :back)
+      @item = resource.find @record_ids.shift
+      @form_url = resource_path(params[:table], resource.primary_key_value(@item), return_to: :back)
     else
       @form_url = bulk_update_resources_path(params[:table])
       @item = {}
@@ -284,7 +213,7 @@ class ResourcesController < ApplicationController
   end
 
   def object_name
-    "#{resource.human_name} ##{params[:id] || (@item && @item[resource.primary_key])}"
+    "#{resource.human_name} ##{params[:id] || resource.primary_key_value(@item)}"
   end
 
   def apply_statistics
@@ -383,7 +312,7 @@ class ResourcesController < ApplicationController
       assoc_info = resource.associations[:belongs_to][referenced_table]
       ids = @fetched_items.map {|i| i[assoc_info[:foreign_key]]}.uniq
       resource = resource_for(assoc_info[:referenced_table])
-      @associated_items[referenced_table] = resource.query.where(resource.primary_key => ids).all
+      @associated_items[referenced_table] = resource.query.where(resource.primary_keys.first => ids).all
     end
   end
 
@@ -392,10 +321,10 @@ class ResourcesController < ApplicationController
       assoc = column.to_s.gsub 'has_many/', ''
       assoc_info = resource.associations[:has_many].detect {|name, info| name.to_s == assoc}.second
       next if assoc_info.nil?
-      count_on = qualify(assoc, resource_for(assoc.to_sym).primary_key)
+      count_on = qualify_primary_keys resource_for(assoc.to_sym)
       @items = @items.left_outer_join(assoc.to_sym, assoc_info[:foreign_key] => assoc_info[:primary_key])
-        .group(qualify params[:table], resource.primary_key)
-        .select_append(Sequel.function(:count, Sequel.function(:distinct, count_on)).as(column))
+        .group(qualify_primary_keys resource)
+        .select_append(Sequel.function(:count, Sequel.function(:distinct, *count_on)).as(column))
     end
   end
 
@@ -548,6 +477,10 @@ class ResourcesController < ApplicationController
   def qualify table, column
     Sequel.qualify table, column
   end
+  
+  def qualify_primary_keys resource
+    resource.primary_keys.map {|key| qualify(resource.table, key)}
+  end
 
   def settings_type
     request.format.to_s == 'text/csv' ? :export : :listing
@@ -561,7 +494,7 @@ class ResourcesController < ApplicationController
     when /create/
       new_resource_path(params[:table])
     else
-      id = params[:id] || (@item && @item[resource.primary_key])
+      id = params[:id] || resource.primary_key_value(@item)
       if id # there can be no id if no primary key on the table
         resource_path(params[:table], id)
       else
@@ -605,7 +538,7 @@ class ResourcesController < ApplicationController
   end
   
   def warn_if_no_primary_key
-    flash.now[:warning] = "Warning : this table doesn't declare a primary key. Support for tables without primary keys is incomplete at the moment." if resource.primary_key.nil?
+    flash.now[:warning] = "Warning : this table doesn't declare a primary key. Support for tables without primary keys is incomplete at the moment." if resource.primary_keys.empty?
   end
 
 end
