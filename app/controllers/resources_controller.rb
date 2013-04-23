@@ -289,14 +289,18 @@ class ResourcesController < ApplicationController
   def apply_statistics
     @projections = []
     @select_values = []
-    # apply_number_statistics
-    # apply_enum_statistics
-    # apply_boolean_statitics
+    apply_number_statistics
+    apply_enum_statistics
+    apply_boolean_statistics
     return if @projections.empty?
     @statistics = {}
     begin
-      values=clazz.connection.select_rows(@items_for_stats.select(@projections.join(", ")).to_sql).first
-      values.each_with_index do |value, index|
+      first_projection = @projections.shift
+      @items_for_stats = @items_for_stats.select(first_projection)
+      @projections.each do |projection|
+        @items_for_stats = @items_for_stats.select_append(projection)
+      end
+      @items_for_stats.all.first.values.each_with_index do |value, index|
         column, calculation = @select_values[index]
         @statistics[column] ||= {}
         value = value.to_s.index('.') ? ((value.to_f * 100).round / 100.0) : value.to_i if value.present?
@@ -311,26 +315,30 @@ class ResourcesController < ApplicationController
     end
   end
 
-  def apply_boolean_statitics
+  def apply_boolean_statistics
     statement = "SUM(CASE WHEN X THEN 1 ELSE 0 END), SUM(CASE WHEN X THEN 0 ELSE 1 END), SUM(CASE WHEN X IS NULL THEN 1 ELSE 0 END)"
-    clazz.columns_hash.each do |name,c|
-      next if c.type != :boolean
-      @projections.push statement.gsub('X', quote_column_name(name)).gsub('Y', name)
-      ['true', 'false', 'null'].each do |calculation|
-        @select_values.push [name, calculation]
+    resource.schema_hash.each do |name,c|
+      next if c[:type] != :boolean
+      [true, false, nil].each do |value|
+        @projections.push sum_case_when(name, value)
+        value = value.nil? ? 'null' : value.to_s
+        @select_values.push [name, value]
       end
     end
   end
-
+  
+  def sum_case_when c, x
+    Sequel.as(Sequel.function(:sum, Sequel.case({{c=>x}=>1}, 0)), "c#{rand(1000)}")
+  end
+  
   def apply_enum_statistics
-    statement = "SUM(CASE WHEN #C# = #X# THEN 1 ELSE 0 END)"
     statistics_columns = []
-    clazz.columns_hash.each do |name,c|
+    resource.schema_hash.each do |name,c|
       enum_values = resource.enum_values_for(name)
       next if enum_values.blank?
       enum_values.each do |key, value|
-        key = "'#{key}'" if [:string, :text].include? c.type
-        @projections.push statement.gsub('#C#', quote_column_name(name)).gsub("#X#", key)
+        #key = "'#{key}'" if [:string, :text].include? c[:type]
+        @projections.push sum_case_when(name, key)
         @select_values.push [name, value]
       end
     end
@@ -346,10 +354,10 @@ class ResourcesController < ApplicationController
       end
     end
     @projections += statistics_columns.map do |column_name|
-      quoted_column = qualify(params[:table], column_name).sql
+      quoted_column = qualify(params[:table].to_sym, column_name)
       ['max', 'min', 'avg'].map do |calculation|
         @select_values.push [column_name, calculation]
-        "#{calculation.upcase}(#{quoted_column})"
+        Sequel.as(Sequel.function(calculation.to_sym, quoted_column), "d#{rand(1000)}")
       end
     end.flatten
   end
