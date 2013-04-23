@@ -84,12 +84,10 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
   
   test "creating a comment (polymorphic belongs_to)" do
-    FixtureFactory.new(:comment, commentable_type: 'User')
-    FixtureFactory.new(:comment, commentable_type: 'Group')
     visit resources_path(:comments)
     link = find('a[title="Create a new row"]')
     link.click()
-    # not ideal support for polymorphic belongs_to at the moment
+    # FIXME not ideal support for polymorphic belongs_to in the form at the moment
     assert page.has_css?('input[type=number][name="comments[commentable_id]"]')
   end
 

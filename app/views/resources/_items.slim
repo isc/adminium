@@ -54,7 +54,7 @@
 
     tbody
       - items.each do |item|
-        - item_pk = item[resource.primary_key]
+        - item_pk = resource.primary_key_value item
         tr data-item-id=item_pk
           - if actions_cell
             td.actions

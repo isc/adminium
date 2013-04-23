@@ -25,7 +25,7 @@ table.table.table-striped.black
       th data-value=name = name
       td(class="#{column[:type]}Type" data-value=column[:db_type])= column[:db_type]
       td(data-value="#{column[:allow_null] ? 1 : 0}")= "NOT NULL" if column[:allow_null] == false
-      td(class=column[:type] title=column[:default] data-value=column[:ruby_default])= column[:ruby_default] || '...' if column[:default]
+      td(class=column[:type] title=column[:default] data-value=column[:ruby_default])= column[:ruby_default] || column[:default] if column[:default]
       td
 
 table.table.table-striped.black

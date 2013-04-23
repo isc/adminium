@@ -58,9 +58,13 @@ module Resource
         @export_skip_header = datas[:export_skip_header]
         @export_col_sep = datas[:export_col_sep]
       end
-      @default_order ||= "#{primary_key} desc" if primary_key
+      @default_order ||= default_primary_keys_order
       set_missing_columns_conf
       @filters ||= {}
+    end
+    
+    def default_primary_keys_order
+      primary_keys.map {|key| "#{key} desc"}.join ',' if primary_keys.any?
     end
     
     def default_order_column
@@ -71,14 +75,34 @@ module Resource
       default_order.split(' ').second if default_order
     end
     
-    # TODO composite primary key
-    def primary_key
-      primary_key = schema.detect {|c, info| info[:primary_key]}.try(:first)
-      return primary_key if primary_key
+    def primary_keys
+      primary_keys = schema.find_all {|c, info| info[:primary_key]}.map(&:first)
+      return primary_keys if primary_keys.any?
       [:id, :Id, :uuid].each do |name|
-        return name if column_names.include? name
+        return [name] if column_names.include? name
       end
-      column_names.first
+      []
+    end
+    
+    def primary_key
+      raise "Asking for a single primary_key on a composite primary key table" if primary_keys.size > 1
+      primary_keys.first
+    end
+    
+    def primary_key_value item
+      return unless item
+      primary_keys.map do |name|
+        item[name]
+      end.join(',')
+    end
+    
+    def primary_key_values_hash primary_key_value
+      values = primary_key_value.is_a?(String) ? primary_key_value.split(',') : [primary_key_value]
+      Hash[primary_keys.map {|key| [key, values.shift] }]
+    end
+    
+    def composite_primary_key?
+      primary_keys.size > 1
     end
     
     def schema
@@ -227,7 +251,7 @@ module Resource
         else
           @columns[type] =
           {listing: column_names, show: column_names,
-            form: (column_names - [:created_at, :updated_at, primary_key]),
+            form: (column_names - [:created_at, :updated_at] - primary_keys),
             export: column_names,
             search: searchable_column_names, serialized: []}[type]
         end
@@ -296,7 +320,7 @@ module Resource
     end
     
     def required_column? name
-      return true if name == primary_key
+      return true if primary_keys.include? name
       return true if schema_hash[name][:allow_null] == false
       validations.detect {|val| val['validator'] == 'validates_presence_of' && val['column_name'] == name.to_s}
     end
@@ -304,11 +328,16 @@ module Resource
     def item_label item
       return unless item
       res = item[label_column.to_sym] if label_column
-      res || "#{human_name} ##{item[primary_key]}"
+      res || "#{human_name} ##{primary_key_value item}"
     end
     
     def pk_filter primary_key_value
-      query.where(primary_key => primary_key_value)
+      q = query
+      values = primary_key_value.is_a?(String) ? primary_key_value.split(',') : [primary_key_value]
+      primary_keys.each do |key|
+        q = q.where(key => values.shift)
+      end
+      q
     end
     
     def update_item primary_key_value, updated_values
@@ -321,6 +350,7 @@ module Resource
       updated_values.reject!{|k,v|v.blank?}
       updated_values = typecasted_values updated_values
       magic_timestamps updated_values, false
+      # FIXME doesn't work with composite primary keys
       query.where(primary_key => ids).update(updated_values)
     end
     
