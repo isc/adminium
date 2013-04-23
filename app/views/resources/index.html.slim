@@ -74,7 +74,7 @@ javascript:
               - if @widget
                 i.icon-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
               - else
-                i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom"
+                i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom" data-form="#nav_searches form"
               i.icon-pencil data-toggle="modal" href="#advanced_search"  title="Edit this view" rel="tooltip" data-placement="bottom"
               = link_to search_path(params[:table], name: params[:asearch]), method: 'delete' do
                 i.icon-trash title="Delete this view" rel="tooltip" data-placement="bottom"
