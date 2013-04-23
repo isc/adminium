@@ -1,4 +1,5 @@
-conn_spec = ActiveRecord::Base.configurations['fixture']
+adapter = ENV["adapter"] || "mysql"
+conn_spec = ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
 
 FactoryGirl.define do
   factory :account do

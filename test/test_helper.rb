@@ -9,6 +9,9 @@ if ENV['COVER']
     add_group 'Helpers', 'app/helpers'
   end
 end
+
+TEST_ADAPTER = ENV['adapter'] || ENV['ADAPTER'] || 'postgres'
+
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require 'fixtures/test_database_schema.rb'
@@ -60,7 +63,8 @@ class FixtureFactory
   end
   
   def self.with_fixture_connection
-    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['fixture']
+    adapter = ENV['adapter'] || 'mysql'
+    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
     yield
     ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
   end

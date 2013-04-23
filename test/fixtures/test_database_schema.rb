@@ -1,4 +1,4 @@
-conn_spec = ActiveRecord::Base.configurations['fixture']
+conn_spec = ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
 ActiveRecord::Base.establish_connection conn_spec
 ActiveRecord::Schema.verbose = false
 version = 15
