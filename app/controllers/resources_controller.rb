@@ -7,6 +7,7 @@ class ResourcesController < ApplicationController
   before_filter :dates_from_params
   # before_filter :apply_validations, only: [:create, :update, :new, :edit]
   before_filter :fetch_item, only: [:show, :edit]
+  before_filter :warn_if_no_primary_key, only: [:index, :new]
   helper_method :user_can?
   helper_method :grouping, :resource
 
@@ -601,6 +602,10 @@ class ResourcesController < ApplicationController
         end
       end
     end
+  end
+  
+  def warn_if_no_primary_key
+    flash.now[:warning] = "Warning : this table doesn't declare a primary key. Support for tables without primary keys is incomplete at the moment." if resource.primary_key.nil?
   end
 
 end

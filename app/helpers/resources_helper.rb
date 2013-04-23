@@ -73,7 +73,7 @@ module ResourcesHelper
       is_editable = true
     end
     opts = {class: css_class}
-    is_editable = false if resource.primary_key == key || key == 'updated_at' || relation
+    is_editable = false if resource.primary_key == key || key == 'updated_at' || relation || resource.primary_key.nil?
     if is_editable
       opts.merge! "data-column-name" => key
       opts.merge! "data-raw-value" => item[key].to_s unless item[key].is_a?(String) && css_class != 'enum'

@@ -73,7 +73,12 @@ module Resource
     
     # TODO composite primary key
     def primary_key
-      schema.detect {|c, info| info[:primary_key]}.try(:first)
+      primary_key = schema.detect {|c, info| info[:primary_key]}.try(:first)
+      return primary_key if primary_key
+      [:id, :Id, :uuid].each do |name|
+        return name if column_names.include? name
+      end
+      column_names.first
     end
     
     def schema
