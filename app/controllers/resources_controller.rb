@@ -283,7 +283,7 @@ class ResourcesController < ApplicationController
   end
 
   def object_name
-    "#{resource.human_name} ##{params[:id] || @item[resource.primary_key]}"
+    "#{resource.human_name} ##{params[:id] || (@item && @item[resource.primary_key])}"
   end
 
   def apply_statistics
@@ -400,6 +400,7 @@ class ResourcesController < ApplicationController
 
   def apply_order
     order  = params[:order] || resource.default_order
+    return unless order
     column, descending = order.split(" ")
     column = order[/[.\/]/] ? column.to_sym : (qualify params[:table], column)
     opts = @generic.mysql? ? {} : {nulls: :last}
@@ -559,7 +560,12 @@ class ResourcesController < ApplicationController
     when /create/
       new_resource_path(params[:table])
     else
-      resource_path(params[:table], params[:id] || @item[resource.primary_key])
+      id = params[:id] || (@item && @item[resource.primary_key])
+      if id # there can be no id if no primary key on the table
+        resource_path(params[:table], id)
+      else
+        resources_path params[:table]
+      end
     end
   end
 

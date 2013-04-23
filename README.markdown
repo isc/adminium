@@ -33,6 +33,7 @@ in-place edit improvements :
 	- country, time_zone
 	- belongs_to
 	- custom columns in index
+gestion de tables sans PK : pour le moment on peut creer, on pourrait supprimer (delete from table where <tous les attr> limit 1)
 
 TODOS:
 attr_accessible avec role pour proteger plan sur account

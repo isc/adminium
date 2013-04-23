@@ -6,8 +6,8 @@
   = label_tag 'default_order[]', 'Default order', class: 'control-label'
   .controls
     = select_tag 'default_order[]', \
-      options_from_collection_for_select(resource.schema, :first, :first, resource.default_order.split(' ').first)
-    = select_tag 'default_order[]', options_for_select(%w(asc desc), resource.default_order.split(' ').second)
+      options_from_collection_for_select(resource.schema, :first, :first, resource.default_order_column)
+    = select_tag 'default_order[]', options_for_select(%w(asc desc), resource.default_order_direction)
 .control-group
   = label_tag 'label_column', nil, class: 'control-label'
   .controls

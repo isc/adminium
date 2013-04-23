@@ -63,6 +63,14 @@ module Resource
       @filters ||= {}
     end
     
+    def default_order_column
+      default_order.split(' ').first if default_order
+    end
+    
+    def default_order_direction
+      default_order.split(' ').second if default_order
+    end
+    
     # TODO composite primary key
     def primary_key
       schema.detect {|c, info| info[:primary_key]}.try(:first)
@@ -214,7 +222,7 @@ module Resource
         else
           @columns[type] =
           {listing: column_names, show: column_names,
-            form: (column_names - [:created_at, :updated_at, :id]),
+            form: (column_names - [:created_at, :updated_at, primary_key]),
             export: column_names,
             search: searchable_column_names, serialized: []}[type]
         end
