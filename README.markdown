@@ -15,7 +15,6 @@ colonnes calculees
 conf des associations / foreign_keys
 disable completement des tables
 improve search (regexp, fulltext ?)
-in-place editing sur les belongs_to / custom columns
 mass editing / editing ; nullifier des champs
 support pour l'édition des associations has many
 audit with papertrail
@@ -30,6 +29,10 @@ advanced search definition improvements :
   - select input for column with enum values defined
 
 gerer les colonnes binary (file field for upload ?)
+in-place edit improvements :
+	- country, time_zone
+	- belongs_to
+	- custom columns in index
 
 TODOS:
 attr_accessible avec role pour proteger plan sur account

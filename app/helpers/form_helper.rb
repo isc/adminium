@@ -1,8 +1,8 @@
 module FormHelper
 
   def input resource, item, name, input_class
-    input_type, options = default_input_type(resource, name)
     input_name, input_value, input_id = "#{resource.table}[#{name}]", item[name], "#{resource.table}_#{name}"
+    input_type, options = default_input_type(resource, name, input_value)
     input_options = {id: input_id, required: resource.required_column?(name), class: input_class}
     input_options.merge!(readonly: true) if resource.column_info(name)[:primary_key]
     return "..." unless input_type
@@ -17,7 +17,7 @@ module FormHelper
     end
   end
 
-  def default_input_type resource, name
+  def default_input_type resource, name, value
     info = resource.column_info name
     if enum_values = resource.enum_values_for(name)
       return :select, enum_values.to_a.map {|v| [v[1]['label'], v[0]]}
@@ -35,8 +35,8 @@ module FormHelper
       return :text_area if info[:db_type] == 'text'
       case name.to_s
       when /password/  then :password_field
-      when /time_zone/ then :time_zone
-      when /country/   then :country
+      when /time_zone/ then [:select, time_zone_options_for_select(value)]
+      when /country/   then [:select, country_options_for_select(value)]
       when /email/     then :email_field
       when /phone/     then :telephone_field
       when /url/       then :url_field
