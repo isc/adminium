@@ -96,6 +96,8 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test "save new" do
     visit new_resource_path(:users)
     fill_in 'Pseudo', with: 'Bobulus'
+    assert page.has_css?('select[name="users[country]"]')
+    assert page.has_css?('select[name="users[time_zone]"]')
     click_button 'Save'
     assert page.has_content?('successfully created')
     assert_equal 'Bobulus', find('td[data-column-name=pseudo]').text

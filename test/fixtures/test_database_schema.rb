@@ -1,7 +1,7 @@
 conn_spec = ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
 ActiveRecord::Base.establish_connection conn_spec
 ActiveRecord::Schema.verbose = false
-version = 15
+version = 16
 if ActiveRecord::Migrator.current_version != version
   ActiveRecord::Base.connection.tables.each do |table|
     ActiveRecord::Base.connection.drop_table table
@@ -16,6 +16,7 @@ if ActiveRecord::Migrator.current_version != version
       t.integer :kind
       t.integer :user_profile_id
       t.date :birthdate
+      t.string :time_zone, :country
       t.binary :file
       t.timestamps
     end

@@ -7,6 +7,7 @@ class ResourcesController < ApplicationController
   before_filter :dates_from_params
   # before_filter :apply_validations, only: [:create, :update, :new, :edit]
   before_filter :fetch_item, only: [:show, :edit]
+  before_filter :warn_if_no_primary_key, only: [:index, :new]
   helper_method :user_can?
   helper_method :grouping, :resource
 
@@ -283,7 +284,7 @@ class ResourcesController < ApplicationController
   end
 
   def object_name
-    "#{resource.human_name} ##{params[:id] || @item[resource.primary_key]}"
+    "#{resource.human_name} ##{params[:id] || (@item && @item[resource.primary_key])}"
   end
 
   def apply_statistics
@@ -408,6 +409,7 @@ class ResourcesController < ApplicationController
 
   def apply_order
     order  = params[:order] || resource.default_order
+    return unless order
     column, descending = order.split(" ")
     column = order[/[.\/]/] ? column.to_sym : (qualify params[:table], column)
     opts = @generic.mysql? ? {} : {nulls: :last}
@@ -567,7 +569,12 @@ class ResourcesController < ApplicationController
     when /create/
       new_resource_path(params[:table])
     else
-      resource_path(params[:table], params[:id] || @item[resource.primary_key])
+      id = params[:id] || (@item && @item[resource.primary_key])
+      if id # there can be no id if no primary key on the table
+        resource_path(params[:table], id)
+      else
+        resources_path params[:table]
+      end
     end
   end
 
@@ -603,6 +610,10 @@ class ResourcesController < ApplicationController
         end
       end
     end
+  end
+  
+  def warn_if_no_primary_key
+    flash.now[:warning] = "Warning : this table doesn't declare a primary key. Support for tables without primary keys is incomplete at the moment." if resource.primary_key.nil?
   end
 
 end
