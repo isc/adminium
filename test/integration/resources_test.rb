@@ -189,6 +189,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
   
   test "failed update" do
+    return if TEST_ADAPTER == 'mysql'
     user = FixtureFactory.new(:user).factory
     out_of_range_int = '3241234234141234'
     visit edit_resource_path(:users, user)
