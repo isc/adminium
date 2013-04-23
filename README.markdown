@@ -4,7 +4,6 @@ Sequel Migration TODOS / FIXMES :
   - listing columns ; user.pseudo => users.pseudo
 - composite primary keys
 - validations
-- statistics
 
 FEATURES:
 freaking TIMEZONES !!
