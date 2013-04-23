@@ -166,7 +166,7 @@ class ResourcesController < ApplicationController
     pk_value = resource.insert item_params
     params[:id] = pk_value
     redirect_to after_save_redirection, flash: {success: "#{object_name} successfully created."}
-  rescue Sequel::DatabaseError => e
+  rescue Sequel::DatabaseError, Sequel::Error::InvalidValue => e
     flash.now[:error] = e.message
     @item = item_params
     @form_url = resources_path params[:table]

@@ -104,12 +104,22 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
   
   test "failed save due to value out of range for db" do
+    return if TEST_ADAPTER == 'mysql'
     visit new_resource_path(:users)
-    fill_in 'Age', with: '83829384728832'
+    fill_in 'Age', with: '123123123183829384728832'
     click_button 'Save'
     assert page.has_css?('.alert.alert-error')
     assert page.has_content?('New User')
-    assert_equal '83829384728832', find('input[type=number][name="users[age]"]').value
+    assert_equal '123123123183829384728832', find('input[type=number][name="users[age]"]').value
+  end
+  
+  test "failed save due to invalid cast" do
+    visit new_resource_path(:users)
+    fill_in 'Age', with: 'va bien te faire mettre'
+    click_button 'Save'
+    assert page.has_css?('.alert.alert-error')
+    assert page.has_content?('New User')
+    assert_equal 'va bien te faire mettre', find('input[type=number][name="users[age]"]').value
   end
 
   test "save new and create another" do

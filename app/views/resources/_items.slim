@@ -49,7 +49,7 @@
                   dl
                     - @statistics[name].each do |calculation, value|
                       dt(class=calculation)= calculation
-                      dd(title=value class="#{(value.to_i == 0) ? 'zero' : ''}")= display_number name, nil, resource, value
+                      dd(title=value class="#{(value.to_i == 0) ? 'zero' : ''}")= display_number name, nil, resource, value.to_i
 
 
     tbody
