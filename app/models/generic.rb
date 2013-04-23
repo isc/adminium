@@ -17,14 +17,17 @@ class Generic
   
   def associations
     return @associations if @associations
-    ActiveSupport::Notifications.instrument(:associations_discovery, at: Time.now) do
-      @associations = Hash[tables.map {|t| [t, {belongs_to: {}, has_many: {}}]}]
-      tables.each do |table|
-        if foreign_keys[table].present?
-          discover_associations_through_foreign_keys table
-        else
-          discover_associations_through_conventions table
+    ActiveSupport::Notifications.instrument :associations_discovery  do
+      @associations = Rails.cache.fetch "account:#@account_id:associations", expires_in: 10.minutes do
+        @associations = Hash[tables.map {|t| [t, {belongs_to: {}, has_many: {}}]}]
+        tables.each do |table|
+          if foreign_keys[table].present?
+            discover_associations_through_foreign_keys table
+          else
+            discover_associations_through_conventions table
+          end
         end
+        @associations
       end
     end
     @associations
