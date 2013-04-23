@@ -9,7 +9,7 @@
       - if (assoc_info = resource.foreign_key?(name)) && !assoc_info[:polymorphic]
         - foreign_resource = resource_for assoc_info[:referenced_table]
         - if foreign_resource.query.count <= 25
-          = belongs_to_select_tag resource, foreign_resource, name
+          = belongs_to_select_tag resource, item, foreign_resource, name
         - else
           - record = foreign_resource.find item[name] if item[name].present?
           .adminium-association
