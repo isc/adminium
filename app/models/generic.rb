@@ -34,7 +34,7 @@ class Generic
     foreign_keys[table].each do |foreign_key|
       @associations[table][:belongs_to][foreign_key[:to_table]] =
         @associations[foreign_key[:to_table]][:has_many][table] =
-        {foreign_key: foreign_key[:column], primary_key: foreign_key[:primary_key], referenced_table: foreign_key[:to_table]}
+        {foreign_key: foreign_key[:column], primary_key: foreign_key[:primary_key], referenced_table: foreign_key[:to_table], table: table}
     end
   end
 

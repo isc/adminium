@@ -94,7 +94,7 @@ class ResourcesController < ApplicationController
     pk_value = resource.insert item_params
     params[:id] = pk_value
     redirect_to after_save_redirection, flash: {success: "#{object_name} successfully created."}
-  rescue Sequel::DatabaseError, Sequel::Error::InvalidValue, Resource::ValidationError => e
+  rescue Sequel::Error, Resource::ValidationError => e
     flash.now[:error] = e.message.html_safe
     @item = item_params
     @form_url = resources_path params[:table]
@@ -113,7 +113,7 @@ class ResourcesController < ApplicationController
         render json: {result: :success, value: value, column: column_name, id: params[:id]}
       end
     end
-  rescue Sequel::DatabaseError, Sequel::Error::InvalidValue, Resource::ValidationError => e
+  rescue Sequel::Error, Resource::ValidationError => e
     respond_to do |format|
       format.html do
         flash.now[:error] = e.message.html_safe
@@ -133,7 +133,7 @@ class ResourcesController < ApplicationController
     resource.delete params[:id]
     redirection = params[:redirect] == 'index' ? resources_path(params[:table]) : :back
     redirect_to redirection, flash: {success: "#{object_name} successfully destroyed."}
-  rescue ActiveRecord::StatementInvalid => e
+  rescue Sequel::Error => e
     redirect_to :back, flash: {error: e.message}
   end
 
@@ -141,7 +141,7 @@ class ResourcesController < ApplicationController
     params[:item_ids].map! {|id| id.split(',')} if resource.composite_primary_key?
     resource.delete params[:item_ids]
     redirect_to :back, flash: {success: "#{params[:item_ids].size} #{resource.human_name.pluralize} successfully destroyed."}
-  rescue ActiveRecord::StatementInvalid => e
+  rescue Sequel::Error => e
     redirect_to :back, flash: {error: e.message}
   end
 

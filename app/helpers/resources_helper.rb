@@ -248,7 +248,7 @@ module ResourcesHelper
   end
 
   def options_for_custom_columns resource
-    res = [['belongs_to', resource.associations[:belongs_to].map{|name, assoc|[name, assoc[:table]] unless assoc[:polymorphic]}.compact]]
+    res = [['belongs_to', resource.associations[:belongs_to].map{|name, assoc|[name, assoc[:referenced_table]] unless assoc[:polymorphic]}.compact]]
     res << ['has_many', resource.associations[:has_many].map{|name, assoc|["#{name.to_s.humanize} count", name]}]
     grouped_options_for_select res
   end

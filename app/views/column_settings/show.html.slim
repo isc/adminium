@@ -21,7 +21,7 @@
               'Override the column name in the user interface.
               br
               = "Default is \"#{params[:column].humanize}\""
-      - unless association_clazz || has_many_count_column || resource.foreign_key?(params[:column].to_sym)
+      - unless belongs_to_column? || has_many_count_column? || resource.foreign_key?(params[:column].to_sym)
         - partial = {float: :decimal, timestamp: :datetime}[column[:type]] || column[:type]
         - if partial != :string
           = accordion.pane "#{partial.to_s.pluralize.humanize} display" do
