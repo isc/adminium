@@ -238,7 +238,7 @@ class ResourcesController < ApplicationController
       end
     rescue => ex
       if Rails.env.production?
-        notify_honeybadger(ex)
+        notify_airbrake ex
       else
         raise ex
       end
