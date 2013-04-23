@@ -39,20 +39,21 @@ class ResourcesController < ApplicationController
     apply_has_many_counts
     apply_order
     update_export_settings
+    page = (params[:page].presence || 1).to_i
     respond_with @items do |format|
       format.html do
         check_per_page_setting
-        page = (params[:page].presence || 1).to_i
-        @items = @items.paginate(page, resource.per_page.to_i)
+        @items = @items.paginate page, resource.per_page.to_i
         @fetched_items = @items.to_a
         fetch_associated_items
         apply_statistics
       end
       format.json do
-        page = (params[:page].presence || 1).to_i
-        @items = @items.paginate(page, 10)
+        @items = @items.paginate page, 10
+        @fetched_items = @items.to_a
+        fetch_associated_items
         render json: {
-          widget: render_to_string(partial: 'items', locals: {items: @items.to_a, actions_cell: false}),
+          widget: render_to_string(partial: 'items', locals: {items: @fetched_items, actions_cell: false}),
           id: params[:widget_id],
           total_count: @items.pagination_record_count
         }
