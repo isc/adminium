@@ -2,8 +2,10 @@ Sequel Migration TODOS / FIXMES :
 - migration des données Redis
   - "account:17:settings:PhoneNumber" => "account:17:settings:phone_numbers"
   - listing columns ; user.pseudo => users.pseudo
-- un 500 laisse la connexion ouverte on dirait, moult 500 menent a "PG::Error: FATAL:  sorry, too many clients already"
 - composite primary keys
+- validations
+- reset_adminium_demo_settings
+- statistics
 
 FEATURES:
 freaking TIMEZONES !!
@@ -44,5 +46,4 @@ on peut pas mettre un espace comme thousand delimiter (or j'aurais bien voulu po
 
 pas de completion des tables sur la page d'edition de compte
 
-potential optimisation : https://github.com/bgipsy/column_queries
 pour les dangerousattributes, ils sont readonly
