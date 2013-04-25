@@ -304,7 +304,7 @@ class ResourcesController < ApplicationController
       text_columns = resource.columns[:search].select{|c| resource.is_text_column?(c)}
       if text_columns.present?
         string_patterns = params[:search].split(" ").map {|pattern| pattern.include?("%") ? pattern : "%#{pattern}%" }
-        @items = @items.grep(text_columns, string_patterns, case_insensitive: true, all_patterns: true)
+        @items = @items.grep(text_columns.map{|c| qualify(params[:table].to_sym, c)}, string_patterns, case_insensitive: true, all_patterns: true)
       end
     end
   end
