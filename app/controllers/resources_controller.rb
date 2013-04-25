@@ -329,7 +329,8 @@ class ResourcesController < ApplicationController
       assoc_info = resource.associations[:has_many].detect {|name, info| name.to_s == assoc}.second
       next if assoc_info.nil?
       count_on = qualify_primary_keys resource_for(assoc.to_sym)
-      @items = @items.left_outer_join(assoc.to_sym, assoc_info[:foreign_key] => assoc_info[:primary_key])
+      @items = @items
+        .left_outer_join(assoc.to_sym, qualify(assoc_info[:table], assoc_info[:foreign_key]) => qualify(assoc_info[:referenced_table], assoc_info[:primary_key]))
         .group(qualify_primary_keys resource)
         .select_append(Sequel.function(:count, Sequel.function(:distinct, *count_on)).as(column))
     end
@@ -347,7 +348,6 @@ class ResourcesController < ApplicationController
   end
 
   def apply_filters
-    #predication = nil
     @current_filter.each_with_index do |filter, index|
       clause = apply_filter filter
       @items = if index.nonzero? && filter['grouping'] == 'or'
@@ -436,7 +436,7 @@ class ResourcesController < ApplicationController
 
   def table_access_limitation
     return unless current_account.pet_project?
-    @generic.table(params[:table]) # possibly triggers the table not found exception
+    @generic.table params[:table] # possibly triggers the table not found exception
     if (@generic.tables.index params[:table].to_sym) >= 5
       notice = "You're currently on the free plan meant for pet projects which is limited to five tables of your schema.<br/><a href=\"#{current_account.upgrade_link}\" class=\"btn btn-warning\">Upgrade</a> to the startup plan ($10 per month) to access your full schema with Adminium.".html_safe
       if request.xhr?
