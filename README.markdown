@@ -38,6 +38,7 @@ données stockées dans redis pour les comptes deprovisionnés ?
 unset le focus eventuel d'un element de la popin quand on la ferme, sinon le "press s" ne fonctionne plus
 
 BUGS:
+lors d'un export ; rajout d'un has_many/count column puis export => colonne vide, nouvel export => colonne remplie
 label column fonctionne pas juste apres configuration (jamais ?) sur metrics-recorder
 une colonne nommé "increment" fait peter le create/update (lors du dirty tracking la methode built in rails increment est incorrectement appelee)
 serialized columns containing smth else than a basic type
