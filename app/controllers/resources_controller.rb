@@ -32,7 +32,7 @@ class ResourcesController < ApplicationController
     @widget = current_account.table_widgets.where(table: params[:table], advanced_search: params[:asearch]).first
 
     @items = resource.query.select(qualify params[:table], Sequel.lit('*'))
-    @items = @items.where(params[:where].symbolize_keys) if params[:where].present?
+    apply_where
     apply_filters
     apply_search if params[:search].present?
     @items_for_stats = @items
@@ -307,6 +307,12 @@ class ResourcesController < ApplicationController
         @items = @items.grep(text_columns.map{|c| qualify(params[:table].to_sym, c)}, string_patterns, case_insensitive: true, all_patterns: true)
       end
     end
+  end
+  
+  def apply_where
+    return unless params[:where].present?
+    where_hash = Hash[params[:where].map {|k, v| [qualify(resource.table, k.to_sym), v]}]
+    @items = @items.where(where_hash)
   end
 
   def fetch_associated_items
