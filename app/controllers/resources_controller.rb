@@ -21,7 +21,7 @@ class ResourcesController < ApplicationController
     resource.columns[:search] = [resource.primary_keys, resource.label_column.try(:to_sym)].flatten.compact | resource.columns[:search]
     apply_search if params[:search].present?
     apply_order
-    @items = @items.select *resource.columns[:search]
+    @items = @items.select *resource.columns[:search].map {|c| Sequel.identifier(c)}
     records = @items.paginate(1, 37).map {|h| h.merge(adminium_label: resource.item_label(h))}
     render json: records.to_json(only: resource.columns[:search] + [:adminium_label])
   end
@@ -246,9 +246,8 @@ class ResourcesController < ApplicationController
   end
 
   def apply_boolean_statistics
-    statement = "SUM(CASE WHEN X THEN 1 ELSE 0 END), SUM(CASE WHEN X THEN 0 ELSE 1 END), SUM(CASE WHEN X IS NULL THEN 1 ELSE 0 END)"
     resource.schema_hash.each do |name,c|
-      next if c[:type] != :boolean
+      next unless (c[:type] == :boolean) && resource.columns[:listing].include?(name)
       [true, false, nil].each do |value|
         @projections.push sum_case_when(name, value)
         value = value.nil? ? 'null' : value.to_s
@@ -258,7 +257,7 @@ class ResourcesController < ApplicationController
   end
   
   def sum_case_when c, x
-    Sequel.as(Sequel.function(:sum, Sequel.case({{c=>x}=>1}, 0)), "c#{rand(1000)}")
+    Sequel.as(Sequel.function(:sum, Sequel.case({{qualify(resource.table, c) => x} => 1}, 0)), "c#{rand(1000)}")
   end
   
   def apply_enum_statistics
@@ -267,7 +266,6 @@ class ResourcesController < ApplicationController
       enum_values = resource.enum_values_for(name)
       next if enum_values.blank?
       enum_values.each do |key, value|
-        #key = "'#{key}'" if [:string, :text].include? c[:type]
         @projections.push sum_case_when(name, key)
         @select_values.push [name, value]
       end
@@ -284,7 +282,7 @@ class ResourcesController < ApplicationController
       end
     end
     @projections += statistics_columns.map do |column_name|
-      quoted_column = qualify(params[:table].to_sym, column_name)
+      quoted_column = qualify(resource.table, column_name)
       ['max', 'min', 'avg'].map do |calculation|
         @select_values.push [column_name, calculation]
         Sequel.as(Sequel.function(calculation.to_sym, quoted_column), "d#{rand(1000)}")
@@ -304,7 +302,7 @@ class ResourcesController < ApplicationController
       text_columns = resource.columns[:search].select{|c| resource.is_text_column?(c)}
       if text_columns.present?
         string_patterns = params[:search].split(" ").map {|pattern| pattern.include?("%") ? pattern : "%#{pattern}%" }
-        @items = @items.grep(text_columns.map{|c| qualify(params[:table].to_sym, c)}, string_patterns, case_insensitive: true, all_patterns: true)
+        @items = @items.grep(text_columns.map{|c| qualify(resource.table, c)}, string_patterns, case_insensitive: true, all_patterns: true)
       end
     end
   end
@@ -477,7 +475,7 @@ class ResourcesController < ApplicationController
   end
 
   def qualify table, column
-    Sequel.qualify table, column
+    Sequel.identifier(column).qualify table
   end
   
   def qualify_primary_keys resource
@@ -505,18 +503,6 @@ class ResourcesController < ApplicationController
     end
   end
 
-  def update_from_import pk, columns, data
-    data.map do |row|
-      attrs = {}
-      columns.each_with_index do |name, index|
-        attrs[name] = row[index]
-      end
-      id = attrs.delete pk
-      resource.update_item id, attrs
-      id
-    end
-  end
-  
   def resource
     resource_for params[:table]
   end

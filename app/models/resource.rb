@@ -346,15 +346,15 @@ module Resource
     
     def validations_check primary_key_value, updated_values
       validations.each do |validation|
-        next unless updated_values.keys.include? validation['column_name'].to_sym
+        next unless value = updated_values.detect {|k, _| k.value == validation['column_name']}.try(:second)
         case validation['validator']
         when VALIDATES_PRESENCE_OF
-          if updated_values[validation['column_name'].to_sym].blank?
+          if value.blank?
             raise ValidationError.new "<b>#{column_display_name validation['column_name'].to_sym}</b> can't be blank."
           end
         when VALIDATES_UNIQUENESS_OF
-          unless pk_filter(primary_key_value).invert.where(validation['column_name'].to_sym => updated_values[validation['column_name'].to_sym]).empty?
-            raise ValidationError.new "<b>#{updated_values[validation['column_name'].to_sym]}</b> has already been taken."
+          unless pk_filter(primary_key_value).invert.where(validation['column_name'].to_sym => value).empty?
+            raise ValidationError.new "<b>#{value}</b> has already been taken."
           end
         end
       end
@@ -391,14 +391,14 @@ module Resource
     end
     
     def typecasted_values values
-      values = Hash[values.map {|k, v| [Sequel.identifier(k), v]}]
-      values.each {|key, value| values[key] = typecast_value key, value}
+      values.each {|key, value| values[key] = typecast_value key.to_sym, value}
+      Hash[values.map {|k, v| [Sequel.identifier(k), v]}]
     end
     
     def insert values
       values = typecasted_values values
       magic_timestamps values, true
-      primary_key_value = query.insert values
+      query.insert values
     end
     
     def magic_timestamps values, creation
@@ -406,9 +406,9 @@ module Resource
       columns = [:updated_at, :updated_on]
       columns += [:created_at, :created_on] if creation
       columns.each do |column|
-        next if values.has_key? column
+        next if values.detect {|k,_|k.value.to_sym == column}
         if schema_hash[column] && [:timestamp, :date, :datetime].include?(schema_hash[column][:type])
-          values[column] = now
+          values[Sequel.identifier column] = now
         end
       end
     end

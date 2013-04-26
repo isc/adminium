@@ -123,7 +123,7 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_search_for_association_input
     get :search, :table => 'users', :search => 'Loulou'
-    data = JSON.parse(@response.body)
+    data = JSON.parse @response.body
     assert_equal 1, data.length
     assert_equal "Loulou", data.first['pseudo']
   end
@@ -133,9 +133,10 @@ class ResourcesControllerTest < ActionController::TestCase
     enum_integer = {"column_name"=>"kind", "values"=>{"1"=>{"color"=>"bleu", "label"=>"Kind1"}, "2"=>{"color"=>"red", "label"=>"Kind2"}}}
     enum_string = {"column_name"=>"role", "values"=>{"1"=>{"color"=>"black", "label"=>"Role1"}, "2"=>{"color"=>"white", "label"=>"Role2"}}}
     settings.enum_values = [enum_integer, enum_string]
+    settings.columns[:listing] = [:id, :pseudo, :first_name, :last_name, :age, :activated_at, :admin, :role, :kind]
     settings.save
     @records = @fixtures.map &:save!
-    get :index, :table => 'users'
+    get :index, table: 'users'
     assert_equal({
       "age"=>{"max"=>19, "min"=>17, "avg"=>18.0},
       "role"=>{{"color"=>"black", "label"=>"Role1"}=>0, {"color"=>"white", "label"=>"Role2"}=>0},
@@ -145,7 +146,7 @@ class ResourcesControllerTest < ActionController::TestCase
   end
   
   def test_import
-    user = FixtureFactory.new(:user, :pseudo => 'Johnny').factory
+    user = FixtureFactory.new(:user, pseudo: 'Johnny').factory
     datas = {
       create: [["juan", "Juan", "De La Motte", "1", "28", "2012-04-01 00:00:00 UTC", false, "DRH", "2", nil, "2013-03-13", nil, "2013-04-19 15:39:52 UTC", "2013-04-19 15:39:52 UTC"]],
       update: [[user.id.to_s, "martine", "Martine", "De La Motte", "1", "28", "2013-04-01 00:00:00 UTC", true, "PDG", "2", nil, "2013-03-13", nil, "2013-04-19 15:39:52 UTC", "2013-04-19 15:39:52 UTC"]],
@@ -154,7 +155,7 @@ class ResourcesControllerTest < ActionController::TestCase
     post :perform_import, table: :users, data: datas
 
     assert_equal({'success' => true}, JSON.parse(@response.body))
-    get :index, :table => 'users', :asearch => 'last_import'
+    get :index, table: 'users', asearch: 'last_import'
     assert_equal 2, assigns[:items].count
     assert_equal 'martine', assigns[:items].detect{|r| r[:id] == user.id}[:pseudo]
   end

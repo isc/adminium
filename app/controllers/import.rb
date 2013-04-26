@@ -73,4 +73,18 @@ module Import
      render json: result
   end
   
+  private
+  
+  def update_from_import pk, columns, data
+    data.map do |row|
+      attrs = {}
+      columns.each_with_index do |name, index|
+        attrs[name] = row[index]
+      end
+      id = attrs.delete pk
+      resource.update_item id, attrs
+      id
+    end
+  end
+
 end
