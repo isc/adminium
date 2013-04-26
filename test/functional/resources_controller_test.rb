@@ -191,6 +191,12 @@ class ResourcesControllerTest < ActionController::TestCase
     @expected_response_code = :redirect
   end
 
+  def test_pet_project_limitation_for_xhr_request
+    @account.update_attribute :plan, Account::Plan::PET_PROJECT
+    xhr :get, :index, table: 'roles_users'
+    assert_equal %w(widget id), JSON.parse(@response.body).keys
+  end
+
   private
   def assert_asearch name, pseudos
     get :index, table: 'users', asearch: name, order: 'pseudo'
