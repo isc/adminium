@@ -391,7 +391,7 @@ module Resource
     end
     
     def typecasted_values values
-      values = values.symbolize_keys
+      values = Hash[values.map {|k, v| [Sequel.identifier(k), v]}]
       values.each {|key, value| values[key] = typecast_value key, value}
     end
     
