@@ -379,7 +379,7 @@ class ResourcesController < ApplicationController
     type = resource.column_info(filter['column'].to_sym)[:type]
     operators.merge! datetime_operators if [:date, :datetime].index(type)
     operators.merge! string_operators if [:string, :text].index(type)
-    column = filter['column'].to_sym
+    column = qualify params[:table], filter['column'].to_sym
     operation = operators[filter['operator']]
     if operation[:named_function]
       column = Sequel.function operation[:named_function], column
