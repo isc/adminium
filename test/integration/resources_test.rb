@@ -15,13 +15,19 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
   
   test "index on resources for users table" do
-    FixtureFactory.new(:user)
+    FixtureFactory.new :user
     visit resources_path(:users)
     assert page.has_css?('table.items-list')
     assert page.has_css?('th a', text: 'First name')
     uncheck 'First name'
     click_button 'Save settings'
     assert !page.has_css?('th a', text: 'First name')
+  end
+  
+  test "index for users table asking for a page too far" do
+    FixtureFactory.new :user
+    visit resources_path(:users, page: 37)
+    assert page.has_content?("You are looking for results on page 37, but your query only has 1 result page")
   end
   
   test "sorted index by column asc and desc" do

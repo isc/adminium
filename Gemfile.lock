@@ -195,6 +195,9 @@ GEM
     sequel_pg (1.6.5)
       pg (>= 0.8.0)
       sequel (>= 3.39.0)
+    sextant (0.2.3)
+      activesupport (>= 3.2)
+      rails (>= 3.2)
     simple_form (2.0.4)
       actionpack (~> 3.0)
       activemodel (~> 3.0)
@@ -278,6 +281,7 @@ DEPENDENCIES
   rest-client
   sequel (= 3.46.0)
   sequel_pg
+  sextant
   simple_form (= 2.0.4)
   simplecov
   slim-rails
