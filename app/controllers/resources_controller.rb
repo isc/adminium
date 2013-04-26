@@ -298,7 +298,7 @@ class ResourcesController < ApplicationController
       v = params[:search].to_i
       @items = @items.where(false)
       number_columns.each do |column|
-        @items = @items.or(column => v)
+        @items = @items.or(qualify(resource.table, column) => v)
       end
     else
       text_columns = resource.columns[:search].select{|c| resource.is_text_column?(c)}
