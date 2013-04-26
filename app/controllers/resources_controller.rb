@@ -347,7 +347,6 @@ class ResourcesController < ApplicationController
     opts = @generic.mysql? ? {} : {nulls: :last}
     @items = @items.order(Sequel::SQL::OrderedExpression.new(column, !!descending, opts))
     @items = @items.order_prepend(Sequel.case([[{column=>nil}, 1]], 0)) if @generic.mysql?
-    @items
   end
 
   def apply_filters
@@ -359,7 +358,6 @@ class ResourcesController < ApplicationController
         @items.where(clause)
       end
     end
-    @items
   end
 
   def apply_filter filter

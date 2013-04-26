@@ -58,7 +58,7 @@ class Generic
   end
   
   def foreign_keys
-    @foreign_keys ||= Rails.cache.fetch "foreign_keys:#{@account_id}", expires_in: 2.minutes do
+    @foreign_keys ||= Rails.cache.fetch "foreign_keys:#@account_id", expires_in: 2.minutes do
       query = postgresql? ? postgresql_foreign_keys_query : mysql_foreign_keys_query
       fk_info = @db[query]
       foreign_keys = {}

@@ -4,13 +4,14 @@ class ColumnSettingsController < ApplicationController
   helper_method :column, :belongs_to_column?, :has_many_count_column?, :resource
 
   def show
-    @hidden = !resource.columns[:listing].include?(params[:column])
-    @serialized = resource.columns[:serialized].include?(params[:column])
-    @enum = resource.enum_values_for params[:column]
+    column = params[:column].to_sym
+    @hidden = !resource.columns[:listing].include?(column)
+    @serialized = resource.columns[:serialized].include?(column)
+    @enum = resource.enum_values_for column
   end
 
   def create
-    resource.update_column_options params[:column], params[:column_options]
+    resource.update_column_options params[:column].to_sym, params[:column_options]
     resource.update_enum_values params
     if params[:label_column]
       resource = resource_for params[:label_column][:table]

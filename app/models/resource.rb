@@ -174,9 +174,9 @@ module Resource
       hidden = options.delete :hide
       @columns[:listing].delete name if hidden
       if options[:serialized]
-        @columns[:serialized].push(name)
+        @columns[:serialized].push name
       else
-        @columns[:serialized].delete(name)
+        @columns[:serialized].delete name
       end
       @columns[:serialized].uniq!
       @column[name.to_s] = options

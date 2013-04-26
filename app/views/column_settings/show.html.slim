@@ -8,7 +8,7 @@
     = accordion accordion_id: 'column-settings-accordion' do |accordion|
       = accordion.pane 'Visibility' do
         .control-group
-          label.control-label for="column_hide" Hidden column
+          label.control-label for="column_options_hide" Hidden column
           .controls
             = check_box_tag 'column_options[hide]', 'checked', @hidden
             p.help-block= "Don't display this column in the listing table"

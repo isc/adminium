@@ -18,4 +18,13 @@ class ColumnSettingsTest < ActionDispatch::IntegrationTest
     assert_equal 'Admins', page.find('td.foreignkey a').text
   end
   
+  test "change visibility from column settings" do
+    FixtureFactory.new :user
+    visit column_setting_path(:users, column: 'pseudo')
+    check 'Hidden column'
+    click_button 'Save settings'
+    visit resources_path(:users)
+    assert !page.has_css?('th.column_header[data-column-name="pseudo"]')
+  end
+  
 end

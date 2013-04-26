@@ -14,9 +14,9 @@ class SettingsController < ApplicationController
     resource.save
     if params[:back_to]
       redirect_to params[:back_to]
-      return
+    else
+      redirect_to :back, flash: {success: 'Settings successfully saved.'}
     end
-    redirect_to :back, flash: {success: 'Settings successfully saved.'}
   end
 
   def show
