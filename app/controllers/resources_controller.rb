@@ -21,7 +21,7 @@ class ResourcesController < ApplicationController
     resource.columns[:search] = [resource.primary_keys, resource.label_column.try(:to_sym)].flatten.compact | resource.columns[:search]
     apply_search if params[:search].present?
     apply_order
-    @items = @items.select *resource.columns[:search].map {|c| Sequel.identifier(c)}
+    @items = @items.select(*(resource.columns[:search].map {|c| Sequel.identifier(c)}))
     records = @items.paginate(1, 37).map {|h| h.merge(adminium_label: resource.item_label(h))}
     render json: records.to_json(only: resource.columns[:search] + [:adminium_label])
   end
@@ -174,7 +174,7 @@ class ResourcesController < ApplicationController
 
   def update_export_settings
     if params[:export_columns].present?
-      resource.columns[:export] = params[:export_columns].delete_if{|e|e.empty?}.map &:to_sym
+      resource.columns[:export] = params[:export_columns].delete_if{|e|e.empty?}.map(&:to_sym)
       resource.csv_options = params[:csv_options]
       resource.save
     end
@@ -261,7 +261,6 @@ class ResourcesController < ApplicationController
   end
   
   def apply_enum_statistics
-    statistics_columns = []
     resource.schema_hash.each do |name,c|
       enum_values = resource.enum_values_for(name)
       next if enum_values.blank?
@@ -277,7 +276,7 @@ class ResourcesController < ApplicationController
     resource.schema.each do |name, info|
       if [:integer, :float, :decimal].include?(info[:type]) && !name.to_s.ends_with?('_id') &&
         resource.enum_values_for(name).nil? && resource.columns[:listing].include?(name) &&
-        resource.primary_key != name
+        !resource.primary_keys.include?(name)
         statistics_columns.push name
       end
     end
