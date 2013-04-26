@@ -27,4 +27,10 @@ class ColumnSettingsTest < ActionDispatch::IntegrationTest
     assert !page.has_css?('th.column_header[data-column-name="pseudo"]')
   end
   
+  test "show on various types" do
+    %w(id pseudo created_at admin file Average_Price_Online__c).each do |column|
+      visit column_setting_path(:users, column: column)
+    end
+  end
+  
 end
