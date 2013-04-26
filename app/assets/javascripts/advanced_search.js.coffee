@@ -27,10 +27,9 @@ class AdvancedSearch
 
   updateFilterForm: (select) =>
     operator = select.val()
-    window.select =select
-    window.operand = select.parents('tr').find('.operand')
+    operand = select.parents('tr').find('.operand')
     visibility = @unary_operators.indexOf(operator) is -1
-    operand.toggle(visibility)
+    operand.toggle(visibility).attr('required', visibility)
     type = if operand.data('type') is 'integer' and operator isnt 'IN'
       'number'
     else

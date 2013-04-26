@@ -48,7 +48,7 @@ class ResourcesControllerTest < ActionController::TestCase
 
     #add_filter_to_test 'date_before', [nil], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"before", "operand" => Date.today.strftime('%m/%d/%Y')}]
     add_filter_to_test 'date_after', ['Michel'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"after", "operand" => Date.today.strftime('%m/%d/%Y')}]
-
+    # FIXME time dependent, timezone stuff ; fails between midnight and two in CEST
     add_filter_to_test 'date_today', ['Loulou', 'Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"today", "operand" => ""}]
     add_filter_to_test 'date_yesterday', [], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"yesterday", "operand" => ""}]
     add_filter_to_test 'date_on', ['Loulou','Martin'], [{"column" => 'activated_at', "type" => "datetime", "operator"=>"on", "operand" => Date.today.strftime('%m/%d/%Y')}]
@@ -70,7 +70,7 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   def test_index_without_statements
-    get :index, :table => 'users'
+    get :index, table: 'users'
     items = assigns[:items]
     assert_equal 4, items.count
   end
@@ -110,19 +110,19 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   def test_search_not_found
-    FixtureFactory.new :user, :pseudo => 'Johnny'
-    get :index, :table => 'users', :search => 'Halliday'
+    FixtureFactory.new :user, pseudo: 'Johnny'
+    get :index, table: 'users', search: 'Halliday'
     assert_equal 0, assigns[:items].count
   end
 
   def test_bulk_edit
     @records = @fixtures.map &:save!
-    get :bulk_edit, table: 'users', :record_ids => @records.map(&:id)
+    get :bulk_edit, table: 'users', record_ids: @records.map(&:id)
     assert_equal @records.map(&:id), assigns[:record_ids].map(&:to_i)
   end
 
   def test_search_for_association_input
-    get :search, :table => 'users', :search => 'Loulou'
+    get :search, table: 'users', search: 'Loulou'
     data = JSON.parse @response.body
     assert_equal 1, data.length
     assert_equal "Loulou", data.first['pseudo']
@@ -161,25 +161,25 @@ class ResourcesControllerTest < ActionController::TestCase
   end
   
   def test_order_desc
-    get :index, :table => :users, :order => 'pseudo desc'
+    get :index, table: :users, order: 'pseudo desc'
     assert_equal ["Michel", "Martin", "Loulou", nil], assigns[:items].map{|i| i[:pseudo]}
   end
   
   def test_order_asc
-    get :index, :table => :users, :order => 'pseudo'
+    get :index, table: :users, order: 'pseudo'
     assert_equal ["Loulou", "Martin", "Michel", nil], assigns[:items].map{|i| i[:pseudo]}
   end
   
 
   def test_check_existence
     user = FixtureFactory.new(:user).factory
-    get :check_existence, table: 'users', :id => [user.id], :format => :json
+    get :check_existence, table: 'users', id: [user.id], format: :json
     assert_equal({'success' => true}, JSON.parse(@response.body))
     
-    get :check_existence, table: 'users', :id => [user.id.to_s], :format => :json
+    get :check_existence, table: 'users', id: [user.id.to_s], format: :json
     assert_equal({'success' => true}, JSON.parse(@response.body))
     
-    get :check_existence, table: 'users', :id => [12321]
+    get :check_existence, table: 'users', id: [12321]
     assert_equal({'error' => true, 'ids' => ['12321']}, JSON.parse(@response.body))
   end
   
@@ -201,7 +201,7 @@ class ResourcesControllerTest < ActionController::TestCase
   private
   def assert_asearch name, pseudos
     get :index, table: 'users', asearch: name, order: 'pseudo'
-    assert_equal pseudos, assigns[:items].map{|r| r[:pseudo]}, assigns[:items]
+    assert_equal pseudos, assigns[:items].map{|r| r[:pseudo]}, "#{name}: #{assigns[:items].inspect}"
   end
 
   def add_filter_to_test name, result, description

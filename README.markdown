@@ -1,5 +1,6 @@
 Sequel Migration TODOS / FIXMES :
 - composite primary keys for import, bulk edit
+- empty string => nil in forms ?
 
 FEATURES:
 freaking TIMEZONES !!
@@ -38,7 +39,6 @@ données stockées dans redis pour les comptes deprovisionnés ?
 unset le focus eventuel d'un element de la popin quand on la ferme, sinon le "press s" ne fonctionne plus
 
 BUGS:
-on peut plus hide une colonne avec le cog du header de la colonne
 lors d'un export ; rajout d'un has_many/count column puis export => colonne vide, nouvel export => colonne remplie
 serialized columns containing smth else than a basic type
 subnav flickers on a page slightly too long for the screen

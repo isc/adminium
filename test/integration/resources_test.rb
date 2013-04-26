@@ -125,6 +125,13 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert page.has_content?('New User')
     assert_equal 'va bien te faire mettre', find('input[type=number][name="users[age]"]').value
   end
+  
+  test "failed save due to nil value" do
+    visit new_resource_path(:groups)
+    click_button 'Save'
+    assert page.has_css?('.alert.alert-error')
+    assert page.has_content?('New Group')
+  end
 
   test "save new and create another" do
     visit new_resource_path(:users)

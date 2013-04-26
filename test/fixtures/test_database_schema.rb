@@ -1,7 +1,7 @@
 conn_spec = ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
 ActiveRecord::Base.establish_connection conn_spec
 ActiveRecord::Schema.verbose = false
-version = 18
+version = 20
 if ActiveRecord::Migrator.current_version != version
   ActiveRecord::Base.connection.tables.each do |table|
     ActiveRecord::Base.connection.drop_table table
@@ -24,6 +24,7 @@ if ActiveRecord::Migrator.current_version != version
     end
     create_table :groups do |t|
       t.string :name
+      t.integer :level, null: false
       t.timestamps
     end
     create_table :documents do |t|

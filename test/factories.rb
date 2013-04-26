@@ -29,6 +29,7 @@ FactoryGirl.define do
   
   factory :group_from_test do
     name "Administrators"
+    level 37
   end
 
 end

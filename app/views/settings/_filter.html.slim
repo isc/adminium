@@ -1,12 +1,11 @@
 - g = rand(1000)
 td.grouping_kind
-  select(name="filters[#{g}][grouping]")
+  select name="filters[#{g}][grouping]"
     = options_for_select([['and', 'and'],['or', 'or']], filter['grouping'] || 'and')
 td
-  input(type="hidden" name="filters[#{g}][column]" value=filter["column"])
-  input(type="hidden" name="filters[#{g}][type]" value=filter['type'])
-  label
-    = filter["column"]
+  input type="hidden" name="filters[#{g}][column]" value=filter["column"]
+  input type="hidden" name="filters[#{g}][type]" value=filter['type']
+  label= filter["column"]
 td.operators
   - filter_type = filter['type'].to_s
   - filter_type = 'integer' if %w(decimal float).include? filter_type

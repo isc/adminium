@@ -386,7 +386,7 @@ module Resource
     def typecast_value column, value
       return value unless (col_schema = schema_hash[column])
       value = nil if '' == value && ![:string, :blob].include?(col_schema[:type])
-      raise(InvalidValue, "nil/NULL is not allowed for the #{column} column") if value.nil? && !col_schema[:allow_null]
+      raise(Sequel::InvalidValue, "nil/NULL is not allowed for the #{column} column") if value.nil? && !col_schema[:allow_null]
       @generic.db.typecast_value col_schema[:type], value
     end
     
