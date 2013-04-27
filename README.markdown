@@ -1,6 +1,9 @@
 Sequel Migration TODOS / FIXMES :
 - composite primary keys for import, bulk edit
 - empty string => nil in forms ?
+- Account#db_url_validation ; still effective ? cleanup missing
+- fetch_associated_items one step further
+- fill_tables_count ; pas de cleanup, a remplacer par un update systematique ?
 
 FEATURES:
 freaking TIMEZONES !!

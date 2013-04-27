@@ -85,6 +85,9 @@ module Resource
       [:id, :Id, :uuid].each do |name|
         return [name] if column_names.include? name
       end
+      primary_keys = column_names.find_all {|c| c.to_s.ends_with? '_id'}
+      primary_keys = column_names.find_all {|c| c.to_s =~ /\wId$/} if primary_keys.empty?
+      return primary_keys if primary_keys.size > 1
       []
     end
     
