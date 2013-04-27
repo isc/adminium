@@ -16,15 +16,16 @@ class ResourcesControllerTest < ActionController::TestCase
     user = FixtureFactory.new :user, pseudo: 'Loulou', last_name: '', admin: true, age: 18,
       activated_at: 5.minutes.ago, group_id: group.id
     @fixtures.push user
+    @generic = Generic.new @account
   end
 
   def teardown
     assert_response(@expected_response_code || :success)
+    @generic.cleanup
   end
 
   def test_advanced_search_operators
-    generic = Generic.new @account
-    @resource = Resource::Base.new(generic, :users)
+    @resource = Resource::Base.new @generic, :users
     @expectations = {}
 
     add_filter_to_test 'null_pseudo', [nil], [{"column" => 'pseudo', "type" => "string", "operator"=>"null"}]
@@ -129,7 +130,7 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   def test_statistics
-    settings = Resource::Base.new Generic.new(@account), :users
+    settings = Resource::Base.new @generic, :users
     enum_integer = {"column_name"=>"kind", "values"=>{"1"=>{"color"=>"bleu", "label"=>"Kind1"}, "2"=>{"color"=>"red", "label"=>"Kind2"}}}
     enum_string = {"column_name"=>"role", "values"=>{"1"=>{"color"=>"black", "label"=>"Role1"}, "2"=>{"color"=>"white", "label"=>"Role2"}}}
     settings.enum_values = [enum_integer, enum_string]

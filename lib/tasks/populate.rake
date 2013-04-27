@@ -27,4 +27,5 @@ task reset_adminium_demo_settings: :environment do
   partners_settings.columns[:listing] = ["id", "name", "has_many/users", "created_at"]
   partners_settings.label_column = 'name'
   partners_settings.save
+  generic.cleanup
 end

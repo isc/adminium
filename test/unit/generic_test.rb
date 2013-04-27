@@ -6,6 +6,10 @@ class GenericTest < ActiveSupport::TestCase
     account = Factory :account
     @generic = Generic.new account
   end
+  
+  def teardown
+    @generic.cleanup
+  end
 
   test "get tables" do
     assert_equal expected_tables, @generic.tables
