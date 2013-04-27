@@ -323,11 +323,20 @@ class ResourcesController < ApplicationController
       end
     end
     referenced_tables.compact.uniq.map do |referenced_table|
-      assoc_info = resource.associations[:belongs_to][referenced_table]
-      ids = @fetched_items.map {|i| i[assoc_info[:foreign_key]]}.uniq
-      resource = resource_for(referenced_table)
-      @associated_items[referenced_table] = resource.query.where(resource.primary_keys.first => ids).all
+      fetch_items_for_assoc @fetched_items, resource.associations[:belongs_to][referenced_table]
     end
+    resource.columns[settings_type].each do |c|
+      next unless c.to_s.include?('.')
+      table, column = c.to_s.split('.').map(&:to_sym)
+      assoc = resource_for(table).foreign_key? column
+      fetch_items_for_assoc @associated_items[table], assoc if assoc && resource_for(assoc[:referenced_table]).label_column
+    end
+  end
+  
+  def fetch_items_for_assoc items, assoc_info
+    ids = items.map {|i| i[assoc_info[:foreign_key]]}.uniq
+    resource = resource_for assoc_info[:referenced_table]
+    @associated_items[resource.table] = resource.query.where(resource.primary_keys.first => ids).all
   end
 
   def apply_has_many_counts
@@ -335,7 +344,7 @@ class ResourcesController < ApplicationController
       assoc = column.to_s.gsub 'has_many/', ''
       assoc_info = resource.associations[:has_many].detect {|name, info| name.to_s == assoc}.second
       next if assoc_info.nil?
-      count_on = qualify_primary_keys resource_for(assoc.to_sym)
+      count_on = qualify_primary_keys resource_for(assoc)
       @items = @items
         .left_outer_join(assoc.to_sym, qualify(assoc_info[:table], assoc_info[:foreign_key]) => qualify(assoc_info[:referenced_table], assoc_info[:primary_key]))
         .group(qualify_primary_keys resource)

@@ -24,7 +24,6 @@ FactoryGirl.define do
 
   factory :comment_from_test do
     title "My Comment"
-    association :user_from_test
   end
   
   factory :group_from_test do

@@ -82,7 +82,7 @@ class ApplicationController < ActionController::Base
   
   def resource_for table
     @resources ||= {} 
-    @resources[table] ||= Resource::Base.new @generic, table
+    @resources[table.to_sym] ||= Resource::Base.new @generic, table
   end
   
 end

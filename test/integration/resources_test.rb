@@ -5,7 +5,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   
   def setup
     FixtureFactory.clear_db
-    login
+    @account = login
   end
   
   test "index on non existing table" do
@@ -155,17 +155,30 @@ class ResourcesTest < ActionDispatch::IntegrationTest
 
   test "custom column has_many" do
     user = FixtureFactory.new(:user).factory
-    2.times { FixtureFactory.new :comment, user_from_test: user }
+    2.times { FixtureFactory.new :comment, user_id: user.id }
     Resource::Base.any_instance.stubs(:columns).returns listing: [:'has_many/comments'], serialized: [], search: []
     visit resources_path(:users)
     assert page.has_css?('td.hasmany a', text: '2')
   end
 
   test "custom column belongs_to" do
-    FixtureFactory.new(:comment, user_from_test: FixtureFactory.new(:user, pseudo: 'bob').factory)
+    FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'bob').factory.id)
     Resource::Base.any_instance.stubs(:columns).returns listing: ['users.pseudo'], serialized: [], search: []
     visit resources_path(:comments)
     assert page.has_css?('td', text: 'bob')
+  end
+  
+  test "custom column belongs_to which is a foreign_key to another belongs_to" do
+    group = FixtureFactory.new(:group, name: 'Adminators').factory
+    FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, group_id: group.id).factory.id)
+    Resource::Base.any_instance.stubs(:columns).returns listing: ['users.group_id'], serialized: [], search: []
+    generic = Generic.new @account
+    resource = Resource::Base.new generic, :groups
+    resource.label_column = 'name'
+    resource.save
+    generic.cleanup
+    visit resources_path(:comments)
+    assert_equal 'Adminators', page.find("td.foreignkey a[href=\"#{resource_path(:groups, group)}\"]").text
   end
   
   test "destroy from show" do

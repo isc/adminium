@@ -1,13 +1,14 @@
-Sequel Migration TODOS / FIXMES :
-- composite primary keys for import, bulk edit
-- empty string => nil in forms ?
-- Account#db_url_validation ; still effective ? cleanup missing
-- fetch_associated_items one step further
-- fill_tables_count ; pas de cleanup, a remplacer par un update systematique ?
-- in place edit not honoring permissions
-- support for views
+## Sequel Migration TODOS / FIXMES :
 
-FEATURES:
+  - composite primary keys for import, bulk edit
+  - empty string => nil in forms ?
+  - Account#db_url_validation ; still effective ? cleanup missing
+  - fill_tables_count ; pas de cleanup, a remplacer par un update systematique ?
+  - in place edit not honoring permissions
+  - support for views
+
+## FEATURES:
+
 freaking TIMEZONES !!
 gerer les serialized lors de l'edit/update
 utiliser rack-timeout
@@ -23,27 +24,26 @@ i18n
 support pour les images
 optim de la clause select sql (jarter les text / binaries non selectionnes par les settings)
 supprimer plusieurs pages de records en une action
-
 more ajax (destroy) / pjax
 for pg 9.2 users ; https://github.com/will/datascope
 advanced search definition improvements :
   - select input for column with enum values defined
-
 gerer les colonnes binary (file field for upload ?)
 in-place edit improvements :
 	- country, time_zone
 	- belongs_to
 	- custom columns in index
 gestion de tables sans PK : pour le moment on peut creer, on pourrait supprimer (delete from table where <tous les attr> limit 1)
-
 fail on forms ameliorables (highlight des champs en erreur)
 
-TODOS:
+## TODOS:
+
 attr_accessible avec role pour proteger plan sur account
 données stockées dans redis pour les comptes deprovisionnés ?
 unset le focus eventuel d'un element de la popin quand on la ferme, sinon le "press s" ne fonctionne plus
 
-BUGS:
+## BUGS:
+
 lors d'un export ; rajout d'un has_many/count column puis export => colonne vide, nouvel export => colonne remplie
 serialized columns containing smth else than a basic type
 subnav flickers on a page slightly too long for the screen
