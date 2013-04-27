@@ -9,7 +9,7 @@ class SettingsController < ApplicationController
       resource.send "#{setting}=", params[setting].delete_if(&:empty?) if params.has_key? setting
     end
     resource.per_page = params[:per_page] if params[:per_page]
-    resource.label_column = params[:label_column] if params[:label_column]
+    resource.label_column = params[:label_column].presence if params.has_key? :label_column
     resource.default_order = params[:default_order].join(' ') if params[:default_order].present?
     resource.save
     if params[:back_to]
