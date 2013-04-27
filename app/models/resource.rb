@@ -94,7 +94,7 @@ module Resource
     end
     
     def primary_key_value item
-      return unless item
+      return unless item && primary_keys.any?
       primary_keys.map do |name|
         item[name]
       end.join(',')
@@ -142,7 +142,7 @@ module Resource
     end
 
     def settings_key
-      "account:#{@generic.account_id}:settings:#{@table}"
+      "account:#{@generic.account_id}:settings:#@table"
     end
 
     def csv_options= options

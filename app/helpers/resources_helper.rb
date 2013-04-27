@@ -133,7 +133,8 @@ module ResourcesHelper
     items = resource.fetch_associated_items @item, assoc_name, 5
     resource = resource_for assoc_name
     items.map do |item|
-      link_to resource.item_label(item), resource_path(resource.table, resource.primary_key_value(item))
+      item_pk = resource.primary_key_value(item)
+      link_to_if item_pk, resource.item_label(item), (resource_path(resource.table, item_pk) if item_pk)
     end.join(", ")
   end
   
