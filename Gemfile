@@ -39,6 +39,8 @@ group :development do
   gem 'binding_of_caller', '0.7.1'
   gem 'quiet_assets'
   gem 'sextant'
+  gem 'rack-webconsole-pry', require: 'rack-webconsole'
+  gem 'pry-rails'
 end
 
 group :production do

@@ -131,6 +131,7 @@ GEM
     mechanize (1.0.0)
       nokogiri (>= 1.2.1)
     metaclass (0.0.1)
+    method_source (0.8.1)
     mime-types (1.21)
     mocha (0.13.3)
       metaclass (~> 0.0.1)
@@ -147,6 +148,12 @@ GEM
     pg (0.13.1)
     polyglot (0.3.3)
     populator (1.0.0)
+    pry (0.9.12.1)
+      coderay (~> 1.0.5)
+      method_source (~> 0.8)
+      slop (~> 3.4)
+    pry-rails (0.2.2)
+      pry (>= 0.9.10)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
     rack (1.4.5)
@@ -159,6 +166,11 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
+    rack-webconsole-pry (0.1.9)
+      json
+      multi_json (>= 1.0.3)
+      pry
+      rack
     rack_session_access (0.0.2)
       builder (>= 2.0.0)
       rack (>= 1.0.0)
@@ -213,6 +225,7 @@ GEM
       activesupport (~> 3.0)
       railties (~> 3.0)
       slim (~> 1.0)
+    slop (3.4.4)
     sprockets (2.2.2)
       hike (~> 1.2)
       multi_json (~> 1.0)
@@ -274,7 +287,9 @@ DEPENDENCIES
   omniauth-openid
   pg
   populator
+  pry-rails
   quiet_assets
+  rack-webconsole-pry
   rack_session_access
   rails (= 3.2.13)
   redis (>= 2.2.0)
