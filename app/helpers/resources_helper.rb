@@ -118,7 +118,7 @@ module ResourcesHelper
       item = if @associated_items && !assoc[:polymorphic]
         @associated_items[foreign_resource.table].find {|i| i[assoc[:primary_key]] == value}
       else
-        foreign_resource.find value
+        foreign_resource.find_by_primary_key value
       end
       return value if item.nil?
       label = foreign_resource.item_label item

@@ -376,7 +376,11 @@ module Resource
     end
     
     def find primary_key_value
-      pk_filter(primary_key_value).first || (raise RecordNotFound)
+      find_by_primary_key(primary_key_value) || (raise RecordNotFound)
+    end
+    
+    def find_by_primary_key primary_key_value
+      pk_filter(primary_key_value).first
     end
     
     def delete primary_key_value
