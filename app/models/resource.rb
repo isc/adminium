@@ -258,11 +258,18 @@ module Resource
         else
           @columns[type] =
           {listing: column_names, show: column_names,
-            form: (column_names - [:created_at, :updated_at] - primary_keys),
-            export: column_names,
+            form: default_form_columns_conf, export: column_names,
             search: searchable_column_names, serialized: []}[type]
         end
       end
+    end
+    
+    def default_form_columns_conf
+      res = column_names - [:created_at, :updated_at]
+      primary_keys.each do |primary_key|
+        res.delete primary_key if schema_hash[primary_key][:default] || schema_hash[primary_key][:auto_increment]
+      end
+      res
     end
     
     def foreign_key? name

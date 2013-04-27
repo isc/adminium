@@ -4,6 +4,8 @@ Sequel Migration TODOS / FIXMES :
 - Account#db_url_validation ; still effective ? cleanup missing
 - fetch_associated_items one step further
 - fill_tables_count ; pas de cleanup, a remplacer par un update systematique ?
+- in place edit not honoring permissions
+- support for views
 
 FEATURES:
 freaking TIMEZONES !!
