@@ -30,13 +30,12 @@ class ResourcesController < ApplicationController
     @title = params[:table]
     @current_filter = resource.filters[params[:asearch]] || []
     @widget = current_account.table_widgets.where(table: params[:table], advanced_search: params[:asearch]).first
-
+    # FIXME we could be more specific than *
     @items = resource.query.select(qualify params[:table], Sequel.lit('*'))
     apply_where
     apply_filters
     apply_search if params[:search].present?
     @items_for_stats = @items
-    # @items = @items.select(qualify params[:table], nil)
     apply_has_many_counts
     apply_order
     update_export_settings
@@ -314,14 +313,19 @@ class ResourcesController < ApplicationController
 
   def fetch_associated_items
     @associated_items = {}
-    referenced_tables = resource.columns[settings_type].map {|c| c.to_s.split('.').first.to_sym if c.to_s.include?('.')}
     # FIXME polymorphic belongs_to generate N+1 queries (since no referenced_table in assoc_info) 
-    # FIXME we could check if there is a label column defined on the referenced_table before fetching records
-    referenced_tables += resource.columns[settings_type].map {|c| resource.foreign_key?(c).try(:[], :referenced_table) }
+    referenced_tables = resource.columns[settings_type].map do |c|
+      if c.to_s.include?('.')
+        c.to_s.split('.').first.to_sym
+      else
+        table = resource.foreign_key?(c).try(:[], :referenced_table)
+        table if table && resource_for(table).label_column
+      end
+    end
     referenced_tables.compact.uniq.map do |referenced_table|
       assoc_info = resource.associations[:belongs_to][referenced_table]
       ids = @fetched_items.map {|i| i[assoc_info[:foreign_key]]}.uniq
-      resource = resource_for(assoc_info[:referenced_table])
+      resource = resource_for(referenced_table)
       @associated_items[referenced_table] = resource.query.where(resource.primary_keys.first => ids).all
     end
   end

@@ -170,7 +170,6 @@ class ResourcesControllerTest < ActionController::TestCase
     get :index, table: :users, order: 'pseudo'
     assert_equal ["Loulou", "Martin", "Michel", nil], assigns[:items].map{|i| i[:pseudo]}
   end
-  
 
   def test_check_existence
     user = FixtureFactory.new(:user).factory
@@ -197,6 +196,16 @@ class ResourcesControllerTest < ActionController::TestCase
     @account.update_attribute :plan, Account::Plan::PET_PROJECT
     xhr :get, :index, table: 'roles_users'
     assert_equal %w(widget id), JSON.parse(@response.body).keys
+  end
+  
+  def test_no_unnecessary_eager_fetching
+    FixtureFactory.new :user
+    r = Resource::Base.new @generic, :users
+    r.columns[:listing] = [:group_id]
+    r.save
+    get :index, table: 'users'
+    # no label column on groups so we don't need to fetch the groups to generate links
+    assert_equal({}, assigns(:associated_items))
   end
 
   private
