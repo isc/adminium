@@ -102,6 +102,6 @@ javascript:
 = render partial: '/resources/panels/export'
 = render partial: '/resources/panels/advanced_search'
 = render partial: '/resources/panels/manage_searches', locals: {searches: resource.filters.keys}
-#column-settings.modal.hide.fade data-remote-path=column_setting_path(params[:table], column: '{column}')
+#column-settings.modal.hide.fade data-remote-path=column_setting_path(params[:table], column: '{column}', view: '{view}')
 #time-chart.modal.hide.fade data-remote-path=time_chart_resources_path(table: params[:table], column: '{column}')
 #bulk-edit-modal.modal.hide.fade(data-remote-path=bulk_edit_resources_path(table: params[:table]))

@@ -10,7 +10,7 @@ class ColumnSettingsTest < ActionDispatch::IntegrationTest
   test "column settings for foreign key column" do
     group = FixtureFactory.new(:group, name: 'Admins').factory
     FixtureFactory.new(:user, group_id: group.id)
-    visit column_setting_path(:users, column: 'group_id')
+    visit column_setting_path(:users, column: 'group_id', view: 'listing')
     select 'name', from: 'Label column'
     click_button 'Save settings'
     visit resources_path(:users)
@@ -20,7 +20,7 @@ class ColumnSettingsTest < ActionDispatch::IntegrationTest
   
   test "change visibility from column settings" do
     FixtureFactory.new :user
-    visit column_setting_path(:users, column: 'pseudo')
+    visit column_setting_path(:users, column: 'pseudo', view: 'listing')
     check 'Hidden column'
     click_button 'Save settings'
     visit resources_path(:users)
@@ -29,7 +29,7 @@ class ColumnSettingsTest < ActionDispatch::IntegrationTest
   
   test "show on various types" do
     %w(id pseudo created_at admin file Average_Price_Online__c).each do |column|
-      visit column_setting_path(:users, column: column)
+      visit column_setting_path(:users, column: column, view: 'listing')
     end
   end
   

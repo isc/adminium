@@ -110,10 +110,11 @@ class ColumnSettings
     $.fn.wColorPicker.defaultSettings['onSelect'] = (color) ->
       this.settings.target.val(color)
 
-    $(".column_settings").click (evt) =>
-      @column_name = $(evt.currentTarget).closest('.column_header').data('column-name')
-      @column_name ||= $(evt.currentTarget).closest('th').next().data('column-name')
-      remoteModal '#column-settings', {column: @column_name}, =>
+    $('.column_settings').click (evt) =>
+      [@column_name, view] = [$(evt.currentTarget).closest('.column_header').data('column-name'), 'listing']
+      unless @column_name
+        [@column_name, view] = [$(evt.currentTarget).closest('th').next().data('column-name'), 'show']
+      remoteModal '#column-settings', {column: @column_name, view: view}, =>
         @setupEnumConfigurationPanel()
 
   setupEnumConfigurationPanel: =>

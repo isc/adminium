@@ -174,8 +174,8 @@ module Resource
     end
 
     def update_column_options name, options
-      hidden = options.delete :hide
-      @columns[:listing].delete name if hidden
+      hidden, view = [options.delete(:hide), options.delete(:view)]
+      @columns[view.to_sym].delete name if hidden
       if options[:serialized]
         @columns[:serialized].push name
       else

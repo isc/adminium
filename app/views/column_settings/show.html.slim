@@ -4,6 +4,7 @@
 = form_tag column_settings_path, method: :post, class: 'form-horizontal denser' do
   input type="hidden" name="id" value=params[:id]
   input type="hidden" name="column" value=params[:column]
+  input type="hidden" name="column_options[view]" value=params[:view]
   .modal-body
     = accordion accordion_id: 'column-settings-accordion' do |accordion|
       = accordion.pane 'Visibility' do
@@ -11,7 +12,7 @@
           label.control-label for="column_options_hide" Hidden column
           .controls
             = check_box_tag 'column_options[hide]', 'checked', @hidden
-            p.help-block= "Don't display this column in the listing table"
+            p.help-block= "Don't display this column in the current view."
 
         .control-group
           label.control-label for="column_options_rename" Column displayed name
@@ -20,7 +21,7 @@
             p.help-block
               'Override the column name in the user interface.
               br
-              = "Default is \"#{params[:column].humanize}\""
+              = "Default is \"#{params[:column].humanize}\"."
       - unless belongs_to_column? || has_many_count_column? || resource.foreign_key?(params[:column].to_sym)
         - partial = {float: :decimal, timestamp: :datetime}[column[:type]] || column[:type]
         - if partial != :string
