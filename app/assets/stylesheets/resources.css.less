@@ -1,4 +1,4 @@
-.resources.show {
+.resources.show .item-attributes {
   .table {
     border: 1px solid #DDD;
     border-radius: 4px;
@@ -17,11 +17,21 @@
       }
     }
     th {
+      position: relative;
       background: #F9F9F9;
       color: #5e6469;
       border-right: 1px solid #F1F1F1;
       text-shadow: 0px 1px #EEE;
       text-align: right;
+      .column_settings {
+        display: none;
+        position: absolute;
+        left: 4px;
+        cursor: pointer;
+      }
+      &:hover .column_settings {
+        display: block;
+      }
     }
   }
 

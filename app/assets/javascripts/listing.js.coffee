@@ -112,6 +112,7 @@ class ColumnSettings
 
     $(".column_settings").click (evt) =>
       @column_name = $(evt.currentTarget).closest('.column_header').data('column-name')
+      @column_name ||= $(evt.currentTarget).closest('th').next().data('column-name')
       remoteModal '#column-settings', {column: @column_name}, =>
         @setupEnumConfigurationPanel()
 
