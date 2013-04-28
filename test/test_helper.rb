@@ -61,7 +61,7 @@ class FixtureFactory
 
   def self.clear_db
     with_fixture_connection do
-      %w(users comments).each do |table_name|
+      %w(users comments groups).each do |table_name|
         ActiveRecord::Base.connection.execute("TRUNCATE TABLE #{table_name}")
       end
     end

@@ -10,7 +10,7 @@
         .controls.permissions
           table.table.table-condensed.table-striped
             thead
-              th(colspan=2)
+              th colspan="2"
                 'Table name
               - %w(create read update delete).each do |action|
                 th
@@ -20,18 +20,18 @@
               - @generic.tables.each do |table|
                 tr
                   td
-                    = check_box_tag 'all_actions', nil, nil, :id => "all_actions_#{table}"
+                    = check_box_tag 'all_actions', nil, nil, id: "all_actions_#{table}"
                   td
-                    label for="all_actions_#{table}"= table.humanize
+                    label for="all_actions_#{table}"= table.to_s.humanize
                   - %w(create read update delete).each do |action|
                     td= check_box_tag "role[permissions][#{table}][#{action}]", '1', @role.permissions[table].try(:[], action)
     .span6
       - if current_account.collaborators.present?
-        = f.association :collaborators, :as => :check_boxes, :collection => current_account.collaborators.map {|collaborator|[collaborator.name, collaborator.id]}
+        = f.association :collaborators, as: :check_boxes, collection: current_account.collaborators.map {|collaborator|[collaborator.name, collaborator.id]}
       - else
         .alert.alert-warning
           p A role should be assigned to collaborators but you have not invited any yet.
-          = link_to "Add a collaborator", edit_account_path, :class=>'btn btn-primary'
+          = link_to "Add a collaborator", edit_account_path, class: 'btn btn-primary'
 
   .form-actions
     = f.submit class: 'btn-primary', data: {disable_with: 'Sending...'}
