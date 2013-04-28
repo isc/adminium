@@ -420,8 +420,10 @@ class ResourcesController < ApplicationController
     {
       'today' => {:operator => :'=', :right => today, :named_function => "DATE"},
       'yesterday' => {:operator => :'=', :right => 1.day.ago.to_date, :named_function => "DATE"},
-      'this_week' => {:boolean_operator => true, :right => (today.beginning_of_week)..(today.end_of_week)},
-      'last_week' => {:boolean_operator => true, :right => (1.week.ago.beginning_of_week)..(1.week.ago.end_of_week)},
+      'this_week' =>
+        {boolean_operator: true, right: (today.beginning_of_week)..(today.end_of_week), named_function: 'DATE'},
+      'last_week' =>
+        {boolean_operator: true, right: (1.week.ago.to_date.beginning_of_week)..(1.week.ago.to_date.end_of_week), named_function: 'DATE'},
       'on' => {:operator => :'=', :named_function => "DATE", :right_function => 'to_date'},
       'not' => {:operator => :'!=', :named_function => "DATE", :right_function => 'to_date'},
       'after' => {:operator => :'>', :named_function => "DATE", :right_function => 'to_date'},
