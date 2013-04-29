@@ -58,7 +58,7 @@ module Resource
         @per_page = datas[:per_page] || @globals.per_page
         @enum_values = datas[:enum_values] || []
         @validations = datas[:validations] || []
-        @label_column = datas[:label_column]
+        @label_column = datas[:label_column] if column_names.include? datas[:label_column].try(:to_sym)
         @export_skip_header = datas[:export_skip_header]
         @export_col_sep = datas[:export_col_sep]
       end
