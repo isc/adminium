@@ -8,7 +8,7 @@ module TimeChartBuilder
   def time_chart
     aggregate = time_chart_aggregate params[:column]
     query = resource.query.group(aggregate).
-      select(aggregate.as('chart_date'), Sequel.function(:count, (qualify_primary_keys resource))).
+      select(aggregate.as('chart_date'), Sequel.function(:count, Sequel.lit('*'))).
       order(aggregate)
     query = query.where(params[:column].to_sym => date_range) unless periodic_grouping?
     aggregation query.all
