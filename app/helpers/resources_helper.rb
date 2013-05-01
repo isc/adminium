@@ -66,8 +66,10 @@ module ResourcesHelper
         label = enum_values[value.to_s].try(:[], 'label') || value
         user_defined_bg = enum_values[value.to_s].try(:[], 'color')
         user_defined_bg = "background-color: #{user_defined_bg}" if user_defined_bg.present?
-        # FIXME the link is screwed rendered in return of an in-place edit ; links to show instead of index
-        content = link_to label, params.merge(where: {(original_key || key) => value}), class: 'label label-info', style: user_defined_bg
+        where_hash = {where: {(original_key || key) => value}}
+        # FIXME some params are lost when rendered in return of an in-place edit (update action name)
+        url = %w(show update).include?(action_name) ? resources_path(resource.table, where_hash) : params.merge(where_hash)
+        content = link_to label, url, class: 'label label-info', style: user_defined_bg
         css_class = 'enum'
       end
     elsif value.present? && resource.columns[:serialized].include?(key)
