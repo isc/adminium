@@ -3,7 +3,7 @@ h4
   = "#{@resource.column_names.length} columns, "
   = link_to "#{@resource.query.count} records", resources_path(params[:table])
 br
-table.table.table-striped.black
+table.table.table-striped.black style="table-layout: fixed"
   thead
     tr
       th
@@ -11,8 +11,6 @@ table.table.table-striped.black
       th Type
       th Null
       th Default
-      th
-
   - @resource.schema.each do |name, column|
     tr
       th
@@ -21,16 +19,15 @@ table.table.table-striped.black
         - elsif @resource.index_exists? name
           i.icon.icon-link
         - if fk = @resource.db_foreign_key?(name)
-          i.icon.icon-key.foreignKey(title="foreign key to table #{fk[:to_table]}")
+          i.icon.icon-key.foreignKey title="foreign key to table #{fk[:to_table]}"
       th data-value=name = name
-      td(class="#{column[:type]}Type" data-value=column[:db_type])= column[:db_type]
-      td(data-value="#{column[:allow_null] ? 1 : 0}")= "NOT NULL" if column[:allow_null] == false
-      td(class=column[:type] title=column[:default] data-value=column[:ruby_default])
+      td class="#{column[:type]}Type" = column[:db_type]
+      td= 'NOT NULL' if column[:allow_null] == false
+      td class=column[:type] title=column[:default]
         = display_column_default column
-        = "AUTO_INCREMENT" if column[:auto_increment]
-      td
+        = 'AUTO_INCREMENT' if column[:auto_increment]
 
-table.table.table-striped.black
+table.table.table-striped.black.schema-indices
   thead
     tr
       th
@@ -45,7 +42,7 @@ table.table.table-striped.black
         th
           i= name
         td== info[:columns].join("<br/>")
-        td= "UNIQUE" if info[:unique]
+        td= 'UNIQUE' if info[:unique]
   - else
     tr
-      td colspan=4 No indices on this table.
+      td.no-indices colspan=4 No indices on this table.

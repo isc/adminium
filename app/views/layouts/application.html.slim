@@ -12,7 +12,6 @@ html lang="en"
     meta name="description" content="Administration interface for your database as a service"
     meta name="keywords" content="Adminium, database, administration, interface, export, heroku, add-on"
     link href="/images/favicon.ico" rel="shortcut icon"
-    /script type="text/javascript" src="http://www.google.com/jsapi"
   body class="#{controller.controller_name} #{controller.action_name}"
     - if session[:account]
       div#plan style="display:none" = current_account.plan
@@ -42,15 +41,15 @@ html lang="en"
           = yield
     = javascript_include_tag 'application'
     - unless Rails.env.development?
-      = render :partial => "/layouts/ga"
-      = render :partial => '/layouts/uservoice'
+      = render partial: '/layouts/ga'
+      = render partial: '/layouts/uservoice'
     .modal.hide#modal-window
       .modal-header
         a.close data-dismiss="modal" ×
         h3 Loading the page
       .modal-body
         = spinner_tag
-        p.centered Please wait a few instants until the page is loaded
+        p.centered Please wait a few instants until the page is loaded.
       .modal-footer
     .loading_modal.hide
       .modal-header
@@ -58,7 +57,7 @@ html lang="en"
         h3 Loading the page
       .modal-body
         = spinner_tag
-        p.centered Please wait a few instants until the page is loaded
+        p.centered Please wait a few instants until the page is loaded.
   - footer = yield :footer
   - if footer.present?
     .footer
