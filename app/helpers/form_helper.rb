@@ -1,9 +1,10 @@
 module FormHelper
 
-  def input resource, item, name, input_class
+  def input resource, item, name, input_class, required_constraints
     input_name, input_value, input_id = "#{resource.table}[#{name}]", item[name], "#{resource.table}_#{name}"
     input_type, options = default_input_type(resource, name, input_value)
-    input_options = {id: input_id, required: resource.required_column?(name), class: input_class}
+    required = required_constraints && resource.required_column?(name)
+    input_options = {id: input_id, required: required, class: input_class}
     input_options.merge!(readonly: true) if resource.column_info(name)[:primary_key]
     return "..." unless input_type
     case input_type

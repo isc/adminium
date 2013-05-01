@@ -1,7 +1,7 @@
 - resource.columns[:form].each do |name|
   .control-group
     label.control-label for="#{resource.table}_#{name}"
-      - if resource.required_column? name
+      - if required_constraints && resource.required_column?(name)
         abbr title="required" *
         ' 
       = resource.column_display_name name
@@ -26,4 +26,4 @@
               ul.span6
                 li
       - else
-        = input resource, item, name, input_class
+        = input resource, item, name, input_class, required_constraints

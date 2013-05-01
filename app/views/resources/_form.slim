@@ -1,6 +1,6 @@
 = form_tag @form_url, class: 'form-horizontal resource-form' do
   = hidden_field_tag '_method', 'put' if @form_method == 'put'
-  = render partial: 'form_fields', locals: {item: @item, input_class: 'span6'}
+  = render partial: 'form_fields', locals: {item: @item, input_class: 'span6', required_constraints: true}
   .form-actions
     = submit_tag 'Save', class: 'btn-primary', data: {disable_with: 'Sending...'}, name: 'then_redirect'
     '
