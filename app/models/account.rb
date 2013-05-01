@@ -35,13 +35,12 @@ class Account < ActiveRecord::Base
     api_key
   end
 
-  def self.fetch_missing_names_and_emails
-    where(name: nil).where('callback_url is not null').find_each do |account|
+  def self.fetch_missing_owner_emails
+    where(owner_email: nil).where('callback_url is not null').find_each do |account|
       begin
         res = RestClient.get "https://#{HEROKU_MANIFEST['id']}:#{HEROKU_MANIFEST['api']['password']}@api.heroku.com/vendor/apps/#{account.callback_url.split('/').last}"
         res = JSON.parse res
-        account.attributes = {name: res['name'], owner_email: res['owner_email']}
-        account.save validate: false
+        account.update_attribute :owner_email, res['owner_email']
       rescue RestClient::ResourceNotFound
         # not sure what to do with those accounts
       end

@@ -1,17 +1,12 @@
-task :fetch_names_and_emails => :environment do
-  Account.fetch_missing_names_and_emails
+task fetch_owner_emails: :environment do
+  Account.fetch_missing_owner_emails
 end
 
-task :periodic_restart do
-  require 'rest-client'
-  p RestClient.post("https://:#{ENV['HEROKU_API_KEY']}@api.heroku.com/apps/adminium/ps/restart", {})
-end
-
-task :statistical_computing => :environment do
+task statistical_computing: :environment do
   tables = {}
   columns = {}
   i = 0
-  Account.where('encrypted_db_url is not null').where(adapter: 'postgres').where(deleted_at: nil)..find_each do |account|
+  Account.where('encrypted_db_url is not null').where(adapter: 'postgres', deleted_at: nil).find_each do |account|
     puts "#{i} #{account.id}"
     i += 1
     begin
@@ -26,7 +21,7 @@ task :statistical_computing => :environment do
       end
     rescue PG::Error
     end
-  end ; nil
+  end
   datas = {tables: tables, columns: columns} ; nil
   [:tables, :columns].each do |kind|
     datas[kind].to_a.sort{|a,b| b.last <=> a.last}.each do |a|
@@ -35,5 +30,4 @@ task :statistical_computing => :environment do
   end ; nil
   puts datas
   datas = JSON.parse(datas)
-
 end

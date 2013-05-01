@@ -8,7 +8,7 @@ module ResourcesHelper
       parts[0] = parts.first.tableize
       key = parts.join('.')
     end
-    params[:order] = params[:order] || resource.default_order || resource.primary_key
+    params[:order] = params[:order] || resource.default_order
     if params[:order] == key
       order = "#{key} desc"
       ascend = false
