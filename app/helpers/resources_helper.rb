@@ -75,8 +75,8 @@ module ResourcesHelper
     opts = {class: css_class}
     is_editable = false if resource.primary_keys.include?(key) || key == 'updated_at' || relation || resource.primary_keys.empty?
     if is_editable
-      opts.merge! "data-column-name" => key
-      opts.merge! "data-raw-value" => item[key].to_s unless item[key].is_a?(String) && css_class != 'enum'
+      opts.merge! 'data-column-name' => key
+      opts.merge! 'data-raw-value' => item[key].to_s unless item[key].is_a?(String) && css_class != 'enum'
     end
     column_content_tag wrapper_tag, content, opts
   end

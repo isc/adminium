@@ -1,10 +1,10 @@
 class Charting
 
   constructor: ->
-    newScript = document.createElement('script');
-    newScript.type = 'text/javascript';
-    newScript.src = 'https://www.google.com/jsapi';
-    document.getElementsByTagName("head")[0].appendChild(newScript);
+    newScript = document.createElement('script')
+    newScript.type = 'text/javascript'
+    newScript.src = 'https://www.google.com/jsapi'
+    document.getElementsByTagName("head")[0].appendChild(newScript)
     setTimeout @load, 100
 
   load: =>

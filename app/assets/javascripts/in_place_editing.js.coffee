@@ -2,7 +2,7 @@ class InPlaceEditing
 
   constructor: ->
     @table = $('*[data-table]').data('table')
-    $("td[data-column-name]:not([data-mode=editing])").bind 'hover', @setupEditableColumn
+    $('td[data-column-name]').bind 'hover', @setupEditableColumn
     $('.items-list, .resources.show table').on 'click', 'td[data-column-name] i.icon-pencil', @switchToEditionModeByClickingIcon
     $('.items-list, .resources.show table').on 'dblclick', 'td[data-column-name]', @switchToEditionModeByDblClicking
 
@@ -21,8 +21,8 @@ class InPlaceEditing
   
   switchToEditionMode: (td) =>
     $("td[data-mode=editing] a").click()
-    raw_value = td.attr("data-raw-value")
-    raw_value = td.text() unless raw_value || td.hasClass('nilclass') || td.hasClass('emptystring')
+    raw_value = td.attr('data-raw-value')
+    raw_value = td.text() unless raw_value or td.hasClass('nilclass') or td.hasClass('emptystring')
     column = td.attr('data-column-name')
     name = "#{@table}[#{column}]"
     type = columns_hash[column].type
@@ -79,11 +79,11 @@ class InPlaceEditing
   booleanEditionMode: (td, name) =>
     options = ""
     column = td.attr('data-column-name')
-    f = adminium_column_options[column].boolean_false || "false"
-    t = adminium_column_options[column].boolean_true || "true"
-    display = {"true" : t, "false" : f}
+    f = adminium_column_options[column].boolean_false or 'false'
+    t = adminium_column_options[column].boolean_true or 'true'
+    display = {true: t, false: f}
     for value in [null, 'true', 'false']
-      v = if value then "value='#{value}'> #{display[value]}" else "value= >"
+      v = if value then "value='#{value}'> #{display[value]}" else 'value= >'
       options += "<option #{v}</option>"
     $("<select>#{options}")
 
@@ -91,7 +91,6 @@ class InPlaceEditing
     form = $(elt.currentTarget)
     id = form.parents('tr').attr("data-item-id")
     id = $('.row-fluid[data-item-id]').attr('data-item-id') unless id
-    console.log(id)
     spinner = $("#facebookG").clone()
     form.find('.btn').replaceWith(spinner)
     form.find('a').remove()
@@ -105,15 +104,12 @@ class InPlaceEditing
     false
 
   submitCallback: (data) =>
-    console.log('submitCallback')
-    if $(".items-list").length
+    if $('.items-list').length
       td_css_path = ".items-list tr[data-item-id=#{data.id}] td=[data-column-name=#{data.column}]"
     else
       td_css_path = "td[data-column-name=#{data.column}]"
-    console.log(td_css_path)
-    if data.result is "success"
+    if data.result is 'success'
       td = $(td_css_path).replaceWith(data.value)
-      console.log(td)
       $(td_css_path).bind 'hover', @setupEditableColumn
     else
       alert(data.message)
@@ -136,4 +132,4 @@ class InPlaceEditing
 $ ->
   new InPlaceEditing()
   $(document).keyup (ev) ->
-    $("td[data-mode=editing] a").click() if ev.keyCode is 27
+    $('td[data-mode=editing] a').click() if ev.keyCode is 27
