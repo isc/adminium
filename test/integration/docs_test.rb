@@ -14,4 +14,9 @@ class DocsTest < ActionDispatch::IntegrationTest
     visit doc_path(:keyboard_shortcuts)
   end
   
+  test "missing db url page" do
+    login
+    visit missing_db_url_docs_path
+  end
+  
 end

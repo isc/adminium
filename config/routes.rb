@@ -36,6 +36,7 @@ Adminium::Application.routes.draw do
     collection do
       get :start_demo
       get :stop_demo
+      get :missing_db_url
     end
   end
   resource :sessions, only: [] do

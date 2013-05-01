@@ -12,7 +12,7 @@ p.alert.alert-info
       pre
         = "heroku plugins:install git://github.com/isc/heroku-adminium\nheroku adminium\n"
     .span2
-      == clippy "heroku plugins:install git://github.com/isc/heroku-adminium %26%26 heroku adminium"
+      == clippy "heroku plugins:install git://github.com/isc/heroku-adminium %26%26 heroku adminium", '#EEEEEE'
   h4 Not your job ?
   = link_to setup_mailto_href(current_account), target: '_blank' do
     i.icon-envelope
