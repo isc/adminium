@@ -41,7 +41,7 @@
             = render partial: "/column_settings/enum"
 
       - else
-        - if resource.foreign_key? params[:column].to_sym
+        - if (assoc = resource.foreign_key? params[:column].to_sym) && !assoc[:polymorphic]
           = accordion.pane 'Association discovery' do
             - foreign_resource = foreign_resource(resource, params[:column])
             .control-group
