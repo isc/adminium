@@ -35,7 +35,8 @@ class SessionsController < ApplicationController
   
   private
   def track_sign_on account
-    SignOn.create account_id: account.id, plan: account.plan, remote_ip: request.remote_ip, kind: SignOn::Kind::GOOGLE
+    SignOn.create account_id: account.id, plan: account.plan,
+      remote_ip: request.remote_ip, kind: SignOn::Kind::GOOGLE, user_id: session[:user]
   end
 
 end
