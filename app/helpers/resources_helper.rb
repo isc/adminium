@@ -40,9 +40,14 @@ module ResourcesHelper
   end
   
   def item_attributes_type types, resource
-    columns = resource.find_all_columns_for_types(*types).map(&:first)
-    columns &= resource.columns[:show]
+    columns = resource.columns[:show]
+    columns &= resource.find_all_columns_for_types(*types).map(&:first)
     columns - resource.primary_keys - (resource.associations[:belongs_to].values.map {|assoc|assoc[:foreign_key]})
+  end
+  
+  def primary_keys_and_time_fields_for_show resource
+    columns = item_attributes_type([:date, :datetime, :time, :timestamp], resource)
+    (resource.columns[:show] & resource.primary_keys) + columns
   end
 
   def display_attribute wrapper_tag, item, key, resource, relation = false, original_key = nil

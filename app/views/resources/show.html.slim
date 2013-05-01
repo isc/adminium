@@ -48,7 +48,7 @@ javascript:
             == display_attribute :td, @item, name, resource
   .span5
     table.table.table-condensed
-      - (resource.primary_keys + item_attributes_type([:date, :datetime, :time, :timestamp], resource)).each do |name|
+      - primary_keys_and_time_fields_for_show(resource).each do |name|
         tr
           th.span3 title=name
             i.column_settings.icon-cog
