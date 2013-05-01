@@ -3,7 +3,6 @@
   - composite primary keys for import, bulk edit
   - empty string => nil in forms ?
   - Account#db_url_validation ; still effective ? cleanup missing
-  - fill_tables_count ; pas de cleanup, a remplacer par un update systematique ?
   - in place edit not honoring permissions
   - support for views
 

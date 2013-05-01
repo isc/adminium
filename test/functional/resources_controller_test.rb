@@ -71,9 +71,11 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   def test_index_without_statements
+    @account.update_attribute :tables_count, 37
     get :index, table: 'users'
     items = assigns[:items]
     assert_equal 4, items.count
+    assert_equal 9, @account.reload.tables_count
   end
 
   def test_json_response

@@ -7,7 +7,7 @@ class Generic
   attr_reader :current_adapter
 
   def initialize account
-    @account_id = account.id
+    @account_id, @account = account.id, account
     establish_connection account.db_url
   end
 
@@ -99,7 +99,10 @@ class Generic
   end
 
   def tables
-    @tables ||= @db.tables.sort
+    return @tables if @tables
+    @tables = @db.tables.sort
+    @account.update_attribute :tables_count, @tables.size if @account.tables_count != @tables.size
+    @tables
   end
   
   def schema table

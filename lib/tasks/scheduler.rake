@@ -7,17 +7,6 @@ task :periodic_restart do
   p RestClient.post("https://:#{ENV['HEROKU_API_KEY']}@api.heroku.com/apps/adminium/ps/restart", {})
 end
 
-task :fill_tables_count => :environment do
-  Account.where(tables_count: nil).find_each do |account|
-    begin
-      account.fill_tables_count
-    rescue
-      puts "failed for account ## #{account.id}"
-    end
-  end
-end
-
-
 task :statistical_computing => :environment do
   tables = {}
   columns = {}
