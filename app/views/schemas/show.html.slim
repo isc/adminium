@@ -26,7 +26,7 @@ table.table.table-striped.black
       td(class="#{column[:type]}Type" data-value=column[:db_type])= column[:db_type]
       td(data-value="#{column[:allow_null] ? 1 : 0}")= "NOT NULL" if column[:allow_null] == false
       td(class=column[:type] title=column[:default] data-value=column[:ruby_default])
-        = column[:ruby_default] || column[:default] if column[:default]
+        = display_column_default column
         = "AUTO_INCREMENT" if column[:auto_increment]
       td
 

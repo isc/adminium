@@ -77,5 +77,11 @@ module ApplicationHelper
       content_tag :title, [@title, current_account.try(:name), 'Adminium'].compact.join(' | ')
     end
   end
+  
+  def display_column_default column
+    return unless column[:default]
+    default = column[:ruby_default] || column[:default]
+    default.respond_to?(:constant) ? default.constant : default
+  end
 
 end
