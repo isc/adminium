@@ -6,7 +6,6 @@
   - fill_tables_count ; pas de cleanup, a remplacer par un update systematique ?
   - in place edit not honoring permissions
   - support for views
-  - issue bringing up column settings on show when column is not in place editable (primary key for instance)
 
 ## FEATURES:
 

@@ -113,7 +113,7 @@ class ColumnSettings
     $('.column_settings').click (evt) =>
       [@column_name, view] = [$(evt.currentTarget).closest('.column_header').data('column-name'), 'listing']
       unless @column_name
-        [@column_name, view] = [$(evt.currentTarget).closest('th').next().data('column-name'), 'show']
+        [@column_name, view] = [$(evt.currentTarget).closest('th').attr('title'), 'show']
       remoteModal '#column-settings', {column: @column_name, view: view}, =>
         @setupEnumConfigurationPanel()
 
