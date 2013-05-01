@@ -274,10 +274,16 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   
   test "show with has_many association" do
     group = FixtureFactory.new(:group).factory
-    3.times { FixtureFactory.new(:user, group_id: group.id) }
+    2.times { FixtureFactory.new(:user, group_id: group.id) }
+    FixtureFactory.new :user
     visit resource_path(:groups, group)
     click_link 'Create a new associated User'
     assert_equal new_resource_path(:users), page.current_path
+    
+    visit resource_path(:groups, group)
+    click_link '2'
+    assert_equal resources_path(:users), page.current_path
+    assert page.has_content?('2 records')
   end
   
   test "bulk edit" do

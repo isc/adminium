@@ -136,9 +136,10 @@ module ResourcesHelper
   
   def display_associated_items resource, item, assoc_name
     items = resource.fetch_associated_items @item, assoc_name, 5
+    referenced_column = resource.associations[:has_many][assoc_name][:primary_key]
     resource = resource_for assoc_name
     items.map do |item|
-      item_pk = resource.primary_key_value(item)
+      item_pk = item[referenced_column]
       link_to_if item_pk, resource.item_label(item), (resource_path(resource.table, item_pk) if item_pk)
     end.join(", ")
   end
