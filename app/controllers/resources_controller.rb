@@ -475,8 +475,8 @@ class ResourcesController < ApplicationController
       out << keys.map do |key|
         if key.to_s.include? "."
           referenced_table, column = key.to_s.split('.').map(&:to_sym)
-          foreign_resource = resource_for referenced_table
-          pitem = @associated_items[referenced_table].find {|i| i[foreign_resource.primary_key]}
+          assoc = resource.associations[:belongs_to][referenced_table]
+          pitem = @associated_items[referenced_table].find {|i| i[assoc[:primary_key]] == item[assoc[:foreign_key]]}
           pitem[column] if pitem
         else
           item[key]
