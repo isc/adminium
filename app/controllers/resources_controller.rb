@@ -160,8 +160,8 @@ class ResourcesController < ApplicationController
   end
 
   def bulk_update
-    count = resource.update_multiple_items params[:record_ids], item_params
-    redirect_to :back, flash: {success: "#{count} rows has been updated"}
+    count = resource.update_multiple_items params[:record_ids], (item_params || {})
+    redirect_to :back, flash: {success: "#{count || 0} rows have been updated"}
   end
 
   def test_threads
@@ -473,7 +473,7 @@ class ResourcesController < ApplicationController
     end
     @items.each do |item|
       out << keys.map do |key|
-        if key.to_s.include? "."
+        if key.to_s.include? '.'
           referenced_table, column = key.to_s.split('.').map(&:to_sym)
           assoc = resource.associations[:belongs_to][referenced_table]
           pitem = @associated_items[referenced_table].find {|i| i[assoc[:primary_key]] == item[assoc[:foreign_key]]}

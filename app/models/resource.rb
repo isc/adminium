@@ -382,7 +382,7 @@ module Resource
       updated_values = typecasted_values updated_values
       magic_timestamps updated_values, false
       # FIXME doesn't work with composite primary keys
-      query.where(primary_key => ids).update(updated_values)
+      query.where(primary_key => ids).update(updated_values) if updated_values.size > 0
     end
     
     def find primary_key_value
