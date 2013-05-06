@@ -24,7 +24,7 @@ module FormHelper
       return :select, enum_values.to_a.map {|v| [v[1]['label'], v[0]]}
     end
     case info[:type]
-    when :integer, :decimal
+    when :integer, :decimal, :float
       :number_field
     when :timestamp, :datetime
       :datetime
