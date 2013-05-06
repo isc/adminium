@@ -163,6 +163,19 @@ class ResourcesControllerTest < ActionController::TestCase
     assert_equal 'martine', assigns[:items].detect{|r| r[:id] == user.id}[:pseudo]
   end
   
+  def test_import_with_pks_and_magic_timestamp_filling
+    # FIXME import feature incorrectly reports an error when importing with specific PKs if one of the specified pk value is below the max pk value in the database.
+    pk = @fixtures.last.factory.id + 1
+    datas = {create: [[pk, 'Jean', 'Marais']], update: [], headers: ['id', 'first_name', 'last_name']}.to_json
+    post :perform_import, table: :users, data: datas
+    assert_equal({'success' => true}, JSON.parse(@response.body))
+    get :index, table: 'users', asearch: 'Last import'
+    assert_equal 1, assigns[:items].count
+    assigned_item = assigns[:items].detect{|r| r[:id] == pk}
+    assert_equal 'Marais', assigned_item[:last_name]
+    assert_not_nil assigned_item[:created_at]
+  end
+  
   def test_order_desc
     get :index, table: :users, order: 'pseudo desc'
     assert_equal ["Michel", "Martin", "Loulou", nil], assigns[:items].map{|i| i[:pseudo]}

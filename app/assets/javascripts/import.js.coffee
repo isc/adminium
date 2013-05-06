@@ -5,13 +5,13 @@ class window.ImportManager
   constructor: ->
     return unless document.getElementById('import_file')
     window.importManager = this
-    document.getElementById('import_file').addEventListener('change', @handleFileSelect, false);
+    document.getElementById('import_file').addEventListener('change', @handleFileSelect, false)
     @table = $(".items-list").data("table")
     $("#select-file .btn").on 'click', ->
       $("#import_file").click()
     $("#perform-import").on 'click', @perform
     $(".file-info a.change").click @disableImport
-    dropZone = $('body')[0];
+    dropZone = $('body')[0]
     dropZone.addEventListener 'dragover', @handleDragOver, false
     dropZone.addEventListener 'drop', @handleFileDrop, false
     $('.importHeader').jscrollspy
@@ -26,13 +26,13 @@ class window.ImportManager
       @error("html5-incompatibility", "Your browser is missing some HTML5 support required for this import feature (FileReader is not defined)")
 
   handleDragOver: (evt) ->
-    evt.stopPropagation();
-    evt.preventDefault();
+    evt.stopPropagation()
+    evt.preventDefault()
     evt.dataTransfer.dropEffect = 'copy'
 
   handleFileDrop: (evt) =>
-    evt.stopPropagation();
-    evt.preventDefault();
+    evt.stopPropagation()
+    evt.preventDefault()
     @selectFiles evt.dataTransfer.files
 
   handleFileSelect: (evt) =>
@@ -80,20 +80,17 @@ class window.ImportManager
   readFile: (evt) =>
     @processing('parsing your file')
     try
-      @rows = $.csv.toArrays(evt.target.result);
+      @rows = $.csv.toArrays evt.target.result
     catch e
-      @error("parsing", "We couldn't parse your File, be sure to provide a CSV File", e.message)
-      return
+      return @error("parsing", "We couldn't parse your file, be sure to provide a CSV file", e.message)
     header = @rows.shift()
     @sql_column_names = []
     $(".importable_rows").show()
     $(".importable_rows span").text("#{@rows.length} rows detected")
     try
-      for name in header
-        @detectColumnName $.trim(name)
+      @detectColumnName $.trim(name) for name in header
     catch e
-      @error("column_name_resolution", 'column name resolution failed', e)
-      return
+      return @error("column_name_resolution", 'column name resolution failed', e)
     @update_rows = []
     @update_ids = []
     @preview()
@@ -131,10 +128,7 @@ class window.ImportManager
       @enableImport()
 
   prepareToImport: =>
-    @data =
-      create: []
-      update: []
-      headers: @sql_column_names
+    @data = {create: [], update: [], headers: @sql_column_names}
     pindex = @sql_column_names.indexOf(primary_key)
     for row, index in @rows
       kind = if (@update_rows.indexOf(index) isnt -1) then 'update' else 'create'
@@ -164,7 +158,7 @@ class window.ImportManager
         column_name = @sql_column_names[i]
         type = columns_hash[column_name].type
         css = type + ' '
-        if type == 'boolean' && cell != '' && cell != null
+        if type is 'boolean' and cell isnt '' and cell isnt null
           value = null
           value = true if [adminium_column_options[column_name].boolean_true, 'true', 'True', 'TRUE', 'yes', 't', '1'].indexOf(cell) isnt -1
           value = false if [adminium_column_options[column_name].boolean_false, 'false', 'False', 'FALSE', 'no', 'f', '0'].indexOf(cell) isnt -1
@@ -174,16 +168,16 @@ class window.ImportManager
           else
             row[i] = value
             css += "#{value}class"
-        if cell == '' || cell == null
+        if cell is '' or cell is null
           css += "nilclass"
           if ['text', 'string'].indexOf(type) isnt -1
-            cell = if cell == null then 'NULL' else 'empty string'
+            cell = if cell is null then 'NULL' else 'empty string'
           else
             if column_name isnt primary_key
               cell = 'NULL'
               row[i] = null
         if column_name is primary_key
-          if cell == ''
+          if cell is ''
             cell = "<i class='icon-star' /><span class='label label-success'>new</span>"
           else
             @update_rows.push(index)
@@ -202,8 +196,8 @@ class window.ImportManager
     throw("unknown column name '#{name}' for table #{@table}")
 
   perform: =>
-    return alert('sorry. not ready to import') unless @readyToImport
-    return alert('sorry. already importing') if @importing
+    return alert('Sorry. Not ready to import') unless @readyToImport
+    return alert('Sorry. Already importing') if @importing
     @importing = true
     @processing 'Importing your data'
     Analytics.importEvent('importing', "insert=#{@data.create.length} update=#{@data.update.length}")
@@ -226,12 +220,12 @@ class window.ImportManager
 
   success: =>
     $(".importHeader").removeClass("fail").addClass('success')
-    $(".status").html("")
+    $(".status").empty()
     @toggleStartImport 'import-success'
 
   errorCallback: (data) =>
     @importing = false
-    @error('internal-server-side-error', 'Sorry, but an unexpected error occured, please contact us so we can work this out')
+    @error('internal-server-side-error', 'Sorry, but an unexpected error occurred, please contact us so we can work this out.')
 
 $ ->
   new ImportManager()

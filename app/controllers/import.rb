@@ -6,42 +6,42 @@ module Import
 
   def perform_import
     data = JSON.parse params[:data]
-    columns = data['headers']
+    
     pkey = resource.primary_key.to_s
-    columns_for_import = columns.clone
-    import_rows, update_rows = data['create'].presence, data['update'].presence
-    columns_for_import.delete pkey if import_rows && columns_for_import.size > import_rows.first.size
+    insert_rows, update_rows = data['create'].presence, data['update'].presence
+    insert_columns, update_columns = magic_timestamps insert_rows, update_rows, data['headers']
+    insert_columns.delete pkey if insert_rows && insert_columns.size > insert_rows.first.size
     fromId = toId = 0
     updated_ids = []
     begin
-      if import_rows
+      if insert_rows
         fromId = resource.last_primary_key_value
-        resource.query.import columns_for_import, import_rows
+        resource.query.import insert_columns, insert_rows
         toId = resource.last_primary_key_value
       end
-      updated_ids = update_from_import pkey, columns, update_rows if update_rows
+      updated_ids = update_from_import pkey, update_columns, update_rows if update_rows
     rescue => error
       render json: {error: error.to_s} and return
     end
-    if import_rows && fromId == toId
+    if insert_rows && fromId == toId
       render json: {error: "No new record was imported (#{fromId} -> #{toId})"} and return
     end
     if update_rows && updated_ids.blank?
       render json: {error: 'No records were updated'} and return
     end
-    set_last_import_filter import_rows, update_rows, fromId, toId, updated_ids
+    set_last_import_filter insert_rows, update_rows, fromId, toId, updated_ids
     render json: {success: true}
   end
 
-  def set_last_import_filter import_rows, update_rows, fromId, toId, updated_ids
+  def set_last_import_filter insert_rows, update_rows, fromId, toId, updated_ids
     pkey = resource.primary_key.to_s
     import_filter = []
-    if import_rows && update_rows
+    if insert_rows && update_rows
       created_ids = resource.query.where(resource.primary_key => (fromId+1)..toId).group_and_count(resource.primary_key).map{|r|r[resource.primary_key]}
       updated_ids += created_ids
       import_filter.push "column" => pkey, "type"=>"integer", "operator"=>"IN", "operand" => updated_ids.join(',')
     else
-      if import_rows
+      if insert_rows
         import_filter.push "column" => pkey, "type" => "integer", "operator"=>">", "operand" => fromId
         import_filter.push "column" => pkey, "type" => "integer", "operator"=>"<=", "operand" => toId
       end
@@ -79,5 +79,22 @@ module Import
       id
     end
   end
-
+  
+  def magic_timestamps insert_rows, update_rows, columns
+    now, insert_columns, update_columns = Time.now.utc, columns.clone, columns.clone
+    [:updated_at, :updated_on, :created_at, :created_on].each do |column|
+      next if columns.include? column.to_s
+      next unless resource.column_names.include? column
+      unless insert_rows.nil?
+        insert_rows.each {|row| row << now}
+        insert_columns << column
+      end
+      unless update_rows.nil? || (column.to_s.match 'created')
+        update_rows.each {|row| row << now}
+        update_columns << column
+      end
+    end
+    [insert_columns, update_columns]
+  end
+  
 end

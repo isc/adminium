@@ -8,8 +8,6 @@ module ApplicationHelper
     end
   end
 
-  # FIXME n+1 queries perf issue with label_column option
-
   def foreign_resource resource, key
     assoc_info = resource.associations[:belongs_to].values.find {|assoc_info| assoc_info[:foreign_key] == key.to_sym}
     resource_for(assoc_info[:referenced_table])

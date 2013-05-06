@@ -45,7 +45,7 @@ table.table-striped.table-bordered.table.items-list data-table=params[:table]
   thead
     tr
   tbody
-input type="file" id="import_file" name="file" class='hide'
+input type="file" id="import_file" name="file" class="hide"
 .well.importHelp
   h2 How does importing work ?
   p
@@ -62,9 +62,9 @@ input type="file" id="import_file" name="file" class='hide'
     'Boolean cells will be treated as boolean if the value looks like <i>true</i> or <i>false</i>, or can be specific if you have provided a custom displayed value for this column.
   h3 <code>INSERT</code> or <code>UPDATE</code>
   p
-    'If your CSV file contains the ID column (more precisely, the primary key column), each row that has this cell set will be updated accordingly.
+    'If your CSV file contains the ID column (more precisely, the primary key column), we will perform an existence check on your table for the rows with a value for this column in order to try and determine your intention.
     br
-    'A check will be performed to be sure that the records do exist in order to avoid any failing update.
+    'If all of the rows of the primary keys are found in your table, an update will be performed on those rows. If none of them are found, an insert will be performed with the supplied primary keys.
     br
     'If no ID column is detected or if the ID cell of a row is blank, it will be considered as a new row to insert.
     br
@@ -72,7 +72,7 @@ input type="file" id="import_file" name="file" class='hide'
   h3 Transactional import
   p
     'Your import runs in a transaction, meaning if your import fails at some point because of an SQL error (constraint violation, invalid content), all the import will be rollbacked.
-  h3 Magic Timestamp
+  h3 Magic Timestamps
   p
     'If your table contains a <code>created_at</code> or <code>updated_at</code> datetime column, records will be automatically updated according to the Ruby on Rails convention.
   h3 Limitations

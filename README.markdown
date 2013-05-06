@@ -6,7 +6,6 @@
   - in place edit not honoring permissions
   - support for views
   - bug time chart day of week ; 2 sundays
-  - doc sur la page d'import incorrecte : magic timestamps, import de nouvelles rows with pks
 
 ## FEATURES:
 
