@@ -40,7 +40,6 @@ fail on forms ameliorables (highlight des champs en erreur)
 
 attr_accessible avec role pour proteger plan sur account
 données stockées dans redis pour les comptes deprovisionnés ?
-unset le focus eventuel d'un element de la popin quand on la ferme, sinon le "press s" ne fonctionne plus
 
 ## BUGS:
 

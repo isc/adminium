@@ -8,6 +8,8 @@ class Navigation
 
   tableSelection: ->
     @selector = '#search-table .search-query'
+    $('.modal').on 'hide', ->
+      $(this).find('input:focus').blur()
     $(document).on 'change', @selector, ->
       if $(this).data('source').indexOf(this.value) isnt -1
         this.form.action = this.form.action + this.value
