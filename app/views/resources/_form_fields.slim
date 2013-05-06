@@ -11,10 +11,10 @@
         - if foreign_resource.query.count <= 25
           = belongs_to_select_tag resource, item, foreign_resource, name
         - else
-          - record = foreign_resource.find item[name] if item[name].present?
+          - record = foreign_resource.find_by_primary_key item[name] if item[name].present?
           .adminium-association
-              span.record_selected class="#{'hide' if record.nil?}"
-                span= foreign_resource.item_label record
+              span.record_selected class="#{'hide' if item[name].blank?}"
+                span= foreign_resource.item_label(record) || item[name]
                 i.icon.icon-remove-sign
               .clear
               = hidden_field_tag "#{resource.table}[#{name}]", item[name]
