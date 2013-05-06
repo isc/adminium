@@ -4,9 +4,9 @@ class window.Analytics
     params = ['_trackEvent', category, action, label]
     params.push(value) if value
     if window['_gaq']
-      _gaq.push(params);
+      _gaq.push(params)
     else
-      console.log(params);
+      console.log(params)
 
   @importEvent: (action, label, value) ->
     @event('Import', action, label, value)

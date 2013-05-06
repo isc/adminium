@@ -12,30 +12,32 @@ javascript:
         #select-file.span3
           h5 Step 1 of 3
           .btn.btn-warning.btn-large Select a CSV file and preview
-          .hint The first row of the csv must contain the column names
+          .hint The first row of the CSV must contain the column names
         #start-import.span3.hide
           h5 Step 2 of 3
           = submit_tag "", class: "btn btn-primary btn-large", id: 'perform-import'
-          .hint just review your data and go on !
+          .hint Just review your data and go on !
         #processing.span3.hide
           h5 Processing, please wait
           .progress.progress-striped.active
-            .bar(style="width: 100%;")
+            .bar style="width: 100%;"
           .hint
         #import-success.span3.hide
           h5 Step 3 of 3
-          = link_to "see imported data", resources_path(params[:table], asearch: 'last_import', order: resource.primary_key), class: 'btn btn-large btn-success'
-          .hint your data has been successfuly imported
+          = link_to "See imported data", resources_path(params[:table], asearch: 'Last import', order: resource.primary_key), class: 'btn btn-large btn-success'
+          .hint Your data has been successfully imported
         .span6.file-description
           p
             .i.icon.icon-list-alt
             == " #{params[:table]} table"
           p.file-info.hide
             i.icon.icon-file
+            '
             span.filename
-            a.change change file
+            a.change Change file
           p.importable_rows.hide
             i.icon.icon-list
+            '
             span
           p.status
 

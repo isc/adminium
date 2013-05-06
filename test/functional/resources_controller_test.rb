@@ -158,7 +158,7 @@ class ResourcesControllerTest < ActionController::TestCase
     post :perform_import, table: :users, data: datas
 
     assert_equal({'success' => true}, JSON.parse(@response.body))
-    get :index, table: 'users', asearch: 'last_import'
+    get :index, table: 'users', asearch: 'Last import'
     assert_equal 2, assigns[:items].count
     assert_equal 'martine', assigns[:items].detect{|r| r[:id] == user.id}[:pseudo]
   end
@@ -176,13 +176,16 @@ class ResourcesControllerTest < ActionController::TestCase
   def test_check_existence
     user = FixtureFactory.new(:user).factory
     get :check_existence, table: 'users', id: [user.id], format: :json
-    assert_equal({'success' => true}, JSON.parse(@response.body))
+    assert_equal({'success' => true, 'update' => true}, JSON.parse(@response.body))
     
     get :check_existence, table: 'users', id: [user.id.to_s], format: :json
-    assert_equal({'success' => true}, JSON.parse(@response.body))
+    assert_equal({'success' => true, 'update' => true}, JSON.parse(@response.body))
+    
+    get :check_existence, table: 'users', id: [12321, user.id]
+    assert_equal({'error' => true, 'ids' => ['12321']}, JSON.parse(@response.body))
     
     get :check_existence, table: 'users', id: [12321]
-    assert_equal({'error' => true, 'ids' => ['12321']}, JSON.parse(@response.body))
+    assert_equal({'success' => true, 'update' => false}, JSON.parse(@response.body))
   end
   
   def test_bulk_destroy

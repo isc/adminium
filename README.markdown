@@ -5,11 +5,13 @@
   - Account#db_url_validation ; still effective ? cleanup missing
   - in place edit not honoring permissions
   - support for views
+  - bug time chart day of week ; 2 sundays
+  - doc sur la page d'import incorrecte : magic timestamps, import de nouvelles rows with pks
 
 ## FEATURES:
 
 freaking TIMEZONES !!
-gerer les serialized lors de l'edit/update
+gerer les serialized lors de l'edit/update (pas evident ; unsafe, piste RubyParser pour mitigate cf dbinsights, reste qu'un time inspected ne se parse pas naturellement en retour)
 utiliser rack-timeout
 validations avec arguments
 colonnes calculees

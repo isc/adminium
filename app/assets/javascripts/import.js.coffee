@@ -71,7 +71,7 @@ class window.ImportManager
     @toggleStartImport('select-file')
     $(".importHeader").toggleClass("fail", true)
     details = if details then "(#{details})" else ""
-    $(".status").html("<i class='icon icon-ban-circle' /><b>#{msg}</b> #{details}").show()
+    $(".status").html("<i class='icon icon-ban-circle' /> <b>#{msg}</b> #{details}").show()
     Analytics.importEvent 'error', tracker_code
 
   notice: (msg) =>
@@ -98,8 +98,7 @@ class window.ImportManager
     @update_ids = []
     @preview()
     @prepareToImport()
-    if @checkQuota()
-      @checkExistenceOfUpdatingRecord()
+    @checkExistenceOfUpdatingRecord() if @checkQuota()
 
   checkQuota: =>
     if @rows.length > @limit
@@ -109,7 +108,7 @@ class window.ImportManager
 
   checkExistenceOfUpdatingRecord: =>
     if @update_ids.length > 0
-      @processing "checking that every rows to update exists"
+      @processing "Checking that every rows to update exist"
       $.ajax
         type: 'GET',
         url: "/resources/#{@table}/check_existence"
@@ -120,11 +119,15 @@ class window.ImportManager
       @checkExistenceCallback()
 
   checkExistenceCallback: (data={}) =>
-    if (data.error)
+    if data.error
       sample = data.ids.slice(0, 6).join(", ")
       sample += "..." if data.ids.length > 6
-      @error("update_not_found_ids", "#{data.ids.length} rows that shall be update were not found :", sample)
+      @error("update_not_found_ids", "#{data.ids.length} rows that shall be updated were not found :", sample)
     else
+      if data.update is false
+        @data.create = @data.update
+        @data.update = []
+        $(".importable_rows span").text("#{@data.create.length} rows will be imported with the specified primary keys.")
       @enableImport()
 
   prepareToImport: =>
@@ -135,7 +138,7 @@ class window.ImportManager
     pindex = @sql_column_names.indexOf(primary_key)
     for row, index in @rows
       kind = if (@update_rows.indexOf(index) isnt -1) then 'update' else 'create'
-      row.splice(pindex, 1) if kind == 'create' && pindex isnt -1
+      row.splice(pindex, 1) if kind is 'create' && pindex isnt -1
       @update_ids.push row[pindex] if pindex isnt -1 && kind is 'update'
       @data[kind].push row
     text = []
@@ -149,7 +152,7 @@ class window.ImportManager
     @toggleStartImport('start-import')
     $(".status").html("<i class='icon  icon-ok-sign' /> Ready to import")
 
-  preview: () ->
+  preview: ->
     $(".items-list").hide()
     $("<th>").appendTo($(".items-list thead tr"))
     for name in @sql_column_names
@@ -176,10 +179,10 @@ class window.ImportManager
           if ['text', 'string'].indexOf(type) isnt -1
             cell = if cell == null then 'NULL' else 'empty string'
           else
-            if (column_name != primary_key)
+            if column_name isnt primary_key
               cell = 'NULL'
               row[i] = null
-        if (column_name == primary_key)
+        if column_name is primary_key
           if cell == ''
             cell = "<i class='icon-star' /><span class='label label-success'>new</span>"
           else
@@ -193,20 +196,16 @@ class window.ImportManager
       return
     else
       for key, data of adminium_column_options
-        if data.displayed_column_name == name
+        if data.displayed_column_name is name
           @sql_column_names.push key
           return
     throw("unknown column name '#{name}' for table #{@table}")
 
   perform: =>
-    if !@readyToImport
-      alert('sorry. not ready to import')
-      return
-    if @importing
-      alert('sorry. already importing')
-      return
+    return alert('sorry. not ready to import') unless @readyToImport
+    return alert('sorry. already importing') if @importing
     @importing = true
-    @processing('importing your data')
+    @processing 'Importing your data'
     Analytics.importEvent('importing', "insert=#{@data.create.length} update=#{@data.update.length}")
     @import_started_at = new Date()
     $.ajax

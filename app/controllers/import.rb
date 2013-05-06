@@ -5,39 +5,32 @@ module Import
   end
 
   def perform_import
-    data = JSON.parse(params[:data])
+    data = JSON.parse params[:data]
     columns = data['headers']
     pkey = resource.primary_key.to_s
-    columns_without_pk = columns.clone
-    columns_without_pk.delete pkey
-    import_rows = data['create'].present? ? data['create'] : nil
-    update_rows = data['update'].present? ? data['update'] : nil
+    columns_for_import = columns.clone
+    import_rows, update_rows = data['create'].presence, data['update'].presence
+    columns_for_import.delete pkey if import_rows && columns_for_import.size > import_rows.first.size
     fromId = toId = 0
     updated_ids = []
     begin
       if import_rows
-        fromId = resource.query.select(resource.primary_key).order(:id).last.try(:[], resource.primary_key) || 0
-        res = resource.query.import(columns_without_pk, import_rows)
-        toId = resource.query.select(resource.primary_key).order(:id).last.try(:[], resource.primary_key) || 0
+        fromId = resource.last_primary_key_value
+        resource.query.import columns_for_import, import_rows
+        toId = resource.last_primary_key_value
       end
-      if update_rows
-        updated_ids = update_from_import(pkey, columns, update_rows)
-      end
+      updated_ids = update_from_import pkey, columns, update_rows if update_rows
     rescue => error
-      render json: {error: error.to_s}.to_json
-      return
+      render json: {error: error.to_s} and return
     end
-    if (import_rows && fromId == toId)
-      render json: {error: "No new record were imported (#{fromId} -> #{toId})"}.to_json
-      return
+    if import_rows && fromId == toId
+      render json: {error: "No new record was imported (#{fromId} -> #{toId})"} and return
     end
-    if (update_rows && updated_ids.blank?)
-      render json: {error: "No records were updated"}.to_json
-      return
+    if update_rows && updated_ids.blank?
+      render json: {error: 'No records were updated'} and return
     end
-    set_last_import_filter(import_rows, update_rows, fromId, toId, updated_ids)
-    result = {success: true}
-    render json: result.to_json
+    set_last_import_filter import_rows, update_rows, fromId, toId, updated_ids
+    render json: {success: true}
   end
 
   def set_last_import_filter import_rows, update_rows, fromId, toId, updated_ids
@@ -56,7 +49,7 @@ module Import
         import_filter.push "column" => pkey, "type"=>"integer", "operator"=>"IN", "operand" => updated_ids.join(',')
       end
     end
-    resource.filters['last_import'] =  import_filter
+    resource.filters['Last import'] = import_filter
     resource.save
   end
 
@@ -65,10 +58,10 @@ module Import
      primary_key = resource.primary_key
      found_items_ids = resource.query.where(primary_key => ids).select(primary_key).map{|r|r[primary_key].to_s}.uniq
      not_found_ids = ids.map(&:to_s) - found_items_ids
-     result = if not_found_ids.present?
+     result = if not_found_ids.present? && not_found_ids.size < ids.size
        {error: true, ids: not_found_ids}
      else
-       {success: true}
+       {success: true, update: (not_found_ids.empty?)}
      end
      render json: result
   end

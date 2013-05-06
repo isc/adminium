@@ -444,6 +444,10 @@ module Resource
       assoc_query(item, assoc_name).limit(limit)
     end
     
+    def last_primary_key_value
+      query.select(primary_key).order(primary_key).last.try(:[], primary_key) || 0
+    end
+    
   end
   
   class RecordNotFound < StandardError
