@@ -13,10 +13,11 @@ class window.Gravatar
       return key if (key.indexOf('_email') isnt -1) || (key.indexOf('email_') isnt -1) || (key.indexOf('Email') isnt -1)
     null
 
-  @findAll: ->
+  @findAll: =>
     email = @emailColumnDetect()
     return unless email
-    emailCells = $("td[data-column-name='#{email}']")
+    columnIndex = $("table.items-list th[data-column-name='#{email}']").index()
+    emailCells = $("td:nth-child(#{columnIndex + 1})")
     return if emailCells.length is 0
     $("<th>").insertAfter $('th.checkboxes, .items-list tfoot th')
     for elt in emailCells
@@ -29,5 +30,4 @@ class window.Gravatar
       td = $("<td>#{image}</td>")
       td.insertAfter(here)
 
-$ ->
-  Gravatar.findAll()
+$ Gravatar.findAll
