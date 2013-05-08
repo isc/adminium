@@ -108,7 +108,7 @@ class Generic
   def schema table
     raise TableNotFoundException.new(table) unless tables.include? table
     @schema ||= {}
-    @schema[table] || (@schema[table] = @db.schema(table))
+    @schema[table] || (@schema[table] = @db.schema(Sequel.identifier table))
   end
 
   def table table_name
