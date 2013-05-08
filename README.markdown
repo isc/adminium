@@ -3,7 +3,6 @@
   - composite primary keys for import, bulk edit
   - empty string => nil in forms ?
   - Account#db_url_validation ; still effective ? cleanup missing
-  - in place edit not honoring permissions
   - support for views
   - bug time chart day of week ; 2 sundays
 

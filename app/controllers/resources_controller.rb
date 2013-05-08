@@ -19,7 +19,7 @@ class ResourcesController < ApplicationController
     @items = resource.query
     params[:order] = resource.label_column if resource.label_column.present?
     resource.columns[:search] = [resource.primary_keys, resource.label_column.try(:to_sym)].flatten.compact | resource.columns[:search]
-    apply_search if params[:search].present?
+    apply_search
     apply_order
     @items = @items.select(*(resource.columns[:search].map {|c| Sequel.identifier(c)}))
     records = @items.paginate(1, 37).map {|h| h.merge(adminium_label: resource.item_label(h))}
@@ -34,7 +34,7 @@ class ResourcesController < ApplicationController
     @items = resource.query.select(qualify params[:table], Sequel.lit('*'))
     apply_where
     apply_filters
-    apply_search if params[:search].present?
+    apply_search
     @items_for_stats = @items
     apply_has_many_counts
     apply_order
@@ -289,6 +289,7 @@ class ResourcesController < ApplicationController
   end
 
   def apply_search
+    return unless params[:search].present?
     number_columns = resource.columns[:search].select{|c| resource.is_number_column?(c)}
     if number_columns.present? && params[:search].match(/\A\-?\d+\Z/)
       v = params[:search].to_i
@@ -399,10 +400,8 @@ class ResourcesController < ApplicationController
       column = Sequel.function operation[:named_function], column
     end
     return send("apply_filter_#{operation[:specific]}", column) if operation[:specific]
-    
     return Sequel::SQL::BooleanExpression.from_value_pairs({column => operation[:right]}) if operation[:boolean_operator]
     return Sequel::SQL::ComplexExpression.new operation[:operator], column, right_value(operation, filter['operand']) if operation[:operator]
-    
   end
 
   def string_operators

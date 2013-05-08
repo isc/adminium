@@ -81,7 +81,7 @@ module ResourcesHelper
     end
     opts = {class: css_class}
     is_editable = false if resource.primary_keys.include?(key) || key == 'updated_at' || relation || resource.primary_keys.empty?
-    if is_editable
+    if is_editable && user_can?('edit', params[:table])
       opts.merge! 'data-column-name' => key
       opts.merge! 'data-raw-value' => item[key].to_s unless item[key].is_a?(String) && css_class != 'enum'
     end
