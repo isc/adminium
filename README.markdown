@@ -42,6 +42,7 @@ données stockées dans redis pour les comptes deprovisionnés ?
 
 ## BUGS:
 
+ugly show avec une text column bien remplie (https://adminium.herokuapp.com/resources/stories/15 sur enigmatic-beach-4845)
 lors d'un export ; rajout d'un has_many/count column puis export => colonne vide, nouvel export => colonne remplie
 serialized columns containing smth else than a basic type
 subnav flickers on a page slightly too long for the screen
