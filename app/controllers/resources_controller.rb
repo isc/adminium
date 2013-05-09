@@ -32,13 +32,13 @@ class ResourcesController < ApplicationController
     @widget = current_account.table_widgets.where(table: params[:table], advanced_search: params[:asearch]).first
     # FIXME we could be more specific than *
     @items = resource.query.select(qualify params[:table], Sequel.lit('*'))
+    update_export_settings
     apply_where
     apply_filters
     apply_search
     @items_for_stats = @items
     apply_has_many_counts
     apply_order
-    update_export_settings
     page = (params[:page].presence || 1).to_i
     respond_with @items do |format|
       format.html do
