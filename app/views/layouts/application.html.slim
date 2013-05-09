@@ -58,18 +58,17 @@ html lang="en"
       .modal-body
         = spinner_tag
         p.centered Please wait a few instants until the page is loaded.
-  - footer = yield :footer
-  - if footer.present?
-    .footer
-      .footer-inner
-        = footer
-  .adminium-footer
-    '&copy; Adminium
-.hide
-  #facebookG
-    #block_1.facebook_blockG
-    #blockG_2.facebook_blockG
-    #blockG_3.facebook_blockG
-
-javascript:
-  adminium_account = #{{current_account? ? current_account.to_json(only: ['plan', 'name']) : 'null'}}
+    - footer = yield :footer
+    - if footer.present?
+      .footer
+        .footer-inner
+          = footer
+    .adminium-footer
+      '&copy; Adminium
+    .hide
+      #facebookG
+        #block_1.facebook_blockG
+        #blockG_2.facebook_blockG
+        #blockG_3.facebook_blockG
+    javascript:
+      adminium_account = #{{current_account? ? current_account.to_json(only: ['plan', 'name']) : 'null'}}
