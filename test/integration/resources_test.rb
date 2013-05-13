@@ -299,4 +299,14 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     end
   end
   
+  test "edit and display time column" do
+    Resource::Base.any_instance.stubs(:columns).returns form: [:daily_alarm], listing: [:daily_alarm],
+      show: [:daily_alarm], serialized: []
+    visit new_resource_path(:users)
+    find('#users_daily_alarm_4i').select "08"
+    select '37'
+    click_button 'Save'
+    assert_equal '08:37', page.find('td[data-column-name=daily_alarm]').text
+  end
+  
 end

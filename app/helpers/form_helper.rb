@@ -11,7 +11,7 @@ module FormHelper
     when :select
       input_options.delete :class
       select_tag input_name, options_for_select(options, input_value), input_options.merge(include_blank: true)
-    when :date, :datetime
+    when :date, :datetime, :time
       datetime_input input_options, input_value, input_name, input_id, input_type
     else
       send "#{input_type}_tag", input_name, input_value, input_options
@@ -30,6 +30,8 @@ module FormHelper
       :datetime
     when :date
       :date
+    when :time
+      :time
     when :boolean
       [:select, boolean_input_options(resource, name)]
     when :string, nil
@@ -51,18 +53,21 @@ module FormHelper
 
   def datetime_input input_options, input_value, input_name, input_id, input_type
     input_options[:class] = 'datepicker span2'
-    value_string = input_value ? input_value.to_date.strftime('%m/%d/%Y') : ''
-    res = text_field_tag nil, value_string, input_options
-    input_options[:class] = 'span2'
-    [:year, :month, :day].each_with_index do |type, i|
-      v = input_value ? input_value.try(type).to_s : ''
-      res << (hidden_field_tag "#{input_name}[#{i+1}i]", v, id: "#{input_id}_#{i+1}i")
+    res = ''.html_safe
+    if [:date, :datetime].include? input_type
+      value_string = input_value ? input_value.to_date.strftime('%m/%d/%Y') : ''
+      res << (text_field_tag nil, value_string, input_options)
+      [:year, :month, :day].each_with_index do |type, i|
+        v = input_value ? input_value.try(type).to_s : ''
+        res << (hidden_field_tag "#{input_name}[#{i+1}i]", v, id: "#{input_id}_#{i+1}i")
+      end
     end
-    if input_type == :datetime
-      hour = input_value.try(:hour).to_s.rjust(2, '0')
-      res << (' '.html_safe + select_tag("#{input_name}[4i]", options_for_select(('00'...'24'), hour), class: 'span1'))
-      minute = input_value.try(:min).to_s.rjust(2, '0')
-      res << (' : '.html_safe + select_tag("#{input_name}[5i]", options_for_select(('00'...'60'), minute), class: 'span1'))
+    if [:datetime, :time].include? input_type
+      options = {class: 'span1', include_blank: true}
+      hour = input_value.hour.to_s.rjust(2, '0') if input_value
+      minute = input_value.min.to_s.rjust(2, '0') if input_value
+      res << (' '.html_safe + select_tag("#{input_name}[4i]", options_for_select(('00'...'24'), hour), options.clone))
+      res << (' : '.html_safe + select_tag("#{input_name}[5i]", options_for_select(('00'...'60'), minute), options))
     end
     res
   end

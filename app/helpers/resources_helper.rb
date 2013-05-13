@@ -157,6 +157,8 @@ module ResourcesHelper
       else
         truncate_with_popover value, key
       end
+    when Sequel::SQLTime
+      display_time value
     when Time, Date
       display_datetime value, column: key, resource: resource
     when Fixnum, BigDecimal, Float
@@ -209,8 +211,8 @@ module ResourcesHelper
     end
   end
 
-  def display_datetime(value, opts={})
-    return if value == nil
+  def display_datetime value, opts={}
+    return if value.nil?
     if opts[:column] && opts[:resource]
       opts[:format] = opts[:resource].column_options(opts[:column])['format']
       opts[:format] = nil if opts[:format].blank?
@@ -222,6 +224,10 @@ module ResourcesHelper
     else
       l(value, format: opts[:format].to_sym)
     end
+  end
+  
+  def display_time value
+    "#{value.hour.to_s.rjust(2, '0')}:#{value.min.to_s.rjust(2, '0')}"
   end
 
   def column_content_tag wrapper_tag, content, opts

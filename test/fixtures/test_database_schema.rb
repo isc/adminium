@@ -1,7 +1,7 @@
 conn_spec = ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
 ActiveRecord::Base.establish_connection conn_spec
 ActiveRecord::Schema.verbose = false
-version = 20
+version = 21
 if ActiveRecord::Migrator.current_version != version
   ActiveRecord::Base.connection.tables.each do |table|
     ActiveRecord::Base.connection.drop_table table
@@ -20,6 +20,7 @@ if ActiveRecord::Migrator.current_version != version
       t.binary :file
       t.decimal :Average_Price_Online__c
       t.boolean :Awesome_Person__c
+      t.time :daily_alarm
       t.timestamps
     end
     create_table :groups do |t|

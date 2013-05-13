@@ -300,7 +300,7 @@ module Resource
     end
 
     def possible_enum_column info
-      !info[:primary_key] && ![:date, :datetime, :text, :float].include?(info[:type])
+      !info[:primary_key] && ![:date, :datetime, :text, :float, :time].include?(info[:type])
     end
 
     def possible_serializable_column info

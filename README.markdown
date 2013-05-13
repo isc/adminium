@@ -5,6 +5,7 @@
   - Account#db_url_validation ; still effective ? cleanup missing
   - support for views
   - bug time chart day of week ; 2 sundays
+bug https://adminium.herokuapp.com/auth/failure?message=invalid_credentials
 
 ## FEATURES:
 
@@ -43,7 +44,6 @@ données stockées dans redis pour les comptes deprovisionnés ?
 ## BUGS:
 
 ugly show avec une text column bien remplie (https://adminium.herokuapp.com/resources/stories/15 sur enigmatic-beach-4845)
-lors d'un export ; rajout d'un has_many/count column puis export => colonne vide, nouvel export => colonne remplie
 serialized columns containing smth else than a basic type
 subnav flickers on a page slightly too long for the screen
 on peut pas mettre un espace comme thousand delimiter (or j'aurais bien voulu pouvoir le faire sur une colonne zipcode)

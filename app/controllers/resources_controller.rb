@@ -44,13 +44,11 @@ class ResourcesController < ApplicationController
       format.html do
         check_per_page_setting
         @items = @items.paginate page, resource.per_page.to_i
-        @fetched_items = @items.to_a
         fetch_associated_items
         apply_statistics
       end
       format.json do
         @items = @items.paginate page, 10
-        @fetched_items = @items.to_a
         fetch_associated_items
         render json: {
           widget: render_to_string(partial: 'items', locals: {items: @fetched_items, actions_cell: false}),
@@ -59,7 +57,6 @@ class ResourcesController < ApplicationController
         }
       end
       format.csv do
-        @fetched_items = @items.to_a
         fetch_associated_items
         send_data generate_csv, type: 'text/csv'
       end
@@ -313,6 +310,7 @@ class ResourcesController < ApplicationController
   end
 
   def fetch_associated_items
+    @fetched_items = @items.to_a
     @associated_items = {}
     # FIXME polymorphic belongs_to generate N+1 queries (since no referenced_table in assoc_info) 
     referenced_tables = resource.columns[settings_type].map do |c|
@@ -522,12 +520,15 @@ class ResourcesController < ApplicationController
     return unless item_params.present?
     item_params.each do |key, value|
       if value.is_a? Hash
-        if value['1i'].blank?
+        if value.has_key?('1i') && value['1i'].blank? || value['4i'].blank?
           item_params[key] = nil
         else
-          date = "#{value['1i']}-#{value['2i']}-#{value['3i']}"
+          res = ''
+          if value.has_key?('1i')
+            res << "#{value['1i']}-#{value['2i']}-#{value['3i']}"
+          end
           item_params[key] = if value['4i']
-            Time.parse("#{date} #{value['4i']}:#{value['5i']}")
+            Time.parse "#{res} #{value['4i']}:#{value['5i']}"
           else
             Date.parse date
           end
