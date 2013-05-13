@@ -273,7 +273,7 @@ module Resource
     end
     
     def foreign_key? name
-      return associations[:belongs_to].values.find {|assoc| assoc[:foreign_key] == name }
+      associations[:belongs_to].values.find {|assoc| assoc[:foreign_key] == name }
     end
     
     def db_foreign_key? name
@@ -428,7 +428,7 @@ module Resource
     end
     
     def associations
-      @generic.associations[@table]
+      @generic.associations[@table] || {}
     end
     
     def assoc_query item, name
