@@ -448,7 +448,7 @@ module Resource
       query.select(primary_key).order(primary_key).last.try(:[], primary_key) || 0
     end
     
-    def csv_column_output item, key
+    def raw_column_output item, key
       info = column_info(key)
       if info && (info[:type] == :time)
         item[key] && item[key].strftime('%H:%M')

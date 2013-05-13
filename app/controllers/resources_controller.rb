@@ -470,9 +470,9 @@ class ResourcesController < ApplicationController
           referenced_table, column = key.to_s.split('.').map(&:to_sym)
           assoc = resource.associations[:belongs_to][referenced_table]
           pitem = @associated_items[referenced_table].find {|i| i[assoc[:primary_key]] == item[assoc[:foreign_key]]}
-          resource_for(referenced_table).csv_column_output pitem, column if pitem
+          resource_for(referenced_table).raw_column_output pitem, column if pitem
         else
-          resource.csv_column_output item, key
+          resource.raw_column_output item, key
         end
       end.to_csv(options)
     end
