@@ -91,11 +91,21 @@ class ResourcesControllerTest < ActionController::TestCase
     assert_equal 5, lines.length
   end
   
+  def test_csv_response_skip_headers_and_time_column
+    FixtureFactory.new :user, daily_alarm: '08:37'
+    Resource::Base.any_instance.stubs(:columns).returns(export: [:daily_alarm])
+    Resource::Base.any_instance.stubs(:export_skip_header).returns true
+    get :index, table: 'users', order: 'id', format: 'csv'
+    lines = @response.body.split "\n"
+    assert_equal 5, lines.length
+    assert_equal '08:37', lines.last
+  end
+  
   def test_csv_response_with_belongs_to_column
     Resource::Base.any_instance.stubs(:columns).returns(export: [:'groups.name'])
     get :index, table: 'users', format: 'csv', order: 'id'
     lines = @response.body.split("\n")
-    assert_equal 'Admins', lines[-1]
+    assert_equal 'Admins', lines.last
   end
   
   def test_csv_response_with_has_many_count

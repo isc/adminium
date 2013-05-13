@@ -64,8 +64,8 @@ module FormHelper
     end
     if [:datetime, :time].include? input_type
       options = {class: 'span1', include_blank: true}
-      hour = input_value.hour.to_s.rjust(2, '0') if input_value
-      minute = input_value.min.to_s.rjust(2, '0') if input_value
+      hour = input_value.strftime '%H' if input_value
+      minute = input_value.strftime '%M' if input_value
       res << (' '.html_safe + select_tag("#{input_name}[4i]", options_for_select(('00'...'24'), hour), options.clone))
       res << (' : '.html_safe + select_tag("#{input_name}[5i]", options_for_select(('00'...'60'), minute), options))
     end

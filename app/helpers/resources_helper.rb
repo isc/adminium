@@ -227,7 +227,7 @@ module ResourcesHelper
   end
   
   def display_time value
-    "#{value.hour.to_s.rjust(2, '0')}:#{value.min.to_s.rjust(2, '0')}"
+    value.strftime '%H:%M'
   end
 
   def column_content_tag wrapper_tag, content, opts
