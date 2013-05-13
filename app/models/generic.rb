@@ -114,7 +114,7 @@ class Generic
   def table table_name
     table_name = table_name.to_sym
     if tables.include? table_name
-      @db[table_name]
+      @db[Sequel.identifier table_name]
     else
       raise TableNotFoundException.new(table_name)
     end
