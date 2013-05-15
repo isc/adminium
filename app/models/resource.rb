@@ -428,7 +428,7 @@ module Resource
     end
     
     def associations
-      @generic.associations[@table] || {}
+      @generic.associations[@table] || {belongs_to: {}, has_many: {}}
     end
     
     def assoc_query item, name
