@@ -3,7 +3,7 @@ Adminium::Application.routes.draw do
   match '/auth/:provider/callback' => 'sessions#create'
   match '/signout' => 'sessions#destroy', as: :signout
 
-  resources :resources, path: "/resources/:table" do
+  resources :resources, path: "/resources/:table", constraints: {id: /.*/} do
     collection do
       get 'page/:page', action: :index
       post :bulk_destroy
