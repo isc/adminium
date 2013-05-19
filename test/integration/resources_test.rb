@@ -299,14 +299,18 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     end
   end
   
-  test "edit and display time column" do
-    Resource::Base.any_instance.stubs(:columns).returns form: [:daily_alarm], listing: [:daily_alarm],
-      show: [:daily_alarm], serialized: []
+  test "edit and display time and date column" do
+    Resource::Base.any_instance.stubs(:columns).returns form: [:daily_alarm, :birthdate], listing: [:daily_alarm, :birthdate],
+      show: [:daily_alarm, :birthdate], serialized: []
     visit new_resource_path(:users)
     find('#users_daily_alarm_4i').select "08"
     select '37'
+    find('#users_birthdate_1i').set '2013'
+    find('#users_birthdate_2i').set '5'
+    find('#users_birthdate_3i').set '22'
     click_button 'Save'
     assert_equal '08:37', page.find('td[data-column-name=daily_alarm]').text
+    assert_equal 'May 22, 2013', page.find('td[data-column-name=birthdate]').text
   end
-  
+
 end
