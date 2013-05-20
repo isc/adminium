@@ -13,6 +13,8 @@ module FormHelper
       select_tag input_name, options_for_select(options, input_value), input_options.merge(include_blank: true)
     when :date, :datetime, :time
       datetime_input input_options, input_value, input_name, input_id, input_type
+    when :float_field
+      number_field_tag input_name, input_value, input_options.merge(step: 'any')
     else
       send "#{input_type}_tag", input_name, input_value, input_options
     end
@@ -24,8 +26,10 @@ module FormHelper
       return :select, enum_values.to_a.map {|v| [v[1]['label'], v[0]]}
     end
     case info[:type]
-    when :integer, :decimal, :float
+    when :integer
       :number_field
+    when :decimal, :float
+      :float_field
     when :timestamp, :datetime
       :datetime
     when :date

@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(:version => 20130501125739) do
     t.datetime "last_tip_at"
     t.string   "last_tip_identifier"
     t.boolean  "tips_opt_in",         :default => true
+    t.string   "time_zone"
   end
 
   create_table "collaborators", :force => true do |t|

@@ -16,6 +16,7 @@ td.span1
   - options = {class: 'operand'}
   - options[:class] += ' datepicker' if %w(datetime date).include? filter_type
   - options['data-type'] = filter_type
+  - options['data-original-type'] = filter['type'].to_s
   = text_field_tag "filters[#{g}][operand]", filter['operand'], options
 td
   span.btn

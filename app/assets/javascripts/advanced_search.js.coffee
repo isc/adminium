@@ -31,10 +31,12 @@ class AdvancedSearch
     visibility = @unary_operators.indexOf(operator) is -1
     operand.toggle(visibility).attr('required', visibility)
     type = if operand.data('type') is 'integer' and operator isnt 'IN'
+      operand.get(0).step = 'any' if operand.data('original-type') isnt 'integer'
       'number'
     else
       'text'
     operand.get(0).type = type
+    
 
 $ ->
   new AdvancedSearch()

@@ -48,6 +48,12 @@ class InPlaceEditing
 
   integerEditionMode: (td) =>
     $('<input type="number">')
+  
+  decimalEditionMode: (td) =>
+    @floatEditionMode(td)
+    
+  floatEditionMode: (td) =>
+    $('<input type="number" step="any">')
 
   dateEditionMode: (td, name, raw_value) =>
     @datetimeEditionMode td, name, raw_value

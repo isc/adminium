@@ -6,7 +6,6 @@
   - support for views
   - bug time chart day of week ; 2 sundays
 bug https://adminium.herokuapp.com/auth/failure?message=invalid_credentials
-bug sur l'advanced search pour une colonne float/decimal ; la validation html5 force de l'entier, faut mettre un step="any"
 
 ## FEATURES:
 
