@@ -32,7 +32,12 @@ class SettingsController < ApplicationController
   end
 
   def columns
-    render json: resource_for(params[:table]).column_names.sort
+    names = if params[:time_chart]
+      resource_for(params[:table]).date_column_names
+    else
+      resource_for(params[:table]).column_names
+    end
+    render json: names.sort
   end
 
 end

@@ -103,8 +103,10 @@ class Account < ActiveRecord::Base
 
   def db_url_validation
     return if db_url.blank? || errors[:db_url].any?
-    Generic.new self
-  rescue PGError, Mysql2::Error, URI::InvalidURIError => e
+    generic = Generic.new self
+    generic.tables
+    generic.cleanup
+  rescue Sequel::Error, URI::InvalidURIError => e
     errors[:base] = e.message
   end
 

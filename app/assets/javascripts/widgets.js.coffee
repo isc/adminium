@@ -11,12 +11,28 @@ class Widget
     if $('#plan').text() is 'petproject'
       for option, i in $('#widget_table').find('option') when i > 5
         $(option).attr('disabled', 'disabled')
-    $('#widget_table').change ->
-      $.getJSON "/searches/#{this.value}", (data) ->
-        return unless data.length
-        for search in data
-          $('<option>').text(search).val(search).appendTo('#widget_advanced_search')
-        $('#widget_advanced_search').closest('.control-group').parent().show()
+    $('#widget_table').change (e) =>
+      if $('input[name="widget[type]"]:checked').val() is 'TableWidget'
+        @fetchAdvancedSearches e.target.value
+      else
+        @fetchDateColumns e.target.value
+    $('input[name="widget[type]"]').click (e) =>
+      $('div[data-widget-type="TableWidget"]').toggle(e.target.value is 'TableWidget')
+      $('div[data-widget-type="TimeChartWidget"]').toggle(e.target.value is 'TimeChartWidget')
+      return unless table = $('#widget_table').val()
+      if e.target.value is 'TimeChartWidget' then @fetchDateColumns table else @fetchAdvancedSearches table
+
+  fetchAdvancedSearches: (table) ->
+    $.getJSON "/searches/#{table}", (data) ->
+      if data.length
+        $('#widget_advanced_search').empty().append($('<option>'))
+        $('<option>').text(search).val(search).appendTo('#widget_advanced_search') for search in data
+      $('#widget_advanced_search').closest('.control-group').parent().toggle(data.length isnt 0)
+
+  fetchDateColumns: (table) ->
+    $.getJSON "/settings/columns?table=#{table}&time_chart=true", (data) ->
+      $('#widget_columns').empty()
+      $('<option>').text(column).val(column).appendTo('#widget_columns') for column in data
 
   setupCreationFromListing: ->
     $('#nav_searches, #time-chart').on 'click', 'i.add_widget', (evt) ->
