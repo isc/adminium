@@ -31,21 +31,26 @@ class InPlaceEditing
       type = 'text'
       raw_value = td.find('a').attr('data-content')
     td.attr("data-original-content", td.html())
-    td.html($("<form class='form form-inline'><div class='control-group'><div class='controls'><div class='in-place-actions'><button class='btn'><i class='icon-ok' /></button><a class='cancel'><i class='icon-remove'></i</a></div>"))
+    td.html($("<form class='form form-inline'><div class='control-group'><div class='controls'><div class='in-place-actions'><button class='btn'><i class='icon-ok' /></button><a class='cancel'><i class='icon-remove'></i></a></div><a class='save_empty_input hide'>or save as <b>empty string</b></a><input name=save_empty_input_as value=null type='hidden'></input>"))
     td.attr("data-mode", "editing")
-    td.find('a').click @cancelEditionMode
+    td.find('a.cancel').click @cancelEditionMode
     td.find('form').submit @submitColumnEdition
     if this["#{type}EditionMode"]
       input = this["#{type}EditionMode"](td, name, raw_value)
     else
-      input = @defaultEditionMode td, name
+      input = @defaultEditionMode td, name, raw_value
     input.prependTo(td.find('.controls'))
+    switchLink = td.find('a.save_empty_input')
+    switchLink.click (evt) =>
+      @switchEmptyInputValue($(evt.currentTarget))
+      false
+    @switchEmptyInputValue(switchLink) if td.hasClass('emptystring')
     input.val(raw_value).focus()
     input.attr('name', name)
 
   textEditionMode: (td) =>
-    $('<textarea>')
-
+    input = $('<textarea>')
+  
   integerEditionMode: (td) =>
     $('<input type="number">')
   
@@ -72,8 +77,18 @@ class InPlaceEditing
     d.datepicker altField:i,  altFormat: "yy-mm-dd #{time}"
     i
 
-  defaultEditionMode: (td, name) =>
-    $('<input>')
+  defaultEditionMode: (td, name, raw_value) =>
+    td.find('a.save_empty_input').show() unless raw_value && raw_value.length > 0
+    input  = $('<input type=text placeholder="null">')
+    input.on 'keyup', @displaySwitchEmptyValueLink
+    input
+  
+  displaySwitchEmptyValueLink: (evt) =>
+    key = evt.keyCode || evt.charCode;
+    input = $(evt.currentTarget)
+    value = input.val()
+    show = value.length == 0
+    input.parents('td').find('a.save_empty_input').toggle(show)
 
   enumEditionMode: (td, name, raw_value) =>
     options = ""
@@ -124,6 +139,20 @@ class InPlaceEditing
   errorCallback: (data) =>
     alert('internal error : failed to update this field')
     @restoreOriginalValue $('td[data-mode=editing]')
+
+  switchEmptyInputValue: (link) =>
+    input = link.parents('td').find('input[type=text]').get(0)
+    hidden_input = link.parents('td').find('input[name=save_empty_input_as]')
+    if input.placeholder == 'null'
+      placeholder = 'empty string'
+      link_val = 'NULL'
+      hidden_input.val('empty_string')
+    else
+      placeholder = 'null'
+      link_val = 'empty string'
+      hidden_input.val('null')
+    link.find('b').html(link_val)
+    input.placeholder = placeholder
 
   cancelEditionMode: (elt) =>
     td = $(elt.currentTarget).parents('td')

@@ -205,6 +205,11 @@ class ResourcesController < ApplicationController
   end
 
   def item_params
+    if params[:save_empty_input_as] == 'null'
+      params[resource.table].each do |k,v|
+        params[resource.table][k] = nil if v == ''
+      end
+    end
     params[resource.table]
   end
 
