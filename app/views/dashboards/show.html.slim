@@ -64,7 +64,7 @@
     h3 New dashboard widget
   = simple_form_for Widget.new(type: 'TableWidget'), html: {class: 'form-horizontal'} do |f|
     .modal-body
-      = f.input :type, collection: [['Table', 'TableWidget'], ['Time Chart', 'TimeChartWidget']], as: :radio
+      = f.input :type, collection: [['Table', 'TableWidget'], ['Time Chart', 'TimeChartWidget']], as: :radio_buttons
       = f.input :table, as: :select, collection: @generic.tables
       .hide data-widget-type="TimeChartWidget"
         = f.input :columns, as: :select, collection: []
