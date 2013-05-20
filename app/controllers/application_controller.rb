@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   rescue_from Exception, with: :disconnect_on_exception
   rescue_from Generic::TableNotFoundException, with: :table_not_found
-  rescue_from PGError, Mysql2::Error, Sequel::DatabaseConnectionError, with: :global_db_error
+  rescue_from Sequel::DatabaseConnectionError, with: :global_db_error
   before_filter :fixed_account
   before_filter :require_authentication
   before_filter :connect_to_db
