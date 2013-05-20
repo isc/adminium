@@ -213,10 +213,6 @@ module Resource
       checked + non_checked
     end
 
-    def string_column_names
-      schema.find_all{|c, info|info[:type] == :string}.map(&:first)
-    end
-
     def column_type column_name
       info = column_info column_name
       info[:type] if info
@@ -237,11 +233,19 @@ module Resource
     def is_date_column? column_name
       [:datetime, :date, :timestamp].include? column_type(column_name)
     end
-    
+
+    def string_column_names
+      schema.find_all{|c, info|info[:type] == :string}.map(&:first)
+    end
+
     def string_or_text_column_names
       find_all_columns_for_types(:string, :text).map(&:first)
     end
-
+    
+    def date_column_names
+      find_all_columns_for_types(:datetime, :date, :timestamp).map(&:first)
+    end
+    
     def searchable_column_names
       find_all_columns_for_types(:string, :text, :integer, :decimal).map(&:first)
     end
