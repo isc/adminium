@@ -312,5 +312,11 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_equal '08:37', page.find('td[data-column-name=daily_alarm]').text
     assert_equal 'May 22, 2013', page.find('td[data-column-name=birthdate]').text
   end
+  
+  test "field with a database default" do
+    Resource::Base.any_instance.stubs(:columns).returns form: [:kind]
+    visit new_resource_path(:users)
+    assert page.has_css?('input[name="users[kind]"][value="37"]')
+  end
 
 end

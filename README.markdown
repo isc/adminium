@@ -15,6 +15,7 @@ validations avec arguments
 colonnes calculees
 conf des associations / foreign_keys
 disable completement des tables
+faire du dependent destroy sur les associations
 improve search (regexp, fulltext (http://tech.pro/tutorial/1142/building-faceted-search-with-postgresql))
 mass editing / editing ; nullifier des champs
 support pour l'édition des associations has many

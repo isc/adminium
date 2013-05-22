@@ -343,6 +343,10 @@ module Resource
       validations.detect {|val| val['validator'] == VALIDATES_PRESENCE_OF && val['column_name'] == name.to_s}
     end
     
+    def default_value name
+      schema_hash[name][:default]
+    end
+    
     def item_label item
       return unless item
       res = item[label_column.to_sym] if label_column
