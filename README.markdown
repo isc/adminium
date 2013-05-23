@@ -1,7 +1,6 @@
 ## Sequel Migration TODOS / FIXMES :
 
   - composite primary keys for import, bulk edit
-  - empty string => nil in forms ?
   - support for views
   - bug time chart day of week ; 2 sundays
 bug https://adminium.herokuapp.com/auth/failure?message=invalid_credentials
