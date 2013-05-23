@@ -2,6 +2,7 @@ module FormHelper
 
   def input resource, item, name, input_class, required_constraints
     input_name, input_value, input_id = "#{resource.table}[#{name}]", item[name], "#{resource.table}_#{name}"
+    input_value = resource.default_value name if required_constraints && input_value.nil?
     input_type, options = default_input_type(resource, name, input_value)
     required = required_constraints && resource.required_column?(name)
     input_options = {id: input_id, required: required, class: input_class}
