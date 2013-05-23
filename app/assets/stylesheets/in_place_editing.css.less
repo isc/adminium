@@ -1,18 +1,41 @@
 td[data-column-name] {
-  padding-right:20px;
-  position:relative;
+  padding-right: 20px;
+  position: relative;
 
   .in-place-actions {
-    display:inline;
+    display: inline;
     margin-left: 5px;
   }
 
   a.cancel {
-    color:#888;
-    margin-left:3px;
-    display:inline-block;
-    vertical-align:middle;
-    cursor:pointer;
+    color: #888;
+    margin-left: 3px;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+  }
+  .null_btn, .empty_string_btn {
+    display: none;
+    font-size: 10px;
+    color: #AAA;
+    &.active {
+      display: block;
+    }
+    background: #EEE;
+    position: absolute;
+    border: 1px solid #DDD;
+    font-style: normal;
+    top: 10px;
+    border-radius: 2px;
+    padding: 0px 3px;
+    &.selected {
+      color: #333;
+      background: lightYellow;
+      border-color: orange;
+    }
+  }
+  .empty_string_btn {
+    left: 93px;
   }
   a.save_empty_input, a.save_empty_input:hover {
     color: gray;

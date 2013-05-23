@@ -31,7 +31,7 @@ class InPlaceEditing
       type = 'text'
       raw_value = td.find('a').attr('data-content')
     td.attr("data-original-content", td.html())
-    td.html($("<form class='form form-inline'><div class='control-group'><div class='controls'><div class='in-place-actions'><button class='btn'><i class='icon-ok' /></button><a class='cancel'><i class='icon-remove'></i></a></div><a class='save_empty_input hide'>or save as <b>empty string</b></a><input name=save_empty_input_as value=null type='hidden'></input>"))
+    td.html($("<form class='form form-inline'><div class='control-group'><div class='controls'><div class='null_btn selected'>NULL</div><div class='empty_string_btn'>empty string</div><div class='in-place-actions'><button class='btn'><i class='icon-ok' /></button><a class='cancel'><i class='icon-remove'></i></a></div><input name=save_empty_input_as value=null type='hidden'></input>"))
     td.attr("data-mode", "editing")
     td.find('a.cancel').click @cancelEditionMode
     td.find('form').submit @submitColumnEdition
@@ -40,14 +40,23 @@ class InPlaceEditing
     else
       input = @defaultEditionMode td, name, raw_value
     input.prependTo(td.find('.controls'))
-    switchLink = td.find('a.save_empty_input')
+    @setBtnPositions(td)
+    switchLink = td.find('.null_btn, .empty_string_btn')
     switchLink.click (evt) =>
       @switchEmptyInputValue($(evt.currentTarget))
       false
-    @switchEmptyInputValue(switchLink) if td.hasClass('emptystring')
+    @switchEmptyInputValue($('.empty_string_btn')) if td.hasClass('emptystring')
     input.val(raw_value).focus()
     input.attr('name', name)
 
+  setBtnPositions: (elt) =>
+    input = elt.find('input[type=text]')
+    return if input.length == 0
+    left = input.position().left + input.width()  - elt.find(".empty_string_btn").width() - 2
+    elt.find(".empty_string_btn").css('left', left)
+    left += elt.find(".null_btn").width() - 3
+    elt.find(".null_btn").css('left', left - elt.find(".empty_string_btn").width())
+      
   textEditionMode: (td) =>
     input = $('<textarea>')
   
@@ -78,8 +87,8 @@ class InPlaceEditing
     i
 
   defaultEditionMode: (td, name, raw_value) =>
-    td.find('a.save_empty_input').show() unless raw_value && raw_value.length > 0
-    input  = $('<input type=text placeholder="null">')
+    @showNullBlankBtn(td, !(raw_value && raw_value.length > 0))
+    input  = $('<input type=text>')
     input.on 'keyup', @displaySwitchEmptyValueLink
     input
   
@@ -88,7 +97,12 @@ class InPlaceEditing
     input = $(evt.currentTarget)
     value = input.val()
     show = value.length == 0
-    input.parents('td').find('a.save_empty_input').toggle(show)
+    @showNullBlankBtn(input.parents('td'), show)
+    
+  
+  showNullBlankBtn: (elt, show) =>
+    elt.find('.empty_string_btn, .null_btn').toggleClass('active', show)
+    @setBtnPositions(elt)
 
   enumEditionMode: (td, name, raw_value) =>
     options = ""
@@ -141,18 +155,14 @@ class InPlaceEditing
     @restoreOriginalValue $('td[data-mode=editing]')
 
   switchEmptyInputValue: (link) =>
-    input = link.parents('td').find('input[type=text]').get(0)
+    $(".empty_string_btn, .null_btn").removeClass('selected')
+    link.addClass('selected')
+    input = link.parents('td').find('input[type=text]').focus()
     hidden_input = link.parents('td').find('input[name=save_empty_input_as]')
-    if input.placeholder == 'null'
-      placeholder = 'empty string'
-      link_val = 'NULL'
+    if link.hasClass('empty_string_btn')
       hidden_input.val('empty_string')
     else
-      placeholder = 'null'
-      link_val = 'empty string'
       hidden_input.val('null')
-    link.find('b').html(link_val)
-    input.placeholder = placeholder
 
   cancelEditionMode: (elt) =>
     td = $(elt.currentTarget).parents('td')
