@@ -267,5 +267,9 @@ module ResourcesHelper
     res << ['has_many', resource.associations[:has_many].map{|name, assoc|["#{name.to_s.humanize} count", name]}]
     grouped_options_for_select res
   end
+  
+  def generate_time_chart_path
+    time_chart_resources_path(params.slice(:table, :where, :search, :asearch).merge column: '{column}')
+  end
 
 end

@@ -8,11 +8,15 @@ module TimeChartBuilder
   
   def time_chart
     aggregate = time_chart_aggregate params[:column]
-    query = resource.query.group(aggregate).
+    @items = resource.query
+    apply_where
+    apply_filters
+    apply_search
+    @items = @items.group(aggregate).
       select(aggregate.as('chart_date'), Sequel.function(:count, Sequel.lit('*'))).
       order(aggregate)
-    query = query.where(params[:column].to_sym => date_range) unless periodic_grouping?
-    aggregation query.all
+    @items = @items.where(params[:column].to_sym => date_range) unless periodic_grouping?
+    aggregation @items.all
     add_missing_zeroes if grouping == 'daily' && @data.present?
     @widget = current_account.time_chart_widgets
       .where(table: params[:table], columns: params[:column], grouping: grouping).first

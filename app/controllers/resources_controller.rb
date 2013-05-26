@@ -28,7 +28,6 @@ class ResourcesController < ApplicationController
 
   def index
     @title = params[:table]
-    @current_filter = resource.filters[params[:asearch]] || []
     @widget = current_account.table_widgets.where(table: params[:table], advanced_search: params[:asearch]).first
     # FIXME we could be more specific than *
     @items = resource.query.select(qualify params[:table], Sequel.lit('*'))
@@ -367,6 +366,7 @@ class ResourcesController < ApplicationController
   end
 
   def apply_filters
+    @current_filter = resource.filters[params[:asearch]] || []
     @current_filter.each_with_index do |filter, index|
       clause = apply_filter filter
       @items = if index.nonzero? && filter['grouping'] == 'or'
