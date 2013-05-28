@@ -168,6 +168,17 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert page.has_css?('td', text: 'bob')
   end
   
+  test "sort by custom column belongs_to" do
+    FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'bob').factory.id)
+    FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'zob').factory.id)
+    Resource::Base.any_instance.stubs(:columns).returns listing: ['users.pseudo'], serialized: [], search: []
+    Resource::Base.any_instance.stubs(:default_order).returns 'users.pseudo'
+    visit resources_path(:comments)
+    assert_equal %w(bob zob), page.all('table.items-list tr td:last-child').map(&:text)
+    find('a[title="Sort by Users.pseudo Z &rarr; A"]').click
+    assert_equal %w(zob bob), page.all('table.items-list tr td:last-child').map(&:text)
+  end
+  
   test "custom column belongs_to which is a foreign_key to another belongs_to" do
     group = FixtureFactory.new(:group, name: 'Adminators').factory
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, group_id: group.id).factory.id)

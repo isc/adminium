@@ -359,7 +359,12 @@ class ResourcesController < ApplicationController
     order  = params[:order] || resource.default_order
     return unless order
     column, descending = order.split(" ")
-    column = order[/[.\/]/] ? column.to_sym : (qualify params[:table], column)
+    if column['.']
+      assoc_info = resource.associations[:belongs_to][column.split('.').first.to_sym]
+      @items = @items.left_outer_join(assoc_info[:referenced_table], assoc_info[:primary_key] => assoc_info[:foreign_key])
+        .select_append(Sequel.lit(column))
+    end
+    column = order[/[.\/]/] ? Sequel.lit(column) : (qualify params[:table], column)
     opts = @generic.mysql? ? {} : {nulls: :last}
     @items = @items.order(Sequel::SQL::OrderedExpression.new(column, !!descending, opts))
     @items = @items.order_prepend(Sequel.case([[{column=>nil}, 1]], 0)) if @generic.mysql?
