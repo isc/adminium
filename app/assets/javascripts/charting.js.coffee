@@ -30,5 +30,4 @@ class Charting
       chart = new google.visualization.PieChart(pie)
       chart.draw data, options
 
-$ ->
-  new Charting()
+new Charting()

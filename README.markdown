@@ -42,6 +42,7 @@ données stockées dans redis pour les comptes deprovisionnés ?
 
 ## BUGS:
 
+searchable columns only integer, rechercher une string ne veut rien dire mais ramene tous les results
 ugly show avec une text column bien remplie (https://adminium.herokuapp.com/resources/stories/15 sur enigmatic-beach-4845)
 serialized columns containing smth else than a basic type
 subnav flickers on a page slightly too long for the screen
