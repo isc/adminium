@@ -6,9 +6,9 @@ class Generic
   attr_accessor :models, :db_name, :account_id, :db
   attr_reader :current_adapter
 
-  def initialize account
+  def initialize account, opts={}
     @account_id, @account = account.id, account
-    establish_connection account.db_url
+    establish_connection account.db_url, opts
   end
 
   def cleanup
@@ -145,14 +145,15 @@ class Generic
     end
   end
 
-  def establish_connection db_url
+  def establish_connection db_url, opts = {}
     # TODO there is a read_timeout option for mysql
     uri = URI.parse db_url
     uri.scheme = 'postgres' if uri.scheme == 'postgresql'
     uri.scheme = 'mysql2' if uri.scheme == 'mysql'
     @db_name = (uri.path || "").split("/")[1]
     @current_adapter = uri.scheme
-    @db = Sequel.connect uri.to_s, logger: Rails.logger
+    opts[:logger] ||= Rails.logger
+    @db = Sequel.connect uri.to_s, opts
   end
 
   def postgresql?

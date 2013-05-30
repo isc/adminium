@@ -3,31 +3,22 @@ task fetch_owner_emails: :environment do
 end
 
 task statistical_computing: :environment do
-  tables = {}
-  columns = {}
-  i = 0
-  Account.where('encrypted_db_url is not null').where(adapter: 'postgres', deleted_at: nil).find_each do |account|
-    puts "#{i} #{account.id}"
-    i += 1
+  results = []
+  Account.where('encrypted_db_url is not null').where(deleted_at: nil).find_each do |account|
     begin
-      g=Generic.new(account)
-      g.models.each do |model|
-        tables[model.table_name] ||= 0
-        tables[model.table_name] += 1
-        model.columns.each do |column|
-          columns[column.name] ||= 0
-          columns[column.name] += 1
+      g=Generic.new account, timeout: 20, connect_timeout: 3, read_timeout: 5, max_connections: 10
+      g.tables.each do |table|
+        g.schema(table).each do |column|
+          name = column.first
+          type = column.last[:type]
+          results.push [account.name, table, name, type]
         end
       end
-    rescue PG::Error
+    rescue Sequel::DatabaseConnectionError => e
+      puts account.name
+      puts e.inspect
+    ensure
+      g.try :cleanup
     end
-  end
-  datas = {tables: tables, columns: columns} ; nil
-  [:tables, :columns].each do |kind|
-    datas[kind].to_a.sort{|a,b| b.last <=> a.last}.each do |a|
-      puts "#{a.first}: #{a.last}"
-    end ; nil 
   end ; nil
-  puts datas
-  datas = JSON.parse(datas)
 end
