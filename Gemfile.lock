@@ -13,6 +13,12 @@ GIT
     attr_encrypted (1.2.0)
       encryptor (>= 1.1.1)
 
+GIT
+  remote: git://github.com/isc/sequel.git
+  revision: 105e39762baa140d750918eeb1cdb17f78c771cc
+  specs:
+    sequel (3.47.0)
+
 GEM
   remote: http://rubygems.org/
   specs:
@@ -203,7 +209,6 @@ GEM
       ffi (~> 1.0.9)
       json_pure
       rubyzip
-    sequel (3.46.0)
     sequel_pg (1.6.5)
       pg (>= 0.8.0)
       sequel (>= 3.39.0)
@@ -294,7 +299,7 @@ DEPENDENCIES
   rails (= 3.2.13)
   redis (>= 2.2.0)
   rest-client
-  sequel (= 3.46.0)
+  sequel!
   sequel_pg
   sextant
   simple_form (= 2.0.4)
