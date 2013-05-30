@@ -22,7 +22,7 @@ class ResourcesController < ApplicationController
     apply_search
     apply_order
     @items = @items.select(*(resource.columns[:search].map {|c| Sequel.identifier(c)}))
-    records = @items.paginate(1, 37).map {|h| h.merge(adminium_label: resource.item_label(h))}
+    records = @items.limit(37).map {|h| h.merge(adminium_label: resource.item_label(h))}
     render json: records.to_json(only: resource.columns[:search] + [:adminium_label])
   end
 
@@ -42,12 +42,12 @@ class ResourcesController < ApplicationController
     respond_with @items do |format|
       format.html do
         check_per_page_setting
-        @items = @items.paginate page, resource.per_page.to_i
+        @items = @items.extension(:pagination).paginate page, resource.per_page.to_i
         fetch_associated_items
         apply_statistics
       end
       format.json do
-        @items = @items.paginate page, 10
+        @items = @items.extension(:pagination).paginate page, 10
         fetch_associated_items
         render json: {
           widget: render_to_string(partial: 'items', locals: {items: @fetched_items, actions_cell: false}),

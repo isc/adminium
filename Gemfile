@@ -5,7 +5,8 @@ ruby '1.9.3'
 gem 'rails', '3.2.13'
 gem 'pg'
 gem 'mysql2'
-gem 'sequel', '3.46.0', require: false
+# using git version until https://github.com/jeremyevans/sequel/pull/670 is merged
+gem 'sequel', git: 'git://github.com/isc/sequel.git'
 gem 'sequel_pg', require: false
 gem 'hiredis', '0.4.5'
 gem 'redis', '>= 2.2.0', require: ["redis", "redis/connection/hiredis"]

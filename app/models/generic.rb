@@ -1,6 +1,5 @@
 require 'uri'
 require 'sequel'
-Sequel.extension :pagination
 
 class Generic
   attr_accessor :models, :db_name, :account_id, :db
