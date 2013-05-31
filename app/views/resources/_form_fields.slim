@@ -5,7 +5,7 @@
         abbr title="required" *
         ' 
       = resource.column_display_name name
-    .controls(style='position: relative')
+    .controls
       - if (assoc_info = resource.foreign_key?(name)) && !assoc_info[:polymorphic]
         - foreign_resource = resource_for assoc_info[:referenced_table]
         - if foreign_resource.query.count <= 25
