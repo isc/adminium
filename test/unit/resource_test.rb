@@ -27,5 +27,10 @@ class GenericTest < ActiveSupport::TestCase
     resource = Resource::Base.new @generic, :users
     assert_equal 'pseudo', resource.label_column
   end
+  
+  test "pg_array extension" do
+    resource = Resource::Base.new @generic, :users
+    assert_equal :string_array, resource.column_info(:nicknames)[:type]
+  end
 
 end

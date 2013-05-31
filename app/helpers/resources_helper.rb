@@ -165,6 +165,8 @@ module ResourcesHelper
       display_number key, item, resource
     when TrueClass, FalseClass
       display_boolean key, item, resource
+    when Sequel::Postgres::PGArray
+      display_array value
     when nil
       'null'
     else
@@ -230,6 +232,10 @@ module ResourcesHelper
     value.strftime '%H:%M'
   end
 
+  def display_array value
+    content_tag(:pre, value, class: 'sh_ruby')
+  end
+  
   def column_content_tag wrapper_tag, content, opts
     opts[:class] = "column #{opts[:class]}"
     content_tag wrapper_tag, content, opts

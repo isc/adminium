@@ -26,7 +26,7 @@ javascript:
 
 .row-fluid.item-attributes data-table=params[:table] data-item-id=params[:id]
   .span7
-    - [[:string], [:integer, :float, :decimal]].each do |types|
+    - [[:string, :string_array], [:integer, :float, :decimal]].each do |types|
       - columns = item_attributes_type types, resource
       - if columns.present?
         table.table.table-condensed

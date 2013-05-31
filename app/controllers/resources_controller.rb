@@ -111,7 +111,7 @@ class ResourcesController < ApplicationController
   rescue Sequel::Error, Resource::ValidationError => e
     respond_to do |format|
       format.html do
-        flash.now[:error] = e.message.html_safe
+        flash.now[:error] = "Update failed: #{e.message}".html_safe
         @item = item_params.merge(resource.primary_key_values_hash params[:id])
         @form_url = resource_path(params[:table], params[:id])
         @form_method = 'put'
@@ -306,20 +306,23 @@ class ResourcesController < ApplicationController
 
   def apply_search
     return unless params[:search].present?
+    conds = []
     number_columns = resource.columns[:search].select{|c| resource.is_number_column?(c)}
-    if number_columns.present? && params[:search].match(/\A\-?\d+\Z/)
+    if number_columns.any? && params[:search].match(/\A\-?\d+\Z/)
       v = params[:search].to_i
-      @items = @items.where(false)
-      number_columns.each do |column|
-        @items = @items.or(qualify(resource.table, column) => v)
-      end
-    else
-      text_columns = resource.columns[:search].select{|c| resource.is_text_column?(c)}
-      if text_columns.present?
-        string_patterns = params[:search].split(" ").map {|pattern| pattern.include?("%") ? pattern : "%#{pattern}%" }
-        @items = @items.grep(text_columns.map{|c| qualify(resource.table, c)}, string_patterns, case_insensitive: true, all_patterns: true)
-      end
+      conds += number_columns.map {|column| {qualify(resource.table, column) => v}}
     end
+    text_columns = resource.columns[:search].select{|c| resource.is_text_column?(c)}
+    if text_columns.any?
+      string_patterns = params[:search].split(" ").map {|pattern| pattern.include?("%") ? pattern : "%#{pattern}%" }
+      conds << resource.query.grep(text_columns.map{|c| qualify(resource.table, c)}, string_patterns, case_insensitive: true, all_patterns: true).opts[:where]
+    end
+    array_columns = resource.columns[:search].select{|c| resource.is_array_column?(c)}
+    if array_columns.any?
+      search_array = @generic.db.literal Sequel.pg_array(params[:search].split(" "), :varchar)
+      conds += array_columns.map {|column| Sequel.lit "#{column} @> #{search_array}"}
+    end
+    @items = @items.filter(Sequel::SQL::BooleanExpression.new :OR, *conds) if conds.any?
   end
   
   def apply_where
