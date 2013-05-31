@@ -31,7 +31,7 @@ class InPlaceEditing
       type = 'text'
       raw_value = td.find('a').attr('data-content')
     td.attr("data-original-content", td.html())
-    td.html($("<form class='form form-inline'><div class='control-group'><div class='controls'><div class='null_btn selected'>null</div><div class='empty_string_btn'>empty string</div><div class='in-place-actions'><button class='btn'><i class='icon-ok' /></button><a class='cancel'><i class='icon-remove'></i></a></div><input name=save_empty_input_as value=null type='hidden'></input>"))
+    td.html($("<form class='form form-inline'><div class='control-group'><div class='controls'><div class='in-place-actions'><button class='btn'><i class='icon-ok' /></button><a class='cancel'><i class='icon-remove'></i></a></div>"))
     td.attr("data-mode", "editing")
     td.find('a.cancel').click @cancelEditionMode
     td.find('form').submit @submitColumnEdition
@@ -40,22 +40,11 @@ class InPlaceEditing
     else
       input = @defaultEditionMode td, name, raw_value
     input.prependTo(td.find('.controls'))
-    @setBtnPositions(td)
-    switchLink = td.find('.null_btn, .empty_string_btn')
-    switchLink.click (evt) =>
-      @switchEmptyInputValue($(evt.currentTarget))
-      false
-    @switchEmptyInputValue($('.empty_string_btn')) if td.hasClass('emptystring')
     input.val(raw_value).focus()
     input.attr('name', name)
+    input.data('null-value', true) if td.hasClass('nilclass')
+    new NullifiableInput(input)
 
-  setBtnPositions: (elt) =>
-    input = elt.find('input[type=text]')
-    return if input.length is 0
-    left = input.position().left + input.width() - elt.find(".empty_string_btn").width() - 2
-    elt.find(".empty_string_btn").css('left', left)
-    elt.find(".null_btn").css('left', left - elt.find(".null_btn").width() - 11)
-      
   textEditionMode: (td) =>
     input = $('<textarea>')
   
@@ -86,22 +75,7 @@ class InPlaceEditing
     i
 
   defaultEditionMode: (td, name, raw_value) =>
-    @showNullBlankBtn(td, !(raw_value && raw_value.length > 0))
-    input  = $('<input type=text>')
-    input.on 'keyup', @displaySwitchEmptyValueLink
-    input
-  
-  displaySwitchEmptyValueLink: (evt) =>
-    key = evt.keyCode || evt.charCode;
-    input = $(evt.currentTarget)
-    value = input.val()
-    show = value.length == 0
-    @showNullBlankBtn(input.parents('td'), show)
-    
-  
-  showNullBlankBtn: (elt, show) =>
-    elt.find('.empty_string_btn, .null_btn').toggleClass('active', show)
-    @setBtnPositions(elt)
+    $('<input type=text>')
 
   enumEditionMode: (td, name, raw_value) =>
     options = ""
@@ -152,16 +126,6 @@ class InPlaceEditing
   errorCallback: (data) =>
     alert('internal error : failed to update this field')
     @restoreOriginalValue $('td[data-mode=editing]')
-
-  switchEmptyInputValue: (link) =>
-    $(".empty_string_btn, .null_btn").removeClass('selected')
-    link.addClass('selected')
-    input = link.parents('td').find('input[type=text]').focus()
-    hidden_input = link.parents('td').find('input[name=save_empty_input_as]')
-    if link.hasClass('empty_string_btn')
-      hidden_input.val('empty_string')
-    else
-      hidden_input.val('null')
 
   cancelEditionMode: (elt) =>
     td = $(elt.currentTarget).parents('td')

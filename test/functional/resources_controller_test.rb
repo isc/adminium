@@ -133,12 +133,42 @@ class ResourcesControllerTest < ActionController::TestCase
     get :bulk_edit, table: 'users', record_ids: @records.map(&:id)
     assert_equal @records.map(&:id), assigns[:record_ids].map(&:to_i)
   end
+  
+  def test_bulk_update
+    FixtureFactory.clear_db
+    request.env["HTTP_REFERER"] = 'http://example.com'
+    names = ['John', 'Jane']
+    users = 2.times.map { |i| FixtureFactory.new(:user, age: 34, role: 'Developer', last_name: 'Johnson', first_name: names[i]).factory }
+    params = {table: 'users', record_ids: users.map(&:id)}
+    params[:users]                  = {:role => '', :last_name => '', :first_name => '', :age => 55}
+    params[:users_nullify_settings] = {:role => "null", :last_name => 'empty_string', :first_name => ''}
+    post :bulk_update, params
+    get :index, table: 'users'
+    assigns[:items].each do |user|
+      assert_equal nil, user[:role]
+      assert_equal '', user[:last_name]
+      assert names.include?(user[:first_name])
+    end
+  end
 
   def test_search_for_association_input
     get :search, table: 'users', search: 'Loulou'
     data = JSON.parse @response.body
     assert_equal 1, data.length
     assert_equal "Loulou", data.first['pseudo']
+  end
+  
+  def test_update
+    FixtureFactory.clear_db
+    user = FixtureFactory.new(:user, age: 34, role: 'Developer', last_name: 'Johnson').factory
+    params = {table: 'users', id: user.id}
+    params[:users]                  = {:role => '', :last_name => ''}
+    params[:users_nullify_settings] = {:role => "null", :last_name => 'empty_string'}
+    post :update, params
+    get :show, table: 'users', id: user.id
+    item = assigns[:item]
+    assert_equal nil, item[:role]
+    assert_equal '', item[:last_name]
   end
 
   def test_statistics

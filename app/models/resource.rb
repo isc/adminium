@@ -348,7 +348,7 @@ module Resource
     end
     
     def default_value name
-      schema_hash[name][:default]
+      schema_hash[name][:ruby_default]
     end
     
     def item_label item
@@ -390,7 +390,6 @@ module Resource
     end
     
     def update_multiple_items ids, updated_values
-      updated_values.reject!{|k,v|v.blank?}
       updated_values = typecasted_values updated_values
       magic_timestamps updated_values, false
       # FIXME doesn't work with composite primary keys

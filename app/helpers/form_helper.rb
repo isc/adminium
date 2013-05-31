@@ -6,6 +6,7 @@ module FormHelper
     input_type, options = default_input_type(resource, name, input_value)
     required = required_constraints && resource.required_column?(name)
     input_options = {id: input_id, required: required, class: input_class}
+    input_options[:'data-null-value'] = true if input_value.nil?
     input_options.merge!(readonly: true) if resource.column_info(name)[:primary_key]
     return "..." unless input_type
     case input_type

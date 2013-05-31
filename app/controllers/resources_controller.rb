@@ -148,6 +148,7 @@ class ResourcesController < ApplicationController
     if @record_ids.length == 1
       @item = resource.find @record_ids.shift
       @form_url = resource_path(params[:table], resource.primary_key_value(@item), return_to: :back)
+      @form_method = 'put'
     else
       @form_url = bulk_update_resources_path(params[:table])
       @item = {}
@@ -204,12 +205,26 @@ class ResourcesController < ApplicationController
   end
 
   def item_params
-    if params[:save_empty_input_as] == 'null'
-      params[resource.table].each do |k,v|
-        params[resource.table][k] = nil if v == ''
+    nullify_params
+    params[resource.table]
+  end
+  
+  def nullify_params
+    return if @already_nullified
+    (params[resource.table] || {}).each do |column_name, value|
+      next unless value.blank?
+      if nullify_setting_for(column_name) == 'null'
+        params[resource.table][column_name] = nil
+      end
+      if nullify_setting_for(column_name).blank?
+        params[resource.table].delete column_name
       end
     end
-    params[resource.table]
+    @already_nullified = true
+  end
+  
+  def nullify_setting_for(column_name)
+    params["#{resource.table}_nullify_settings"] && params["#{resource.table}_nullify_settings"][column_name]
   end
 
   def object_name

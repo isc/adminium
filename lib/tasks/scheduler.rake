@@ -3,8 +3,11 @@ task fetch_owner_emails: :environment do
 end
 
 task statistical_computing: :environment do
+  done_ids = [2379, 2378, 2377, 2376, 2375, 2374, 2370, 2368, 2367, 2366]
   results = []
-  Account.where('encrypted_db_url is not null').where(deleted_at: nil).find_each do |account|
+  Account.where('encrypted_db_url is not null').where(deleted_at: nil).where('plan is not "petproject"').order('id desc').limit(30).all.each do |account|
+    puts account.name
+    done_ids.push(account.id)
     begin
       g=Generic.new account, timeout: 20, connect_timeout: 3, read_timeout: 5, max_connections: 10
       g.tables.each do |table|
@@ -14,7 +17,7 @@ task statistical_computing: :environment do
           results.push [account.name, table, name, type]
         end
       end
-    rescue Sequel::DatabaseConnectionError => e
+    rescue Sequel::DatabaseConnectionError, Sequel::DatabaseError => e
       puts account.name
       puts e.inspect
     ensure

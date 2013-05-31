@@ -308,7 +308,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
   
   test "bulk edit" do
-    users = 2.times.map { FixtureFactory.new(:user, age: 34, role: 'Developer').factory }
+    users = 2.times.map { FixtureFactory.new(:user, age: 34, role: 'Developer', last_name: 'Johnson').factory }
     visit bulk_edit_resources_path(:users, record_ids: users.map(&:id))
     fill_in 'Age', with: '37'
     fill_in 'Role', with: 'CTO'
@@ -317,7 +317,17 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     users.each do |user|
       assert_equal '37', find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=age]").text
       assert_equal 'CTO', find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=role]").text
+      assert_equal 'Johnson', find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=last_name]").text
     end
+  end
+  
+  test "bulk edit on a single resource" do
+    user = FixtureFactory.new(:user, age: 34, role: 'Developer').factory
+    visit bulk_edit_resources_path(:users, record_ids: [user.id])
+    fill_in 'Age', with: '37'
+    click_button "Update Users ##{user.id}"
+    visit resources_path(:users)
+    assert_equal '37', page.find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=age]").text
   end
   
   test "edit and display time and date column" do
