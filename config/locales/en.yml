@@ -8,3 +8,7 @@ en:
       skip_header_help: Do not output a header (no fields description).
       col_sep: Column separator
       col_sep_help: Choose the character output between columns.
+  activerecord:
+    attributes:
+      account:
+        db_url: Database URL

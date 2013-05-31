@@ -457,8 +457,10 @@ module Resource
     
     def raw_column_output item, key
       info = column_info(key)
-      if info && (info[:type] == :time)
-        item[key] && item[key].strftime('%H:%M')
+      if info.try(:[], :type) == :time
+        item[key].try :strftime, '%R'
+      elsif info.try(:[], :type) == :datetime
+        item[key].try :strftime, '%F %T'
       else
         item[key]
       end
