@@ -162,12 +162,13 @@ class ResourcesControllerTest < ActionController::TestCase
     FixtureFactory.clear_db
     user = FixtureFactory.new(:user, age: 34, role: 'Developer', last_name: 'Johnson').factory
     params = {table: 'users', id: user.id}
-    params[:users]                  = {:role => '', :last_name => ''}
+    params[:users]                  = {role: '', last_name: '', age: ''}
     params[:users_nullify_settings] = {:role => "null", :last_name => 'empty_string'}
     post :update, params
     get :show, table: 'users', id: user.id
     item = assigns[:item]
     assert_equal nil, item[:role]
+    assert_equal nil, item[:age]
     assert_equal '', item[:last_name]
   end
 

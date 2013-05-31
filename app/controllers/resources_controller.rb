@@ -212,12 +212,13 @@ class ResourcesController < ApplicationController
   def nullify_params
     return if @already_nullified
     (params[resource.table] || {}).each do |column_name, value|
-      next unless value.blank?
-      if nullify_setting_for(column_name) == 'null'
-        params[resource.table][column_name] = nil
-      end
-      if nullify_setting_for(column_name).blank?
-        params[resource.table].delete column_name
+      if value.blank? && resource.schema_hash[column_name.to_sym] && resource.schema_hash[column_name.to_sym][:type] == :string
+        if nullify_setting_for(column_name) == 'null'
+          params[resource.table][column_name] = nil
+        end
+        if nullify_setting_for(column_name).blank?
+          params[resource.table].delete column_name
+        end
       end
     end
     @already_nullified = true
