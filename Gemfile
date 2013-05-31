@@ -42,6 +42,7 @@ group :development do
   gem 'sextant'
   gem 'rack-webconsole-pry', require: 'rack-webconsole'
   gem 'pry-rails'
+  gem 'xray-rails'
 end
 
 group :production do
