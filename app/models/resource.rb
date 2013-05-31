@@ -222,12 +222,16 @@ module Resource
       schema.detect{|c, _| c == column_name}.try(:second)
     end
 
-    def is_number_column?(column_name)
+    def is_number_column? column_name
       [:integer, :decimal].include? column_type(column_name)
     end
     
-    def is_text_column?(column_name)
+    def is_text_column? column_name
       [:string, :text].include? column_type(column_name)
+    end
+    
+    def is_array_column? column_name
+      column_type(column_name).to_s['_array']
     end
     
     def is_date_column? column_name
@@ -247,7 +251,7 @@ module Resource
     end
     
     def searchable_column_names
-      find_all_columns_for_types(:string, :text, :integer, :decimal).map(&:first)
+      find_all_columns_for_types(:string, :string_array, :text, :integer, :decimal).map(&:first)
     end
 
     def find_all_columns_for_types *types
@@ -409,6 +413,13 @@ module Resource
       return value unless (col_schema = schema_hash[column])
       value = nil if '' == value && ![:string, :blob].include?(col_schema[:type])
       raise(Sequel::InvalidValue, "nil/NULL is not allowed for the #{column} column") if value.nil? && !col_schema[:allow_null]
+      if value && col_schema[:type].to_s['_array']
+        begin
+          value = JSON.parse value
+        rescue JSON::ParserError => e
+          raise Sequel::InvalidValue, "invalid value for array type: #{e.message}"
+        end
+      end
       @generic.db.typecast_value col_schema[:type], value
     end
     

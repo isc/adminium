@@ -59,15 +59,23 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
   
   test "search on integer columns" do
-    FixtureFactory.new(:user, first_name: 'Johnny', last_name: 'Haliday', age: 61)
-    FixtureFactory.new(:user, first_name: 'Mariah', last_name: 'Carey', age: 661)
+    FixtureFactory.new(:user, first_name: 'Johnny', last_name: 'Haliday', age: 61, group_id: 3)
+    FixtureFactory.new(:user, first_name: 'Mariah', last_name: 'Carey', age: 661, group_id: 5)
     visit resources_path(:users)
     fill_in 'search_input', with: "61"
     click_button 'search_btn'
     assert page.has_content? 'Haliday'
     assert page.has_no_content? 'Carey'
+    
+    visit resources_path(:users, where: {group_id: 5})
+    assert page.has_content? 'Carey'
+    assert page.has_no_content? 'Haliday'
+    fill_in 'search_input', with: '61'
+    click_button 'search_btn'
+    assert page.has_no_content? 'Carey'
+    assert page.has_no_content? 'Haliday'
   end
-
+  
   test "links on index for polymorphic belongs to" do
     user = FixtureFactory.new(:user).factory
     group = FixtureFactory.new(:group).factory
@@ -75,9 +83,9 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     second = FixtureFactory.new(:comment, commentable_type: 'Group', commentable_id: group.id).factory
     visit resources_path(:comments)
     assert_equal "User ##{user.id}",
-      page.find("tr[data-item-id=\"#{first.id}\"] a[href=\"#{resource_path :users, user}\"]").text
+      find("tr[data-item-id=\"#{first.id}\"] a[href=\"#{resource_path :users, user}\"]").text
     assert_equal "Group ##{group.id}",
-      page.find("tr[data-item-id=\"#{second.id}\"] a[href=\"#{resource_path :groups, group}\"]").text
+      find("tr[data-item-id=\"#{second.id}\"] a[href=\"#{resource_path :groups, group}\"]").text
   end
   
   test "link on index for polymorphic belongs to with label column setup" do
@@ -86,7 +94,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     Resource::Base.any_instance.stubs(:label_column).returns 'pseudo'
     visit resources_path(:comments)
     assert_equal 'Ralph',
-      page.find("tr[data-item-id=\"#{comment.id}\"] a[href=\"#{resource_path :users, user}\"]").text
+      find("tr[data-item-id=\"#{comment.id}\"] a[href=\"#{resource_path :users, user}\"]").text
   end
   
   test "creating a comment (polymorphic belongs_to)" do
@@ -157,7 +165,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     user = FixtureFactory.new(:user).factory
     2.times { FixtureFactory.new :comment, user_id: user.id }
     FixtureFactory.new(:user)
-    Resource::Base.any_instance.stubs(:columns).returns listing: [:'has_many/comments'], serialized: [], search: []
+    stub_resource_columns listing: [:'has_many/comments']
     visit resources_path(:users)
     assert page.has_css?("tr[data-item-id=\"#{user.id}\"] td.hasmany a", text: '2')
     find('a[title="Sort by Comments count 9 &rarr; 0"]').click
@@ -166,7 +174,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
 
   test "custom column belongs_to" do
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'bob').factory.id)
-    Resource::Base.any_instance.stubs(:columns).returns listing: ['users.pseudo'], serialized: [], search: []
+    stub_resource_columns listing: ['users.pseudo']
     visit resources_path(:comments)
     assert page.has_css?('td', text: 'bob')
   end
@@ -174,7 +182,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test "sort by custom column belongs_to" do
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'bob').factory.id)
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'zob').factory.id)
-    Resource::Base.any_instance.stubs(:columns).returns listing: ['users.pseudo'], serialized: [], search: []
+    stub_resource_columns listing: ['users.pseudo']
     Resource::Base.any_instance.stubs(:default_order).returns 'users.pseudo'
     visit resources_path(:comments)
     assert_equal %w(bob zob), page.all('table.items-list tr td:last-child').map(&:text)
@@ -185,14 +193,14 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test "custom column belongs_to which is a foreign_key to another belongs_to" do
     group = FixtureFactory.new(:group, name: 'Adminators').factory
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, group_id: group.id).factory.id)
-    Resource::Base.any_instance.stubs(:columns).returns listing: ['users.group_id'], serialized: [], search: []
+    stub_resource_columns listing: ['users.group_id']
     generic = Generic.new @account
     resource = Resource::Base.new generic, :groups
     resource.label_column = 'name'
     resource.save
     generic.cleanup
     visit resources_path(:comments)
-    assert_equal 'Adminators', page.find("td.foreignkey a[href=\"#{resource_path(:groups, group)}\"]").text
+    assert_equal 'Adminators', find("td.foreignkey a[href=\"#{resource_path(:groups, group)}\"]").text
   end
   
   test "destroy from show" do
@@ -247,7 +255,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit edit_resource_path(:users, user)
     fill_in 'Pseudo', with: 'Rob'
     click_button 'Save'
-    assert_match "Rob has already been taken.", page.find('.alert.alert-error').text
+    assert_match "Rob has already been taken.", find('.alert.alert-error').text
     fill_in 'Pseudo', with: 'Robert'
     click_button 'Save'
     assert page.has_css?('.alert.alert-success')
@@ -273,8 +281,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     comment = FixtureFactory.new(:comment, commentable_id: user.id, commentable_type: 'User').factory
     Resource::Base.any_instance.stubs(:label_column).returns 'pseudo'
     visit resource_path(:comments, comment)
-    assert_equal "Bobby",
-      page.find("a[href=\"#{resource_path :users, user.id}\"]").text
+    assert_equal "Bobby", find("a[href=\"#{resource_path :users, user.id}\"]").text
   end
   
   test "show with belongs_to association with label_column set" do
@@ -308,14 +315,14 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     click_button 'Update 2 Users'
     visit resources_path(:users)
     users.each do |user|
-      assert_equal '37', page.find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=age]").text
-      assert_equal 'CTO', page.find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=role]").text
+      assert_equal '37', find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=age]").text
+      assert_equal 'CTO', find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=role]").text
     end
   end
   
   test "edit and display time and date column" do
-    Resource::Base.any_instance.stubs(:columns).returns form: [:daily_alarm, :birthdate], listing: [:daily_alarm, :birthdate],
-      show: [:daily_alarm, :birthdate], serialized: []
+    stub_resource_columns form: [:daily_alarm, :birthdate], listing: [:daily_alarm, :birthdate],
+      show: [:daily_alarm, :birthdate]
     visit new_resource_path(:users)
     find('#users_daily_alarm_4i').select "08"
     select '37'
@@ -323,19 +330,19 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     find('#users_birthdate_2i').set '5'
     find('#users_birthdate_3i').set '22'
     click_button 'Save'
-    assert_equal '08:37', page.find('td[data-column-name=daily_alarm]').text
-    assert_equal 'May 22, 2013', page.find('td[data-column-name=birthdate]').text
+    assert_equal '08:37', find('td[data-column-name=daily_alarm]').text
+    assert_equal 'May 22, 2013', find('td[data-column-name=birthdate]').text
   end
   
   test "field with a database default" do
-    Resource::Base.any_instance.stubs(:columns).returns form: [:kind]
+    stub_resource_columns form: [:kind]
     visit new_resource_path(:users)
     assert page.has_css?('input[name="users[kind]"][value="37"]')
   end
   
   test "display of datetime depending on time zone conf" do
     pending "not quite there yet"
-    Resource::Base.any_instance.stubs(:columns).returns listing: [:column_with_time_zone], serialized: [], search: []
+    stub_resource_columns listing: [:column_with_time_zone]
     user = FixtureFactory.new(:user).factory
     ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
     ActiveRecord::Base.connection.execute "update users set activated_at = '2012-10-09 05:00:00' where id = #{user.id}"
@@ -353,7 +360,43 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit resources_path(:users)
     assert_equal '2012-10-08 19:00:00', find('td[data-column-name="activated_at"][data-raw-value]')['data-raw-value']
     assert_equal '2012-10-08 17:00:00', find('td[data-column-name="column_with_time_zone"][data-raw-value]')['data-raw-value']
-    
+  end
+  
+  test "edit and update a pg array column" do
+    stub_resource_columns form: [:nicknames], show: [:nicknames]
+    user = FixtureFactory.new(:user).factory
+    visit edit_resource_path(:users, user.id)
+    fill_in 'Nicknames', with: '["Bob" "Bobby"]'
+    click_button 'Save'
+    assert page.has_css?('.alert.alert-error')
+    fill_in 'Nicknames', with: '["Bob", "Bobby"]'
+    click_button 'Save'
+    assert !page.has_css?('.alert.alert-error')
+    assert_equal '["Bob", "Bobby"]', find('td[data-column-name="nicknames"]')['data-raw-value']
+  end
+  
+  test "search on a string array column" do
+    stub_resource_columns listing: [:nicknames, :pseudo], search: [:nicknames]
+    FixtureFactory.new(:user, nicknames: "{Bob, Bobby, Bobulus}", pseudo: 'Pierre')
+    FixtureFactory.new(:user, nicknames: "{Bob, Rob}", pseudo: 'Jacques')
+    visit resources_path(:users)
+    assert page.has_content?('Pierre')
+    assert page.has_content?('Jacques')
+    fill_in 'search_input', with: 'Bobulus'
+    click_button 'search_btn'
+    assert page.has_content?('Pierre')
+    assert page.has_no_content?('Jacques')
+    fill_in 'search_input', with: 'Bob Bobby'
+    click_button 'search_btn'
+    assert page.has_content?('Pierre')
+    assert page.has_no_content?('Jacques')
+  end
+  
+  def stub_resource_columns value
+    [:serialized, :show, :form, :listing, :search].each do |key|
+      value[key] = [] unless value.has_key? key
+    end
+    Resource::Base.any_instance.stubs(:columns).returns value
   end
 
 end

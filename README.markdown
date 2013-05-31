@@ -8,7 +8,7 @@ bug https://adminium.herokuapp.com/auth/failure?message=invalid_credentials
 ## FEATURES:
 
 freaking TIMEZONES !!
-types exotiques : pg_array, inet, uuid, hstore
+types exotiques : inet, uuid, hstore
 gerer les serialized lors de l'edit/update (pas evident ; unsafe, piste RubyParser pour mitigate cf dbinsights, reste qu'un time inspected ne se parse pas naturellement en retour)
 utiliser rack-timeout
 validations avec arguments

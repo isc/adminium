@@ -37,6 +37,8 @@ module FormHelper
       :date
     when :time
       :time
+    when :string_array
+      :text_area
     when :boolean
       [:select, boolean_input_options(resource, name)]
     when :string, nil
