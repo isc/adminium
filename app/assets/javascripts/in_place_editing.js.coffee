@@ -68,9 +68,12 @@ class InPlaceEditing
     d.prependTo(td.find('.controls'))
     i = $('<input>')
     i.attr('name', name)
-    time = raw_value.split(" ")
-    time.shift()
-    time = time.join(" ")
+    if raw_value && raw_value.length > 0
+      time = raw_value.split(" ")
+      time.shift()
+      time = time.join(" ")
+    else
+      time = ''
     d.datepicker altField:i,  altFormat: "yy-mm-dd #{time}"
     i
 
