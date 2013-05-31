@@ -31,11 +31,13 @@ javascript:
           - if user_can? 'create', params[:table]
             = link_to new_resource_path(table:params[:table]), class: "btn btn-warning create", rel: "tooltip", title: "Create a new row", "data-placement" => "bottom" do
               ' New record
-          button.btn.bulk-action.bulk-edit.hide title="Edit selected rows" rel='tooltip' data-toggle="modal" href="#bulk-edit-modal" data-placement="bottom"
-            i.icon-pencil
-          = form_tag bulk_destroy_resources_path(params[:table]), class: "bulk-action bulk-destroy hide" do
-            button.btn.btn-danger title='Delete selected rows' rel='tooltip' data-placement="bottom"
-              i.icon-trash
+          - if user_can? 'edit', params[:table]
+            button.btn.bulk-action.bulk-edit.hide title="Edit selected rows" rel='tooltip' data-toggle="modal" href="#bulk-edit-modal" data-placement="bottom"
+              i.icon-pencil
+          - if user_can? 'destroy', params[:table]
+            = form_tag bulk_destroy_resources_path(params[:table]), class: "bulk-action bulk-destroy hide" do
+              button.btn.btn-danger title='Delete selected rows' rel='tooltip' data-placement="bottom"
+                i.icon-trash
           a.btn data-toggle="modal" href="#export" title="Export rows" rel='tooltip' data-placement="bottom" style="margin-left:2px"
             i.icon-cloud-download
           - if user_can? 'create', params[:table]
