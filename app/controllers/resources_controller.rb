@@ -364,7 +364,14 @@ class ResourcesController < ApplicationController
       @items = @items.left_outer_join(assoc_info[:referenced_table], assoc_info[:primary_key] => assoc_info[:foreign_key])
         .select_append(Sequel.lit(column))
     end
-    column = order[/[.\/]/] ? Sequel.lit(column) : (qualify params[:table], column)
+    column = case order
+      when /\./
+        Sequel.lit(column)
+      when /\//
+        column.to_sym
+      else
+        (qualify params[:table], column)
+      end
     opts = @generic.mysql? ? {} : {nulls: :last}
     @items = @items.order(Sequel::SQL::OrderedExpression.new(column, !!descending, opts))
     @items = @items.order_prepend(Sequel.case([[{column=>nil}, 1]], 0)) if @generic.mysql?

@@ -156,9 +156,12 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test "custom column has_many" do
     user = FixtureFactory.new(:user).factory
     2.times { FixtureFactory.new :comment, user_id: user.id }
+    FixtureFactory.new(:user)
     Resource::Base.any_instance.stubs(:columns).returns listing: [:'has_many/comments'], serialized: [], search: []
     visit resources_path(:users)
-    assert page.has_css?('td.hasmany a', text: '2')
+    assert page.has_css?("tr[data-item-id=\"#{user.id}\"] td.hasmany a", text: '2')
+    find('a[title="Sort by Comments count 9 &rarr; 0"]').click
+    assert page.has_css?("table.items-list tbody tr:first-child td.hasmany a", text: '2')
   end
 
   test "custom column belongs_to" do
