@@ -1,0 +1,61 @@
+class @NullifiableInput
+  
+  @setup: (path, bulkEdit) ->
+    $(path).each (index, elt) ->
+      new NullifiableInput($(elt), bulkEdit)
+  
+  constructor: (input, bulkEdit) ->
+    @bulkEditMode = bulkEdit
+    @input = input 
+    match = input.get(0).name.match(/\[(.*)\](\[\d\])*/)
+    return unless match
+    @column_name = match[1]
+    @type = columns_hash[@column_name].type if columns_hash[@column_name]
+    return if @type != 'string'
+    @controls = input.parents('.controls')
+    @btns = $("<div class='null_btn'>null</div><div class='empty_string_btn selected'>empty string</div>")
+    hidden_input_name = input.get(0).name.replace("[", "_nullify_settings[")
+    @hidden_input = $("<input name=#{hidden_input_name} value=empty_string type='hidden'></input>")
+    @controls.append(@btns).append(@hidden_input)
+    @empty_string_btn = @controls.find(".empty_string_btn")
+    @null_btn = @controls.find(".null_btn")
+    @input.on 'keyup', @displaySwitchEmptyValueLink
+    @setBtnPositions()
+    @toggleBtns()
+    @btns.click (evt) =>
+      @switchEmptyInputValue($(evt.currentTarget))
+      false
+    if @bulkEditMode
+      @unselectBoth()
+    else
+      if input.data('null-value')
+        @switchEmptyInputValue(@null_btn)
+  
+  displaySwitchEmptyValueLink: (evt) =>
+    @toggleBtns()
+  
+  toggleBtns: () =>
+    show = @input.val().length == 0
+    @unselectBoth() if show && @bulkEditMode
+    @btns.toggleClass('active', show)
+    
+  setBtnPositions: =>
+    return if @input.length is 0
+    left = @input.position().left + @input.width() - @empty_string_btn.width() - 2
+    top = @input.position().top
+    @empty_string_btn.css('left', left)
+    @null_btn.css('left', left - @null_btn.width() - 11)
+  
+  switchEmptyInputValue: (link) =>
+    @input.focus()
+    if @bulkEditMode && link.hasClass('selected')
+      @unselectBoth()
+      return
+    @btns.removeClass('selected')
+    link.addClass('selected')
+    value = if link.hasClass('empty_string_btn') then 'empty_string' else 'null'
+    @hidden_input.val(value)
+  
+  unselectBoth: =>
+    @btns.removeClass('selected')
+    @hidden_input.val('')

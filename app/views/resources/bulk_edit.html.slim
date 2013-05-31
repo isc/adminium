@@ -1,4 +1,5 @@
 = form_tag @form_url, class: 'form-vertical resource-form' do
+  = hidden_field_tag '_method', 'put' if @form_method == 'put'
   - @record_ids.each do |record_id|
     = hidden_field_tag "record_ids[]", record_id
   .modal-header
@@ -18,3 +19,5 @@
   .modal-footer
     - submit_tag_label = @item.present? ? "Update #{params[:table].humanize} ##{@item[resource.primary_key]}" : "Update #{@record_ids.length} #{params[:table].humanize}"
     = submit_tag submit_tag_label, class: 'btn-primary', data: {disable_with: 'Sending...'}
+javascript:
+  NullifiableInput.setup('form.resource-form input', true)

@@ -1,3 +1,6 @@
+javascript:
+  columns_hash = #{resource.schema_hash.to_json.html_safe}
+  adminium_column_options = #{resource.adminium_column_options.to_json.html_safe}
 = form_tag @form_url, class: 'form-horizontal resource-form' do
   = hidden_field_tag '_method', 'put' if @form_method == 'put'
   = render partial: 'form_fields', locals: {item: @item, input_class: 'span6', required_constraints: true}

@@ -14,35 +14,7 @@ td[data-column-name] {
     vertical-align: middle;
     cursor: pointer;
   }
-  .null_btn, .empty_string_btn {
-    display: none;
-    font-size: 10px;
-    color: #AAA;
-    &.active {
-      display: block;
-    }
-    background: #EEE;
-    position: absolute;
-    border: 1px solid #DDD;
-    font-style: normal;
-    top: 10px;
-    border-radius: 2px;
-    padding: 0px 3px;
-    cursor: pointer;
-    &.selected {
-      color: #333;
-      background: lightYellow;
-      border-color: orange;
-    }
-  }
-  .empty_string_btn {
-    left: 93px;
-  }
-  a.save_empty_input, a.save_empty_input:hover {
-    color: gray;
-    text-decoration: underline;
-    cursor: pointer;
-  }
+  
   i.icon-pencil {
     opacity:0;
     cursor:pointer;
@@ -93,4 +65,33 @@ td[data-column-name] {
     }
   }
 
+}
+.resource-form {
+  .null_btn, .empty_string_btn {
+    top: 4px;
+  }
+}
+.null_btn, .empty_string_btn {
+  display: none;
+  font-size: 10px;
+  color: #AAA;
+  &.active {
+    display: block;
+  }
+  background: #EEE;
+  position: absolute;
+  border: 1px solid #DDD;
+  font-style: normal;
+  top: 10px;
+  border-radius: 2px;
+  padding: 0px 3px;
+  cursor: pointer;
+  &.selected {
+    color: #333;
+    background: lightYellow;
+    border-color: orange;
+  }
+}
+.empty_string_btn {
+  left: 93px;
 }
