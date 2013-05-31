@@ -18,7 +18,7 @@ class @NullifiableInput
     @btns = $("<div class='null_btn' title='#{title_n}'>null</div><div class='empty_string_btn selected' title='#{title_e}'>empty string</div>")
     @btns.tooltip()
     hidden_input_name = input.get(0).name.replace("[", "_nullify_settings[")
-    @hidden_input = $("<input name=#{hidden_input_name} value=empty_string type='hidden'></input>")
+    @hidden_input = $("<input name=#{hidden_input_name} value='empty_string' type='hidden'></input>")
     @controls.append(@btns).append(@hidden_input)
     @empty_string_btn = @controls.find(".empty_string_btn")
     @null_btn = @controls.find(".null_btn")
