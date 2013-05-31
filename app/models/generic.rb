@@ -1,5 +1,6 @@
 require 'uri'
 require 'sequel'
+# Sequel.extension :named_timezones
 
 class Generic
   attr_accessor :models, :db_name, :account_id, :db
@@ -153,6 +154,8 @@ class Generic
     @current_adapter = uri.scheme
     opts[:logger] ||= Rails.logger
     @db = Sequel.connect uri.to_s, opts
+    # @db.timezone = ActiveSupport::TimeZone.new(@account.database_time_zone).tzinfo.name
+    # Sequel.application_timezone = ActiveSupport::TimeZone.new(@account.application_time_zone).tzinfo.name
   end
 
   def postgresql?

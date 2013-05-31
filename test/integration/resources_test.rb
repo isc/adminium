@@ -332,5 +332,28 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit new_resource_path(:users)
     assert page.has_css?('input[name="users[kind]"][value="37"]')
   end
+  
+  test "display of datetime depending on time zone conf" do
+    pending "not quite there yet"
+    Resource::Base.any_instance.stubs(:columns).returns listing: [:column_with_time_zone], serialized: [], search: []
+    user = FixtureFactory.new(:user).factory
+    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
+    ActiveRecord::Base.connection.execute "update users set activated_at = '2012-10-09 05:00:00' where id = #{user.id}"
+    ActiveRecord::Base.connection.execute "update users set column_with_time_zone = '2012-10-09 05:00:00 +1000' where id = #{user.id}"
+    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
+    @account.update_attribute :database_time_zone, 'Hawaii'
+    @account.update_attribute :application_time_zone, 'Hawaii'
+    visit resources_path(:users)
+    cell = find('td[data-column-name="activated_at"]')
+    assert_equal '2012-10-09 05:00:00', cell['data-raw-value']
+    assert_equal 'October 09, 2012 05:00', cell.text
+    cell = find('td[data-column-name="column_with_time_zone"]')
+    # assert_equal '2012-10-09 03:00:00', cell['data-raw-value']
+    assert_equal 'October 09, 2012 03:00', cell.text
+    visit resources_path(:users)
+    assert_equal '2012-10-08 19:00:00', find('td[data-column-name="activated_at"][data-raw-value]')['data-raw-value']
+    assert_equal '2012-10-08 17:00:00', find('td[data-column-name="column_with_time_zone"][data-raw-value]')['data-raw-value']
+    
+  end
 
 end

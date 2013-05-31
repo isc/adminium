@@ -15,7 +15,7 @@ GIT
 
 GIT
   remote: git://github.com/isc/sequel.git
-  revision: 105e39762baa140d750918eeb1cdb17f78c771cc
+  revision: 83f711e03b834ba01e6049acadf9beec01b69a02
   specs:
     sequel (3.47.0)
 
