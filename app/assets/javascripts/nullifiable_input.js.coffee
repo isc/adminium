@@ -11,7 +11,7 @@ class @NullifiableInput
     return unless match
     @column_name = match[1]
     @type = columns_hash[@column_name].type if columns_hash[@column_name]
-    return if @type != 'string'
+    return if @type isnt 'string'
     @controls = input.parents('.controls')
     title_n = "will save a NULL value if selected"
     title_e = "will save an empty string if selected"
@@ -26,20 +26,19 @@ class @NullifiableInput
     @setBtnPositions()
     @toggleBtns()
     @btns.click (evt) =>
-      @switchEmptyInputValue($(evt.currentTarget))
+      @switchEmptyInputValue $(evt.currentTarget), true
       false
     if @bulkEditMode
       @unselectBoth()
     else
-      if input.data('null-value')
-        @switchEmptyInputValue(@null_btn)
+      @switchEmptyInputValue @null_btn, false if input.data('null-value')
   
   displaySwitchEmptyValueLink: (evt) =>
     @toggleBtns()
   
-  toggleBtns: () =>
-    show = @input.val().length == 0
-    @unselectBoth() if show && @bulkEditMode
+  toggleBtns: =>
+    show = @input.val().length is 0
+    @unselectBoth() if show and @bulkEditMode
     @btns.toggleClass('active', show)
     
   setBtnPositions: =>
@@ -49,16 +48,14 @@ class @NullifiableInput
     @empty_string_btn.css('left', left)
     @null_btn.css('left', left - @null_btn.width() - 11)
   
-  switchEmptyInputValue: (link) =>
-    @input.focus()
-    if @bulkEditMode && link.hasClass('selected')
-      @unselectBoth()
-      return
-    @btns.removeClass('selected')
-    link.addClass('selected')
-    value = if link.hasClass('empty_string_btn') then 'empty_string' else 'null'
+  switchEmptyInputValue: (link, user_action) =>
+    @input.focus() if user_action
+    return @unselectBoth() if @bulkEditMode and link.hasClass 'selected'
+    @btns.removeClass 'selected'
+    link.addClass 'selected'
+    value = if link.hasClass 'empty_string_btn' then 'empty_string' else 'null'
     @hidden_input.val(value)
-  
+
   unselectBoth: =>
     @btns.removeClass('selected')
     @hidden_input.val('')
