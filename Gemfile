@@ -7,7 +7,7 @@ gem 'pg'
 gem 'mysql2'
 # using git version until https://github.com/jeremyevans/sequel/pull/670 is merged
 gem 'sequel', git: 'git://github.com/isc/sequel.git'
-gem 'sequel_pg', require: false
+gem 'sequel_pg', '1.6.6', require: 'sequel'
 gem 'hiredis', '0.4.5'
 gem 'redis', '>= 2.2.0', require: ["redis", "redis/connection/hiredis"]
 gem 'configatron', '2.10.0'

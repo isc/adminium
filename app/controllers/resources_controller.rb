@@ -560,7 +560,7 @@ class ResourcesController < ApplicationController
             res << "#{value['1i']}-#{value['2i']}-#{value['3i']}"
           end
           item_params[key] = if value['4i']
-            Time.parse "#{res} #{value['4i']}:#{value['5i']}"
+            application_time_zone.parse "#{res} #{value['4i']}:#{value['5i']}"
           else
             Date.parse res
           end
@@ -571,6 +571,10 @@ class ResourcesController < ApplicationController
   
   def warn_if_no_primary_key
     flash.now[:warning] = "Warning : this table doesn't declare a primary key. Support for tables without primary keys is incomplete at the moment." if resource.primary_keys.empty?
+  end
+  
+  def application_time_zone
+    @application_time_zone ||= ActiveSupport::TimeZone.new current_account.application_time_zone
   end
 
 end

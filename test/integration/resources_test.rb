@@ -344,6 +344,20 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_equal 'May 22, 2013', find('td[data-column-name=birthdate]').text
   end
   
+  test "update date time column with time zone configuration" do
+    @account.update_attributes database_time_zone: 'UTC', application_time_zone: 'Helsinki'
+    stub_resource_columns form: [:activated_at], show: [:activated_at]
+    user = FixtureFactory.new(:user).factory
+    visit edit_resource_path(:users, user.id)
+    find('#users_activated_at_1i').set '2013'
+    find('#users_activated_at_2i').set '6'
+    find('#users_activated_at_3i').set '3'
+    find('#users_activated_at_4i').select '22'
+    find('#users_activated_at_5i').select '12'
+    click_button 'Save'
+    assert_equal '2013-06-03 22:12:00', find('td[data-column-name="activated_at"]')['data-raw-value']
+  end
+  
   test "field with a database default" do
     stub_resource_columns form: [:kind]
     visit new_resource_path(:users)
@@ -351,25 +365,25 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
   
   test "display of datetime depending on time zone conf" do
-    pending "not quite there yet"
-    stub_resource_columns listing: [:column_with_time_zone]
+    stub_resource_columns listing: [:column_with_time_zone, :activated_at]
     user = FixtureFactory.new(:user).factory
     ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
     ActiveRecord::Base.connection.execute "update users set activated_at = '2012-10-09 05:00:00' where id = #{user.id}"
     ActiveRecord::Base.connection.execute "update users set column_with_time_zone = '2012-10-09 05:00:00 +1000' where id = #{user.id}"
     ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
-    @account.update_attribute :database_time_zone, 'Hawaii'
-    @account.update_attribute :application_time_zone, 'Hawaii'
     visit resources_path(:users)
     cell = find('td[data-column-name="activated_at"]')
     assert_equal '2012-10-09 05:00:00', cell['data-raw-value']
     assert_equal 'October 09, 2012 05:00', cell.text
     cell = find('td[data-column-name="column_with_time_zone"]')
-    # assert_equal '2012-10-09 03:00:00', cell['data-raw-value']
-    assert_equal 'October 09, 2012 03:00', cell.text
+    assert_equal '2012-10-08 19:00:00', cell['data-raw-value']
+    assert_equal 'October 08, 2012 19:00', cell.text
+    @account.update_attributes database_time_zone: 'Hawaii', application_time_zone: 'Berlin'
     visit resources_path(:users)
-    assert_equal '2012-10-08 19:00:00', find('td[data-column-name="activated_at"][data-raw-value]')['data-raw-value']
-    assert_equal '2012-10-08 17:00:00', find('td[data-column-name="column_with_time_zone"][data-raw-value]')['data-raw-value']
+    cell = find('td[data-column-name="activated_at"]')
+    assert_equal '2012-10-09 17:00:00', cell['data-raw-value']
+    cell = find('td[data-column-name="column_with_time_zone"]')
+    assert_equal '2012-10-08 21:00:00', cell['data-raw-value']
   end
   
   test "edit and update a pg array column" do

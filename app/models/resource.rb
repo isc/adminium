@@ -383,15 +383,13 @@ module Resource
     end
     
     def update_item primary_key_value, updated_values
-      updated_values = typecasted_values updated_values
-      magic_timestamps updated_values, false
+      updated_values = typecasted_values updated_values, false
       validations_check primary_key_value, updated_values
       pk_filter(primary_key_value).update updated_values
     end
     
     def update_multiple_items ids, updated_values
-      updated_values = typecasted_values updated_values
-      magic_timestamps updated_values, false
+      updated_values = typecasted_values updated_values, false
       # FIXME doesn't work with composite primary keys
       query.where(primary_key => ids).update(updated_values) if updated_values.size > 0
     end
@@ -419,32 +417,39 @@ module Resource
           raise Sequel::InvalidValue, "invalid value for array type: #{e.message}"
         end
       end
+      if value.is_a?(String) && [:datetime, :timestamp].include?(col_schema[:type])
+        value = application_time_zone.parse value
+      end
       @generic.db.typecast_value col_schema[:type], value
     end
     
-    def typecasted_values values
+    def typecasted_values values, creation
+      magic_timestamps values, creation
       values.each {|key, value| values[key] = typecast_value key.to_sym, value}
       Hash[values.map {|k, v| [Sequel.identifier(k), v]}]
     end
     
     def insert values
-      values = typecasted_values values
-      magic_timestamps values, true
+      values = typecasted_values values, true
       query.insert values
     end
     
     def magic_timestamps values, creation
-      now = Time.now.utc
+      now = application_time_zone.now
       columns = [:updated_at, :updated_on]
       columns += [:created_at, :created_on] if creation
       columns.each do |column|
-        next if values.detect {|k,_|k.value.to_sym == column}
+        next if values.detect {|k,_|k.to_sym == column}
         if schema_hash[column] && [:timestamp, :date, :datetime].include?(schema_hash[column][:type])
-          values[Sequel.identifier column] = now
+          values[column] = now
         end
       end
     end
-    
+
+    def application_time_zone
+      @application_time_zone ||= ActiveSupport::TimeZone.new @generic.account.application_time_zone
+    end
+
     def associations
       @generic.associations[@table] || {belongs_to: {}, has_many: {}}
     end

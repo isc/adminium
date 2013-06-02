@@ -266,6 +266,18 @@ class ResourcesControllerTest < ActionController::TestCase
     # no label column on groups so we don't need to fetch the groups to generate links
     assert_equal({}, assigns(:associated_items))
   end
+  
+  def test_xhr_update
+    Timecop.freeze ActiveSupport::TimeZone.new('Paris').parse('2013-06-02 22:22:07') do
+      @account.update_attributes database_time_zone: 'UTC', application_time_zone: 'Paris'
+      user = FixtureFactory.new(:user)
+      put :update, users: {created_at: "2013-06-02 22:02:07"}, table: "users", id: "#{user.factory.id}", format: 'json'
+      result = JSON.parse(@response.body)
+      assert result['value'][/data-raw-value="2013-06-02 22:02:07"/]
+      user.reload!
+      assert_equal '2013-06-02 20:22:07 UTC', user.factory.updated_at.to_s
+    end
+  end
 
   private
   def assert_asearch name, pseudos

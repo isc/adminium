@@ -23,8 +23,8 @@
               - @account.errors.full_messages.each do |msg|
                 li= msg
       = f.input :db_url, required: true, input_html: {title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database', class: 'span8'}
-      / = f.input :database_time_zone
-      / = f.input :application_time_zone
+      = f.input :database_time_zone
+      = f.input :application_time_zone
       .form-actions= f.button :submit, class: 'btn-primary'
   - tabs.pane 'Collaborators' do
     - if @account.enterprise?

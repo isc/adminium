@@ -15,7 +15,7 @@ GIT
 
 GIT
   remote: git://github.com/isc/sequel.git
-  revision: 83f711e03b834ba01e6049acadf9beec01b69a02
+  revision: 88f354473285af8dda6158079ae472a1ccd9a0f8
   specs:
     sequel (3.47.0)
 
@@ -151,7 +151,7 @@ GEM
     omniauth-openid (1.0.1)
       omniauth (~> 1.0)
       rack-openid (~> 1.3.1)
-    pg (0.13.1)
+    pg (0.15.1)
     polyglot (0.3.3)
     populator (1.0.0)
     pry (0.9.12.1)
@@ -209,7 +209,7 @@ GEM
       ffi (~> 1.0.9)
       json_pure
       rubyzip
-    sequel_pg (1.6.5)
+    sequel_pg (1.6.6)
       pg (>= 0.8.0)
       sequel (>= 3.39.0)
     sextant (0.2.3)
@@ -303,7 +303,7 @@ DEPENDENCIES
   redis (>= 2.2.0)
   rest-client
   sequel!
-  sequel_pg
+  sequel_pg (= 1.6.6)
   sextant
   simple_form (= 2.0.4)
   simplecov
