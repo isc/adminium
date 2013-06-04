@@ -420,7 +420,7 @@ class ResourcesController < ApplicationController
       '>=' => {:operator => :>=},
       '<' => {:operator => :<},
       '<=' => {:operator => :<=},
-      'IN' => {:operator => :IN, :right => filter['operand'].to_s.split(',').map(&:strip)},
+      'IN' => {:operator => :IN, :right => filter['operand'].to_s.split(/[, ]/).map(&:strip).delete_if(&:empty?)},
       'is' => {:operator => :'='},
       'blank' => {:specific => 'blank'},
       'present' => {:specific => 'present'}
