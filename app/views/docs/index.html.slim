@@ -50,8 +50,14 @@
       pre= "heroku addons:open adminium"
       p
         'Or by visiting the
-        == link_to "Heroku apps web interface", "https://dashboard.heroku.com/apps", :target => '_blank'
+        == link_to "Heroku apps web interface", "https://dashboard.heroku.com/apps", target: '_blank'
         '  , selecting your application and then selecting Adminium from the add-ons menu.
+      p
+        'If your account is on the Enterprise plan, you can also go directly to
+        = link_to 'the Adminium website', 'https://adminium.herokuapp.com'
+        '  and login through a Google account once you have declared collaborators in your
+        = link_to 'account settings', edit_account_path
+        '.
     - Account::TIPS.each do |tip|
       - tip_body = render partial: "/docs/tips/#{tip}"
       section.feature-description.well(id=tip)

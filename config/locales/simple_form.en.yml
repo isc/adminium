@@ -18,7 +18,9 @@ en:
     #       email: 'E-mail para efetuar o sign in.'
     #     edit:
     #       email: 'E-mail.'
-    # hints:
-    #   username: 'User name to sign in.'
+    hints:
+      account:
+        application_time_zone: 'The time zone in which you want to display and enter timestamps.'
+        database_time_zone: "The time zone in which your timestamps are stored in your database.<br/>If your timestamps columns contain time zone information, this setting won't have any effect."
     #   password: 'No special characters, please.'
 

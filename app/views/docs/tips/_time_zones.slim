@@ -1,0 +1,15 @@
+- tip_title 'Time zones'
+p
+  'Adminium has two settings related to timestamps and time zones that can be found in your
+  = link_to 'Accounts settings', edit_account_path
+  '.
+p
+  'The
+  b Application time zone
+  '  controls in which time zone timestamps will be displayed and entered throughout Adminium. You would typically set this to the time zone corresponding to the region you live in.
+p
+  'The
+  b Database time zone
+  '  lets Adminium know in which time zone timestamps are stored in your database in case your schema uses a datetime type that doesn't include time zone information. A typical Rails application uses
+  code timestamp without time zone
+  '  and stores datetimes in UTC so the default value will be fine.

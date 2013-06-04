@@ -22,7 +22,7 @@ class Account < ActiveRecord::Base
 
   attr_encryptor :db_url, key: (ENV['ENCRYPTION_KEY'] || 'shablagoo')
 
-  TIPS = ['basic_search', 'editing', 'enumerable', 'export_import', 'displayed_record', 'advanced_search', 'serialized', 'relationships', 'time_charts', 'keyboard_shortcuts']
+  TIPS = %w(basic_search editing enumerable export_import displayed_record advanced_search serialized relationships time_charts keyboard_shortcuts time_zones)
 
   class Plan
     PET_PROJECT = 'petproject'

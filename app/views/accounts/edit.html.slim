@@ -7,7 +7,7 @@
     p.alert
       ' You are currently on the free plan meant for pet projects which is limited to the 5 first tables of your schema.
       br
-      = link_to 'Upgrade', current_account.upgrade_link, :class => 'btn btn-warning'
+      = link_to 'Upgrade', current_account.upgrade_link, class: 'btn btn-warning'
       '  to the startup plan ($10 per month) to access your full schema with Adminium.
 
 = tabs do |tabs|
@@ -23,8 +23,8 @@
               - @account.errors.full_messages.each do |msg|
                 li= msg
       = f.input :db_url, required: true, input_html: {title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database', class: 'span8'}
-      = f.input :database_time_zone
       = f.input :application_time_zone
+      = f.input :database_time_zone
       .form-actions= f.button :submit, class: 'btn-primary'
   - tabs.pane 'Collaborators' do
     - if @account.enterprise?
@@ -32,30 +32,30 @@
         p You can use a Google account to log in to this account and authorize collaborators to log in as well.
         = simple_form_for @account.collaborators.build, remote: true, html: {class: 'form-horizontal'} do |f|
           = f.input :email, placeholder: 'google account email', type: 'email', required: true
-          = f.input :is_administrator, :as => :radio_buttons
+          = f.input :is_administrator, as: :radio_buttons
           .control-group
             'or has the following roles
             = link_to '(create a new role)', new_role_path
           - if current_account.roles.present?
-            = f.association :roles, :as => :check_boxes, :collection => current_account.roles.map {|role|[role.name, role.id]}, :html => {:class => "span1"}
+            = f.association :roles, as: :check_boxes, collection: current_account.roles.map {|role|[role.name, role.id]}, html: {class: "span1"}
           = f.submit 'Add a collaborator', class: 'btn btn-primary', data: {disable_with: 'Sending...'}
 
       .row
         table.table.span6#collaborators data-delete-url="#{collaborator_path(':id')}"
           thead
             tr
-              th(colspan=2)
+              th colspan=2
               th Roles
               th
           - @account.collaborators.each do |collaborator|
             - next if collaborator.new_record?
             - css = collaborator.user_id ? nil : 'deactivated'
 
-            tr(class=css)
+            tr class=css
               td= collaborator.name
               td= collaborator.human_roles
               td
-                = link_to content_tag(:i, nil, class: 'icon-pencil'), edit_collaborator_path(collaborator), :remote => true,  'data-toggle' => 'modal', 'data-target' => "#modal-window", 'data-backdrop' => true, 'data-keyboard' => true, :class => 'btn', :title => 'Edit this collaborator roles', :rel => 'tooltip'
+                = link_to content_tag(:i, nil, class: 'icon-pencil'), edit_collaborator_path(collaborator), remote: true,  'data-toggle' => 'modal', 'data-target' => "#modal-window", 'data-backdrop' => true, 'data-keyboard' => true, class: 'btn', title: 'Edit this collaborator roles', rel: 'tooltip'
                 = link_to content_tag(:i, nil, class: 'icon-trash'), collaborator, method: :delete, remote: true, class: 'btn trash_collaborator', title: 'remove every access of this collaborator'
     - else
       = upgrade_to_enterprise_notice current_account
