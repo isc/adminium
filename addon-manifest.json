@@ -4,6 +4,7 @@
     "config_vars": [ "ADMINIUM_URL" ],
     "password": "ARuxKq0aRSaXVyoD",
     "sso_salt": "iOy1l96mXADxSETP",
+    "regions": ["us","eu"],
     "production": {
       "base_url": "https://adminium.herokuapp.com/heroku/resources",
       "sso_url": "https://adminium.herokuapp.com/sso/login"
