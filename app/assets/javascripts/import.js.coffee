@@ -1,6 +1,6 @@
 class window.ImportManager
 
-  limit: 500
+  limit: 1000
 
   constructor: ->
     return unless document.getElementById('import_file')
@@ -80,7 +80,8 @@ class window.ImportManager
   readFile: (evt) =>
     @processing('parsing your file')
     try
-      @rows = $.csv.toArrays evt.target.result
+      @detectSeparator(evt.target.result)
+      @rows = $.csv.toArrays evt.target.result, {separator: @separator}
     catch e
       return @error("parsing", "We couldn't parse your file, be sure to provide a CSV file", e.message)
     header = @rows.shift()
@@ -96,6 +97,16 @@ class window.ImportManager
     @preview()
     @prepareToImport()
     @checkExistenceOfUpdatingRecord() if @checkQuota()
+  
+  detectSeparator: (text) =>
+    seps = {}
+    min_pos = 100000
+    @separator = ','
+    for sep in [',', ';', '\t']
+      pos = text.indexOf(sep)
+      if pos != -1 && min_pos > pos
+        min_pos = pos
+        @separator = sep
 
   checkQuota: =>
     if @rows.length > @limit
