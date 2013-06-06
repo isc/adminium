@@ -33,7 +33,6 @@ end
 
 group :development do
   gem 'kensa'
-  gem 'heroku'
   gem 'populator'
   gem 'faker'
   gem 'better_errors'
