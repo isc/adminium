@@ -94,7 +94,8 @@ html lang="en"
             = image_tag 'logos/heroku.png'
             br
             'Available on Heroku as an add-on. Not on Heroku ? Please
-            = link_to('contact us', 'contact@cluscrive.fr') + '.'
+            = mail_to 'contact@cluscrive.fr', 'contact us', subject: 'Adminium outside of Heroku', target: '_blank'
+            '.
             
           
     .container.pricing#pricing
