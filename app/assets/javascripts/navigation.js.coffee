@@ -7,23 +7,22 @@ class Navigation
     @searchBar()
 
   tableSelection: ->
-    @selector = '#search-table .search-query'
+    options = {placeholder: "select a table", allowClear: true, dropdownCssClass: 'select2OrangeDropDown'}
+    options.matcher = (term, text, opts) ->
+      return true if term == ''
+      r = new RegExp(term.split('').join('.*'), 'i')
+      return true if text.match(r)
+    @selector = '#table_select'
+    $(@selector).select2(options).on 'change', (object) =>
+      $(@selector).select2('destroy').replaceWith("<div class='loading_table'>loading page ...</div>")
+      window.location.href = "/resources/#{object.val}"
     $('.modal').on 'hide', ->
       $(this).find('input:focus').blur()
-    $(document).on 'change', @selector, ->
-      if $(this).data('source').indexOf(this.value) isnt -1
-        this.form.action = this.form.action + this.value
-        $(this).tooltip('show')
-        this.form.submit()
-
-    $("#search-table").on 'submit', ->
-      this.action = this.action + $(this).find('input').val()
-      $(this).tooltip('show')
 
     $(document).keypress (e) =>
       return if $(event.target).is(':input')
       if e.which is 115 # 's' key
-        $(@selector).focus().focus() # Double focus call needed because of the typeahead plugin applied to this field
+        $(@selector).select2('open')
         e.preventDefault()
       if e.which is 99 # 'c' for create
         location.href = $('a.btn.create')[0].href if $('a.btn.create').length

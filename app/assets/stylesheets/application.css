@@ -7,6 +7,7 @@
  *= require sh_emacs.min
  *= require bootstrap-wysihtml5
  *= require wColorPicker.css
+ *= require select2
  *= require_tree .
 */
 

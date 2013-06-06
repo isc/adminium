@@ -24,10 +24,10 @@ html lang="en"
             span.icon-bar
             span.icon-bar
           = link_to "#{current_account? && current_account.name || 'Adminium'}", dashboard_path, class: 'brand'
-          .container-fluid.nav-collapse
-            - if current_account? && current_account.db_url.present?
-              form#search-table.navbar-search action=resources_path('')
-                input.search-query type="search" data-provide='typeahead' data-trigger='manual' data-placement="bottom" rel="tooltip" data-original-title="Loading ..."  data-source="#{@tables.to_json}" autocomplete="off" placeholder="go to table (press s)"
+          .container-fluid
+            - if current_account? && current_account.db_url.present? && @tables.present?
+              .span4
+                = select_tag 'table_select', options_for_select(@tables), include_blank: true
             = render 'layouts/menu'
     .container-fluid.main-container
       - subnav = yield :subnav

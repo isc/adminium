@@ -23,6 +23,7 @@ gem 'bootstrap-components-helpers'
 gem 'bootstrap-wysihtml5-rails', require: 'bootstrap-wysihtml5-rails',
   git: 'git://github.com/Nerian/bootstrap-wysihtml5-rails.git'
 gem 'newrelic_rpm', '3.5.8.72'
+gem 'select2-rails'
 
 group :assets do
   gem 'coffee-rails', '~> 3.2.1'

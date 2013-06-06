@@ -1,4 +1,4 @@
-ul.nav.pull-right
+ul.nav.pull-right.nav-collapse
   - if session[:account].nil?
     li= link_to 'Sign in', '/auth/google'
   - if current_user
