@@ -17,3 +17,4 @@ $ ->
       $("##{inst.id}_2i").val(inst.selectedMonth + 1)
       $("##{inst.id}_3i").val(inst.selectedDay)
   sh_highlightDocument()
+$('select.select2').select2()
