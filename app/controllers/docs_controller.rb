@@ -11,6 +11,10 @@ class DocsController < ApplicationController
     redirect_to dashboard_url and return if session[:account]
     render layout: 'homepage'
   end
+  
+  def landing
+    render layout: 'landing'
+  end
 
   def show
     options = {}

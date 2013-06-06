@@ -1,0 +1,136 @@
+doctype html
+html lang="en"
+  head
+    meta charset="utf-8"
+    title= content_for?(:title) ? yield(:title) : 'Adminium'
+    = csrf_meta_tags
+    /[if lt IE 9]
+      = javascript_include_tag "https://html5shim.googlecode.com/svn/trunk/html5.js"
+    = stylesheet_link_tag '//fonts.googleapis.com/css?family=Ubuntu'
+    = stylesheet_link_tag "application"
+    meta name="description" content="Administration interface for your database as a service"
+    meta name="keywords" content="Adminium, database, administration, interface, export, heroku, add-on"
+    meta name="viewport" content="width=device-width, initial-scale=1.0"
+    link href="images/favicon.ico" rel="shortcut icon"
+
+  body
+    .container
+      .row.header
+        .span6
+          h2 Adminium
+          h4 Database administration as a service
+        .span6.menu
+          = link_to "Live Demo", start_demo_docs_path, class: 'btn btn-small btn-primary'
+          =link_to "Documentation", docs_path
+          b |
+          = link_to "Pricing & Install", "#pricing"
+    .container.intro
+      .row
+        .span8.offset2.centered
+          h2.promess Adminium connects to your database and provides you with a full fledged administration interface without the need to code.
+      .row
+        = image_tag 'docs/screenshot.jpg', class: 'screenshot span8 offset2'
+
+    .container-fluid.white.features
+      .container
+        .row
+          h2.centered Some of our features
+        .row
+          = image_tag 'advanced_search.png', class: 'offset2 span3 feature'
+          .span5
+            h3 Filters and search
+            p Perform search on all your columns table or configure which fields are searchable. For complex queries, including date range for example, you can build easily custom queries and save them for later access.
+        .row
+          .span5.offset2
+            h3 Table relationships navigation
+            p You follow standard conventions or have foreign keys defined ? Relationships between your tables will be automatically discovered so you can easily explore and manage your data without never thinking of primary keys. 
+          = image_tag 'associations.png', class: 'span3 feature'
+        .row
+          = image_tag 'collaborators.png', class: 'offset2 span3 feature'
+          .span5
+            h3 Collaborators
+            p You want your client or your coworkers to have access to the Adminium ? You can invite them to your project. Moreover, you can apply them roles and configure precisely which tables they can see, edit or create.
+        .row
+          .span5.offset2
+            h3 Enum values
+            p You can map values from your database to human-readable labels for better rendering and easier filtering. 
+          = image_tag 'enums.png', class: 'span3 feature'
+        .row
+          h3.centered
+            ' More features ? Check out
+            = link_to 'the docs', docs_path
+      .container.testimonials
+        .row
+          
+          .span5.offset1.centered
+            = image_tag "https://si0.twimg.com/profile_images/3464092512/5f407e39c863e4ca8a1c9ed307b0f1b2_normal.jpeg"
+            br
+            quote I love #adminium for @HerokuPostgres! Great tool to admin your db.
+            p
+              = link_to "Steven Wagner, Dealer Ignition", "https://twitter.com/swagner2/status/319505393732710400", target: "_blank"
+          .span5.centered
+            = link_to "https://twitter.com/swagner2/status/319505393732710400" do
+              = image_tag "https://si0.twimg.com/profile_images/3620289917/1c4988b16bd60eaf565e32b311a7cc71_normal.png"
+            br
+            quote Thx to @admi_nium for an awesome #herokuaddon and saving us a bunch of time on our backend admin dev, allowing us to focus on customer UX!
+            p
+              = link_to "Paul Sobocinski, Commission Pitch", "https://twitter.com/sobes/status/341271654988644353", target: "_blank"
+
+              
+    .container-fluid.white.resources
+      .container
+        .row
+          .span5.offset1.centered
+            = image_tag 'logos/mysql.png', :class => 'mysql-logo'
+            = image_tag 'logos/postgresql.png', :class => 'postgresql-logo'
+            br
+            'We support both PostgreSQL and MySQL.
+          .span5.centered
+            = image_tag 'logos/heroku.png'
+            br
+            'Available on Heroku as an add-on. Not on Heroku ? please
+            = link_to('contact us', 'contact@cluscrive.fr') + '.'
+            
+          
+    .container.pricing#pricing
+      .row
+        h2.offset3.span6.centered Simple pricing, affordable for all
+      .row
+        .span4
+          .well.white.plan
+            h3 Pet Project
+            h2 Free
+            p Limited to 5 tables
+            p Heroku collaborators
+            p &nbsp;
+        .span4
+          .well.white.plan
+            h3 Startup
+            h2
+              sup $
+              span 10/month
+            p No table limit
+            p Heroku collaborators
+            p &nbsp;
+        .span4
+          .well.white.plan
+            h3 Enterprise
+            h2
+              sup $
+              span 25/month
+            p No table limit
+            p External collaborators
+            p Roles and access control
+      .centered
+        a.btn.btn-large.btn-success.cta href="https://addons.heroku.com/adminium" Install the add-on on your Heroku app
+        p.more All plans come with full support. You can upgrade or downgrade at anytime.
+    .container
+      footer
+        p.centered
+          = render :partial => "twitter_widget"
+        p.copyright.centered
+          = link_to "&copy; 2013 Cluscrive".html_safe, "http://cluscrive.fr", target: '_blank'
+    = javascript_include_tag 'application'
+    - unless Rails.env.development?
+      = render 'layouts/ga'
+      = render 'layouts/uservoice'

@@ -2,7 +2,6 @@ a.btn.btn-navbar .icon-bar {
   display: block;
 }
 #home-carousel {
-  width:420px;
   box-shadow:0px 8px 24px rgba(0,0,0,0.5);
 }
 .hero-unit .span7 > p {
@@ -42,4 +41,132 @@ a.btn.btn-navbar .icon-bar {
 
 .white {
   background: white;
+}
+
+.pricing {
+  padding-top: 20px;
+  > .row > h2 {
+    margin-bottom: 20px;
+  }
+  .plan {
+    padding-top: 5px;
+    border: 3px solid #DDD;
+    
+    text-align: center;
+
+    h2 {
+      border-bottom: 1px solid #EEE;
+      font-style: italic;
+      font-family: Georgia;
+      margin-bottom: 10px;
+    }
+    p {
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+    h3 {
+      color: #888;
+      margin-top: 0px;
+      padding-top: 0px;
+    }
+  }
+  .more {
+    margin-top: 10px;
+    color: #999;
+    font-size: 1.1em;
+    font-style: italic;
+  }
+}
+.promess {
+  margin: 20px 0px 30px;
+}
+.intro {
+  img {
+    border: 8px solid #FEFEFE;
+    border-bottom: none
+  }
+}
+
+.features {
+  p {
+    margin-top: 10px;
+    font-size: 1.2em;
+    color: #777;
+    line-height: 1.4em;
+  }
+  
+  .row {
+    margin: 20px;
+  }
+  img {
+    border: 2px solid #CCC;
+  }
+}
+
+.header {
+  margin-top: 10px;
+  text-shadow: 1px 1px 0px white;
+  h4 {
+    color: #888;
+  }
+  .menu {
+    font-size: 1.1em;
+    text-align: right;
+    color: #CCC;
+    a {
+      margin: 0px 10px;
+      &:not(:first-child) {
+        color: gray;
+      }
+      text-transform: uppercase;
+    }
+  }
+}
+
+.resources {
+  padding: 20px 0px 30px;
+  color: #999;
+}
+
+.testimonials {
+  quote {
+    font-family: Georgia;
+    font-size: 1.2em;
+    color: #999;
+    font-style: italic;
+    display: block;
+    padding-top: 5px;
+    height: 55px;
+  }
+  a img {
+    border-color: #DDD;
+  }
+  p {
+    text-align: right;
+  }
+  a {
+    color: #BBB;
+  }
+  img {
+    border-radius: 50%;
+  }
+}
+
+.copyright a {
+  color: #999;
+}
+
+@media (min-width: 979px) {
+  img.screenshot {
+    min-height: 392px;
+  }
+  img.feature {
+    min-height: 165px;
+  }
+}
+.cta {
+  font-size: 1.5em;
+}
+footer {
+  margin: 40px 0px 20px;
 }

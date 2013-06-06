@@ -58,7 +58,7 @@ Adminium::Application.routes.draw do
   end
   match 'sso/login' => 'heroku/resources#sso_login'
   match 'test/threads' => 'resources#test_threads'
-
+  match 'landing' => 'docs#landing'
   root to: 'docs#homepage'
 
 end
