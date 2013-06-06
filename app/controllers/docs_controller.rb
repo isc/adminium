@@ -13,7 +13,7 @@ class DocsController < ApplicationController
   end
   
   def landing
-    render layout: 'landing'
+    render layout: false
   end
 
   def show

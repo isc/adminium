@@ -7,7 +7,7 @@ class Navigation
     @searchBar()
 
   tableSelection: ->
-    options = {placeholder: "select a table", allowClear: true, dropdownCssClass: 'select2OrangeDropDown'}
+    options = {placeholder: "Select a table", allowClear: true, dropdownCssClass: 'select2OrangeDropDown'}
     options.matcher = (term, text, opts) ->
       return true if term == ''
       r = new RegExp(term.split('').join('.*'), 'i')

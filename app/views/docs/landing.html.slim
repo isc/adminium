@@ -18,18 +18,19 @@ html lang="en"
       .row.header
         .span6
           h2 Adminium
-          h4 Database administration as a service
+          h4 Database backend as a service
         .span6.menu
           = link_to "Live Demo", start_demo_docs_path, class: 'btn btn-small btn-primary'
           =link_to "Documentation", docs_path
           b |
-          = link_to "Pricing & Install", "#pricing"
+          = link_to "Pricing", "#pricing"
     .container.intro
       .row
         .span8.offset2.centered
-          h2.promess Adminium connects to your database and provides you with a full fledged administration interface without the need to code.
+          h2.promise Adminium connects to your database and provides you with a full fledged administration interface. No coding involved.
       .row
-        = image_tag 'docs/screenshot.jpg', class: 'screenshot span8 offset2'
+        = link_to start_demo_docs_path do
+          = image_tag 'docs/screenshot.jpg', class: 'screenshot span8 offset2'
 
     .container-fluid.white.features
       .container
@@ -39,26 +40,30 @@ html lang="en"
           = image_tag 'advanced_search.png', class: 'offset2 span3 feature'
           .span5
             h3 Filters and search
-            p Perform search on all your columns table or configure which fields are searchable. For complex queries, including date range for example, you can build easily custom queries and save them for later access.
+            p Perform search on all your table columns or configure which fields are searchable. For complex queries, including date range for example, you can easily build custom queries and save them for later access.
         .row
           .span5.offset2
             h3 Table relationships navigation
-            p You follow standard conventions or have foreign keys defined ? Relationships between your tables will be automatically discovered so you can easily explore and manage your data without never thinking of primary keys. 
+            p Do you follow standard conventions or have foreign keys defined? Relationships between your tables will be automatically discovered so you can easily explore and manage your data without ever thinking about primary keys. 
           = image_tag 'associations.png', class: 'span3 feature'
         .row
           = image_tag 'collaborators.png', class: 'offset2 span3 feature'
           .span5
             h3 Collaborators
-            p You want your client or your coworkers to have access to the Adminium ? You can invite them to your project. Moreover, you can apply them roles and configure precisely which tables they can see, edit or create.
+            p
+              'Want your client or coworkers to have access to Adminium?
+              br
+              'You can invite them to your project. Moreover, you can apply them roles and configure precisely on which tables they can see, edit or create data.
         .row
           .span5.offset2
             h3 Enum values
-            p You can map values from your database to human-readable labels for better rendering and easier filtering. 
+            p You can map values from your database to human-readable labels for better rendering and easier filtering or edition. 
           = image_tag 'enums.png', class: 'span3 feature'
         .row
           h3.centered
-            ' More features ? Check out
+            ' There is a lot more! Check out
             = link_to 'the docs', docs_path
+            '.
       .container.testimonials
         .row
           
@@ -81,14 +86,14 @@ html lang="en"
       .container
         .row
           .span5.offset1.centered
-            = image_tag 'logos/mysql.png', :class => 'mysql-logo'
-            = image_tag 'logos/postgresql.png', :class => 'postgresql-logo'
+            = image_tag 'logos/mysql.png', class: 'mysql-logo'
+            = image_tag 'logos/postgresql.png', class: 'postgresql-logo'
             br
-            'We support both PostgreSQL and MySQL.
+            'Works with both PostgreSQL and MySQL.
           .span5.centered
             = image_tag 'logos/heroku.png'
             br
-            'Available on Heroku as an add-on. Not on Heroku ? please
+            'Available on Heroku as an add-on. Not on Heroku ? Please
             = link_to('contact us', 'contact@cluscrive.fr') + '.'
             
           
