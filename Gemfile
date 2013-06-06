@@ -42,6 +42,11 @@ group :development do
   gem 'rack-webconsole-pry', require: 'rack-webconsole'
   gem 'pry-rails'
   gem 'xray-rails'
+  gem 'guard', require: false
+  gem 'rb-fsevent', require: false
+  gem 'terminal-notifier-guard', require: false
+  gem 'guard-livereload', require: false
+  gem 'rack-livereload'
 end
 
 group :production do
