@@ -81,7 +81,7 @@ module Import
   end
   
   def magic_timestamps insert_rows, update_rows, columns
-    now, insert_columns, update_columns = Time.now.utc, columns.clone, columns.clone
+    now, insert_columns, update_columns = application_time_zone.now.to_datetime, columns.clone, columns.clone
     [:updated_at, :updated_on, :created_at, :created_on].each do |column|
       next if columns.include? column.to_s
       next unless resource.column_names.include? column
