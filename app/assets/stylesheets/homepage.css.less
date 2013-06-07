@@ -81,6 +81,28 @@ a.btn.btn-navbar .icon-bar {
     margin: 40px 0px 10px 0;
   }
   .intro {
+    .big-screenshot {
+      position: relative;
+      div {
+        position: absolute;
+        background-color: rgba(0, 0, 0, 0.4);
+        left: 50%;
+        width: 200px;
+        margin-left: -100px;
+        text-align: center;
+        padding: 20px;
+        border-radius: 10px;
+        font-size: 1.5em;
+        color: white;
+        top: 50%;
+        display: none;
+      }
+      &:hover {
+        div {
+          display: block;
+        }
+      }
+    }
     img {
       border: 8px solid #FEFEFE;
       border-bottom: none;
@@ -172,7 +194,7 @@ a.btn.btn-navbar .icon-bar {
   }
 
   @media (min-width: 979px) {
-    img.screenshot {
+    .big-screenshot img {
       min-height: 392px;
     }
     img.feature {
