@@ -12,12 +12,12 @@ class @EnumerateInput
     else
       state.text
   
-  @setupForEdit: ->
-    return if $("body.resources.edit").length == 0
+  @setupForEdit: (scope) ->
+    return if $(scope).length == 0
     for name, info of adminium_column_options
       if info['is_enum']
-        new EnumerateInput($("select[id*=_#{name}]"))
+        new EnumerateInput($("#{scope} select[id*=_#{name}]"))
     return
     
 $ ->
-  EnumerateInput.setupForEdit()     
+  EnumerateInput.setupForEdit("body.resources.edit")
