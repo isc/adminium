@@ -27,6 +27,7 @@ class Heroku::ResourcesController < ApplicationController
     end
     app = Account.find_by_api_key! params[:id]
     app.update_column :name, params[:app] if app.name != params[:app]
+    app.update_column :source, cookies[:source] if app.source.blank? && cookies[:source].present?
     session[:account] = app.id
     SignOn.create account_id: app.id, plan: app.plan,
       remote_ip: request.remote_ip, kind: SignOn::Kind::HEROKU

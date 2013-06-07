@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   before_filter :fixed_account
   before_filter :require_authentication
   before_filter :connect_to_db
+  before_filter :set_source_cookie
   after_filter :cleanup_generic
 
   helper_method :global_settings, :current_account, :current_user, :admin?, :current_account?, :resource_for
@@ -83,6 +84,10 @@ class ApplicationController < ActionController::Base
   def resource_for table
     @resources ||= {} 
     @resources[table.to_sym] ||= Resource::Base.new @generic, table
+  end
+  
+  def set_source_cookie
+    cookies[:source] = params[:utm_source] if params[:utm_source].present?
   end
   
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130530151321) do
+ActiveRecord::Schema.define(:version => 20130607073337) do
 
   create_table "accounts", :force => true do |t|
     t.string   "plan"
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(:version => 20130530151321) do
     t.boolean  "tips_opt_in",           :default => true
     t.string   "application_time_zone", :default => "UTC", :null => false
     t.string   "database_time_zone",    :default => "UTC", :null => false
+    t.string   "source"
   end
 
   create_table "collaborators", :force => true do |t|
