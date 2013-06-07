@@ -41,7 +41,12 @@ class TimeCharts
     row[0] = String(row[0]) for row in data
     dataTable.addRows data
     wrapper = $(container)
-    options = {width: wrapper.parent().css('width'), height:300, colors: ['#7d72bd'], legend: 'none'}
+    width  = wrapper.parent().css('width')
+    if width == '0px'
+      setTimeout () =>
+        @graphData(data, container)
+      , 125
+    options = {width: width, height:300, colors: ['#7d72bd'], legend: 'none', chartArea:{top:15, left: '5%', height: '75%', width:'90%'}}
     chart = new google.visualization.ColumnChart(wrapper.get(0))
     chart.draw(dataTable, options)
     $('#time-chart i[rel=tooltip]').tooltip()
