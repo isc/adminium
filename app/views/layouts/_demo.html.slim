@@ -1,11 +1,12 @@
 - if session[:account] == ENV['DEMO_ACCOUNT_ID']
-  .navba.demo
-    .nabar-inner
-      .container-fluid
+  .demo
+    .container-fluid
+      .row-fluid
         .span6
-          strong Welcome!
-          '  Feel free to play with the sample data, it will be reset automatically.
-        .span6.menu(style='text-align:right')
+          p
+            strong Welcome!
+            '  Feel free to play with the sample data, it will be reset automatically.
+        .span6
           - if session[:account_before_demo]
             = link_to stop_demo_docs_path, class: 'btn btn-warning' do
               i.icon-arrow-right.icon-white
