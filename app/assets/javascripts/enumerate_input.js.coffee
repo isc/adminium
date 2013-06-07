@@ -1,10 +1,13 @@
 class @EnumerateInput
   
-  constructor: (input) ->
+  constructor: (input, action) ->
     column = input[0].name.match(/\[(.*)\]/)[1]
     @values = adminium_column_options[column].values
     options = {matcher: adminiumSelect2Matcher, formatResult: @format, dropdownCssClass: 'enumedit'}
     input.select2(options)
+    if action
+      input.select2(action)
+    input
 
   format: (state) =>
     if @values[state.id]

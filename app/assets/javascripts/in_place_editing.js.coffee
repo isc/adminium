@@ -43,7 +43,7 @@ class InPlaceEditing
     input.val(raw_value).focus()
     input.attr('name', name)
     input.data('null-value', true) if td.hasClass('nilclass')
-    new EnumerateInput(input) if type == 'enum'
+    new EnumerateInput(input, 'open') if type == 'enum'
     new NullifiableInput(input)
 
   
