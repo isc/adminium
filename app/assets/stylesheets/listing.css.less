@@ -1,7 +1,7 @@
 @orange:                #413877;
 
 .widget {
-  overflow:auto;
+  overflow:none;
   padding: 0;
   background: white;
   max-height:300px;
@@ -16,6 +16,9 @@
     opacity:0;
     margin-right:2px;
     margin-top:2px;
+  }
+  &.time_chart_widget {
+    overflow: hidden;
   }
   h4 {
     padding:3px 3px 3px 6px;
@@ -42,6 +45,10 @@
   }
   .content {
     -webkit-transform: translate3D(0, 0, 0);
+  }
+  &.table_widget .content {
+    max-height:300px - 26px;
+    overflow: auto;
   }
 }
 
