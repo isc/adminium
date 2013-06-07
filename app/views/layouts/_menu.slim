@@ -1,7 +1,7 @@
 ul.nav.pull-right.nav-collapse
   - if session[:account].nil?
     li= link_to 'Sign in', '/auth/google'
-  - if current_user
+  - if current_user && current_account
     li.dropdown
       a.dropdown-toggle data-toggle="dropdown" href="#"
         ' Signed in as

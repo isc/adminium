@@ -9,13 +9,15 @@ class AdvancedSearch
     selects.live 'change', @selectedOperator
     for select in selects
       @updateFilterForm $(select)
+    $("#new_filter").select2({placeholder: 'choose a column', matcher: adminiumSelect2Matcher})
     $("#new_filter").bind 'change', (event) =>
       column_name = $('#new_filter option:selected').val()
       table = $('#new_filter').attr('data-table')
-      $('#new_filter').val('')
+      $('#new_filter').select2("val", "")
       $.get "/settings/#{table}?column_name=#{column_name}", (resp) =>
         filterDiv = $("<tr>").append(resp).appendTo($(".filters"))
         selectFilter = filterDiv.find('td.operators select')
+        selectFilter.focus()
         @updateFilterForm(selectFilter)
         $('.datepicker').datepicker onClose: (dateText, inst) ->
           $("##{inst.id}_1i").val(inst.selectedYear)

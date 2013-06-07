@@ -1,3 +1,4 @@
+@import 'variables';
 .resources.show .item-attributes {
   .table {
     border: 1px solid #DDD;
@@ -75,6 +76,13 @@
     background: darken(#413877, 10%);
     color: #CCC;
   }
+  .select2-no-results {
+    background: none;
+    color: white;
+    font-style: italic;
+    text-align: center;
+    padding: 3px;
+  }
 }
 #table_select {
   display: none;
@@ -103,4 +111,39 @@
       background: #413877;
     }
   }
+}
+.select2-highlighted .timezoneselect_format {
+  b { color: white }
+  color: white;
+} 
+
+.enumedit {
+  .label {
+    opacity: 0.75;
+  }
+  .select2-highlighted {
+    .label {
+      opacity: 1;
+    }
+    background: #CCC;
+  }
+}
+
+.timezoneselect_format {
+  color: gray;
+  padding-right: 4px;
+  b {
+    color: @orange;
+    padding-left: 5px;
+  }
+}
+
+.timezone_select2 {
+  width: 300px;
+}
+
+.label.label-info {
+  font-weight: normal;
+  font-size: 12px;
+  padding: 3px 6px 4px;
 }

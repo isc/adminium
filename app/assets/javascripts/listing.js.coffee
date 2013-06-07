@@ -139,6 +139,15 @@ class ColumnSettings
     else
       $('.enum_details_area').hide()
 
+  nextDefaultColor: =>
+    index = $("table.enum_details_area .color").length
+    console.log(index)
+    colors = ['#2a8bcc', '#86b558', '#ffb650', '#d15b47', '#9585bf', '#a0a0a0', '#555555', '#d6487e', '#6fb3e0', '#892e65', '#2e8965', '#996666']
+    if index > 1 && (index) < colors.length
+      colors[index - 2]
+    else
+      '#0000FF'
+
   addNewEmptyLine: =>
     line = $('.template_line').clone()
     line.removeClass('template_line')
@@ -146,7 +155,8 @@ class ColumnSettings
     $('.template_line').before(line)
     $('.template_line input').val('')
     color = line.find('.color').html('')
-    color.wColorPicker({target:color.siblings('input')})
+    
+    color.wColorPicker({target:color.siblings('input'), initColor: @nextDefaultColor()})
     previous_id = $('.template_line').data('line-identifer')
     new_id = parseInt(previous_id) + 1
     $('.template_line').data('line-identifer', new_id)

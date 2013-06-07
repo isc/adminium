@@ -8,10 +8,7 @@ class Navigation
 
   tableSelection: ->
     options = {placeholder: "Select a table", allowClear: true, dropdownCssClass: 'select2OrangeDropDown'}
-    options.matcher = (term, text, opts) ->
-      return true if term == ''
-      r = new RegExp(term.split('').join('.*'), 'i')
-      return true if text.match(r)
+    options.matcher = adminiumSelect2Matcher
     @selector = '#table_select'
     $(@selector).select2(options).on 'change', (object) =>
       $(@selector).select2('destroy').replaceWith("<div class='loading_table'>loading page ...</div>")
@@ -79,3 +76,8 @@ class Navigation
       e.preventDefault()
 
 $ -> new Navigation()
+
+window.adminiumSelect2Matcher = (term, text, opts) ->
+  return true if term == ''
+  r = new RegExp(term.split('').join('.*'), 'i')
+  return true if text.match(r)

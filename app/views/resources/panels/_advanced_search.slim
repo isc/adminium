@@ -7,8 +7,8 @@
       .control-group
         = label_tag :new_filter, 'Add a filter on column', class:  "control-label"
         .controls
-          select#new_filter.span2 data-table=params[:table]
-            option value="" disabled="disabled" selected="selected" = "choose a column"
+          select#new_filter.span3 data-table=params[:table]
+            option value=""= ""
             - resource.column_names.each do |name|
               option value=name = name
 
