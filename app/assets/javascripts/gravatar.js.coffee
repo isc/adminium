@@ -19,7 +19,8 @@ class window.Gravatar
     columnIndex = $("table.items-list th[data-column-name='#{email}']").index()
     emailCells = $("td:nth-child(#{columnIndex + 1})")
     return if emailCells.length is 0
-    $("<th>").insertAfter $('th.checkboxes, .items-list tfoot th')
+    $("<th>").insertAfter $('th.checkboxes')
+    $("<td>").insertAfter $('.items-list tfoot th')
     for elt in emailCells
       here = $(elt).parent('tr').find('.click_checkbox')
       value = $(elt).text()
