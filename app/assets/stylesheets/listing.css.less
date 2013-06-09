@@ -1,5 +1,8 @@
 @orange:                #413877;
 
+header {
+  margin: 0px 5px;
+}
 .widget {
   overflow:none;
   padding: 0;
@@ -58,6 +61,7 @@
   }
   ul {
     margin-top:-20px;
+    margin-left: 5px;
     border: none;
 
     li {
@@ -113,10 +117,11 @@
     }
     th {
       border-bottom: none !important;
+      background-color: #eee;
+      background-image: none;
     }
     tr {
-
-      &:hover td, &:hover th, td, th {
+      td {
         background: lighten(@orange, 20%) !important;
         color: white;
         border-color: lighten(@orange, 20%);
@@ -335,4 +340,14 @@
 }
 .text-edition-switch {
   margin-left: 160px;
+}
+
+.resources.index {
+  > .container-fluid {
+    padding: 0px;
+    > .row-fluid {
+      margin-top: 5px;
+    }
+  }
+  
 }
