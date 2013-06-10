@@ -308,7 +308,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
   
   test "bulk edit" do
-    users = 2.times.map { FixtureFactory.new(:user, age: 34, role: 'Developer', last_name: 'Johnson').factory }
+    users = 2.times.map { FixtureFactory.new(:user, age: 34, role: 'Developer', last_name: 'Johnson', kind: 7).factory }
     visit bulk_edit_resources_path(:users, record_ids: users.map(&:id))
     fill_in 'Age', with: '37'
     fill_in 'Role', with: 'CTO'
@@ -318,6 +318,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
       assert_equal '37', find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=age]").text
       assert_equal 'CTO', find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=role]").text
       assert_equal 'Johnson', find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=last_name]").text
+      assert_equal '7', find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=kind]").text
     end
   end
   

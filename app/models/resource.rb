@@ -389,6 +389,7 @@ module Resource
     end
     
     def update_multiple_items ids, updated_values
+      updated_values.delete_if {|k, v| v.blank? && column_type(k.to_sym) != :string}
       updated_values = typecasted_values updated_values, false
       # FIXME doesn't work with composite primary keys
       query.where(primary_key => ids).update(updated_values) if updated_values.size > 0
