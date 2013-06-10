@@ -181,7 +181,8 @@ module ResourcesHelper
     if options["boolean_#{value}"].present?
       options["boolean_#{value}"]
     else
-      value.to_s
+      cssClass = value == true ? 'ok' : 'remove'
+      content_tag :i, nil, class: "icon icon-#{cssClass}"
     end
   end
 
