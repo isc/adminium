@@ -351,3 +351,23 @@ header {
   }
   
 }
+
+thead.header-fixed {
+  opacity: 0;
+  &.appear {
+    opacity: 1;
+    -webkit-transition-duration: 0.5s;
+    -webkit-transition-property: -webkit-transform, opacity;
+  }
+  position: absolute;
+  display: block;
+  background: #EEE;
+  th {
+    text-align: left;
+    display: inline-block;
+    overflow-x: hidden;
+  }
+  top: 0px;
+  left: 0;
+  z-index: 990;
+}

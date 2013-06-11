@@ -15,6 +15,7 @@
 //= require wysihtml5
 //= require bootstrap-wysihtml5
 //= require jquery.csv-0.71.min
+//= require jquery-ui-1.8.17.custom
 //= require select2
 //= require md5.min
 //= require_tree .

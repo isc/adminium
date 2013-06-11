@@ -187,3 +187,4 @@ $ ->
   new CustomColumns('#select-exported-fields_pane')
   new UIListing()
   new ColumnSettings()
+  new FixedTableHeader()

@@ -72,3 +72,6 @@ html lang="en"
         #blockG_3.facebook_blockG
     javascript:
       adminium_account = #{{current_account? ? current_account.to_json(only: ['plan', 'name']) : 'null'}}
+    - if Rails.env.development?
+      javascript:
+        environment = 'development'
