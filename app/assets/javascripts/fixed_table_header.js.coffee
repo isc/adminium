@@ -29,7 +29,9 @@ class @FixedTableHeader
   check: (evt, o) =>
     return if o.position.top == @currentTopValue
     @currentTopValue = o.position.top
-    @header.removeClass('appear').css('-webkit-transform': "translate(0px, 0px)")
+    @header.removeClass('appear')
+    for ext in ['-webkit-', '-moz-', '-o-', '-ms-', '']
+      @header.css("#{ext}transform", "translate(0px, 0px)")
     return if @checking
     @checking = true
     @lastTopValue = o.position.top
@@ -38,7 +40,9 @@ class @FixedTableHeader
       if (@lastTopValue == @currentTopValue)
         @header.css('top', $(".breadcrumb").position().top)
         breadcrumb_height = $(".breadcrumb").height()
-        @header.css('-webkit-transform': "translate(0px, #{breadcrumb_height}px)").addClass('appear')
+        for ext in ['-webkit-', '-moz-', '-o-', '-ms-', '']
+          @header.css("#{ext}transform", "translate(0px, #{breadcrumb_height}px)")
+        @header.addClass('appear')
       else
         @check(null, o)
     , 200
