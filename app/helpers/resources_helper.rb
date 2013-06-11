@@ -50,7 +50,7 @@ module ResourcesHelper
     (resource.columns[:show] & resource.primary_keys) + columns
   end
 
-  def display_attribute wrapper_tag, item, key, resource, relation = false, original_key = nil
+  def display_attribute wrapper_tag, item, key, resource, original_key = nil
     is_editable, key = nil, key.to_sym
     return display_associated_column item, key, wrapper_tag, resource if key.to_s.include? '.'
     return display_associated_count item, key, wrapper_tag, resource if key.to_s.starts_with? 'has_many/'
@@ -80,10 +80,12 @@ module ResourcesHelper
       is_editable = true
     end
     opts = {class: css_class}
-    is_editable = false if resource.primary_keys.include?(key) || key == 'updated_at' || relation || resource.primary_keys.empty?
-    if is_editable && user_can?('edit', params[:table])
+    is_editable = false if resource.primary_keys.include?(key) || key == 'updated_at' || resource.primary_keys.empty?
+    if is_editable && user_can?('edit', resource.table)
       opts.merge! 'data-column-name' => key
       opts.merge! 'data-raw-value' => resource.raw_column_output(item, key) unless item[key].is_a?(String) && css_class != 'enum'
+      opts.merge! 'data-item-id' => resource.primary_key_value(item) if resource.table.to_s != params[:table]
+      opts.merge! 'data-column-type' => resource.column_type(key) if action_name == 'show'
     end
     column_content_tag wrapper_tag, content, opts
   end
@@ -93,7 +95,7 @@ module ResourcesHelper
     assoc_info = resource.associations[:belongs_to][parts.first.to_sym]
     item = @associated_items[parts.first.to_sym].find {|i| i[assoc_info[:primary_key]] == item[assoc_info[:foreign_key]]}
     return column_content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
-    display_attribute wrapper_tag, item, parts.second, resource_for(assoc_info[:referenced_table]), true, key
+    display_attribute wrapper_tag, item, parts.second, resource_for(assoc_info[:referenced_table]), key
   end
 
   def display_associated_count item, key, wrapper_tag, resource
@@ -277,6 +279,21 @@ module ResourcesHelper
   
   def generate_time_chart_path
     time_chart_resources_path(params.slice(:table, :where, :search, :asearch).merge column: '{column}')
+  end
+  
+  def column_header_with_metadata resource, name
+    if name.to_s['.']
+      table, column = name.to_s.split('.')
+      type = resource_for(table).column_type column.to_sym
+    else
+      type = resource.column_type name
+      table = resource.table
+      column = name
+    end
+    data = {'column-name' => column, 'column-type' => type, 'table-name' => table}
+    content_tag(:th, class: 'column_header', data: data) do
+      yield
+    end
   end
 
 end

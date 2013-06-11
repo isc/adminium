@@ -1,10 +1,10 @@
 class InPlaceEditing
 
   constructor: ->
-    @table = $('*[data-table]').data('table')
-    $('td[data-column-name]').bind 'hover', @setupEditableColumn
-    $('.items-list, .resources.show table').on 'click', 'td[data-column-name] i.icon-pencil', @switchToEditionModeByClickingIcon
-    $('.items-list, .resources.show table').on 'dblclick', 'td[data-column-name]', @switchToEditionModeByDblClicking
+    $('.items-list, .resources.show table')
+      .on('hover', 'td[data-column-name]', @setupEditableColumn)
+      .on('click', 'td[data-column-name] i.icon-pencil', @switchToEditionModeByClickingIcon)
+      .on('dblclick', 'td[data-column-name]', @switchToEditionModeByDblClicking)
 
   setupEditableColumn: (elt) =>
     td = $(elt.currentTarget)
@@ -12,7 +12,7 @@ class InPlaceEditing
       $("<i class='icon-pencil'>").appendTo(td)
 
   switchToEditionModeByClickingIcon: (elt) =>
-    td = $(elt.currentTarget).parents("td")
+    td = $(elt.currentTarget).parents('td')
     @switchToEditionMode(td)
     
   switchToEditionModeByDblClicking: (elt) =>
@@ -24,21 +24,26 @@ class InPlaceEditing
     raw_value = td.attr('data-raw-value')
     raw_value = td.text() unless raw_value or td.hasClass('nilclass') or td.hasClass('emptystring')
     column = td.attr('data-column-name')
-    name = "#{@table}[#{column}]"
-    type = columns_hash[column].type
-    type = 'enum' if adminium_column_options[column].is_enum
+    header = $('.items-list thead th').eq(td.index())
+    table = $('.item-attributes').data('table') or header.data('table-name')
+    type = td.data('column-type') or header.data('column-type')
+    name = "#{table}[#{column}]"
+    # TODO enum for associated column
+    type = 'enum' if adminium_column_options[column]?.is_enum
+    id = td.data('item-id') or td.parents('tr').data('item-id') or $('.item-attributes').data('item-id')
     if td.find('a i.icon-plus-sign').length
       type = 'text'
       raw_value = td.find('a').attr('data-content')
     td.attr("data-original-content", td.html())
-    td.html($("<form class='form form-inline'><div class='control-group'><div class='controls'><div class='in-place-actions'><button class='btn'><i class='icon-ok' /></button><a class='cancel'><i class='icon-remove'></i></a></div>"))
+    td.html($("<form class='form form-inline' action='/resources/#{table}/#{id}'><div class='control-group'><div class='controls'><div class='in-place-actions'><button class='btn'><i class='icon-ok' /></button><a class='cancel'><i class='icon-remove'></i></a></div></div</div></form>"))
+    console.log td.find('form').attr('action')
     td.attr("data-mode", "editing")
     td.find('a.cancel').click @cancelEditionMode
     td.find('form').submit @submitColumnEdition
-    if this["#{type}EditionMode"]
-      input = this["#{type}EditionMode"](td, name, raw_value)
+    input = if this["#{type}EditionMode"]
+      this["#{type}EditionMode"](td, name, raw_value)
     else
-      input = @defaultEditionMode td, name, raw_value
+      @defaultEditionMode td, name, raw_value
     input.prependTo(td.find('.controls'))
     input.val(raw_value).focus()
     input.attr('name', name)
@@ -46,8 +51,6 @@ class InPlaceEditing
     new EnumerateInput(input, 'open') if type == 'enum'
     new NullifiableInput(input)
 
-  
-    
   textEditionMode: (td) =>
     input = $('<textarea>')
   
@@ -88,7 +91,7 @@ class InPlaceEditing
     column = td.attr('data-column-name')
     for value, info of adminium_column_options[column].values
       options += "<option value=#{value}>#{info.label}</option>"
-    $("<select>#{options}")
+    $("<select>#{options}</select>")
 
   booleanEditionMode: (td, name) =>
     options = ""
@@ -99,18 +102,16 @@ class InPlaceEditing
     for value in [null, 'true', 'false']
       v = if value then "value='#{value}'> #{display[value]}" else 'value= >'
       options += "<option #{v}</option>"
-    $("<select>#{options}")
+    $("<select>#{options}</select>")
 
   submitColumnEdition: (elt) =>
     form = $(elt.currentTarget)
-    id = form.parents('tr').attr("data-item-id")
-    id = $('.row-fluid[data-item-id]').attr('data-item-id') unless id
     spinner = $("#facebookG").clone()
     form.find('.btn').replaceWith(spinner)
     form.find('a').remove()
     $.ajax
       type: 'POST'
-      url: "/resources/#{@table}/#{id}"
+      url: form.attr('action')
       data: "#{form.serialize()}&_method=PUT"
       success: @submitCallback
       error: @errorCallback
@@ -118,16 +119,12 @@ class InPlaceEditing
     false
 
   submitCallback: (data) =>
-    if $('.items-list').length
-      td_css_path = ".items-list tr[data-item-id=#{data.id}] td=[data-column-name=#{data.column}]"
-    else
-      td_css_path = "td[data-column-name=#{data.column}]"
+    td = $('td[data-mode=editing]')
     if data.result is 'success'
-      td = $(td_css_path).replaceWith(data.value)
-      $(td_css_path).bind 'hover', @setupEditableColumn
+      td.replaceWith(data.value)
     else
-      alert(data.message)
-      @restoreOriginalValue $(td_css_path)
+      alert data.message
+      @restoreOriginalValue td
 
   errorCallback: (data) =>
     alert('internal error : failed to update this field')

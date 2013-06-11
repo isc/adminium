@@ -26,7 +26,7 @@
         - else
           th
         - resource.columns[:listing].each do |name|
-          th.column_header data-column-name=name
+          = column_header_with_metadata resource, name do
             == header_link name
             - if resource.is_date_column?(name) && actions_cell
               i.time-chart.icon-bar-chart
