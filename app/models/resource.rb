@@ -100,7 +100,7 @@ module Resource
       return unless item && primary_keys.any?
       primary_keys.map do |name|
         item[name]
-      end.join(',')
+      end.compact.join(',').presence
     end
     
     def primary_key_values_hash primary_key_value

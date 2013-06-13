@@ -79,5 +79,11 @@ end
 class GroupFromTest < ActiveRecord::Base
   self.table_name = 'groups'
 end
+class RoleFromTest < ActiveRecord::Base
+  self.table_name = 'roles'
+end
+class RoleUserFromTest < ActiveRecord::Base
+  self.table_name = 'roles_users'
+end
 
 ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations[Rails.env]

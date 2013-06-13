@@ -31,5 +31,11 @@ FactoryGirl.define do
     name "Administrators"
     level 37
   end
+  
+  factory :role_from_test do
+  end
+  
+  factory :role_user_from_test do
+  end
 
 end

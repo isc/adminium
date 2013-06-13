@@ -229,7 +229,7 @@ class ResourcesController < ApplicationController
   end
 
   def object_name
-    "#{resource.human_name} ##{params[:id] || resource.primary_key_value(@item)}"
+    "#{resource.human_name} #<b>#{params[:id] || resource.primary_key_value(@item)}</b>"
   end
 
   def apply_statistics
@@ -529,15 +529,15 @@ class ResourcesController < ApplicationController
 
   def after_save_redirection
     return :back if params[:return_to] == 'back'
+    primary_key = resource.primary_key_value(item_params) || params[:id]
     case params[:then_redirect]
     when /edit/
-      edit_resource_path(params[:table], params[:id])
+      edit_resource_path(params[:table], primary_key)
     when /create/
       new_resource_path(params[:table])
     else
-      id = params[:id] || resource.primary_key_value(@item)
-      if id # there can be no id if no primary key on the table
-        resource_path(params[:table], id)
+      if primary_key # there can be no id if no primary key on the table
+        resource_path(params[:table], primary_key)
       else
         resources_path params[:table]
       end

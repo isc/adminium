@@ -37,7 +37,7 @@ html lang="en"
           - flash.each do |k, v|
             .alert class="alert-#{k}"
               a.close data-dismiss="alert" href="#" &times;
-              = v
+              = raw v
           = yield
     = javascript_include_tag 'application'
     - unless Rails.env.development?

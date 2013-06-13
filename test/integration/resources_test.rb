@@ -236,6 +236,17 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_equal '37', find('td[data-column-name=age]').text
   end
   
+  test "update on composite primary key" do
+    role = FixtureFactory.new(:role, name: 'Boss').factory
+    noob_role = FixtureFactory.new(:role, name: 'Noob').factory
+    user = FixtureFactory.new(:user, pseudo: 'Booob').factory
+    role_user = FixtureFactory.new(:role_user, role_id: role.id, user_id: user.id).factory
+    visit edit_resource_path(:roles_users, "#{role_user.role_id},#{role_user.user_id}")
+    select "Role ##{noob_role.id}"
+    click_button 'Save'
+    assert_equal resource_path(:roles_users, "#{noob_role.id},#{role_user.user_id}"), current_path
+  end
+  
   test "failed update" do
     return if TEST_ADAPTER == 'mysql'
     user = FixtureFactory.new(:user).factory
