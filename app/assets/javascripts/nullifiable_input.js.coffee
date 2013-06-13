@@ -4,13 +4,13 @@ class @NullifiableInput
     $(path).each (index, elt) ->
       new NullifiableInput($(elt), bulkEdit)
   
-  constructor: (input, bulkEdit) ->
+  constructor: (input, bulkEdit, @type) ->
     @bulkEditMode = bulkEdit
     @input = input 
     match = input.get(0).name.match(/\[(.*)\](\[\d\])*/)
     return unless match
     @column_name = match[1]
-    @type = columns_hash[@column_name].type if columns_hash[@column_name]
+    @type ||= columns_hash[@column_name].type if columns_hash[@column_name]
     return if @type isnt 'string'
     @controls = input.parents('.controls')
     title_n = "will save a NULL value if selected"

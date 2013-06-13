@@ -20,6 +20,7 @@ class InPlaceEditing
     @switchToEditionMode(td)
   
   switchToEditionMode: (td) =>
+    return if @submitInProgress
     $("td[data-mode=editing] a").click()
     raw_value = td.attr('data-raw-value')
     raw_value = td.text() unless raw_value or td.hasClass('nilclass') or td.hasClass('emptystring')
@@ -47,8 +48,8 @@ class InPlaceEditing
     input.val(raw_value).focus()
     input.attr('name', name)
     input.data('null-value', true) if td.hasClass('nilclass')
-    new EnumerateInput(input, 'open') if type == 'enum'
-    new NullifiableInput(input)
+    new EnumerateInput(input, 'open') if type is 'enum'
+    new NullifiableInput(input, false, type)
 
   textEditionMode: (td) =>
     input = $('<textarea>')
@@ -104,6 +105,7 @@ class InPlaceEditing
     $("<select>#{options}</select>")
 
   submitColumnEdition: (elt) =>
+    @submitInProgress = true
     form = $(elt.currentTarget)
     spinner = $("#facebookG").clone()
     form.find('.btn').replaceWith(spinner)
@@ -118,6 +120,7 @@ class InPlaceEditing
     false
 
   submitCallback: (data) =>
+    @submitInProgress = false
     td = $('td[data-mode=editing]')
     if data.result is 'success'
       td.replaceWith(data.value)
