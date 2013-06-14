@@ -22,8 +22,8 @@ class ResourcesController < ApplicationController
     apply_search
     apply_order
     @items = @items.select(*(resource.columns[:search].map {|c| Sequel.identifier(c)}))
-    records = @items.limit(37).map {|h| h.merge(adminium_label: resource.item_label(h))}
-    render json: records.to_json(only: resource.columns[:search] + [:adminium_label])
+    records = @items.limit(37).map {|h| h.slice(*resource.columns[:search]).merge(adminium_label: resource.item_label(h))}
+    render json: {results: records, primary_key: resource.primary_key}
   end
 
   def index

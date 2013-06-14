@@ -154,8 +154,9 @@ class ResourcesControllerTest < ActionController::TestCase
   def test_search_for_association_input
     get :search, table: 'users', search: 'Loulou'
     data = JSON.parse @response.body
-    assert_equal 1, data.length
-    assert_equal "Loulou", data.first['pseudo']
+    assert_equal 1, data['results'].length
+    assert_equal "Loulou", data['results'].first['pseudo']
+    assert_equal 'id', data['primary_key']
   end
   
   def test_update

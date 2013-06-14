@@ -5,19 +5,18 @@ class window.AutocompleteAssociationsForm
       new AutocompleteAssociationsForm($(search_input))
 
   constructor: (search_input) ->
-    return if search_input.data('autocomplete-association') == 'done'
+    return if search_input.data('autocomplete-association') is 'done'
     control = search_input.parents('div.controls')
     @hidden_input = control.find('input[type=hidden]')
     @record_selected_area = control.find('.record_selected')
     @record_selected_value = control.find('.record_selected span')
     @spinner = control.find('.icon-refresh')
     @list = control.find('ul')
-    @search_input = search_input
-    @search_input.on 'keyup', @keyUp
+    search_input.on 'keyup', @keyUp
     @record_selected_area.find('.icon-remove-sign').on 'click', @clearSelected
     @url = search_input.data('autocomplete-url')
     @current_requests = 0
-    @search_input.data('autocomplete-association', 'done')
+    search_input.data('autocomplete-association', 'done')
 
   clearSelected: =>
     @record_selected_area.toggle(false)
@@ -26,12 +25,12 @@ class window.AutocompleteAssociationsForm
 
   keyUp: (evt) =>
     value = $(evt.currentTarget).val()
-    return if @query == value
+    return if @query is value
     @query = value
     clearTimeout(@timeoutId)
     @timeoutId = setTimeout @search, 300
 
-  search: () =>
+  search: =>
     @current_requests += 1
     @spinner.toggleClass('loading', true)
     query = @query.toLowerCase()
@@ -40,10 +39,10 @@ class window.AutocompleteAssociationsForm
       complete: =>
         @current_requests -= 1
         @current_requests = 0 if @current_requests < 0
-        @spinner.toggleClass('loading', @current_requests != 0)
+        @spinner.toggleClass('loading', @current_requests isnt 0)
       success: (data) =>
         @list.html('')
-        for record in data
+        for record in data.results
           text = record.adminium_label.toLowerCase()
           if text.indexOf(query) isnt -1
             text = text.replace(query, "<span class='highlight'>#{query}</span>")
@@ -55,12 +54,12 @@ class window.AutocompleteAssociationsForm
               if value.indexOf(query) isnt -1
                 attrs.push "<i>#{name}=</i>#{value.replace(query, "<span class='highlight'>#{query}</span>")}"
             text += "<span class='other_attrs'>#{attrs.join(" ")}</span>" if attrs.length > 0
-          li = $("<li>").html(text).data('label', record.adminium_label).data('record_id', record.id).appendTo(@list)
+          li = $("<li>").html(text).data('label', record.adminium_label).data('record_pk', record[data.primary_key]).appendTo(@list)
           li.on 'click', @selectRecord
 
   selectRecord: (evt) =>
     li = $(evt.currentTarget)
-    @hidden_input.val li.data('record_id')
+    @hidden_input.val li.data('record_pk')
     @record_selected_value.text li.data('label')
     @record_selected_area.toggle(true)
     @record_selected_area.find('i').toggle(false)
@@ -70,5 +69,4 @@ class window.AutocompleteAssociationsForm
     li.siblings('.selected').removeClass('selected')
     li.addClass('selected')
 
-$ ->
-  AutocompleteAssociationsForm.setup()
+AutocompleteAssociationsForm.setup()
