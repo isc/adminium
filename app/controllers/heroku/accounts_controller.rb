@@ -1,6 +1,6 @@
 class Heroku::AccountsController < ApplicationController
   
-  skip_filter :connect_to_db, :require_authentication
+  skip_filter :connect_to_db, :require_authentication, :ensure_proper_subdomain
   
   def update
     account = Account.find_by_api_key! params[:id]
