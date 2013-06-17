@@ -2,6 +2,7 @@ class AccountsController < ApplicationController
 
   before_filter :require_admin
   skip_filter :connect_to_db
+  skip_filter :ensure_proper_subdomain, only: 'update'
 
   def edit
     @account = current_account
