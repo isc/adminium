@@ -60,6 +60,10 @@ class Account < ActiveRecord::Base
   def startup?
     plan == Plan::STARTUP
   end
+  
+  def free_plan?
+    pet_project? || complimentary?
+  end
 
   def enterprise?
     (plan == Plan::ENTERPRISE) || complimentary?
