@@ -56,53 +56,28 @@ class CustomColumns
 
   constructor: (root) ->
     root = $(root)
-    [@assocSelect, @columnSelect] = [root.find('select.select-custom-assoc'), root.find('select.select-custom-column')]
-    @addButton = root.find('.custom-column button')
-    @associationSelection()
-    @columnSelection()
-    @customColumnAdd()
-
-  associationSelection: ->
-    @assocSelect.change (elt) =>
-      @type = @assocSelect.find('option:selected').closest('optgroup').attr('label')
-      if @assocSelect.val()
-        if @type is 'belongs_to'
-          $.get @assocSelect.data().columnsPath, table: @assocSelect.val(), (data) =>
-            @columnSelect.empty().removeAttr('disabled')
-            $('<option>').appendTo @columnSelect
-            for column in data
-              $('<option>').text(column).val(column).appendTo @columnSelect
-        else
-          @columnSelect.attr('disabled', 'disabled')
-          @addButton.removeAttr('disabled')
+    @columnSelect = root.find('select.select-custom-column')
+    @columnSelect.select2({placeholder: 'Select a column', matcher: adminiumSelect2Matcher}).on 'change', @columnSelected
+  
+  columnSelected: (object) =>
+    column = object.val
+    optgroup = $(object.added.element).closest('optgroup')
+    ul = optgroup.parents('.custom-column').siblings('ul')
+    kind = optgroup.data('kind')
+    assoc = optgroup.data('name')
+    switch kind
+      when 'belongs_to'
+        value = "#{assoc}.#{column}"
+        text = "#{assoc}'s #{column}"
+      when 'has_many'
+        value = "has_many/#{assoc}"
+        text = "#{optgroup.attr('label')} count"
       else
-        @columnSelect.empty()
-        @addButton.attr('disabled', 'disabled')
-
-  columnSelection: ->
-    @columnSelect.change (elt) =>
-      if @columnSelect.val()
-        @addButton.removeAttr('disabled')
-      else
-        @addButton.attr('disabled', 'disabled')
-
-  customColumnAdd: ->
-    @addButton.click (elt) =>
-      ul = @addButton.parents(".custom-column").siblings("ul")
-      type = ul.attr("data-type")
-      if @type is 'belongs_to'
-        option = @assocSelect.find('option:selected')
-        value = "#{option.val()}.#{@columnSelect.val()}"
-        text = "#{option.text()}'s #{@columnSelect.val()}"
-      else
-        value = "has_many/#{@assocSelect.val()}"
-        text = @assocSelect.find('option:selected').text()
-      label = $('<label>').text(text)
-      input = $('<input>').attr('type': 'checkbox', 'checked': 'checked', 'name':"#{type}_columns[]", 'value':value)
-      icon = $('<i>').addClass('icon-resize-vertical')
-      $('<li>').append(input).append(label).append(icon).
-        addClass('setting_attribute').appendTo ul
-      false
+        value = text = column
+    label = $('<label>').text(text)
+    input = $('<input>').attr('type': 'checkbox', 'checked': 'checked', 'name':"#{ul.data('type')}_columns[]", 'value':value)
+    icon = $('<i>').addClass('icon-resize-vertical')
+    $('<li>').append(input).append(label).append(icon).addClass('setting_attribute').appendTo ul
 
 class ColumnSettings
 

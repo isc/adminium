@@ -54,6 +54,7 @@ module ResourcesHelper
     is_editable, key = nil, key.to_sym
     return display_associated_column item, key, wrapper_tag, resource if key.to_s.include? '.'
     return display_associated_count item, key, wrapper_tag, resource if key.to_s.starts_with? 'has_many/'
+    return display_associated_calculation item, key, wrapper_tag, resource if key.to_s.starts_with? 'calculations/'
     value = item[key]
     if value && resource.foreign_key?(key)
       content = display_belongs_to item, key, value, resource
@@ -97,7 +98,18 @@ module ResourcesHelper
     return column_content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
     display_attribute wrapper_tag, item, parts.second, resource_for(assoc_info[:referenced_table]), key
   end
+  
 
+  def display_associated_calculation item, key, wrapper_tag, resource
+    value = item[key]
+    return column_content_tag wrapper_tag, '', class: 'hasmany' if value.nil?
+    _, key  = key.to_s.split('/')
+    foreign_key_name = resource.associations[:has_many].find {|name, assoc| name.to_s == key }.second[:foreign_key]
+    foreign_key_value = resource.primary_key_value item
+    content = link_to value, resources_path(key, where: {foreign_key_name => foreign_key_value}), class: 'badge badge-warning'
+    column_content_tag wrapper_tag, content, class: 'hasmany'
+  end
+  
   def display_associated_count item, key, wrapper_tag, resource
     value = item[key]
     return column_content_tag wrapper_tag, '', class: 'hasmany' if value.nil?
@@ -109,7 +121,7 @@ module ResourcesHelper
   end
 
   def display_belongs_to item, key, value, resource
-    assoc_name, assoc = resource.associations[:belongs_to].find {|_, info| info[:foreign_key] == key}
+    _, assoc = resource.associations[:belongs_to].find {|_, info| info[:foreign_key] == key}
     if assoc[:polymorphic]
       assoc_type = item[key.to_s.gsub(/_id/, '_type').to_sym]
       return value if assoc_type.blank?
@@ -138,8 +150,8 @@ module ResourcesHelper
     link_to label, resource_path(referenced_table, value)
   end
   
-  def display_associated_items resource, item, assoc_name
-    items = resource.fetch_associated_items @item, assoc_name, 5
+  def display_associated_items resource, source_item, assoc_name
+    items = resource.fetch_associated_items source_item, assoc_name, 5
     referenced_column = resource.associations[:has_many][assoc_name][:primary_key]
     resource = resource_for assoc_name
     items.map do |item|
@@ -270,11 +282,26 @@ module ResourcesHelper
   def unescape_name_value_pair param
     [CGI.unescape(param.split('=').first), CGI.unescape(param.split('=').last)]
   end
+  
+
 
   def options_for_custom_columns resource
-    res = [['belongs_to', resource.associations[:belongs_to].map{|name, assoc|[name, assoc[:referenced_table]] unless assoc[:polymorphic]}.compact]]
-    res << ['has_many', resource.associations[:has_many].map{|name, assoc|["#{name.to_s.humanize} count", name]}]
-    grouped_options_for_select res
+    res = content_tag :optgroup, label: resource.table.to_s.humanize do
+      resource.column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe
+    end
+    resource.associations[:belongs_to].each do |name, assoc|
+      next if assoc[:polymorphic]
+      res << content_tag(:optgroup, label: name.to_s.humanize, data: {name: name, kind: 'belongs_to'}) do
+        resource_for(assoc[:referenced_table]).column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe
+      end
+    end
+    resource.associations[:has_many].each do |name, assoc|
+      res << content_tag(:optgroup, label: name.to_s.humanize, data: {name: name, kind: 'has_many'}) do
+        #resource_for(assoc[:table]).column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe
+        content_tag(:option, 'count', value: "#{assoc} count")
+      end
+    end
+    res
   end
   
   def generate_time_chart_path
