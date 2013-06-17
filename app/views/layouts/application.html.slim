@@ -35,7 +35,7 @@ html lang="en"
       .row-fluid
         .span12
           - flash.each do |k, v|
-            .alert class="alert-#{k}"
+            .alert.flash class="alert-#{k}"
               a.close data-dismiss="alert" href="#" &times;
               = raw v
           = yield
