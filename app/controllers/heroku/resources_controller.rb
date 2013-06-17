@@ -9,7 +9,7 @@ class Heroku::ResourcesController < ApplicationController
   end
 
   def destroy
-    account = Account.find_by_api_key!(params[:id]).flag_as_deleted!
+    Account.find_by_api_key!(params[:id]).flag_as_deleted!
     render text: 'ok'
   end
 
