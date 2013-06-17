@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   rescue_from Exception, with: :disconnect_on_exception
   rescue_from Generic::TableNotFoundException, with: :table_not_found
   rescue_from Sequel::DatabaseConnectionError, with: :global_db_error
+  before_filter :ensure_proper_subdomain
   before_filter :fixed_account
   before_filter :require_authentication
   before_filter :connect_to_db
@@ -88,6 +89,11 @@ class ApplicationController < ActionController::Base
   
   def set_source_cookie
     cookies[:source] = params[:utm_source] if params[:utm_source].present?
+  end
+  
+  def ensure_proper_subdomain
+    return unless Rails.env.production?
+    redirect_to params.merge(host: 'www.adminium.io') if request.host_with_port != 'www.adminium.io'
   end
   
 end
