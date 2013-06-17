@@ -1,5 +1,5 @@
 class CollaboratorMailer < ActionMailer::Base
-  default :from => 'Adminium <no-reply@adminium.herokuapp.com>'
+  default from: 'Adminium <no-reply@adminium.io>'
   
   def notify_collaboration collaborator
     @collaborator = collaborator

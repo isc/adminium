@@ -6,8 +6,8 @@
     "sso_salt": "iOy1l96mXADxSETP",
     "regions": ["us","eu"],
     "production": {
-      "base_url": "https://adminium.herokuapp.com/heroku/resources",
-      "sso_url": "https://adminium.herokuapp.com/sso/login"
+      "base_url": "https://www.adminium.io/heroku/resources",
+      "sso_url": "https://www.adminium.io/sso/login"
     },
     "test": {
       "base_url": "http://adminium.dev/heroku/resources",

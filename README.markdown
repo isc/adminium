@@ -3,7 +3,7 @@
   - composite primary keys for import, bulk edit
   - support for views
   - bug time chart day of week ; 2 sundays
-bug https://adminium.herokuapp.com/auth/failure?message=invalid_credentials
+bug https://www.adminium.io/auth/failure?message=invalid_credentials
 
 ## FEATURES:
 
@@ -43,7 +43,7 @@ données stockées dans redis pour les comptes deprovisionnés ?
 ## BUGS:
 
 searchable columns only integer, rechercher une string ne veut rien dire mais ramene tous les results
-ugly show avec une text column bien remplie (https://adminium.herokuapp.com/resources/stories/15 sur enigmatic-beach-4845)
+ugly show avec une text column bien remplie (https://www.adminium.io/resources/stories/15 sur enigmatic-beach-4845)
 serialized columns containing smth else than a basic type
 subnav flickers on a page slightly too long for the screen
 on peut pas mettre un espace comme thousand delimiter (or j'aurais bien voulu pouvoir le faire sur une colonne zipcode)
