@@ -19,6 +19,7 @@ class Widget
     $('input[name="widget[type]"]').click (e) =>
       $('div[data-widget-type="TableWidget"]').toggle(e.target.value is 'TableWidget')
       $('div[data-widget-type="TimeChartWidget"]').toggle(e.target.value is 'TimeChartWidget')
+      $('#widget_columns').attr('required', e.target.value is 'TimeChartWidget')
       return unless table = $('#widget_table').val()
       if e.target.value is 'TimeChartWidget' then @fetchDateColumns table else @fetchAdvancedSearches table
 
