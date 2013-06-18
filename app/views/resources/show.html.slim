@@ -79,18 +79,18 @@ javascript:
       table.table.table-condensed
         - resource.associations[:has_many].each do |name, assoc|
           tr
-            - count = resource.has_many_count @item, name
+            - count, assoc_params = (resource.has_many_count @item, name), {assoc[:foreign_key] => @item[assoc[:primary_key]]}
             th.span2= name.to_s.humanize
             td
-              = link_to resources_path(name, where: {assoc[:foreign_key] => params[:id]}) do
+              = link_to resources_path(name, where: assoc_params) do
                 span.badge.badge-warning = count
             td
               == display_associated_items resource, @item, name
               - if count > 5
                 '  
-                = link_to "...", resources_path(name, where: {assoc[:foreign_key] => params[:id]})
+                = link_to "...", resources_path(name, where: assoc_params)
             td
-              = link_to new_resource_path(name, attributes: {assoc[:foreign_key] => params[:id]}), class: 'btn btn-mini', rel: "tooltip", :"data-placement" => :left,  title: "Create a new associated #{name.to_s.singularize.humanize}" do
+              = link_to new_resource_path(name, attributes: assoc_params), class: 'btn btn-mini', rel: "tooltip", :"data-placement" => :left,  title: "Create a new associated #{name.to_s.singularize.humanize}" do
                 i.icon-plus
 
 = render 'resources/panels/show_settings'

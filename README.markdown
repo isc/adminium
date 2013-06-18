@@ -7,6 +7,8 @@ bug https://www.adminium.io/auth/failure?message=invalid_credentials
 
 ## FEATURES:
 
+nullifier une date depuis l'edit plus facilement
+pour remplir une date null dans l'edit il faut selectionner une heure sinon ca reste null
 nullifier autre chose que des string dans le cadre d'un bulk edit
 types exotiques : inet, uuid, hstore
 gerer les serialized lors de l'edit/update (pas evident ; unsafe, piste RubyParser pour mitigate cf dbinsights, reste qu'un time inspected ne se parse pas naturellement en retour)
