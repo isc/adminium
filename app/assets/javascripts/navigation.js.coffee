@@ -17,7 +17,7 @@ class Navigation
       $(this).find('input:focus').blur()
 
     $(document).keypress (e) =>
-      return if $(event.target).is(':input')
+      return if $(e.target).is(':input')
       if e.which is 115 # 's' key
         $(@selector).select2('open')
         e.preventDefault()
@@ -45,14 +45,14 @@ class Navigation
   
   searchBar: ->
     $(document).keypress (e) =>
-      return if $(event.target).is(':input')
+      return if $(e.target).is(':input')
       if e.which is 47
         $('form.subnav-search input[type=text]').focus()
         e.preventDefault()
 
   itemList: ->
     $(document).keydown (e) =>
-      return if $(event.target).is(':input') or $('.items-list').length is 0
+      return if $(e.target).is(':input') or $('.items-list').length is 0
       row = $('.items-list tr.selected')
       if row.length is 0
         if [74, 40].indexOf(e.which) isnt -1
@@ -78,6 +78,6 @@ class Navigation
 $ -> new Navigation()
 
 window.adminiumSelect2Matcher = (term, text, opts) ->
-  return true if term == ''
+  return true if term is ''
   r = new RegExp(term.split('').join('.*'), 'i')
   return true if text.match(r)
