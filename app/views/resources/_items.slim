@@ -27,10 +27,11 @@
           th
         - resource.columns[:listing].each do |name|
           = column_header_with_metadata resource, name do
-            == header_link name
-            - if resource.is_date_column?(name) && actions_cell
-              i.time-chart.icon-bar-chart
-            i.column_settings.icon-cog
+            div
+              == header_link name
+              - if resource.is_date_column?(name) && actions_cell
+                i.time-chart.icon-bar-chart
+              i.column_settings.icon-cog
         
     - if @statistics.present?
       tfoot

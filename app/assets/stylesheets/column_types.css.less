@@ -82,7 +82,11 @@ thead.header-fixed th:hover {
     background-image: -ms-linear-gradient(top, #eee 90%,#dfdfdf 100%); /* IE10+ */
     background-image: -o-linear-gradient(top, #eee 90%,#dfdfdf 100%); /* Opera 11.10+ */
     background-image: linear-gradient(top, #eee 90%,#dfdfdf 100%); /* W3C */
-    position:relative;
+    padding: 0;
+    div {
+      padding: 8px 20px;
+      position:relative;
+    }
     min-height:28px;
     i {
       opacity:0;
@@ -111,13 +115,8 @@ thead.header-fixed th:hover {
         bottom: 10px;
       }
     }
-    padding:1px 20px 0px;
-
     &.column_header:hover {
       background:#F9F9F9;
-      border:1px solid #DDD;
-      border-top:1px solid #DDD !important;
-      padding:0px 19px 0px;
       i {
         opacity:0.5;
 
