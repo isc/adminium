@@ -219,7 +219,8 @@ module Resource
     end
     
     def column_info column_name
-      schema.detect{|c, _| c == column_name}.try(:second)
+      @column_info ||= {}
+      @column_info[column_name] ||= schema.detect{|c, _| c == column_name}.try(:second)
     end
 
     def is_number_column? column_name

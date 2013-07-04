@@ -57,7 +57,9 @@ class ResourcesController < ApplicationController
       end
       format.csv do
         fetch_associated_items
-        send_data generate_csv, type: 'text/csv'
+        response.headers['Content-Disposition'] = 'attachment'
+        response.headers['Cache-Control'] = 'no-cache'
+        self.response_body = CsvStreamer.new @items, @associated_items, resource, @resources
       end
     end
   end
@@ -494,25 +496,6 @@ class ResourcesController < ApplicationController
         redirect_to dashboard_url, notice: notice
       end
     end
-  end
-
-  def generate_csv
-    keys = resource.columns[:export]
-    options = {col_sep: resource.export_col_sep}
-    out = resource.export_skip_header ? '' : keys.map{|k|resource.column_display_name k}.to_csv(options)
-    @items.each do |item|
-      out << keys.map do |key|
-        if key.to_s.include? '.'
-          referenced_table, column = key.to_s.split('.').map(&:to_sym)
-          assoc = resource.associations[:belongs_to][referenced_table]
-          pitem = @associated_items[referenced_table].find {|i| i[assoc[:primary_key]] == item[assoc[:foreign_key]]}
-          resource_for(referenced_table).raw_column_output pitem, column if pitem
-        else
-          resource.raw_column_output item, key
-        end
-      end.to_csv(options)
-    end
-    out
   end
 
   def qualify table, column
