@@ -1,16 +1,19 @@
-development:
+defaults: &defaults
   adapter: postgresql
-  database: mt-test
-  host: localhost
-  username: skillstar
   pool: 5
-  connections: 5
-
-
-production:
-  adapter: em_postgresql
-  database: mt-test
+  timeout: 5000
+  min_messages: warning
   host: localhost
-  username:
-  pool: 5
-  connections: 5
+  username: <%= ENV['USER'] %>
+
+development:
+  <<: *defaults
+  database: adminium-development
+
+test:
+  <<: *defaults
+  database: adminium-test
+
+fixture-postgres:
+  <<: *defaults
+  database: adminium-fixture
