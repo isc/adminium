@@ -4,4 +4,4 @@
 # If you change this key, all old signed cookies will become invalid!
 # Make sure the secret is at least 30 characters and all random,
 # no regular words or you'll be exposed to dictionary attacks.
-Adminium::Application.config.secret_token = 'b63113ea529b8a54815a93dd87671b7f15822a1797a9ad5c5781532e6843dad26c11fd5bb5cfb52179a7456161710a0d4d26b260001df2db110060096a70e3f2'
+Adminium::Application.config.secret_key_base = '295bd6471d8490964b71d7881ddfc772e73afe61fed718cf24ce36a3f8b3be265713ccb3f00e342e2f9b0171c10966b7fa516224f75009efbac788f58b6a84a0'

@@ -3,7 +3,7 @@ require 'test_helper'
 class GenericTest < ActiveSupport::TestCase
 
   def setup
-    account = Factory :account
+    account = create :account
     @generic = Generic.new account
   end
   

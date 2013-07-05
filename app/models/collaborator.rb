@@ -4,7 +4,7 @@ class Collaborator < ActiveRecord::Base
   belongs_to :account
   validates_presence_of :account
   validates :email, presence: true,
-                    format: {with: /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i}
+                    format: {with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i}
   before_create :match_with_existing_user
   after_create :mail_collaborator
 

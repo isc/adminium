@@ -10,8 +10,6 @@ if ENV['COVER']
   end
 end
 
-TEST_ADAPTER = ENV['adapter'] || ENV['ADAPTER'] || 'postgres'
-
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
 require 'fixtures/test_database_schema.rb'
@@ -20,6 +18,7 @@ require 'mocha/setup'
 require 'rack_session_access/capybara'
 
 class ActiveSupport::TestCase
+  include FactoryGirl::Syntax::Methods
   self.use_transactional_fixtures = false
   teardown do
     REDIS.flushdb
@@ -31,7 +30,7 @@ class ActionDispatch::IntegrationTest
   include Capybara::DSL
 
   def login account = nil
-    account ||= Factory :account
+    account ||= create :account
     page.set_rack_session account: account.id
     account
   end
@@ -51,7 +50,7 @@ class FixtureFactory
   attr_reader :factory
   
   def initialize(name, options = {})
-    self.class.with_fixture_connection { @factory = Factory "#{name}_from_test", options }
+    self.class.with_fixture_connection { @factory = FactoryGirl.create "#{name}_from_test", options }
   end
 
   def save!

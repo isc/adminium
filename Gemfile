@@ -1,8 +1,8 @@
 source 'http://rubygems.org'
 
-ruby '1.9.3'
+ruby '2.0.0'
 
-gem 'rails', '3.2.13'
+gem 'rails', '4.0.0'
 gem 'pg'
 gem 'mysql2'
 gem 'sequel', '3.48.0'
@@ -13,7 +13,7 @@ gem 'configatron', '2.10.0'
 gem 'jquery-rails', '2.0.1'
 gem 'slim-rails'
 gem 'kaminari'
-gem 'simple_form', '2.0.4'
+gem 'simple_form', '3.0.0.rc'
 gem 'omniauth-openid'
 gem 'openid-store-redis'
 gem 'rest-client'
@@ -26,12 +26,10 @@ gem 'bootstrap-wysihtml5-rails', require: 'bootstrap-wysihtml5-rails',
 gem 'newrelic_rpm', '3.5.8.72'
 gem 'select2-rails'
 gem 'binary_search', require: 'binary_search/pure'
-
-group :assets do
-  gem 'coffee-rails', '~> 3.2.1'
-  gem 'uglifier', '>= 1.0.3'
-  gem 'twitter-bootstrap-rails', '~> 2.0.4'
-end
+gem 'protected_attributes'
+gem 'coffee-rails'
+gem 'uglifier', '>= 1.3.0'
+gem 'twitter-bootstrap-rails', '~> 2.0.4'
 
 group :development do
   gem 'kensa'

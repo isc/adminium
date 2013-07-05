@@ -14,7 +14,7 @@ class Account < ActiveRecord::Base
   has_many :time_chart_widgets
   has_many :sign_ons
 
-  validates_format_of :db_url, with: /^((mysql2?)|(postgres(ql)?)):\/\/.*/, allow_blank: true
+  validates_format_of :db_url, with: /\A((mysql2?)|(postgres(ql)?)):\/\/.*/, allow_blank: true
   # fucked up "unless" below, but otherwise the tests are fucked up
   # likely because of the transactions being used in tests
   # and the fact that this validation causes a new connection to be established

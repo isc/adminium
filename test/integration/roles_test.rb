@@ -3,7 +3,7 @@ require 'test_helper'
 class RolesTest < ActionDispatch::IntegrationTest
   
   def setup
-    login Factory(:account, plan: Account::Plan::ENTERPRISE)
+    login create(:account, plan: Account::Plan::ENTERPRISE)
   end
   
   test "role creation and edition" do

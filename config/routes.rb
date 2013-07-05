@@ -1,7 +1,7 @@
 Adminium::Application.routes.draw do
 
-  match '/auth/:provider/callback' => 'sessions#create'
-  match '/signout' => 'sessions#destroy', as: :signout
+  post '/auth/:provider/callback' => 'sessions#create'
+  get '/signout' => 'sessions#destroy', as: :signout
 
   resources :resources, path: "/resources/:table", constraints: {id: /.*/} do
     collection do
@@ -56,9 +56,9 @@ Adminium::Application.routes.draw do
     resources :resources, only: [:create, :destroy, :update, :show]
     resources :accounts, only: [:update]
   end
-  match 'sso/login' => 'heroku/resources#sso_login'
-  match 'test/threads' => 'resources#test_threads'
-  match 'landing' => 'docs#landing'
+  post 'sso/login' => 'heroku/resources#sso_login'
+  get 'test/threads' => 'resources#test_threads'
+  get 'landing' => 'docs#landing'
   root to: 'docs#homepage'
 
 end
