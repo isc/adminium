@@ -159,6 +159,9 @@ GEM
     omniauth-openid (1.0.1)
       omniauth (~> 1.0)
       rack-openid (~> 1.3.1)
+    openid-store-redis (0.1.0)
+      redis (~> 3.0)
+      ruby-openid (>= 2.1.7)
     pg (0.15.1)
     polyglot (0.3.3)
     populator (1.0.0)
@@ -210,7 +213,7 @@ GEM
     rb-fsevent (0.9.3)
     rdoc (3.12.2)
       json (~> 1.4)
-    redis (2.2.2)
+    redis (3.0.4)
     rest-client (1.6.7)
       mime-types (>= 1.16)
     ruby-openid (2.1.8)
@@ -316,6 +319,7 @@ DEPENDENCIES
   mysql2
   newrelic_rpm (= 3.5.8.72)
   omniauth-openid
+  openid-store-redis
   pg
   populator
   pry-rails
@@ -325,7 +329,7 @@ DEPENDENCIES
   rack_session_access
   rails (= 3.2.13)
   rb-fsevent
-  redis (>= 2.2.0)
+  redis (= 3.0.4)
   rest-client
   select2-rails
   sequel (= 3.48.0)
