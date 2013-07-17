@@ -59,7 +59,7 @@ class ResourcesController < ApplicationController
         fetch_associated_items
         response.headers['Content-Disposition'] = 'attachment'
         response.headers['Cache-Control'] = 'no-cache'
-        self.response_body = CsvStreamer.new @items, @associated_items, resource, @resources
+        self.response_body = CsvStreamer.new @fetched_items, @associated_items, resource, @resources
       end
     end
   end
