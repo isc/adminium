@@ -234,16 +234,16 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_check_existence
     user = FixtureFactory.new(:user).factory
-    get :check_existence, table: 'users', id: [user.id], format: :json
+    post :check_existence, table: 'users', id: [user.id], format: :json
     assert_equal({'success' => true, 'update' => true}, JSON.parse(@response.body))
     
-    get :check_existence, table: 'users', id: [user.id.to_s], format: :json
+    post :check_existence, table: 'users', id: [user.id.to_s], format: :json
     assert_equal({'success' => true, 'update' => true}, JSON.parse(@response.body))
     
-    get :check_existence, table: 'users', id: [12321, user.id]
+    post :check_existence, table: 'users', id: [12321, user.id]
     assert_equal({'error' => true, 'ids' => ['12321']}, JSON.parse(@response.body))
     
-    get :check_existence, table: 'users', id: [12321]
+    post :check_existence, table: 'users', id: [12321]
     assert_equal({'success' => true, 'update' => false}, JSON.parse(@response.body))
   end
   

@@ -1,6 +1,6 @@
 class window.ImportManager
 
-  limit: 1000
+  limit: 1500
 
   constructor: ->
     return unless document.getElementById('import_file')
@@ -118,7 +118,7 @@ class window.ImportManager
     if @update_ids.length > 0
       @processing "Checking that every rows to update exist"
       $.ajax
-        type: 'GET',
+        type: 'POST',
         url: "/resources/#{@table}/check_existence"
         data: {id: @update_ids}
         success: @checkExistenceCallback

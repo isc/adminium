@@ -10,7 +10,7 @@ Adminium::Application.routes.draw do
       post :bulk_update
       get :bulk_edit
       get :import
-      get :check_existence
+      post :check_existence
       post :perform_import
       get :search
       get :time_chart
