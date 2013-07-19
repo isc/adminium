@@ -64,7 +64,7 @@
                 - if user_can? 'edit', params[:table]
                   = link_to content_tag('i', nil, class: 'icon-pencil'), edit_resource_path(params[:table], item_pk)
                 - if user_can? 'destroy', params[:table]
-                  = link_to content_tag('i', nil, class: 'icon-trash'), resource_path(params[:table], item_pk), method: :delete, data: {confirm: 'You sure?'}
+                  = link_to content_tag('i', nil, class: 'icon-trash'), resource_path(params[:table], item_pk), method: :delete, data: {confirm: t('items.destroy_warning')}
             td.checkboxes.click_checkbox
               - if item_pk && (user_can?('destroy', params[:table]) || user_can?('update', params[:table]))
                 input type="checkbox"
