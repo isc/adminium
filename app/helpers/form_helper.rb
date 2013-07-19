@@ -49,7 +49,6 @@ module FormHelper
       when /country/   then [:select, country_options_for_select(value)]
       when /email/     then :email_field
       when /phone/     then :telephone_field
-      when /url/       then :url_field
       else
         :text_field
       end
