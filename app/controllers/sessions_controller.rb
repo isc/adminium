@@ -15,7 +15,7 @@ class SessionsController < ApplicationController
       track_sign_on account
       redirect_to root_url, notice: "Signed in as #{user.name} to #{current_account.name}."
     else
-      redirect_to root_url, notice: 'Your google account is not associated to any Enterprise Adminium account.'
+      redirect_to root_url, notice: 'Your Google account is not associated to any Enterprise Adminium account.'
     end
   end
 
