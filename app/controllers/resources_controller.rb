@@ -499,7 +499,7 @@ class ResourcesController < ApplicationController
   end
 
   def qualify table, column
-    Sequel.identifier(column).qualify table
+    Sequel.qualify(table, column)
   end
   
   def qualify_primary_keys resource
