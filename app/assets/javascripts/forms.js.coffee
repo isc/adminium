@@ -8,5 +8,6 @@ newCollaboratorForm = ->
   $('#new_collaborator input.radio_buttons').on 'change', (e) ->
     $('#new_collaborator input.check_boxes').attr(disabled: @value is 'true', checked: @value is false)
 
-autofocusResourceForm()
-newCollaboratorForm()
+$ ->
+  autofocusResourceForm()
+  newCollaboratorForm()
