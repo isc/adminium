@@ -19,7 +19,7 @@ javascript:
           - if user_can? 'edit', params[:table]
             = link_to content_tag(:i, nil, class: 'icon-pencil'), edit_resource_path(resource.table, params[:id]), title: 'Edit', rel: 'tooltip', :'data-placement' => "bottom", class: 'btn'
           - if user_can? 'destroy', params[:table]
-            = link_to content_tag(:i, nil, class: 'icon-trash'), resource_path(resource.table, params[:id], redirect: 'index'), method: :delete, data: {confirm: 'You sure?'}, class: 'btn', title: 'Destroy', rel: 'tooltip', 'data-placement' => 'bottom'
+            = link_to content_tag(:i, nil, class: 'icon-trash'), resource_path(resource.table, params[:id], redirect: 'index'), method: :delete, data: {confirm: t('items.destroy_warning')}, class: 'btn', title: 'Destroy', rel: 'tooltip', 'data-placement' => 'bottom'
         .span1.pull-right
           a.btn data-toggle="modal" href="#settings" title="Show Settings" data-placement="bottom" rel="tooltip"
             i.icon-cog
@@ -94,4 +94,4 @@ javascript:
                 i.icon-plus
 
 = render 'resources/panels/show_settings'
-#column-settings.modal.hide.fade data-remote-path=column_setting_path(params[:table], column: '{column}', view: '{view}')
+#column-settings.modal.hide.fade data-remote-path=column_setting_path('{table}', column: '{column}', view: '{view}')

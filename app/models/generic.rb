@@ -3,7 +3,7 @@ require 'sequel'
 Sequel.extension :pg_array # So that Sequel::Postgres::PGArray used in ResourcesHelper is loaded even though we didn't connect to a Postgres database yet.
 
 class Generic
-  attr_accessor :models, :db_name, :account_id, :db, :account
+  attr_accessor :db_name, :account_id, :db, :account
   attr_reader :current_adapter
 
   def initialize account, opts={}

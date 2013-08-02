@@ -84,13 +84,12 @@ class ColumnSettings
   constructor: ->
     $.fn.wColorPicker.defaultSettings['onSelect'] = (color) ->
       this.settings.target.val(color)
-
     $('.column_settings').click (evt) =>
-      [@column_name, view] = [$(evt.currentTarget).closest('.column_header').data('column-name'), 'listing']
-      unless @column_name
-        [@column_name, view] = [$(evt.currentTarget).closest('th').attr('title'), 'show']
-      remoteModal '#column-settings', {column: @column_name, view: view}, =>
-        @setupEnumConfigurationPanel()
+      [@column_name, table, view] = if (header = $(evt.currentTarget).closest('.column_header')).length
+        [header.data('column-name'), header.data('table-name'), 'listing']
+      else
+        [$(evt.currentTarget).closest('th').attr('title'), $('.item-attributes').data('table'), 'show']
+      remoteModal '#column-settings', {column: @column_name, table: table, view: view}, @setupEnumConfigurationPanel
 
   setupEnumConfigurationPanel: =>
     $("#is_enum").click @toggleEnumConfigurationPanel
@@ -105,7 +104,7 @@ class ColumnSettings
     $("table.enum_details_area tbody tr:not(.template_line)").remove()
     if (checked)
       $('.loading_enum').show().parents(".modal-body").scrollTop(1000)
-      $.getJSON $(evt.currentTarget).data('values-url'), column_name:@column_name, (data) =>
+      $.getJSON $(evt.currentTarget).data('values-url'), column_name: @column_name, (data) =>
         $('.enum_details_area').show()
         for value in data
           $('.template_line input[type=text]').val(value)

@@ -12,3 +12,5 @@ en:
     attributes:
       account:
         db_url: Database URL
+  items:
+    destroy_warning: Are you sure that you want to destroy that record?

@@ -18,7 +18,7 @@ class User < ActiveRecord::Base
   end
 
   def match_collaborators
-    Collaborator.where(email: email).update_all user_id: id
+    Collaborator.where('email ilike ?', email).update_all user_id: id
   end
 
 end

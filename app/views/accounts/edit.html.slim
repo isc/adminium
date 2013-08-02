@@ -31,7 +31,7 @@
       .alert
         p You can use a Google account to log in to this account and authorize collaborators to log in as well.
         = simple_form_for @account.collaborators.build, remote: true, html: {class: 'form-horizontal'} do |f|
-          = f.input :email, placeholder: 'google account email', type: 'email', required: true
+          = f.input :email, placeholder: 'Google account email', type: 'email', required: true
           = f.input :is_administrator, as: :radio_buttons
           .control-group
             'or has the following roles
