@@ -75,9 +75,9 @@ class Navigation
         return
       e.preventDefault()
 
-$ -> new Navigation()
-
 window.adminiumSelect2Matcher = (term, text, opts) ->
   return true if term is ''
   r = new RegExp(term.split('').join('.*'), 'i')
   return true if text.match(r)
+
+$ -> new Navigation()
