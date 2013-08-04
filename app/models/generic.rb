@@ -21,11 +21,8 @@ class Generic
       @associations = Rails.cache.fetch "account:#@account_id:associations", expires_in: 10.minutes do
         @associations = Hash[tables.map {|t| [t, {belongs_to: {}, has_many: {}}]}]
         tables.each do |table|
-          if foreign_keys[table].present?
-            discover_associations_through_foreign_keys table
-          else
-            discover_associations_through_conventions table
-          end
+          discover_associations_through_foreign_keys table if foreign_keys[table].present?
+          discover_associations_through_conventions table
         end
         @associations
       end
@@ -46,7 +43,7 @@ class Generic
       next unless (name.to_s.ends_with? '_id') && (info[:type] == :integer)
       owner = name.to_s.gsub(/_id$/, '')
       owner_table = owner.tableize.to_sym
-      if tables.include? owner_table
+      if tables.include?(owner_table) && @associations[table][:belongs_to][owner_table].nil?
         @associations[table][:belongs_to][owner_table] =
           @associations[owner_table][:has_many][table] =
           {foreign_key: name, primary_key: :id, referenced_table: owner_table, table: table}
