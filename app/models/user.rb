@@ -16,6 +16,10 @@ class User < ActiveRecord::Base
       user.email = auth['info']['email']
     end
   end
+  
+  def provider_heroku?
+    self.provider == 'heroku'
+  end
 
   def match_collaborators
     Collaborator.where('email ilike ?', email).update_all user_id: id

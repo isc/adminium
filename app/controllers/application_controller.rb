@@ -5,7 +5,7 @@ class ApplicationController < ActionController::Base
   rescue_from Sequel::DatabaseConnectionError, with: :global_db_error
   before_filter :ensure_proper_subdomain
   before_filter :fixed_account
-  before_filter :require_authentication
+  before_filter :require_account
   before_filter :connect_to_db
   before_filter :set_source_cookie
   after_filter :cleanup_generic
@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
     @global_settings ||= Resource::Global.new session[:account]
   end
 
-  def require_authentication
+  def require_account
     redirect_to docs_url unless session[:account]
   end
 
@@ -94,6 +94,10 @@ class ApplicationController < ActionController::Base
   def ensure_proper_subdomain
     return unless Rails.env.production?
     redirect_to params.merge(host: 'www.adminium.io') if request.host_with_port != 'www.adminium.io'
+  end
+  
+  def heroku_api
+    @api ||= Heroku::API.new(api_key: session[:heroku_access_token]) if session[:heroku_access_token]
   end
   
 end

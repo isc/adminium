@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
 
   skip_before_filter :connect_to_db
-  skip_before_filter :require_authentication, only: :create
+  skip_before_filter :require_account, only: :create
   skip_before_filter :verify_authenticity_token, only: :create
 
   def create

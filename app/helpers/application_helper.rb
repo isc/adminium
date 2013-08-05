@@ -81,5 +81,9 @@ module ApplicationHelper
     default = column[:ruby_default] || column[:default]
     default = default.respond_to?(:constant) ? default.constant : (default == '' ? 'Empty String' : default)
   end
+  
+  def support_link msg
+    '<a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="155803">'+msg+'</a>'
+  end
 
 end

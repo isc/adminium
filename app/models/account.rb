@@ -1,7 +1,7 @@
 class Account < ActiveRecord::Base
 
   attr_accessible :db_url, :plan, :heroku_id, :callback_url, :name, :owner_email,
-    :database_time_zone, :application_time_zone
+    :database_time_zone, :application_time_zone, :db_url_setup_method
   serialize :plan_migrations
 
   before_create :generate_api_key

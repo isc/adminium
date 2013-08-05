@@ -86,6 +86,7 @@ GEM
     encryptor (1.1.3)
     erubis (2.7.0)
     eventmachine (1.0.3)
+    excon (0.25.1)
     execjs (1.3.0)
       multi_json (~> 1.0)
     factory_girl (2.6.0)
@@ -95,6 +96,8 @@ GEM
       railties (>= 3.0.0)
     faker (1.0.1)
       i18n (~> 0.4)
+    faraday (0.8.7)
+      multipart-post (~> 1.1)
     ffi (1.0.11)
     formatador (0.2.4)
     guard (1.7.0)
@@ -108,9 +111,12 @@ GEM
       guard (>= 1.5.0)
       multi_json (~> 1.0)
     hashie (1.2.0)
+    heroku-api (0.3.13)
+      excon (~> 0.25.0)
     hike (1.2.3)
     hiredis (0.4.5)
     http_parser.rb (0.5.3)
+    httpauth (0.2.0)
     i18n (0.6.1)
     journey (1.0.4)
     jquery-rails (2.0.1)
@@ -118,6 +124,8 @@ GEM
       thor (~> 0.14)
     json (1.7.7)
     json_pure (1.6.5)
+    jwt (0.1.8)
+      multi_json (>= 1.5)
     kaminari (0.14.1)
       actionpack (>= 3.0.0)
       activesupport (>= 3.0.0)
@@ -150,12 +158,25 @@ GEM
     mocha (0.13.3)
       metaclass (~> 0.0.1)
     multi_json (1.7.1)
+    multipart-post (1.2.0)
     mysql2 (0.3.11)
     newrelic_rpm (3.5.8.72)
     nokogiri (1.5.9)
+    oauth2 (0.8.1)
+      faraday (~> 0.8)
+      httpauth (~> 0.1)
+      jwt (~> 0.1.4)
+      multi_json (~> 1.0)
+      rack (~> 1.2)
     omniauth (1.0.2)
       hashie (~> 1.2)
       rack
+    omniauth-heroku (0.1.1)
+      omniauth (~> 1.0)
+      omniauth-oauth2 (~> 1.0)
+    omniauth-oauth2 (1.1.1)
+      oauth2 (~> 0.8.0)
+      omniauth (~> 1.0)
     omniauth-openid (1.0.1)
       omniauth (~> 1.0)
       rack-openid (~> 1.3.1)
@@ -310,6 +331,7 @@ DEPENDENCIES
   faker
   guard
   guard-livereload
+  heroku-api
   hiredis (= 0.4.5)
   jquery-rails (= 2.0.1)
   kaminari
@@ -318,6 +340,7 @@ DEPENDENCIES
   mocha (= 0.13.3)
   mysql2
   newrelic_rpm (= 3.5.8.72)
+  omniauth-heroku
   omniauth-openid
   openid-store-redis
   pg

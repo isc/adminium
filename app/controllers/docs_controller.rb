@@ -1,6 +1,6 @@
 class DocsController < ApplicationController
 
-  skip_filter :require_authentication, except: :missing_db_url
+  skip_filter :require_account, except: :missing_db_url
   skip_filter :connect_to_db, unless: :valid_db_url?
 
   def index
@@ -20,6 +20,10 @@ class DocsController < ApplicationController
     options = {}
     options[:layout] = false if params[:no_layout]
     render params[:id], options
+  end
+  
+  def missing_db_url
+    @db_urls = session[:db_urls] if session[:db_urls]
   end
 
   def start_demo
