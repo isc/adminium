@@ -96,8 +96,9 @@ class ApplicationController < ActionController::Base
     redirect_to params.merge(host: 'www.adminium.io') if request.host_with_port != 'www.adminium.io'
   end
   
-  def heroku_api
-    @api ||= Heroku::API.new(api_key: session[:heroku_access_token]) if session[:heroku_access_token]
+  def heroku_api access_token
+    access_token ||= session[:heroku_access_token]
+    @api ||= Heroku::API.new(api_key: access_token) if access_token
   end
   
 end

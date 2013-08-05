@@ -20,11 +20,11 @@ class AccountsController < ApplicationController
   
   def update_db_url_from_heroku_api
     access_token = request.env['omniauth.auth']['credentials']['token']
-    apps = heroku_api.get_apps.data[:body]
+    apps = heroku_api(access_token).get_apps.data[:body]
     app_id = current_account.heroku_id.match(/\d+/).to_s
     app = apps.detect{|app| app['id'].to_s == app_id}
     app_name = app["name"]
-    config_vars = heroku_api.get_config_vars(app_name).data[:body]
+    config_vars = heroku_api(access_token).get_config_vars(app_name).data[:body]
     @db_urls = db_urls config_vars
     if @db_urls.length == 1
       current_account.db_url = @db_urls.first[:value]
