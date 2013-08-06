@@ -105,10 +105,8 @@ class ApplicationController < ActionController::Base
   def track_account_action
     if session[:account]
       attrs = {account_id: session[:account], action: "#{params[:controller]}##{params[:action]}"}
-      stat = Statistic.where(attrs).first
-      stat ||= Statistic.new(attrs)
-      stat.value += 1
-      stat.save
+      rows = Statistic.where(attrs).update_all "value = value + 1"
+      Statistic.create attrs.merge(value: 1) if rows == 0
     end
   end
   
