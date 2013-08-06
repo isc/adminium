@@ -8,9 +8,13 @@ html lang="en"
       = javascript_include_tag "http://html5shim.googlecode.com/svn/trunk/html5.js"
     = stylesheet_link_tag '//fonts.googleapis.com/css?family=Ubuntu'
     = stylesheet_link_tag 'application'
+    
     meta name="viewport" content="width=device-width, initial-scale=1.0"
     meta name="description" content="Administration interface for your database as a service"
     meta name="keywords" content="Adminium, database, administration, interface, export, heroku, add-on"
+    meta name="apple-mobile-web-app-capable" content="yes"
+    - [144, 114, 72].each do |size|
+      link rel="apple-touch-icon" sizes="#{size}x#{size}" href="/images/ios-icons/touch-icon-#{size}.png"
     link href="/images/favicon.ico" rel="shortcut icon"
   body class="#{controller.controller_name} #{controller.action_name}"
     - if session[:account]
