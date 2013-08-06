@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   before_filter :connect_to_db
   before_filter :set_source_cookie
   after_filter :cleanup_generic
+  after_filter :track_account_action
 
   helper_method :global_settings, :current_account, :current_user, :admin?, :current_account?, :resource_for
 
@@ -99,6 +100,16 @@ class ApplicationController < ActionController::Base
   def heroku_api access_token
     access_token ||= session[:heroku_access_token]
     @api ||= Heroku::API.new(api_key: access_token) if access_token
+  end
+  
+  def track_account_action
+    if session[:account]
+      attrs = {account_id: session[:account], action: "#{params[:controller]}##{params[:action]}"}
+      stat = Statistic.where(attrs).first
+      stat ||= Statistic.new(attrs)
+      stat.value += 1
+      stat.save
+    end
   end
   
 end

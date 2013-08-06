@@ -7,6 +7,5 @@ class CreateStatistics < ActiveRecord::Migration
       t.timestamps
     end
     execute "alter table statistics add primary key(account_id,action)"
-    #add_index :statistics, [:account_id, :action]
   end
 end
