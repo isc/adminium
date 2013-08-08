@@ -7,6 +7,17 @@ FactoryGirl.define do
     plan Account::Plan::STARTUP
   end
   
+  factory :user do
+    email "john.doe@emai.com"
+  end
+  
+  factory :collaborator do
+    account
+    user
+    is_administrator true
+    email "blabla@adasd.com"
+  end
+  
   factory :time_chart_widget do
     account
     table :users

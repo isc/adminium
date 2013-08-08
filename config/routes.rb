@@ -26,7 +26,7 @@ Adminium::Application.routes.draw do
 
   resources :widgets
 
-  resources :schemas, only: [:show]
+  resources :schemas
 
   resources :searches
 

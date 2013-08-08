@@ -3,7 +3,6 @@
   - composite primary keys for import, bulk edit
   - support for views
   - bug time chart day of week ; 2 sundays
-bug https://www.adminium.io/auth/failure?message=invalid_credentials
 
 ## FEATURES:
 

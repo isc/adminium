@@ -56,7 +56,11 @@
           td data-value=tblsize = number_to_human_size tblsize
           td data-table-name=table data-status='loading' data-value=0 = '-'
 
-  = "Database size #{number_to_human_size @db_size}"
+  .row-fluid
+    .span6.centered
+      - if admin?
+        = link_to "Add a new table", new_schema_path, class: "btn btn-info"
+    .span6= "Database size #{number_to_human_size @db_size}"
 
 #new_widget.modal.hide.fade
   .modal-header

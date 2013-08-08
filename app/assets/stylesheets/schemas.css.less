@@ -59,3 +59,45 @@ body.schemas {
 .schema-columns {
   table-layout: fixed
 }
+
+body.schemas form {
+  background: #EEE;
+  color: #333;
+  padding: 10px;
+  margin-top: 30px;
+  border-radius: 5px;
+  i {
+    cursor: pointer;
+    color: #CCC;
+    font-size: 1.3em;
+  }
+  tr:hover i {
+    color: #999;
+    &:hover {
+      color: #333;
+    }
+  }
+  input[name="table_name"] {
+    font-size: 1.5em;
+    height: initial;
+  }
+}
+
+body.schemas .modal {
+  color: #333;
+  .modal-footer a {
+    color: #333;
+  }
+}
+body.schemas .modal {
+  p.error {
+    background-color: lightcoral;
+    padding: 18px;
+    border-radius: 10px;
+    color: white;
+    margin-top: 20px;
+  }
+  .success a {
+    margin-left: 10px;
+  }
+}
