@@ -56,8 +56,22 @@ body.schemas {
     background-color: #353535;
   }
 }
-.schema-columns {
-  table-layout: fixed
+table.black.schema-columns {
+  table-layout: fixed;
+  
+  tr {
+    i { opacity: 0; }
+    &:hover {
+      i { opacity: 0.25; }
+      th:hover, td:hover {
+        i { 
+          opacity: 0.5;
+          &:hover { opacity: 1}
+        }
+      }
+    }
+  }
+  
 }
 
 body.schemas form {
@@ -100,4 +114,8 @@ body.schemas .modal {
   .success a {
     margin-left: 10px;
   }
+}
+
+#rename_link {
+  margin-right: 10px;
 }

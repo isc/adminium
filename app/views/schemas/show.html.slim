@@ -11,7 +11,7 @@ table.table.table-striped.black.schema-columns
       th Type
       th Null
       th Default
-      th width="1px"
+      th width="20px"
   - @resource.schema.each do |name, column|
     tr
       th
@@ -59,7 +59,7 @@ table.table.table-striped.black.schema-indices
 
 = link_to "Delete this table", "#drop-table", :class => "btn btn-danger pull-right", "data-toggle" => "modal"
 
-a.btn.btn-warning.pull-right href="#rename-table" data-toggle="modal" rename this table
+a.btn.btn-primary.pull-right#rename_link href="#rename-table" data-toggle="modal" rename this table
 
 .modal.fade.hide#rename-table
   .modal-body
