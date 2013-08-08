@@ -1,4 +1,4 @@
-@SchemasCtrl = ($scope) ->
+@SchemasCtrl = ['$scope', ($scope) ->
   
   $scope.table_name = ""
   
@@ -15,7 +15,7 @@
     $scope.columns = [{name: 'id', null: false, unique: false, primary: true, type: 'integer', default: null},
      {name: '', null: true, unique: false, primary: false, type: 'integer', primary: false, default: null}]
     $("#create-table-modal").modal('hide')
-
+]
 $ ->
   $("form#create_table").bind 'ajax:before', () ->
     $("#create-table-modal").modal('show')
