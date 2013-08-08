@@ -102,8 +102,9 @@ class SchemasController < ApplicationController
         c[:ruby_type] = type
         c[:name] = column[:name].to_sym
         primary_column_names.push c[:name] if column[:primary]
-        column[:default] = nil if column[:default].blank? || column[:default] == 'NULL' 
-        c[:options] = {:null => column[:null].present?, :default => column[:default], :unique => column[:unique].present?}
+        column[:default] = nil if column[:default].blank? || column[:default] == 'NULL'
+        c[:options] = {:null => column[:null].present?, :unique => column[:unique].present?}
+        c[:options][:default] = column[:default] if column[:default].present?
         c[:options].merge! options if options
         c
       end

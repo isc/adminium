@@ -59,7 +59,7 @@ class SchemasControllerTest < ActionController::TestCase
   
   def test_create_table_with_unique_index
     create_table [{name: "postal_code", type: "string", unique: 'on'}]
-    assert_schema [[:postal_code, {oid: 1043, db_type: "character varying(255)", default: "NULL::character varying", allow_null: false, primary_key: false, type: :string, ruby_default: nil}]]
+    assert_schema [[:postal_code, {oid: 1043, db_type: "character varying(255)", default: nil, allow_null: false, primary_key: false, type: :string, ruby_default: nil}]]
     assert_equal({:"#{@table_name}_postal_code_key" => {columns: [:postal_code], unique: true, deferrable: false}}, assigns[:resource].indexes)
   end
   
@@ -72,7 +72,7 @@ class SchemasControllerTest < ActionController::TestCase
     ]
     defaults = @schema.map(&:last).map{|c|[c[:default], c[:ruby_default]]}
     assert_equal ["'Paris'::character varying", "Paris"], defaults.shift
-    assert_equal [["NULL::character varying", nil]], defaults.uniq
+    assert_equal [[nil, nil]], defaults.uniq
   end
   
   def test_create_table_failed
