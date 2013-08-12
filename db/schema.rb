@@ -30,7 +30,6 @@ ActiveRecord::Schema.define(:version => 20130806140431) do
     t.datetime "last_tip_at"
     t.string   "last_tip_identifier"
     t.boolean  "tips_opt_in",           :default => true
-    t.string   "time_zone"
     t.string   "application_time_zone", :default => "UTC", :null => false
     t.string   "database_time_zone",    :default => "UTC", :null => false
     t.string   "source"

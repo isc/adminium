@@ -12,13 +12,13 @@ div ng-controller="SchemasCtrl" ng-init="reset()"
         table.table
           thead
             tr
-              th name
-              th type
-              th title="primary keys are autoincremented, you can make a composite primary key by  selecting multiple column to make a composite primar " primary
-              th unique
-              th index
-              th null allowed
-              th.span3 default
+              th Name
+              th Type
+              th title="Primary keys are autoincremented, you can make a composite primary key by selecting multiple columns" Primary
+              th Unique
+              th Index
+              th Null allowed
+              th.span3 Default
               th
           tbody ng-cloak="true"
             tr ng-repeat="column in columns"
@@ -40,7 +40,7 @@ div ng-controller="SchemasCtrl" ng-init="reset()"
                 input type="text" name="columns[][default]" ng-model="column.default" ng-hide="column.primary || column.unique"
               td
                 i.icon-remove-sign ng-click="remove($index)"
-        a.btn style="color:black; margin-left: 7px; margin-top: -30px" ng-click="addColumn()" add another column
+        a.btn style="color:black; margin-left: 7px; margin-top: -30px" ng-click="addColumn()" Add another column
       fieldset.actions.centered
         = submit_tag "Create", class: "btn btn-info btn-large"
   .modal.fade.hide#create-table-modal

@@ -34,9 +34,9 @@ table.table.table-striped.black.schema-columns
         = display_column_default column
         = 'AUTO_INCREMENT' if column[:auto_increment]
       td
-        = link_to schema_path(params[:id], remove_column: name), "data-confirm" => "Do you really want to permanently remove the #{name} with all its data ?", :method => "PUT" do
+        = link_to schema_path(params[:id], remove_column: name), data: {confirm: "Do you really want to permanently remove the column #{name} with all its data ?"}, method: "PUT" do
           i.icon-trash
-= link_to "add a column", "#add-column", "data-toggle" => "modal", :class => "btn btn-primary pull-right"
+= link_to "Add a column", "#add-column", "data-toggle" => "modal", class: "btn btn-primary pull-right"
 table.table.table-striped.black.schema-indices
   thead
     tr
@@ -59,11 +59,11 @@ table.table.table-striped.black.schema-indices
 
 = link_to "Delete this table", "#drop-table", :class => "btn btn-danger pull-right", "data-toggle" => "modal"
 
-a.btn.btn-primary.pull-right#rename_link href="#rename-table" data-toggle="modal" rename this table
+a.btn.btn-primary.pull-right#rename_link href="#rename-table" data-toggle="modal" Rename this table
 
 .modal.fade.hide#rename-table
   .modal-body
-    h2 How should you name rename your table ?
+    h2 How should this table be renamed?
     = form_tag schema_path(params[:table]), method: :put do
       input type="text" name="table_name" value=params[:table] required="true"
       = submit_tag "Rename", class: 'btn btn-primary btn-large pull-right'
@@ -99,7 +99,7 @@ a.btn.btn-primary.pull-right#rename_link href="#rename-table" data-toggle="modal
     p.error
       = "You are about to destroy the table <u>#{params[:table]}</u> with all its data.".html_safe
       br
-      'There will be no rolling back possible !
+      'You won't be able to rollback this action!
     p
       'To proceed, confirm by entering the table name: 
       b= params[:table]
