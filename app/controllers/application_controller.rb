@@ -103,7 +103,7 @@ class ApplicationController < ActionController::Base
   end
   
   def track_account_action
-    format = '.' + request.format.to_s.split("/").last if request.format != "text/html"
+    format = ".#{request.format.to_s.split("/").last}" if request.format != 'text/html'
     if session[:account]
       attrs = {account_id: session[:account], action: "#{params[:controller]}##{params[:action]}#{format}"}
       rows = Statistic.where(attrs).update_all ["value = value + 1, updated_at = ?", Time.zone.now]
