@@ -137,7 +137,7 @@ class Generic
     else
       table_list.map do |table|
         res = [table]
-        res += @db["select pg_total_relation_size('\"#{table}\"') as fulltblsize, pg_relation_size('\"#{table}\"') as tblsize"].first.values
+        res += @db["select pg_total_relation_size('\"#{table}\"') as fulltblsize, pg_relation_size('\"#{table}\"') as tblsize"].first.values rescue ['?']
       end.compact
     end
   end
