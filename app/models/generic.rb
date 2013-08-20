@@ -52,6 +52,8 @@ class Generic
           {foreign_key: name, primary_key: :id, referenced_table: nil, table: table, polymorphic: true}
       end
     end
+  rescue Sequel::DatabaseError
+    # don't fuck up everything when there is a freaky table which doesn't exist
   end
   
   def foreign_keys
