@@ -50,7 +50,7 @@ class SessionsController < ApplicationController
     if collaborator && collaborator.account.enterprise?
       session[:account] = collaborator.account_id
       session[:collaborator] = collaborator.id
-      track_sign_on collaborator.account
+      track_sign_on collaborator.account, SignOn::Kind::GOOGLE
     end
     redirect_to dashboard_url
   end
