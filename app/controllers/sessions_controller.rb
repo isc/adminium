@@ -24,7 +24,7 @@ class SessionsController < ApplicationController
       session[:account] = account.id
       session[:user] = user.id
       session[:collaborator] = collaborator.id
-      track_sign_on account
+      track_sign_on account, SignOn::Kind::GOOGLE
       redirect_to root_url, notice: "Signed in as #{user.name} to #{current_account.name}."
     else
       redirect_to root_url, notice: 'Your Google account is not associated to any Enterprise Adminium account.'
@@ -38,7 +38,7 @@ class SessionsController < ApplicationController
     if app
       account = Account.find_by_heroku_id("app#{app_id}@heroku.com")
       session[:account] = account.id
-      track_sign_on account
+      track_sign_on account, SignOn::Kind::HEROKU_OAUTH
       redirect_to root_url, notice: "Signed in to #{current_account.name}."
     else
       redirect_to user_path, error: "you are not unauthorized to access this app because it looks like you are not a collaborator of this app !"
@@ -61,9 +61,9 @@ class SessionsController < ApplicationController
   end
   
   private
-  def track_sign_on account
+  def track_sign_on account, kind
     SignOn.create account_id: account.id, plan: account.plan,
-      remote_ip: request.remote_ip, kind: SignOn::Kind::GOOGLE, user_id: session[:user]
+      remote_ip: request.remote_ip, kind: kind, user_id: session[:user]
   end
   
   def configure_db_url
