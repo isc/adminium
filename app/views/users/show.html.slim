@@ -10,4 +10,4 @@ h1= current_user.name || current_user.email
   ul
     - @apps.each do |app|
       li
-        = button_to "#{app['name']}", account_path(id: app['name'])
+        = button_to "#{app['name']}", account_path(name: app['name'], app_id: app['id'])
