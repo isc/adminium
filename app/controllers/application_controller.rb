@@ -54,7 +54,7 @@ class ApplicationController < ActionController::Base
   end
 
   def admin?
-    (session[:account] && current_user.nil?) || current_collaborator.try(:is_administrator)
+    (session[:account] && current_user.nil?) || current_collaborator.try(:is_administrator) || current_user.try(:heroku_provider?)
   end
 
   def require_admin
@@ -97,9 +97,9 @@ class ApplicationController < ActionController::Base
     redirect_to params.merge(host: 'www.adminium.io') if request.host_with_port != 'www.adminium.io'
   end
   
-  def heroku_api access_token
-    access_token ||= session[:heroku_access_token]
-    @api ||= Heroku::API.new(api_key: access_token) if access_token
+  def heroku_api
+    mock = Rails.env.test?
+    @api ||= Heroku::API.new(api_key: session[:heroku_access_token], mock: true) if session[:heroku_access_token]
   end
   
   def track_account_action
@@ -109,6 +109,16 @@ class ApplicationController < ActionController::Base
       rows = Statistic.where(attrs).update_all ["value = value + 1, updated_at = ?", Time.zone.now]
       Statistic.create attrs.merge(value: 1) if rows == 0
     end
+  end
+  
+  def db_urls config_vars
+    db_urls = []
+    config_vars.keys.find_all {|key| key.match(/(HEROKU_POSTGRESQL_.*_URL)|(.*DATABASE_URL.*)/)}.each do |key|
+      if !db_urls.map{|d| d[:value]}.include?( config_vars[key])
+        db_urls << {:key => key, :value => config_vars[key]}
+      end
+    end
+    db_urls
   end
   
 end

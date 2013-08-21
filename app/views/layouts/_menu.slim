@@ -5,7 +5,7 @@ ul.nav.pull-right.nav-collapse
     li.dropdown
       a.dropdown-toggle data-toggle="dropdown" href="#"
         ' Signed in as
-        b = current_user.name
+        b = current_user.name || current_user.email
         '  to
         b = current_account.name
         '

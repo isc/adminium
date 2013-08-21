@@ -17,7 +17,16 @@ class User < ActiveRecord::Base
     end
   end
   
-  def provider_heroku?
+  def self.create_with_heroku infos
+    create! do |user|
+      user.provider = 'heroku'
+      user.uid = infos['id']
+      user.name = infos['name']
+      user.email = infos['email']
+    end
+  end
+  
+  def heroku_provider?
     self.provider == 'heroku'
   end
 

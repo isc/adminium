@@ -1,6 +1,6 @@
 Adminium::Application.routes.draw do
 
-  match '/auth/heroku/callback' => 'accounts#update_db_url_from_heroku_api'
+  match '/auth/heroku/callback' => 'sessions#create_from_heroku'
   match '/auth/:provider/callback' => 'sessions#create'
   match '/signout' => 'sessions#destroy', as: :signout
 
@@ -42,8 +42,9 @@ Adminium::Application.routes.draw do
   end
   resource :sessions, only: [] do
     get :switch_account
+    get :login_heroku_app
   end
-  resource :account, only: [:edit, :update] do
+  resource :account, only: [:create, :edit, :update] do
     get :db_url_presence, on: :member
     get :update_db_url_from_heroku_api, on: :collection
     post :cancel_tips, on: :member

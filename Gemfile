@@ -66,4 +66,5 @@ group :test do
   gem 'factory_girl_rails'
   gem 'rack_session_access'
   gem 'simplecov', require: false
+  gem 'fakeweb'
 end

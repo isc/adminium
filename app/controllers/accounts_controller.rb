@@ -8,45 +8,28 @@ class AccountsController < ApplicationController
     @account = current_account
   end
   
-  # wip
-  #def create
-  #  app = params[:app_id]
-  #  resp = heroku_api.post_addon(app, "adminium:petproject")
-  #  resp.data[:body] == "Installed"
-  #  account = Account.find_by_name app
-  #  config = heroku_api.get_config_vars(app).data[:body]
-  #  render text: config["DATABASE_URL"]
-  #end
-  
-  def update_db_url_from_heroku_api
-    access_token = request.env['omniauth.auth']['credentials']['token']
-    apps = heroku_api(access_token).get_apps.data[:body]
-    app_id = current_account.heroku_id.match(/\d+/).to_s
-    app = apps.detect{|app| app['id'].to_s == app_id}
-    app_name = app["name"]
-    config_vars = heroku_api(access_token).get_config_vars(app_name).data[:body]
-    @db_urls = db_urls config_vars
-    if @db_urls.length == 1
-      current_account.db_url = @db_urls.first[:value]
-      current_account.db_url_setup_method = 'oauth'
-      current_account.save
-      redirect_to dashboard_path
-    else
-      session[:db_urls] = @db_urls
-      redirect_to doc_path(:missing_db_url)
-    end
-  end
-  
-  def db_urls config_vars
-    db_urls = []
-    config_vars.keys.find_all {|key| key.match(/(HEROKU_POSTGRESQL_.*_URL)|(.*DATABASE_URL.*)/)}.each do |key|
-      if !db_urls.map{|d| d[:value]}.include?( config_vars[key])
-        db_urls << {:key => key, :value => config_vars[key]}
+  def create
+    app_name = params[:name]
+    app_id = params[:app_id]
+    resp = heroku_api.post_addon(app_name, "adminium:petproject")
+    if resp.data[:body]["status"] == "Installed"
+      @account = Account.find_by_heroku_id "app#{app_id}@heroku.com"
+      session[:account] = @account.id
+      current_account.name = app_name
+      config = heroku_api.get_config_vars(app_name).data[:body]
+      @db_urls = db_urls heroku_api.get_config_vars(app_name).data[:body]
+      if @db_urls.length == 1
+        current_account.db_url = @db_urls.first[:value]
+        current_account.db_url_setup_method = 'self-create'
+        redirect_to dashboard_path, notice: "the addon adminium:petproject (free plan) has just been provisionned for your app #{app_name} !"
+      else
+        session[:db_urls] = @db_urls
+        redirect_to doc_path(:missing_db_url)
       end
+      current_account.save
     end
-    db_urls
   end
-
+  
   def update
     if params[:db_key] && session[:db_urls].present?
       db_url = session[:db_urls].detect{|db_url| db_url[:key] == params[:db_key]}
