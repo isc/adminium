@@ -98,8 +98,7 @@ class ApplicationController < ActionController::Base
   end
   
   def heroku_api
-    mock = Rails.env.test?
-    @api ||= Heroku::API.new(api_key: session[:heroku_access_token], mock: true) if session[:heroku_access_token]
+    @api ||= Heroku::API.new(api_key: session[:heroku_access_token], mock: Rails.env.test?) if session[:heroku_access_token]
   end
   
   def track_account_action
