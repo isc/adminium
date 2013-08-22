@@ -1,17 +1,31 @@
 class UsersController < ApplicationController
 
-  skip_before_filter :require_account, only: :show
+  skip_before_filter :require_account, only: [:show, :apps]
   skip_filter :connect_to_db
 
   def show
-    if session[:heroku_access_token]
-      @apps = heroku_api.get_apps.data[:body].sort{|app1,app2| app1['name'] <=> app2['name']}
-      account_heroku_ids = @apps.map{|app| "app#{app['id']}@heroku.com" }
-      @installed_apps = Account.where(heroku_id: account_heroku_ids)
-      installed_heroku_ids = @installed_apps.map{|account| account.heroku_id.match(/\d+/).to_s}
-      @apps.delete_if {|app| installed_heroku_ids.include? app['id'].to_s }
-    else
-      redirect_to root_path
+    detect_apps
+  end
+  
+  def apps
+    detect_apps
+    render layout: false
+  end
+  
+  private
+  def detect_apps
+    @apps = []
+    @installed_apps = []
+    if current_user
+      if current_user.heroku_provider?
+        @apps = heroku_api.get_apps.data[:body].sort{|app1,app2| app1['name'] <=> app2['name']}
+        account_heroku_ids = @apps.map{|app| "app#{app['id']}@heroku.com" }
+        @installed_apps = Account.where(heroku_id: account_heroku_ids)
+        installed_heroku_ids = @installed_apps.map{|account| account.heroku_id_only}
+        @apps.delete_if {|app| installed_heroku_ids.include? app['id'].to_s }
+      else
+        @installed_apps = current_user.enterprise_accounts
+      end
     end
   end
 

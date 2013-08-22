@@ -100,6 +100,10 @@ class Account < ActiveRecord::Base
     end
     tip
   end
+  
+  def heroku_id_only
+    heroku_id.match(/\d+/).to_s
+  end
 
   private
 

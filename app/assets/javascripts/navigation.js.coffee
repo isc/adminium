@@ -5,7 +5,19 @@ class Navigation
     @itemList()
     @tableSelection()
     @searchBar()
+    @applist()
 
+  applist: ->
+    $(".apps-list").hover @fetchAppList
+    $(".apps-list").click @fetchAppList
+      
+  
+  fetchAppList: ->
+    return if $(".apps-list").data('fetched')
+    $(".apps-list").data('fetched', true)
+    $.get "/user/apps", (data) ->
+      $("ul.accounts-menu").html(data)
+    
   tableSelection: ->
     options = {placeholder: "Select a table", allowClear: true, dropdownCssClass: 'select2OrangeDropDown'}
     options.matcher = adminiumSelect2Matcher

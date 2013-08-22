@@ -1,4 +1,4 @@
-- if session[:account] == ENV['DEMO_ACCOUNT_ID']
+- if session[:account] && session[:account] == ENV['DEMO_ACCOUNT_ID']
   .demo
     .container-fluid
       .row-fluid

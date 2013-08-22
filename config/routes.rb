@@ -54,7 +54,9 @@ Adminium::Application.routes.draw do
     get :tables_count, on: :collection
   end
   resources :collaborators
-  resource :user
+  resource :user do
+    get :apps
+  end
 
   namespace :heroku do
     resources :resources, only: [:create, :destroy, :update, :show]

@@ -4,7 +4,7 @@ h1= current_user.name || current_user.email
   ul
     - @installed_apps.each do |account|
       li
-        = link_to account.name, login_heroku_app_sessions_path(id: account.heroku_id.match(/\d+/).to_s)
+        = link_to account.name, login_heroku_app_sessions_path(id: account.heroku_id_only)
 .span6
   h2 All your apps
   ul

@@ -26,6 +26,10 @@ class ApplicationController < ActionController::Base
   def require_account
     redirect_to docs_url unless session[:account]
   end
+  
+  def require_user
+    redirect_to root_path unless session[:user]
+  end
 
   def connect_to_db
     if current_account.db_url.present?

@@ -1,28 +1,25 @@
 ul.nav.pull-right.nav-collapse
-  - if session[:account].nil?
+  - if current_user.nil? && current_account.nil?
     li= link_to 'Sign in', '/auth/google'
-  - if current_user && current_account
+  - else
     li.dropdown
-      a.dropdown-toggle data-toggle="dropdown" href="#"
+      a.apps-list.dropdown-toggle data-toggle="dropdown" href="#"
         ' Signed in as
-        b = current_user.name || current_user.email
-        '  to
-        b = current_account.name
+        b = current_user.try(:name) || current_user.try(:email) || 'heroku admin'
+        - if current_account
+          '  to
+          b = current_account.name
         '
         b.caret
       ul.dropdown-menu.accounts-menu
-        li= link_to "Dashboard for <b>#{current_account.name}</b>".html_safe, dashboard_path
-        - current_user.enterprise_accounts.each do |account|
-          - next if account == current_account
-          li= link_to "Switch to <b>#{account.name}</b>".html_safe, switch_account_sessions_path(:account_id => account.id)
+        li
+          a loading ...
         li.divider
         li= link_to 'Sign out', signout_path
   li.dropdown
     a.dropdown-toggle data-toggle="dropdown" href="#"
       i.icon-cog.icon-white
     ul.dropdown-menu
-      - if admin?
+      - if admin? && current_account
         li class=active_or_not('accounts') = link_to 'Edit Account', edit_account_path
       li class=active_or_not('docs') = link_to 'Docs', docs_path
-      - if session[:account] && current_user.nil?
-        li= link_to 'Sign out', signout_path

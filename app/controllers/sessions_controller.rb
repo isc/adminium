@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
 
   skip_before_filter :connect_to_db
-  skip_before_filter :require_account, only: [:create, :create_from_heroku, :login_heroku_app]
+  skip_before_filter :require_account, only: [:create, :create_from_heroku, :login_heroku_app, :destroy]
   skip_before_filter :verify_authenticity_token, only: [:create, :create_from_heroku]
 
   def create_from_heroku
