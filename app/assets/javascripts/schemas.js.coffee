@@ -18,7 +18,7 @@
 ]
 $ ->
   $("form#create_table").bind 'ajax:before', () ->
-    $("#create-table-modal").modal('show')
+    $("#create-table-modal").modal('show').find('.s').hide().prev().find('.before').show()
     $("#create-table-modal .s").hide()
     $("#create-table-modal .before").show()
     

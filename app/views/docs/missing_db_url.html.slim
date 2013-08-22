@@ -3,7 +3,7 @@
   h1.centered
     i.icon-flag.icon-4x
     br
-    'Great, Adminium has just been provisionned for your app!
+    'Great, Adminium has just been provisioned for your app!
   .row
     .span4.offset2.centered
       h3
@@ -31,7 +31,7 @@
         a.close data-dismiss="modal" x
         h3 Which database do you want to access ?
       .modal-body
-        h4= "We detected #{@db_urls.length} differents url, which one do you want to go with ?"
+        h4= "We detected #{@db_urls.length} different url, which one do you want to go with ?"
         table.table
           - @db_urls.each do |db|
             tr
@@ -40,7 +40,7 @@
                   = hidden_field_tag "db_key", db[:key]
                   = hidden_field_tag :install, 1
                   = f.submit db[:key]
-              td= db[:value][0..10] + "******************"
+              td= db[:value][0..15] + "******************"
 
 .modal.hide.fade#modal-install-manually(style="margin-left:-375px; width:750px;")
   .modal-header

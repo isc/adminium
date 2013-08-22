@@ -4,10 +4,32 @@ h1= current_user.name || current_user.email
   ul
     - @installed_apps.each do |account|
       li
-        = link_to account.name, login_heroku_app_sessions_path(id: account.heroku_id_only)
+        - if account.heroku_id.present?
+          = link_to account.name, login_heroku_app_sessions_path(id: account.heroku_id_only)
+        - else
+          = account.name
 .span6
   h2 All your apps
   ul
     - @apps.each do |app|
       li
-        = button_to "#{app['name']}", account_path(name: app['name'], app_id: app['id'])
+        = link_to "#{app['name']}", "#", "data-name" => app['name'], "data-app-id" => app['id']
+
+
+.modal.fade.hide#create-addon-modal
+    .modal-body.centered
+      .step1
+        h1 Install Adminium on your app
+        p Adminium Heroku Addon has not yet been provisioned for this app. Choose your plan!
+        .row-fluid.pricing
+          = render '/docs/pricing', install_button: true
+      .step2
+        h2
+        h3
+        p Please wait  ...
+        = spinner_tag
+      .error
+        h2 Failed to install Adminium on your app
+        p Something went wrong
+    .modal-footer.step1
+      a.btn.btn-large data-dismiss="modal" Later

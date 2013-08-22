@@ -104,31 +104,7 @@ html lang="en"
       .row
         h2.offset3.span6.centered Simple pricing, affordable for all
       .row
-        .span4
-          .well.white.plan
-            h3 Pet Project
-            h2 Free
-            p Limited to 5 tables
-            p Heroku collaborators
-            p &nbsp;
-        .span4
-          .well.white.plan
-            h3 Startup
-            h2
-              sup $
-              span 10/month
-            p No table limit
-            p Heroku collaborators
-            p &nbsp;
-        .span4
-          .well.white.plan
-            h3 Enterprise
-            h2
-              sup $
-              span 25/month
-            p No table limit
-            p External collaborators
-            p Roles and access control
+        = render 'pricing', install_button: false
       .centered
         a.btn.btn-large.btn-success.cta href="https://addons.heroku.com/adminium" Install the add-on on your Heroku app
         p.more All plans come with full support. You can upgrade or downgrade anytime.
