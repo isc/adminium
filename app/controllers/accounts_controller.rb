@@ -21,7 +21,7 @@ class AccountsController < ApplicationController
       if @db_urls.length == 1
         current_account.db_url = @db_urls.first[:value]
         current_account.db_url_setup_method = 'self-create'
-        redirect_to dashboard_path, notice: "the addon adminium:petproject (free plan) has just been provisionned for your app #{app_name} !"
+        redirect_to dashboard_path, notice: "The add-on adminium:petproject (free plan) has just been provisioned for your app #{app_name} !"
       else
         session[:db_urls] = @db_urls
         redirect_to doc_path(:missing_db_url)
