@@ -1,3 +1,16 @@
+@AppsCtrl = ['$scope', '$http', ($scope, $http) ->
+  $scope.apps = []
+  $scope.addonProvisioning = new AddonProvisioning()
+  $http.get(window.location.href).success (data) ->
+    $scope.apps = data
+  $scope.appSelection = ->
+    $scope.selectedApp = @app
+    if @app.plan
+      window.location.href = "/sessions/login_heroku_app?id=#{@app.heroku_id}"
+    else
+      $scope.addonProvisioning.showModal @app
+]
+
 class AddonProvisioning
   
   constructor: ->
@@ -7,13 +20,12 @@ class AddonProvisioning
     $("a[data-name][data-app-id]").click @showModal
     $("a[data-plan]").click @provision
 
-  showModal: (evt) =>
-    elt = $(evt.currentTarget)
+  showModal: (app) =>
     @modal.modal("show")
     @modalBody.find('> div').hide()
     @modalBody.find(".step1").show()
-    $("a[data-plan]").data('name', elt.data('name'))
-    $("a[data-plan]").data('app-id', elt.data('app-id'))
+    $("a[data-plan]").data('name', app.name)
+    $("a[data-plan]").data('app-id', app.id)
 
   provision: (evt) =>
     elt = $(evt.currentTarget)
@@ -42,6 +54,3 @@ class AddonProvisioning
   errorCallback: =>
     @modalBody.find("> div").hide()
     @modalBody.find(".error").show()
-
-$ ->
-  new AddonProvisioning()
