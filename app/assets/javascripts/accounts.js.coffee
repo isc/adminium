@@ -22,8 +22,8 @@ class AddonProvisioning
 
   showModal: (app) =>
     @modal.modal("show")
-    @modalBody.find('> div').hide()
-    @modalBody.find(".step1").show()
+    @modal.find('.modal-body > div, .modal-footer').hide()
+    @modal.find(".step1").show()
     $("a[data-plan]").data('name', app.name)
     $("a[data-plan]").data('app-id', app.id)
 
@@ -32,7 +32,7 @@ class AddonProvisioning
     name = elt.data('name')
     app_id = elt.data('app-id')
     plan = elt.data('plan')
-    @modalBody.find('> div').hide()
+    @modal.find('.modal-body > div, .modal-footer').hide()
     @modalBody.find('.step2').show()
     @modalBody.find('.step2 h2').text("Installing Adminium on: #{name}")
     @modalBody.find('.step2 h3').text("selected plan: #{plan}")
@@ -49,8 +49,9 @@ class AddonProvisioning
     if data.success
       window.location.href = "/dashboard"
     else
-      @errorCallback()
+      @errorCallback(data.error)
   
-  errorCallback: =>
-    @modalBody.find("> div").hide()
-    @modalBody.find(".error").show()
+  errorCallback: (msg) =>
+    msg ||= "Something went wrong"
+    @modal.find('.modal-body > div, .modal-footer').hide()
+    @modal.find(".error").show().find("p").text(msg)

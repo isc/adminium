@@ -105,6 +105,17 @@ class ApplicationController < ActionController::Base
     @api ||= Heroku::API.new(api_key: session[:heroku_access_token], mock: Rails.env.test?) if session[:heroku_access_token]
   end
   
+  def heroku_api_v3 method, path
+    if session[:heroku_access_token]
+      headers = {}
+      headers["Accept"] = "application/vnd.heroku+json; version=3"
+      headers["Authorization"] = Base64.encode64(":#{session[:heroku_access_token]}\n").chomp
+      headers["User-Agent"] = "adminium-addon-client"
+      resource = Excon.new 'https://api.heroku.com/'
+      JSON.parse resource.request({:method => method, :path => path, :headers => headers}).data[:body]
+    end
+  end
+  
   def track_account_action
     format = ".#{request.format.to_s.split("/").last}" if request.format != 'text/html'
     if session[:account]
