@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(:version => 20130823151520) do
     t.datetime "created_at",                          :null => false
     t.datetime "updated_at",                          :null => false
     t.boolean  "is_administrator", :default => false, :null => false
-    t.string   "type"
+    t.string   "kind"
   end
 
   add_index "collaborators", ["account_id"], :name => "index_collaborators_on_account_id"
