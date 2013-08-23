@@ -4,7 +4,7 @@ ruby '1.9.3'
 
 gem 'rails', '3.2.13'
 gem 'pg'
-gem 'mysql2'
+#gem 'mysql2'
 gem 'sequel', '3.48.0'
 gem 'sequel_pg', '1.6.6', require: 'sequel'
 gem 'hiredis', '0.4.5'

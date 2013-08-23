@@ -1,16 +1,18 @@
 script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"
-h2= current_user.name || current_user.email
 
 div ng-controller="AppsCtrl"
-  table.table.table-bordered.span8.offset2
+  table.table.table-bordered.span8.offset2.apps
     thead
       tr
         th Apps
         th
           input ng-model="search.name" placeholder="Filter"
     tbody
+      tr.loading
+        td colspan=2
+          = spinner_tag
       tr ng-repeat="app in apps | filter:search" ng-cloak="true"
-        td
+        td colspan=2
           a ng-click='appSelection()' {{app.name}}
 
   .modal.fade.hide#create-addon-modal

@@ -85,5 +85,13 @@ module ApplicationHelper
   def support_link msg
     '<a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="155803">'+msg+'</a>'
   end
+  
+  def table_list
+   if current_account? && current_account.db_url.present?
+    return @permissions.map {|key, value| key if value['read']}.compact if @permissions
+    return @tables if @tables.present?
+   end
+   return []
+  end
 
 end

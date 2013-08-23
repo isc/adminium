@@ -3,6 +3,7 @@
   $scope.addonProvisioning = new AddonProvisioning()
   $http.get(window.location.href).success (data) ->
     $scope.apps = data
+    $("tr.loading").remove()
   $scope.appSelection = ->
     $scope.selectedApp = @app
     if @app.plan
