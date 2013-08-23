@@ -39,6 +39,7 @@ class SessionsControllerTest < ActionController::TestCase
     session[:heroku_access_token] = '123'
     account = Factory :account, heroku_id: "app#{app['id']}@heroku.com"
     user = Factory :user, provider: 'heroku'
+    session[:user] = user.id
     assert_difference 'SignOn.count' do
       get :login_heroku_app, id: app['id']
       heroku_api.delete_app app_name
