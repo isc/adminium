@@ -6,6 +6,7 @@
       li.nav-header Setup
       li
         a href="#installation" Add-on Install
+        a href="#access" Accessing Adminium Interface
       li#features.nav-header Features
 
       li.divider
@@ -24,13 +25,17 @@
         = link_to "Check out the demo account", start_demo_docs_path, :class => "btn btn-success btn-large"
     section#installation.well
       h2 Add-on Install
-      p In order to use Adminium with your own data, we need to access your database. There are two simple ways to achieve this.
+      p
+        'In order to use Adminium with your own data, we need to access your database. To retrieve your database url securely and easily, we use
+        = link_to "Heroku's oauth API", "#heroku_oauth"
+        '  to read the <code>DATABASE_URL</code> configuration variable of your app.
+      'There are also two other ways to retrieve your database url.
       h3 Command line installation
       p Adminium can be installed to a Heroku application via the CLI:
       pre= "heroku addons:add adminium:petproject"
       p In order to provide you with an administration interface for your data, Adminium needs to be able to connect to your database. The easiest way to do that is to install and run a plugin for the Heroku command line tool :
       pre="heroku plugins:install git://github.com/isc/heroku-adminium\nheroku adminium"
-      p The plugin execution will store an encrypted version of the DATABASE_URL of your application in the Adminium database. Your DATABASE_URL is sent using SSL and is never logged in the Adminium application logs. Removing the add-on from your application will delete that info from the Adminium database.
+      p The plugin execution will store an encrypted version of the <code>DATABASE_URL</code> of your application in the Adminium database. Your <code>DATABASE_URL</code> is sent using SSL and is never logged in the Adminium application logs. Removing the add-on from your application will delete that info from the Adminium database.
       h3 Browser installation
       p== "Visit the #{link_to "adminium page", 'https://addons.heroku.com/marketplace/addons/adminium', :target=>'_blank'} on Heroku's marketplace and select a plan and your project."
       h4 Find your Heroku Postgres database url
@@ -45,8 +50,12 @@
       p
         'Adminium doesn’t need to integrate at a code-level and thus isn’t tied to a particular language. It can be used with any app hosted on Heroku, be it Ruby, Node.js, Clojure, Java, Python, or Scala, as long as it makes use of a PostgreSQL or MySQL database.
     section#access.well
-      h2 Accessing Adminium Interface
-      p The interface can be accessed via the CLI:
+      h2#access Accessing Adminium Interface
+      p
+        'Sign in and log in in with
+        = link_to "Heroku's oauth API", "#heroku_oauth"
+        '  on adminium.io will list your apps and allow you to easily provision the Adminium Heroku addon on your app. Once logged in with this method, you can easily switch between your apps.
+      p The interface can also be accessed via the CLI, but in this case, you will have only access to this application.
       pre= "heroku addons:open adminium"
       p
         'Or by visiting the
@@ -58,6 +67,13 @@
         '  and login through a Google account once you have declared collaborators in your
         = link_to 'account settings', edit_account_path
         '.
+        h3 Heroku oauth Authentification and scopes
+        p
+         'We rely on
+         = link_to "Heroku's oauth API", "https://blog.heroku.com/archives/2013/7/22/oauth-for-platform-api-in-public-beta", target: "_blank"
+         '  to verify your identity and list your apps.
+        p We ask for the <code>write-protected</code> scope to access your DATABASE_URL configuration variable to connect to your database, and allow you to upgrade or downgrade your addon plan at any time.
+           
     - Account::TIPS.each do |tip|
       - tip_body = render partial: "/docs/tips/#{tip}"
       section.feature-description.well(id=tip)

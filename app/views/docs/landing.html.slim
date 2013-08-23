@@ -24,6 +24,8 @@ html lang="en"
           =link_to "Documentation", docs_path
           b |
           = link_to "Pricing", "#pricing"
+          b |
+          a href="#login" data-toggle="modal" Log In or Sign Up
     .container.intro
       .row
         .span8.offset2.centered
@@ -118,3 +120,15 @@ html lang="en"
     - unless Rails.env.development?
       = render 'layouts/ga'
       = render 'layouts/uservoice'
+    
+    .modal.fade.hide#login
+      .modal-body.centered
+        h1 Log In or Sign Up
+        .row-fluid
+          .span6
+            = link_to "/auth/heroku" do
+              = image_tag 'logos/heroku.png'
+          .span6
+            = link_to "/auth/google" do
+              = image_tag 'logos/google.png'
+            p available only to collaborators of Enterprise accounts

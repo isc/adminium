@@ -93,6 +93,31 @@ a.btn.btn-navbar .icon-bar {
 
 .landing {
   
+  #login {
+    h1 {
+      margin-bottom: 25px;
+    }
+    p {
+      color: #AAA;
+      margin-top: 5px;
+      font-style: italic;
+    }
+    a {
+      background-color: #DDD;
+      display: block;
+      -webkit-filter: grayscale();
+      &:hover {
+        -webkit-filter: none;
+        background-color: lighten(#7d72bd, 30%);
+      }
+      padding: 10px;
+      border-radius: 5px;
+    }
+    img {
+      height: 41px;
+    }
+  }
+  
   .promise {
     margin: 40px 0px 10px 0;
     font-size: 2.0em;
