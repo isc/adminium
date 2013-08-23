@@ -33,7 +33,7 @@ class SessionsController < ApplicationController
   
   def login_heroku_app
     apps = heroku_api.get_apps.data[:body]
-    app_id = params[:id][/\d+/].first
+    app_id = params[:id].match(/\d+/).to_s
     app = apps.detect{|app| app['id'].to_s == app_id}
     if app
       account = Account.find_by_heroku_id("app#{app_id}@heroku.com")

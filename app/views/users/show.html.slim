@@ -7,13 +7,11 @@ div ng-controller="AppsCtrl"
       tr
         th Apps
         th
-          input ng-model="search" placeholder="Filter"
+          input ng-model="search.name" placeholder="Filter"
     tbody
       tr ng-repeat="app in apps | filter:search" ng-cloak="true"
         td
           a ng-click='appSelection()' {{app.name}}
-
-  /         = link_to account.name, login_heroku_app_sessions_path(id: account.heroku_id_only)
 
   .modal.fade.hide#create-addon-modal
       .modal-body.centered
