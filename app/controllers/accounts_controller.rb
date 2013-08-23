@@ -6,6 +6,9 @@ class AccountsController < ApplicationController
 
   def edit
     @account = current_account
+    if current_user.try(:heroku_provider?)
+      @collaborators = heroku_api.get_collaborators(current_account.name).data[:body]
+    end
   end
   
   def create
@@ -27,10 +30,21 @@ class AccountsController < ApplicationController
       current_account.save
       render json: {success: true}
     else
-      render json: {success: false}
+      render json: {success: false, error: resp.data[:body]["status"]}
     end
-  rescue
-    render json: {sucess: false}
+  rescue Heroku::API::Errors::ErrorWithResponse => e
+    render json: {sucess: false, error: JSON.parse(e.response.data[:body])["error"]}
+  end
+  
+  def upgrade
+    if current_user.try(:heroku_provider?)
+      heroku_api.put_addon(current_account.name, "adminium:#{params[:plan]}")
+      redirect_to :back
+    else
+      redirect_to "https://addons.heroku.com/adminium"
+    end
+  rescue Heroku::API::Errors::ErrorWithResponse => e
+    @error = e
   end
   
   def update

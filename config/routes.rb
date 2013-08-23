@@ -1,6 +1,7 @@
 Adminium::Application.routes.draw do
 
   match '/auth/heroku/callback' => 'sessions#create_from_heroku'
+  match '/install' => "docs#install"
   match '/auth/:provider/callback' => 'sessions#create'
   match '/signout' => 'sessions#destroy', as: :signout
 
@@ -48,6 +49,7 @@ Adminium::Application.routes.draw do
     get :db_url_presence, on: :member
     get :update_db_url_from_heroku_api, on: :collection
     post :cancel_tips, on: :member
+    get :upgrade
   end
   resources :roles
   resource :dashboard do
@@ -65,7 +67,7 @@ Adminium::Application.routes.draw do
   match 'sso/login' => 'heroku/resources#sso_login'
   match 'test/threads' => 'resources#test_threads'
   match 'landing' => 'docs#landing'
-  match "test/:app_id" => 'accounts#create'
+  
   root to: 'docs#homepage'
 
 end
