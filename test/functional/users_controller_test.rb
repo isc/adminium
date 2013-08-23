@@ -8,13 +8,13 @@ class UsersControllerTest < ActionController::TestCase
     Account.delete_all
     Factory :account, heroku_id: "app#{app1['id']}@heroku.com", name: app1['name']
     heroku_api.post_app(name: 'app-with-addon-not-installed').data[:body]
-    user = Factory :user, name: nil, email: 'jessy@cluscrive.fr'
+    user = Factory :user, name: nil, email: 'jessy@cluscrive.fr', provider: 'heroku'
     session[:user] = user.id
     session[:heroku_access_token] = '123'
-    get :show
+    get :show, format: :json
     assert_response :success
-    assert_equal ['app-with-addon-not-installed'], assigns[:apps].map{|app| app['name']}
     assert_equal ['app-with-addon-installed'], assigns[:installed_apps].map(&:name)
+    assert_equal ['app-with-addon-not-installed'], assigns[:apps].map{|app| app['name']}
   end
   
   def test_show_user_apps_with_just_an_account

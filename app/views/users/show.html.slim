@@ -1,35 +1,34 @@
-h1= current_user.name || current_user.email
-.span6
-  h2 Installed Apps
-  ul
-    - @installed_apps.each do |account|
-      li
-        - if account.heroku_id.present?
-          = link_to account.name, login_heroku_app_sessions_path(id: account.heroku_id_only)
-        - else
-          = account.name
-.span6
-  h2 All your apps
-  ul
-    - @apps.each do |app|
-      li
-        = link_to "#{app['name']}", "#", "data-name" => app['name'], "data-app-id" => app['id']
+script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"
+h2= current_user.name || current_user.email
 
+div ng-controller="AppsCtrl"
+  table.table.table-bordered.span8.offset2
+    thead
+      tr
+        th Apps
+        th
+          input ng-model="search" placeholder="Filter"
+    tbody
+      tr ng-repeat="app in apps | filter:search" ng-cloak="true"
+        td
+          a ng-click='appSelection()' {{app.name}}
 
-.modal.fade.hide#create-addon-modal
-    .modal-body.centered
-      .step1
-        h1 Install Adminium on your app
-        p Adminium Heroku Addon has not yet been provisioned for this app. Choose your plan!
-        .row-fluid.pricing
-          = render '/docs/pricing', install_button: true
-      .step2
-        h2
-        h3
-        p Please wait  ...
-        = spinner_tag
-      .error
-        h2 Failed to install Adminium on your app
-        p Something went wrong
-    .modal-footer.step1
-      a.btn.btn-large data-dismiss="modal" Later
+  /         = link_to account.name, login_heroku_app_sessions_path(id: account.heroku_id_only)
+
+  .modal.fade.hide#create-addon-modal
+      .modal-body.centered
+        .step1
+          h1 ng-model="selectedApp" Install Adminium on {{selectedApp.name}}
+          p Adminium Heroku Addon has not yet been provisioned for this app. Choose your plan!
+          .row-fluid.pricing
+            = render '/docs/pricing', install_button: true
+        .step2
+          h2
+          h3
+          p Please wait  ...
+          = spinner_tag
+        .error
+          h2 Failed to install Adminium on your app
+          p Something went wrong
+      .modal-footer.step1
+        a.btn.btn-large data-dismiss="modal" Later
