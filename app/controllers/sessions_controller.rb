@@ -38,6 +38,8 @@ class SessionsController < ApplicationController
     if app
       account = Account.find_by_heroku_id("app#{app_id}@heroku.com")
       session[:account] = account.id
+      collaborator = current_user.collaborators.where(account_id: account.id).first
+      session[:collaborator] = collaborator.id if collaborator
       track_sign_on account, SignOn::Kind::HEROKU_OAUTH
       redirect_to root_url, notice: "Signed in to #{current_account.name}."
     else

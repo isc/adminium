@@ -21,7 +21,6 @@ class User < ActiveRecord::Base
     create! do |user|
       user.provider = 'heroku'
       user.uid = infos['id']
-      user.name = infos['name']
       user.email = infos['email']
     end
   end
@@ -31,7 +30,7 @@ class User < ActiveRecord::Base
   end
 
   def match_collaborators
-    Collaborator.where('email ilike ?', email).update_all user_id: id
+    Collaborator.where('kind = ? and email ilike ?', provider, email).update_all user_id: id
   end
 
 end

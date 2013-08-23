@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130806140431) do
+ActiveRecord::Schema.define(:version => 20130823151520) do
 
   create_table "accounts", :force => true do |t|
     t.string   "plan"
@@ -43,6 +43,7 @@ ActiveRecord::Schema.define(:version => 20130806140431) do
     t.datetime "created_at",                          :null => false
     t.datetime "updated_at",                          :null => false
     t.boolean  "is_administrator", :default => false, :null => false
+    t.string   "type"
   end
 
   add_index "collaborators", ["account_id"], :name => "index_collaborators_on_account_id"
@@ -59,8 +60,9 @@ ActiveRecord::Schema.define(:version => 20130806140431) do
     t.string   "name"
     t.integer  "account_id"
     t.text     "permissions"
-    t.datetime "created_at",  :null => false
-    t.datetime "updated_at",  :null => false
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
+    t.boolean  "default",     :default => false, :null => false
   end
 
   create_table "sign_ons", :force => true do |t|

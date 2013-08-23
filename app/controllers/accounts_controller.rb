@@ -7,7 +7,9 @@ class AccountsController < ApplicationController
   def edit
     @account = current_account
     if current_user.try(:heroku_provider?)
-      @collaborators = heroku_api.get_collaborators(current_account.name).data[:body]
+      @heroku_collaborators = heroku_api.get_collaborators(current_account.name).data[:body]
+      real_heroku_collaborators = @account.collaborators.where(kind: 'heroku').map &:email
+      @heroku_collaborators.delete_if {|heroku_collaborator| real_heroku_collaborators.include? heroku_collaborator['email']}
     end
   end
   

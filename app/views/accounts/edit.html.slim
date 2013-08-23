@@ -46,19 +46,25 @@
         table.table.span6#collaborators data-delete-url="#{collaborator_path(':id')}"
           thead
             tr
-              th colspan=2
+              th
+              th
               th Roles
               th
-          - @collaborators.each do |collaborator|
+          - @heroku_collaborators.each do |collaborator|
             tr
-              td= collaborator['name']
+              td= image_tag "logos/heroku-icon.png", alt: "Heroku Collaborator"
               td= collaborator['email']
-              td= "Administrator (heroku #{collaborator["role"] || 'collaborator'})"
+              td
+                ' administrator
+                = "(#{collaborator["role"]})" if collaborator['role']
+              td
+                = link_to content_tag(:i, nil, class: 'icon-pencil'), new_collaborator_path(email: collaborator['email']), remote: true,  'data-toggle' => 'modal', 'data-target' => "#modal-window", 'data-backdrop' => true, 'data-keyboard' => true, class: 'btn', title: 'Edit this collaborator roles', rel: 'tooltip' if collaborator['role'] != 'owner'
           - @account.collaborators.each do |collaborator|
             - next if collaborator.new_record?
             - css = collaborator.user_id ? nil : 'deactivated'
       
             tr class=css
+              td= image_tag "logos/#{collaborator.kind}-icon.png", alt: "#{collaborator.kind.capitalize} Collaborator"
               td= collaborator.name
               td= collaborator.human_roles
               td
