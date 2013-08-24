@@ -60,9 +60,8 @@ ActiveRecord::Schema.define(:version => 20130823151520) do
     t.string   "name"
     t.integer  "account_id"
     t.text     "permissions"
-    t.datetime "created_at",                     :null => false
-    t.datetime "updated_at",                     :null => false
-    t.boolean  "default",     :default => false, :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
   end
 
   create_table "sign_ons", :force => true do |t|
