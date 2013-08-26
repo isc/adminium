@@ -17,6 +17,14 @@ class DocsController < ApplicationController
   end
   
   def landing
+    if session[:account]
+      redirect_to dashboard_url
+      return
+    end
+    if session[:user]
+      redirect_to user_path
+      return
+    end
     render layout: false
   end
 
