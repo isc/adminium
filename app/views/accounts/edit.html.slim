@@ -30,9 +30,10 @@
     - if @account.enterprise?
       .alert
         p You can use a Google account to log in to this account and authorize collaborators to log in as well.
-        = simple_form_for @account.collaborators.build, remote: true, html: {class: 'form-horizontal'} do |f|
+        = simple_form_for @account.collaborators.build(kind: 'google'), remote: true, html: {class: 'form-horizontal'} do |f|
           = f.input :email, placeholder: 'Google account email', type: 'email', required: true
           = f.input :is_administrator, as: :radio_buttons
+          = f.input :kind, as: :hidden
           .control-group
             'or has the following roles
             = link_to '(create a new role)', new_role_path
