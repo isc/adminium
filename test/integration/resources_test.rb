@@ -411,6 +411,18 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_equal '["Bob", "Bobby"]', find('td[data-column-name="nicknames"]')['data-raw-value']
   end
   
+  test "date fields with default" do
+    generic = Generic.new @account
+    generic.db.alter_table(:documents) do
+      set_column_default :some_datetime, Sequel::CURRENT_TIMESTAMP
+      set_column_default :delete_on, Sequel::CURRENT_DATE
+    end
+    visit new_resource_path(:documents)
+    v = Date.today.strftime("%m/%d/%Y")
+    assert_equal v, find('input#documents_delete_on').value
+    assert_equal v, find('input#documents_some_datetime').value
+  end
+  
   test "search on a string array column" do
     stub_resource_columns listing: [:nicknames, :pseudo], search: [:nicknames]
     FixtureFactory.new(:user, nicknames: "{Bob, Bobby, Bobulus}", pseudo: 'Pierre')
