@@ -160,6 +160,7 @@ GEM
       metaclass (~> 0.0.1)
     multi_json (1.7.1)
     multipart-post (1.2.0)
+    mysql2 (0.3.11)
     newrelic_rpm (3.5.8.72)
     nokogiri (1.5.9)
     oauth2 (0.8.1)
@@ -340,6 +341,7 @@ DEPENDENCIES
   kensa
   launchy
   mocha (= 0.13.3)
+  mysql2
   newrelic_rpm (= 3.5.8.72)
   omniauth-heroku
   omniauth-openid
