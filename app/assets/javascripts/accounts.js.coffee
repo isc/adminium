@@ -43,6 +43,7 @@ class AddonProvisioning
       data:
         app_id: app_id
         name: name
+        plan: plan
       success: @submitCallback
       error: @errorCallback
   

@@ -17,7 +17,7 @@ class AccountsController < ApplicationController
   def create
     app_name = params[:name]
     app_id = params[:app_id]
-    resp = heroku_api.post_addon(app_name, "adminium:petproject")
+    resp = heroku_api.post_addon(app_name, "adminium:#{params[:plan] || 'petproject'}")
     if resp.data[:body]["status"] == "Installed"
       @account = Account.find_by_heroku_id "app#{app_id}@heroku.com"
       session[:account] = @account.id
