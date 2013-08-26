@@ -68,6 +68,6 @@ Adminium::Application.routes.draw do
   match 'test/threads' => 'resources#test_threads'
   match 'landing' => 'docs#landing'
 
-  root to: 'docs#homepage'
+  root to: 'docs#landing'
 
 end
