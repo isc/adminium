@@ -7,14 +7,21 @@ class UsersController < ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        detect_apps
-        render json: (@installed_apps.map{|a|a.attributes.slice('name', 'plan', 'heroku_id')} + @apps)
+        begin
+          detect_apps
+          render json: {apps: (@installed_apps.map{|a|a.attributes.slice('name', 'plan', 'heroku_id')} + @apps)}
+        rescue Heroku::API::Errors::ErrorWithResponse => e
+          render json: {error: JSON.parse(e.response.data[:body])["error"]}
+        end
       end
     end
   end
   
   def apps
     detect_apps
+  rescue Heroku::API::Errors::ErrorWithResponse
+    @apps = [1]
+  ensure
     render layout: false
   end
   

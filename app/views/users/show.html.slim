@@ -8,6 +8,11 @@ div.row-fluid ng-controller="AppsCtrl"
         th
           input ng-model="search.name" placeholder="Filter"
     tbody
+      tr.unauthorized.hide
+        td colspan=2
+          p.alert.alert-error
+            'Your session must have expired, please reconnect to list your apps.
+          = link_to "Reconnect to Heroku", "/auth/heroku", class: 'btn btn-large btn-primary', style: "width: 30%; margin: auto"
       tr.loading
         td colspan=2
           = spinner_tag

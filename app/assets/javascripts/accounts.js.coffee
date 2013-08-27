@@ -2,8 +2,12 @@
   $scope.apps = []
   $scope.addonProvisioning = new AddonProvisioning()
   $http.get(window.location.href).success (data) ->
-    $scope.apps = data
     $("tr.loading").remove()
+    if data.error
+      $("tr.unauthorized").show()
+    else
+      $scope.apps = data.apps
+    
   $scope.appSelection = ->
     $scope.selectedApp = @app
     if @app.plan
