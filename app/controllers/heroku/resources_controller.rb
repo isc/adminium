@@ -4,7 +4,14 @@ class Heroku::ResourcesController < ApplicationController
   before_filter :basic_auth, except: :sso_login
 
   def create
-    account = Account.create params[:resource].reject {|k,v| !%w(heroku_id plan callback_url).include?(k)}
+    attributes = params[:resource].reject {|k,v| !%w(heroku_id plan callback_url).include?(k)}
+    account = Account.where({heroku_id: attributes[:heroku_id], plan: 'deleted'}).first
+    if account
+      account.update_attributes attributes
+      account.update_attribute :deleted_at, nil
+    else
+      account = Account.create attributes
+    end
     render json: { id: account.api_key, config: { 'ADMINIUM_URL' => heroku_account_url(account) } }
   end
 
