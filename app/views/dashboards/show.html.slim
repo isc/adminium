@@ -44,8 +44,11 @@
         td= number_to_human_size @table_sizes.sum{|e|e[2].to_i}
         td.total_table_count data-value='0' 0
     tbody
+      - index = 0
       - @table_sizes.each do |table, fulltblsize, tblsize|
-        tr
+        - index += 1
+        
+        tr class=((current_account.try(:pet_project?) && index > 5) ? 'deactivated' : '')
           td
             = link_to schema_path(table) do
               i.icon.icon-table
@@ -62,6 +65,23 @@
         = link_to "Add a new table", new_schema_path, class: "btn btn-info"
     .span6= "Database size #{number_to_human_size @db_size}"
 
+#petprojectLimitationModal.modal.fade
+  .modal-body.centered
+    h1= "This table is not accessible ! Why ?"
+    i.icon-lock.icon-4x
+    p
+      'You are actually on the <b>Pet Project plan</b>.
+      br
+      'This means you can only access the <b>5 first tables</b> of your database.
+      br
+      'To access <b>all</b> your tables, you must upgrade to our <b>Startup Plan</b>.
+    .btn-group style="margin-left: 100px"
+      = link_to "Upgrade to Startup Plan", upgrade_account_path(plan: :startup), class: "btn btn-success btn-large"
+      button.btn.btn-large.disabled $10/month
+    
+  .modal-footer
+    a.btn data-dismiss="modal" Maybe later…
+    
 #new_widget.modal.hide.fade
   .modal-header
     a.close data-dismiss="modal" x
