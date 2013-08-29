@@ -76,6 +76,17 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert page.has_no_content? 'Haliday'
   end
   
+  test "search with where on a range date weekly" do
+    somedate = 10.weeks.ago
+    FixtureFactory.new(:user, first_name: 'Johnny', activated_at: somedate)
+    FixtureFactory.new(:user, first_name: 'Mariah', activated_at: somedate + 1.week)
+    FixtureFactory.new(:user, first_name: 'Gilles', activated_at: somedate - 1.week)
+    visit resources_path(:users, where: {activated_at: somedate.beginning_of_week}, grouping: 'weekly')
+    assert page.has_content? "where activated_at is in Week"
+    assert page.has_content? '1 record'
+    assert page.has_content? 'Johnny'
+  end
+  
   test "links on index for polymorphic belongs to" do
     user = FixtureFactory.new(:user).factory
     group = FixtureFactory.new(:group).factory

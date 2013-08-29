@@ -14,6 +14,7 @@ class ResourcesController < ApplicationController
   respond_to :json, only: [:perform_import, :check_existence, :search]
   respond_to :json, :html, only: [:index, :update]
   respond_to :csv, only: :index
+  helper_method :format_date
 
   def search
     @items = resource.query
@@ -330,7 +331,13 @@ class ResourcesController < ApplicationController
   
   def apply_where
     return unless params[:where].present?
-    where_hash = Hash[params[:where].map {|k, v| [qualify(resource.table, k.to_sym), v]}]
+    where_hash = Hash[params[:where].map do |k, v|
+      if resource.column_info(k.to_sym)[:type] == :datetime
+        [time_chart_aggregate(k.to_sym), v]
+      else
+        [qualify(resource.table, k.to_sym), v]
+      end
+    end]
     @items = @items.where(where_hash)
   end
 

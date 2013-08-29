@@ -26,7 +26,9 @@ module TimeChartBuilder
       end
       format.json do
         render json: {
-          graph_data: @data.map{|e|[e[0], e[1].to_i]},
+          graph_data: @data.map{|e|[e[0], e[2].to_i, e[1]]},
+          grouping: grouping,
+          column: params[:column],
           id: params[:widget_id]
         }
       end
@@ -100,7 +102,7 @@ module TimeChartBuilder
   
   def aggregation records
     res = records.map do |attributes|
-      res = [format_date(attributes.delete(:chart_date))]
+      res = format_date(attributes.delete(:chart_date))
       attributes.each do |key, value|
         res << value
       end
@@ -110,7 +112,7 @@ module TimeChartBuilder
   end
   
   def format_date date
-    return periodic_format date if periodic_grouping?
+    return [periodic_format(date), date] if periodic_grouping?
     if @generic.mysql?
       case grouping
       when 'monthly'
@@ -132,7 +134,7 @@ module TimeChartBuilder
         Date.parse date.to_s
       end
     end
-    date.strftime DEFAULT_DATE_FORMATS[grouping]
+    [date.strftime(DEFAULT_DATE_FORMATS[grouping]), date.to_s]
   end
   
   def periodic_format date
@@ -149,9 +151,9 @@ module TimeChartBuilder
     num_values = @data.first.size - 1
     date_range.each_with_index do |date, index|
       next if date == date_range.end
-      date = date.strftime DEFAULT_DATE_FORMATS[grouping]
+      date_formatted = date.strftime DEFAULT_DATE_FORMATS[grouping]
       if @data[index].try(:first) != date
-        @data.insert(index, [date, [0] * num_values].flatten)
+        @data.insert(index, [date_formatted, date, [0] * num_values].flatten)
       end
     end
   end
