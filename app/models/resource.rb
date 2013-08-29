@@ -54,7 +54,7 @@ module Resource
           @filters = datas[:filters]
         end
         @column = datas[:column] || {}
-        @default_order = datas[:default_order]
+        @default_order = datas[:default_order] if column_names.include? datas[:default_order].to_s.split(' ').first.to_sym
         @per_page = datas[:per_page] || @globals.per_page
         @enum_values = datas[:enum_values] || []
         @validations = datas[:validations] || []
