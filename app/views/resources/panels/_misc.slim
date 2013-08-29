@@ -6,9 +6,15 @@
   = label_tag 'default_order[]', 'Default order', class: 'control-label'
   .controls
     = select_tag 'default_order[]', \
-      options_from_collection_for_select(resource.schema, :first, :first, resource.default_order_column)
-    = select_tag 'default_order[]', options_for_select(%w(asc desc), resource.default_order_direction)
+      options_from_collection_for_select(resource.schema, :first, :first, resource.default_order_column), class: 'select2'
+    div
+      = label_tag 'default_order__asc', class: 'radio inline' do
+        = radio_button_tag 'default_order[]', 'asc', (resource.default_order_direction == 'asc')
+        ' asc
+      = label_tag 'default_order__desc', class: 'radio inline' do
+        = radio_button_tag 'default_order[]', 'desc', (resource.default_order_direction == 'desc')
+        ' desc
 .control-group
   = label_tag 'label_column', nil, class: 'control-label'
   .controls
-    = select_tag 'label_column', options_from_collection_for_select(resource.schema, :first, :first, resource.label_column), include_blank: true
+    = select_tag 'label_column', options_from_collection_for_select(resource.schema, :first, :first, resource.label_column), include_blank: true, class: 'select2'
