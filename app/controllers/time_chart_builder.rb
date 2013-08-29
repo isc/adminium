@@ -152,7 +152,7 @@ module TimeChartBuilder
     date_range.each_with_index do |date, index|
       next if date == date_range.end
       date_formatted = date.strftime DEFAULT_DATE_FORMATS[grouping]
-      if @data[index].try(:first) != date
+      if @data[index].try(:first) != date_formatted
         @data.insert(index, [date_formatted, date, [0] * num_values].flatten)
       end
     end
