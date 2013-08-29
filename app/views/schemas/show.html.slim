@@ -109,15 +109,30 @@ a.btn.btn-primary.pull-right#rename_link href="#rename-table" data-toggle="modal
   .modal-footer
     a.btn.pull-right data-dismiss="modal" Cancel
 
-.modal.fade.hide#add-column
-  .modal-body
-    h2 Add a column to your table
-    = form_tag schema_path(params[:table]), method: :put do
-      input type="hidden" name="add_column"
-      input type="text" name="columns[][name]" required="true"
-      select name="columns[][type]" class="span2"
-        - [:integer, :string, :datetime, :text, :float, :decimal, :time, :date, :blob, :boolean].each do |type|
-          option= type
-      = submit_tag "Add", class: "btn btn-primary btn-large pull-right"
-  .modal-footer
-    a.btn.pull-right data-dismiss="modal" Cancel
+- content_for :modal do
+  .modal.fade.hide#add-column
+    = form_tag schema_path(params[:table]), method: :put, class: 'form-horizontal' do
+      .modal-header
+        a.close data-dismiss="modal" ×
+        h3 Add a column to your table
+      .modal-body
+        input type="hidden" name="add_column"
+        .control-group
+          label.control-label for="columns_name" Column name
+          .controls
+            input type="text" name="columns[][name]" required="true" id="columns_name"
+        .control-group
+          label.control-label for="columns_type" Type
+          .controls
+            select name="columns[][type]" class="span2" id="columns_type" required="true"
+              - [:integer, :string, :datetime, :text, :float, :decimal, :time, :date, :blob, :boolean].each do |type|
+                option= type
+        .control-group
+          .controls
+            label.checkbox for="columns_null"
+              input type="checkbox" name="columns[][null]" id="columns_null" checked="checked"
+              ' Null allowed
+      .modal-footer
+        .pull-right
+          = submit_tag "Add", class: "btn btn-primary"
+          a.btn data-dismiss="modal" Cancel
