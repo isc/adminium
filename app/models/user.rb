@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
     order: 'name'
 
   after_create :match_collaborators
+  
+  attr_accessible :total_heroku_apps
 
   def self.create_with_omniauth auth
     create! do |user|

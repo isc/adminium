@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130823151520) do
+ActiveRecord::Schema.define(:version => 20130830085606) do
 
   create_table "1121", :force => true do |t|
   end
@@ -40,19 +40,20 @@ ActiveRecord::Schema.define(:version => 20130823151520) do
     t.string   "owner_email"
     t.string   "encrypted_db_url"
     t.string   "adapter"
-    t.datetime "created_at",                               :null => false
-    t.datetime "updated_at",                               :null => false
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
     t.integer  "tables_count"
     t.datetime "deleted_at"
     t.text     "plan_migrations"
     t.datetime "last_tip_at"
     t.string   "last_tip_identifier"
-    t.boolean  "tips_opt_in",           :default => true
+    t.boolean  "tips_opt_in",                :default => true
     t.string   "time_zone"
-    t.string   "application_time_zone", :default => "UTC", :null => false
-    t.string   "database_time_zone",    :default => "UTC", :null => false
+    t.string   "application_time_zone",      :default => "UTC", :null => false
+    t.string   "database_time_zone",         :default => "UTC", :null => false
     t.string   "source"
     t.string   "db_url_setup_method"
+    t.integer  "total_heroku_collaborators"
   end
 
   create_table "adadasdada", :force => true do |t|
@@ -62,6 +63,14 @@ ActiveRecord::Schema.define(:version => 20130823151520) do
   end
 
   create_table "adsasdasd", :force => true do |t|
+  end
+
+  create_table "app_profiles", :force => true do |t|
+    t.text     "app_infos"
+    t.text     "addons_infos"
+    t.integer  "account_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   create_table "asdasd", :force => true do |t|
@@ -189,8 +198,9 @@ ActiveRecord::Schema.define(:version => 20130823151520) do
     t.string   "uid"
     t.string   "name"
     t.string   "email"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+    t.integer  "total_heroku_apps"
   end
 
   create_table "widgets", :force => true do |t|

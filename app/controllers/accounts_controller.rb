@@ -1,4 +1,6 @@
 class AccountsController < ApplicationController
+  
+  include AppInstall
 
   before_filter :require_admin, except: :create
   skip_filter :connect_to_db
@@ -22,15 +24,10 @@ class AccountsController < ApplicationController
       @account = Account.find_by_heroku_id "app#{app_id}@heroku.com"
       session[:account] = @account.id
       current_account.name = app_name
-      config = heroku_api.get_config_vars(app_name).data[:body]
-      @db_urls = db_urls heroku_api.get_config_vars(app_name).data[:body]
-      if @db_urls.length == 1
-        current_account.db_url = @db_urls.first[:value]
-        current_account.db_url_setup_method = 'self-create'
-      else
-        session[:db_urls] = @db_urls
-      end
-      current_account.save
+      configure_db_url('self-create')
+      set_profile
+      set_collaborators
+      current_account.save!
       render json: {success: true}
     else
       render json: {success: false, error: resp.data[:body]["status"]}

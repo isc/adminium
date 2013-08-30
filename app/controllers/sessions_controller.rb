@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  
+  include AppInstall
 
   skip_before_filter :connect_to_db
   skip_before_filter :require_account, only: [:create, :create_from_heroku, :login_heroku_app, :destroy]
@@ -6,12 +8,18 @@ class SessionsController < ApplicationController
 
   def create_from_heroku
     session[:heroku_access_token] = request.env['omniauth.auth']['credentials']['token']
-    if current_account && current_account.db_url.blank?
-      configure_db_url
-    else
+    unless session[:user]
       user_infos = heroku_api.get_user.data[:body]
       user = User.find_by_provider_and_uid('heroku', user_infos['id']) || User.create_with_heroku(user_infos)
       session[:user] = user.id
+    end
+    if current_account && current_account.db_url.blank?
+      detect_app_name
+      set_profile
+      set_collaborators
+      current_account.save!
+      redirect_to configure_db_url('oauth') ? dashboard_path : doc_path(:missing_db_url)
+    else
       redirect_to user_path
     end
   end
@@ -36,11 +44,16 @@ class SessionsController < ApplicationController
     app_id = params[:id].match(/\d+/).to_s
     app = apps.detect{|app| app['id'].to_s == app_id}
     if app
-      account = Account.find_by_heroku_id("app#{app_id}@heroku.com")
-      session[:account] = account.id
-      collaborator = current_user.collaborators.where(account_id: account.id).first
+      @account = Account.find_by_heroku_id("app#{app_id}@heroku.com")
+      session[:account] = @account.id
+      unless current_account.app_profile
+        set_profile
+        set_collaborators
+        current_account.save!
+      end
+      collaborator = current_user.collaborators.where(account_id: current_account.id).first
       session[:collaborator] = collaborator.id if collaborator
-      track_sign_on account, SignOn::Kind::HEROKU_OAUTH
+      track_sign_on current_account, SignOn::Kind::HEROKU_OAUTH
       redirect_to root_url, notice: "Signed in to #{current_account.name}."
     else
       redirect_to user_path, error: "you are not unauthorized to access this app because it looks like you are not a collaborator of this app !"
@@ -66,24 +79,6 @@ class SessionsController < ApplicationController
   def track_sign_on account, kind
     SignOn.create account_id: account.id, plan: account.plan,
       remote_ip: request.remote_ip, kind: kind, user_id: session[:user]
-  end
-  
-  def configure_db_url
-    apps = heroku_api.get_apps.data[:body]
-    app_id = current_account.heroku_id.match(/\d+/).to_s
-    app = apps.detect{|app| app['id'].to_s == app_id}
-    app_name = app["name"]
-    config_vars = heroku_api.get_config_vars(app_name).data[:body]
-    @db_urls = db_urls config_vars
-    if @db_urls.length == 1
-      current_account.db_url = @db_urls.first[:value]
-      current_account.db_url_setup_method = 'oauth'
-      current_account.save
-      redirect_to dashboard_path
-    else
-      session[:db_urls] = @db_urls
-      redirect_to doc_path(:missing_db_url)
-    end
   end
 
 end

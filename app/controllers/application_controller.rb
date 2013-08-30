@@ -125,14 +125,4 @@ class ApplicationController < ActionController::Base
     end
   end
   
-  def db_urls config_vars
-    db_urls = []
-    config_vars.keys.find_all {|key| key.match(/(HEROKU_POSTGRESQL_.*_URL)|(.*DATABASE_URL.*)/)}.each do |key|
-      if !db_urls.map{|d| d[:value]}.include?( config_vars[key])
-        db_urls << {:key => key, :value => config_vars[key]}
-      end
-    end
-    db_urls
-  end
-  
 end

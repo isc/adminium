@@ -30,6 +30,8 @@ class UsersControllerTest < ActionController::TestCase
     session[:heroku_access_token] = '123'
     get :apps
     assert_response :success
+    total_apps= (assigns(:apps) + assigns(:installed_apps)).length
+    assert_equal total_apps, user.reload.total_heroku_apps
   end
   
   def test_show_user_apps_with_a_user_and_no_account
