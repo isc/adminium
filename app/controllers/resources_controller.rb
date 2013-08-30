@@ -334,7 +334,7 @@ class ResourcesController < ApplicationController
     where_hash = Hash[params[:where].map do |k, v|
       if resource.column_info(k.to_sym)[:type] == :datetime
         datetime = application_time_zone.parse(v)
-        [time_chart_aggregate(k.to_sym), datetime]
+        [time_chart_aggregate(k.to_sym), v]
       else
         [qualify(resource.table, k.to_sym), v]
       end
