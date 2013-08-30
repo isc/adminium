@@ -42,7 +42,7 @@ class SessionsControllerTest < ActionController::TestCase
     app_name = 'my-test-app-2'
     app = heroku_api.post_app(:name => app_name).data[:body]
     session[:heroku_access_token] = '123'
-    account = Factory :account, heroku_id: "app#{app['id']}@heroku.com"
+    account = Factory :account, heroku_id: "app#{app['id']}@heroku.com", name: app_name
     user = Factory :user, provider: 'heroku'
     session[:user] = user.id
     assert_difference 'SignOn.count' do

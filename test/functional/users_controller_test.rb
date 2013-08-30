@@ -14,7 +14,7 @@ class UsersControllerTest < ActionController::TestCase
     get :show, format: :json
     assert_response :success
     assert_equal ['app-with-addon-installed'], assigns[:installed_apps].map(&:name)
-    assert_equal ['app-with-addon-not-installed'], assigns[:apps].map{|app| app['name']}
+    assert assigns[:apps].map{|app| app['name']}.include?('app-with-addon-not-installed')
   end
   
   def test_show_user_apps_with_just_an_account

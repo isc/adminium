@@ -23,6 +23,7 @@ module AppInstall
   end
   
   def set_profile
+    return if current_account.name.blank?
     attrs = {}
     app_infos = heroku_api.get_app(current_account.name).data[:body]
     current_account.owner_email = app_infos["owner_email"]
