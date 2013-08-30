@@ -21,7 +21,9 @@ class Account < ActiveRecord::Base
   validate :db_url_validation unless Rails.env.test?
 
   attr_encryptor :db_url, key: (ENV['ENCRYPTION_KEY'] || 'shablagoo')
-
+  
+  scope :deleted, -> {where plan: Plan::DELETED}
+  
   TIPS = %w(basic_search editing enumerable export_import displayed_record advanced_search serialized relationships time_charts keyboard_shortcuts time_zones)
 
   class Plan

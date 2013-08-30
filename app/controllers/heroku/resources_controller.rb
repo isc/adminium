@@ -5,10 +5,9 @@ class Heroku::ResourcesController < ApplicationController
 
   def create
     attributes = params[:resource].reject {|k,v| !%w(heroku_id plan callback_url).include?(k)}
-    account = Account.where({heroku_id: attributes[:heroku_id], plan: 'deleted'}).first
+    account = Account.deleted.where(heroku_id: attributes[:heroku_id]).first
     if account
-      account.update_attributes attributes
-      account.update_attribute :deleted_at, nil
+      account.update_attributes attributes.merge(deleted_at: nil), without_protection: true
     else
       account = Account.create attributes
     end
