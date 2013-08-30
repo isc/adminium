@@ -26,7 +26,7 @@ namespace :accounts do
       api_account = api_accounts.detect {|a| a['heroku_id'] == account.heroku_id}
       if api_account.nil?
         puts "Missing account : #{account.id} - #{account.name} - #{account.plan}"
-        account.update_attributes({plan: Account::Plan::DELETED, deleted_at: account.updated_at}, without_protection: true)
+        account.update_attributes!({plan: Account::Plan::DELETED, deleted_at: account.updated_at, db_url: nil}, without_protection: true)
       end
     end
   end
