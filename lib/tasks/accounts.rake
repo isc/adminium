@@ -20,12 +20,14 @@ namespace :accounts do
     end
   end
   
-  task find_extra: :fetch_list do
+  task mark_extra_as_deleted: :fetch_list do
     api_accounts = JSON.parse(File.read(LIST_FILENAME))
     Account.not_deleted.where(['plan != ?', Account::Plan::COMPLIMENTARY]).find_each do |account|
       api_account = api_accounts.detect {|a| a['heroku_id'] == account.heroku_id}
-      puts "Missing account : #{account.inspect}" if api_account.nil?
-      puts "Account with different plan : #{account.inspect} (#{api_account['plan']} expected)" if api_account && account.plan != api_account['plan']
+      if api_account.nil?
+        puts "Missing account : #{account.id} - #{account.name} - #{account.plan}"
+        account.update_attributes({plan: Account::Plan::DELETED, deleted_at: account.updated_at}, without_protection: true)
+      end
     end
   end
   
