@@ -97,6 +97,8 @@ module TimeChartBuilder
     when 'minutely'
       start = start_date_offset.minutes.ago.beginning_of_minute
       incomplete_periods? ? start..Time.now : start...Time.now.beginning_of_minute
+      #start = (application_time_zone.now - start_date_offset.minutes).beginning_of_minute
+      #incomplete_periods? ? start..application_time_zone.now : start...application_time_zone.now.beginning_of_minute
     end
   end
   
@@ -112,7 +114,7 @@ module TimeChartBuilder
   end
   
   def format_date date
-    return [periodic_format(date), date] if periodic_grouping?
+    return [periodic_format(date), date.to_formatted_s(:db)] if periodic_grouping?
     if @generic.mysql?
       case grouping
       when 'monthly'
@@ -130,11 +132,10 @@ module TimeChartBuilder
       date = if %w(hourly minutely).include? grouping
         Time.parse date.to_s
       else
-        logger.warn date.to_s
         Date.parse date.to_s
       end
     end
-    [date.strftime(DEFAULT_DATE_FORMATS[grouping]), date.to_s]
+    [date.strftime(DEFAULT_DATE_FORMATS[grouping]), date.to_formatted_s(:db)]
   end
   
   def periodic_format date
@@ -153,7 +154,7 @@ module TimeChartBuilder
       next if date == date_range.end
       date_formatted = date.strftime DEFAULT_DATE_FORMATS[grouping]
       if @data[index].try(:first) != date_formatted
-        @data.insert(index, [date_formatted, date, [0] * num_values].flatten)
+        @data.insert(index, [date_formatted, date.to_formatted_s(:db), [0] * num_values].flatten)
       end
     end
   end
