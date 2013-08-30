@@ -114,7 +114,7 @@ module TimeChartBuilder
   end
   
   def format_date date
-    return [periodic_format(date), date.to_formatted_s(:db)] if periodic_grouping?
+    return [periodic_format(date), date] if periodic_grouping?
     if @generic.mysql?
       case grouping
       when 'monthly'
