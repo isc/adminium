@@ -7,10 +7,10 @@ module AppInstall
       current_account.db_url = @db_urls.first[:value]
       current_account.db_url_setup_method = setup_method
       current_account.save!
-      return true
+      true
     else
       session[:db_urls] = @db_urls
-      return false
+      false
     end
   end
   
