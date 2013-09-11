@@ -20,12 +20,16 @@ html lang="en"
           h2 Adminium
           h4 Database backend as a service
         .span6.menu
-          = link_to "Live Demo", start_demo_docs_path, class: 'btn btn-small btn-primary'
+          = link_to "Live Demo", start_demo_docs_path
+          b |
           =link_to "Documentation", docs_path
           b |
           = link_to "Pricing", "#pricing"
-          b |
-          a href="#login" data-toggle="modal" Log In or Sign Up
+          a.btn.btn-large href="#login" data-toggle="modal" style="text-transform:initial"
+            i.icon-user
+            '  Log In
+            span style="color:#BBB; text-shadow:1px 0px white; margin:0px 8px; display:inline-block" |
+            '  Sign Up
     .container.intro
       .row
         .span8.offset2.centered

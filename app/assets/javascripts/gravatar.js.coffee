@@ -1,7 +1,9 @@
 class window.Gravatar
 
-  @picture: (email, size) ->
-    "//www.gravatar.com/avatar/#{md5(email)}.jpg?d=blank&s=#{size || 50}"
+  @picture: (email, opts={}) ->
+    size = opts.size || 50
+    d = opts.default || 'blank'
+    "//www.gravatar.com/avatar/#{md5(email)}.jpg?d=#{d}&s=#{size}"
 
   @profile: (email) ->
     "//www.gravatar.com/#{md5(email)}"
@@ -12,6 +14,12 @@ class window.Gravatar
     for key, value of columns_hash
       return key if (key.indexOf('_email') isnt -1) || (key.indexOf('email_') isnt -1) || (key.indexOf('Email') isnt -1)
     null
+  
+  @autoDetect: ->
+    for div in $('div[data-gravatar-email]')
+      src = window.location.protocol + window.location.host + $(div).find('img').attr("src")
+      url = @picture($(div).data('gravatar-email'), default: encodeURIComponent(src))
+      $(div).find('img').attr('src', url)
 
   @findAll: =>
     email = @emailColumnDetect()
@@ -31,4 +39,6 @@ class window.Gravatar
       td = $("<td class='gravatar'>#{image}</td>")
       td.insertAfter(here)
 
-$ Gravatar.findAll
+$ ->
+  Gravatar.findAll()
+  Gravatar.autoDetect()

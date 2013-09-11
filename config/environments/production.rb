@@ -64,6 +64,8 @@ end
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
+  
+  onfig.action_mailer.asset_host = 'https://adminium.io'
 end
 
 ActionMailer::Base.smtp_settings = {

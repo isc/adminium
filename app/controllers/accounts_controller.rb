@@ -14,6 +14,8 @@ class AccountsController < ApplicationController
       real_heroku_collaborators = @account.collaborators.where(kind: 'heroku').map &:email
       @heroku_collaborators.delete_if {|heroku_collaborator| real_heroku_collaborators.include? heroku_collaborator['email']}
     end
+  rescue Heroku::API::Errors::ErrorWithResponse => e
+    @heroku_collaborators = []
   end
   
   def create
@@ -28,7 +30,8 @@ class AccountsController < ApplicationController
       set_profile
       set_collaborators
       current_account.save!
-      render json: {success: true}
+      path = current_account.total_heroku_collaborators > 1 ? invite_team_install_path : dashboard_path
+      render json: {success: true, redirect_path: path}
     else
       render json: {success: false, error: resp.data[:body]["status"]}
     end
@@ -53,13 +56,13 @@ class AccountsController < ApplicationController
       params[:account] ||= {}
       params[:account][:db_url] = db_url[:value]
       session[:db_urls]
-      params[:account][:db_url_setup_method] = 'oauth'
+      params[:account][:db_url_setup_method] = current_account.db_url_setup_method.presence || 'oauth'
     else
       params[:account][:db_url_setup_method] = 'web'
     end
     if current_account.update_attributes! params[:account]
       if params[:install]
-        redirect_to dashboard_path
+        redirect_to_invite_collaborators_if_wise_or_dashbord
       else
         redirect_to edit_account_path, notice: 'Changes saved.'
       end
@@ -76,6 +79,17 @@ class AccountsController < ApplicationController
 
   def db_url_presence
     render json: current_account.db_url.present?
+  end
+  
+  def redirect_to_invite_collaborators_or_dashbord
+    path = if current_user.try(:heroku_provider?) && heroku_api.get_collaborators(current_account.name).data[:body].length > 1
+      invite_team_install_path
+    else
+      dashboard_path
+    end
+    redirect_to path
+  rescue Heroku::API::Errors::ErrorWithResponse => e
+    redirect_to dashboard_path
   end
 
 end

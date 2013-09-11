@@ -11,7 +11,7 @@ class AccountsControllerTest < ActionController::TestCase
     account = Factory :account, heroku_id: "app#{data['id']}@heroku.com", db_url: nil # should be done by heroku during the create request
     post :create, name: 'test-addon', app_id: data['id'], plan: 'petproject'
     assert_response :success
-    assert_equal({'success' => true}, JSON.parse(@response.body))
+    assert_equal({'success' => true, "redirect_path"=>"/dashboard"}, JSON.parse(@response.body))
     heroku_api.delete_app 'test-addon'
     assert_equal session[:account], account.id
     assert_equal 'test-addon', account.reload.name

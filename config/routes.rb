@@ -38,8 +38,14 @@ Adminium::Application.routes.draw do
     collection do
       get :start_demo
       get :stop_demo
-      get :missing_db_url
+      
     end
+  end
+  
+  resource :install do
+    get :invite_team
+    get :setup_database_connection
+    post :send_email_team
   end
   resource :sessions, only: [] do
     get :switch_account

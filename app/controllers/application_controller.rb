@@ -36,7 +36,7 @@ class ApplicationController < ActionController::Base
       @generic = Generic.new current_account
       @tables = @generic.tables
     else
-      redirect_to doc_url(:missing_db_url)
+      redirect_to setup_database_connection_install_path
     end
   end
 
@@ -123,6 +123,10 @@ class ApplicationController < ActionController::Base
       rows = Statistic.where(attrs).update_all ["value = value + 1, updated_at = ?", Time.zone.now]
       Statistic.create attrs.merge(value: 1) if rows == 0
     end
+  end
+  
+  def valid_db_url?
+    session[:account] && current_account.valid_db_url?
   end
   
 end
