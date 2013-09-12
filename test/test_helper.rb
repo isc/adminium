@@ -75,7 +75,6 @@ class FixtureFactory
     adapter = ENV['adapter'] || 'mysql'
     ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
     yield
-    ActiveRecord::Base.connection.close
     ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
   end
 

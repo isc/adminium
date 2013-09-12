@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   rescue_from Generic::TableNotFoundException, with: :table_not_found
   rescue_from Sequel::DatabaseConnectionError, with: :global_db_error
   before_filter :ensure_proper_subdomain
-  before_filter :fixed_account
   before_filter :require_account
   before_filter :connect_to_db
   before_filter :set_source_cookie
@@ -14,10 +13,6 @@ class ApplicationController < ActionController::Base
   helper_method :global_settings, :current_account, :current_user, :admin?, :current_account?, :resource_for
 
   private
-
-  def fixed_account
-    # session[:account] = FIXED_ACCOUNT if session[:account].nil? && FIXED_ACCOUNT.present?
-  end
 
   def global_settings
     @global_settings ||= Resource::Global.new session[:account]
