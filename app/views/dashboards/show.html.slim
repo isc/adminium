@@ -5,19 +5,20 @@
   h3 Dashboard
 
 - if @widgets.any?
-  ul.thumbnails
-    - @widgets.each do |widget|
-      li.widget.thumbnail.span6 data-query-url=widget_query_path(widget, with_id: true) data-widget-id=widget.id class=(widget.type.underscore)
-        .pull-right
-          = link_to widget_path(widget), class: 'btn btn-mini', remote: true, method: :delete, data: {confirm: 'Sure ?'} do
-            i.icon-trash
-        h4
-          = link_to((widget.advanced_search.presence || widget.table), widget_query_path(widget))
-          '
-          small.hide
-            span
-            '  records
-        .content= spinner_tag
+  - @widgets.each_slice 2 do |slice|
+    .row-fluid
+      - slice.each do |widget|
+        .widget.span6 data-query-url=widget_query_path(widget, with_id: true) data-widget-id=widget.id class=(widget.type.underscore)
+          .pull-right
+            = link_to widget_path(widget), class: 'btn btn-mini', remote: true, method: :delete, data: {confirm: 'Sure ?'} do
+              i.icon-trash
+          h4
+            = link_to((widget.advanced_search.presence || widget.table), widget_query_path(widget))
+            '
+            small.hide
+              span
+              '  records
+          .content= spinner_tag
 - else
   .alert
     ' Add widgets using the
