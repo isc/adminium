@@ -1,6 +1,6 @@
 Adminium::Application.routes.draw do
 
-  post '/auth/heroku/callback' => 'sessions#create_from_heroku'
+  get '/auth/heroku/callback' => 'sessions#create_from_heroku'
   get '/install' => "docs#install"
   post '/auth/:provider/callback' => 'sessions#create'
   get '/signout' => 'sessions#destroy', as: :signout
