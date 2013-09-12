@@ -218,7 +218,6 @@ class ResourcesControllerTest < ActionController::TestCase
       assigned_item = assigns[:items].detect{|r| r[:id] == pk}
       assert_equal 'Marais', assigned_item[:last_name]
       assert_equal '2013-06-06T15:36:00+02:00', assigned_item[:created_at].to_s
-      assert_not_nil assigned_item[:created_at]
     end
   end
   
