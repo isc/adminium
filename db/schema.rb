@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130607073337) do
+ActiveRecord::Schema.define(:version => 20130830085606) do
 
   create_table "accounts", :force => true do |t|
     t.string   "plan"
@@ -22,17 +22,27 @@ ActiveRecord::Schema.define(:version => 20130607073337) do
     t.string   "owner_email"
     t.string   "encrypted_db_url"
     t.string   "adapter"
-    t.datetime "created_at",                               :null => false
-    t.datetime "updated_at",                               :null => false
+    t.datetime "created_at",                                    :null => false
+    t.datetime "updated_at",                                    :null => false
     t.integer  "tables_count"
     t.datetime "deleted_at"
     t.text     "plan_migrations"
     t.datetime "last_tip_at"
     t.string   "last_tip_identifier"
-    t.boolean  "tips_opt_in",           :default => true
-    t.string   "application_time_zone", :default => "UTC", :null => false
-    t.string   "database_time_zone",    :default => "UTC", :null => false
+    t.boolean  "tips_opt_in",                :default => true
+    t.string   "application_time_zone",      :default => "UTC", :null => false
+    t.string   "database_time_zone",         :default => "UTC", :null => false
     t.string   "source"
+    t.string   "db_url_setup_method"
+    t.integer  "total_heroku_collaborators"
+  end
+
+  create_table "app_profiles", :force => true do |t|
+    t.text     "app_infos"
+    t.text     "addons_infos"
+    t.integer  "account_id"
+    t.datetime "created_at",   :null => false
+    t.datetime "updated_at",   :null => false
   end
 
   create_table "collaborators", :force => true do |t|
@@ -42,6 +52,7 @@ ActiveRecord::Schema.define(:version => 20130607073337) do
     t.datetime "created_at",                          :null => false
     t.datetime "updated_at",                          :null => false
     t.boolean  "is_administrator", :default => false, :null => false
+    t.string   "kind"
   end
 
   add_index "collaborators", ["account_id"], :name => "index_collaborators_on_account_id"
@@ -72,13 +83,22 @@ ActiveRecord::Schema.define(:version => 20130607073337) do
     t.integer  "user_id"
   end
 
+  create_table "statistics", :id => false, :force => true do |t|
+    t.integer  "account_id",                :null => false
+    t.string   "action",                    :null => false
+    t.integer  "value",      :default => 0, :null => false
+    t.datetime "created_at",                :null => false
+    t.datetime "updated_at",                :null => false
+  end
+
   create_table "users", :force => true do |t|
     t.string   "provider"
     t.string   "uid"
     t.string   "name"
     t.string   "email"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",        :null => false
+    t.datetime "updated_at",        :null => false
+    t.integer  "total_heroku_apps"
   end
 
   create_table "widgets", :force => true do |t|

@@ -25,12 +25,14 @@ class Collaborator < ActiveRecord::Base
   end
 
   def match_with_existing_user
-    user = User.where(email: email).first
+    user = User.where(email: email, provider: kind).first
     self.user_id = user.id if user
   end
 
   def mail_collaborator
-    CollaboratorMailer.notify_collaboration(self).deliver
+    if kind == 'google'
+      CollaboratorMailer.notify_collaboration(self).deliver
+    end
   end
 
   def human_roles

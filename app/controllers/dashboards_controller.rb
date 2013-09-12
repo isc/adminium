@@ -13,7 +13,7 @@ class DashboardsController < ApplicationController
     res = {}
     timeout = 5.seconds.from_now
     params[:tables].each do |table_name|
-      res[table_name] = @generic.table(table_name).count
+      res[table_name] = (@generic.table(table_name).count rescue 0)
       break if Time.now > timeout
     end
     render json: res

@@ -1,7 +1,7 @@
 .modal-header
   a.close data-dismiss="modal" ×
   h3== "Settings for column #{params[:column]}"
-= form_tag column_settings_path, method: :post, class: 'form-horizontal denser' do
+= form_tag column_settings_path, method: :post, class: 'form-horizontal' do
   input type="hidden" name="id" value=params[:id]
   input type="hidden" name="column" value=params[:column]
   input type="hidden" name="column_options[view]" value=params[:view]

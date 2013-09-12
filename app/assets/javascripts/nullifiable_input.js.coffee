@@ -13,8 +13,8 @@ class @NullifiableInput
     @type ||= columns_hash[@column_name].type if columns_hash[@column_name]
     return if @type isnt 'string'
     @controls = input.parents('.controls')
-    title_n = "will save a NULL value if selected"
-    title_e = "will save an empty string if selected"
+    title_n = "Will save a NULL value if selected"
+    title_e = "Will save an empty string if selected"
     @btns = $("<div class='null_btn' title='#{title_n}'>null</div><div class='empty_string_btn selected' title='#{title_e}'>empty string</div>")
     @btns.tooltip()
     hidden_input_name = input.get(0).name.replace("[", "_nullify_settings[")

@@ -7,6 +7,8 @@ class User < ActiveRecord::Base
     order: 'name'
 
   after_create :match_collaborators
+  
+  attr_accessible :total_heroku_apps
 
   def self.create_with_omniauth auth
     create! do |user|
@@ -16,9 +18,21 @@ class User < ActiveRecord::Base
       user.email = auth['info']['email']
     end
   end
+  
+  def self.create_with_heroku infos
+    create! do |user|
+      user.provider = 'heroku'
+      user.uid = infos['id']
+      user.email = infos['email']
+    end
+  end
+  
+  def heroku_provider?
+    self.provider == 'heroku'
+  end
 
   def match_collaborators
-    Collaborator.where(email: email).update_all user_id: id
+    Collaborator.where('kind = ? and email ilike ?', provider, email).update_all user_id: id
   end
 
 end

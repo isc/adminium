@@ -1,6 +1,7 @@
 class TimeCharts
   
   constructor: ->
+    @datas = {}
     @setupTimeChartsCreation()
     @setupGroupingChange()
     @dataBeforeGoogleChartsLoad = []
@@ -28,8 +29,8 @@ class TimeCharts
     $(document).on 'change', '#time-chart.modal #grouping', (e) =>
       remoteModal '#time-chart', {column: "#{@column_name}&grouping=#{e.currentTarget.value}"}, @graphData
   
-  graphData: (data, container) =>
-    return @dataBeforeGoogleChartsLoad.push [data, container] unless @googleChartsLoaded
+  graphData: (data, container, d) =>
+    return @dataBeforeGoogleChartsLoad.push [data, container, d] unless @googleChartsLoaded
     data ||= chart_data
     container ||= '#chart_div'
     if data is null
@@ -38,19 +39,29 @@ class TimeCharts
     dataTable = new google.visualization.DataTable()
     dataTable.addColumn 'string', 'Date'
     dataTable.addColumn 'number', 'Count'
-    row[0] = String(row[0]) for row in data
-    dataTable.addRows data
+    
+    rows = ([String(row[0]), row[1]] for row in data)
+    dataTable.addRows rows
     wrapper = $(container)
+    if d
+      @datas[d.id] = {data: (row[2] for row in data)}
     width  = wrapper.parent().css('width')
     if width == '0px'
       setTimeout () =>
-        @graphData(data, container)
+        @graphData(data, container, d)
       , 125
     options = {width: width, height:300, colors: ['#7d72bd'], legend: 'none', chartArea:{top:15, left: '5%', height: '75%', width:'90%'}}
     chart = new google.visualization.ColumnChart(wrapper.get(0))
     chart.draw(dataTable, options)
+    if d
+      google.visualization.events.addListener chart, 'select', () =>
+        value = @datas[d.id].data[chart.getSelection()[0].row]
+        link = wrapper.parents(".widget").find("h4 a").attr('href')
+        sep = if (link.indexOf("?") isnt -1) then '&' else '?'
+        link += "#{sep}where[#{d.column}]=#{value}&grouping=#{d.grouping}"
+        window.location.href = link
     $('#time-chart i[rel=tooltip]').tooltip()
-  
+    
 $ ->
   window.time_charts = new TimeCharts()
 

@@ -17,7 +17,7 @@
   = select_tag 'grouping', options_for_select(TimeChartBuilder::GROUPING_OPTIONS, grouping)
   #chart_div
   javascript:
-    chart_data = #{{@data ? @data.map{|e|[e[0], e[1].to_i]}.to_json : 'null'}}
+    chart_data = #{{@data ? @data.map{|e|[e[0], e[2].to_i, e[1]]}.to_json : 'null'}}
 .modal-footer
   .btn.btn-primary.pull-right data-dismiss="modal" Close
   

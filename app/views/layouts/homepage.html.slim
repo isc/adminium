@@ -10,7 +10,10 @@ html lang="en"
     = stylesheet_link_tag "application"
     meta name="description" content="Administration interface for your database as a service"
     meta name="keywords" content="Adminium, database, administration, interface, export, heroku, add-on"
+    meta name="apple-mobile-web-app-capable" content="yes"
     meta name="viewport" content="width=device-width, initial-scale=1.0"
+    - [144, 114, 72].each do |size|
+      link rel="apple-touch-icon" sizes="#{size}x#{size}" href="/images/ios-icons/touch-icon-#{size}.png"
     link href="images/favicon.ico" rel="shortcut icon"
 
   body

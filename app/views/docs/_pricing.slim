@@ -1,0 +1,31 @@
+.span4
+  .well.white.plan
+    h3 Pet Project
+    h2 Free
+    p Limited to 5 tables
+    p Heroku collaborators
+    p &nbsp;
+    - if install_button
+      a.btn.btn-primary.btn-large data-plan="petproject" Install
+.span4
+  .well.white.plan
+    h3 Startup
+    h2
+      sup $
+      span 10/month
+    p No table limit
+    p Heroku collaborators
+    p &nbsp;
+    - if install_button
+      a.btn.btn-primary.btn-large data-plan="startup" Install
+.span4
+  .well.white.plan
+    h3 Enterprise
+    h2
+      sup $
+      span 25/month
+    p No table limit
+    p External collaborators
+    p Roles and access control
+    - if install_button
+      a.btn.btn-primary.btn-large data-plan="enterprise" Install

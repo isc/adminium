@@ -10,4 +10,8 @@ class SchemasTest < ActionDispatch::IntegrationTest
     visit schema_path(:users)
   end
   
+  test "create a table" do
+    visit new_schema_path
+  end
+  
 end

@@ -1,7 +1,7 @@
 class Account < ActiveRecord::Base
 
   attr_accessible :db_url, :plan, :heroku_id, :callback_url, :name, :owner_email,
-    :database_time_zone, :application_time_zone
+    :database_time_zone, :application_time_zone, :db_url_setup_method
   serialize :plan_migrations
 
   before_create :generate_api_key
@@ -13,6 +13,7 @@ class Account < ActiveRecord::Base
   has_many :table_widgets
   has_many :time_chart_widgets
   has_many :sign_ons
+  has_one :app_profile
 
   validates_format_of :db_url, with: /\A((mysql2?)|(postgres(ql)?)):\/\/.*/, allow_blank: true
   # fucked up "unless" below, but otherwise the tests are fucked up
@@ -21,7 +22,10 @@ class Account < ActiveRecord::Base
   validate :db_url_validation unless Rails.env.test?
 
   attr_encryptor :db_url, key: (ENV['ENCRYPTION_KEY'] || 'shablagoo')
-
+  
+  scope :deleted, -> {where plan: Plan::DELETED}
+  scope :not_deleted,  -> {where ["plan != ?", Plan::DELETED]}
+  
   TIPS = %w(basic_search editing enumerable export_import displayed_record advanced_search serialized relationships time_charts keyboard_shortcuts time_zones)
 
   class Plan
@@ -99,6 +103,10 @@ class Account < ActiveRecord::Base
       save!
     end
     tip
+  end
+  
+  def heroku_id_only
+    heroku_id.match(/\d+/).to_s
   end
 
   private

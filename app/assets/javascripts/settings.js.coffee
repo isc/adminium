@@ -3,6 +3,7 @@ $ ->
   $('ul.sortable').sortable()
   setupValidations()
   setupDbUrlPresence()
+  showModalOnLoad()
 
 addToHiddenParams = (pane_id, group, params) ->
   div = $("#{pane_id} .params")
@@ -28,6 +29,9 @@ setupValidations = ->
     column_name = $('#validations_pane select:eq(1) option:selected')
     addToTable '#validations_pane', [validator.text(), column_name.text()]
     addToHiddenParams '#validations_pane', 'validations', validator:validator.val(), column_name:column_name.val()
+
+showModalOnLoad = ->
+  $(".modal[data-open-on-load]").eq(0).modal('show')
 
 setupDbUrlPresence = ->
   return unless $('.heroku-connection-instructions').length

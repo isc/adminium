@@ -20,10 +20,16 @@ html lang="en"
           h2 Adminium
           h4 Database backend as a service
         .span6.menu
-          = link_to "Live Demo", start_demo_docs_path, class: 'btn btn-small btn-primary'
+          = link_to "Live Demo", start_demo_docs_path
+          b |
           =link_to "Documentation", docs_path
           b |
           = link_to "Pricing", "#pricing"
+          a.btn.btn-large href="#login" data-toggle="modal" style="text-transform:initial"
+            i.icon-user
+            '  Log In
+            span style="color:#BBB; text-shadow:1px 0px white; margin:0px 8px; display:inline-block" |
+            '  Sign Up
     .container.intro
       .row
         .span8.offset2.centered
@@ -104,33 +110,9 @@ html lang="en"
       .row
         h2.offset3.span6.centered Simple pricing, affordable for all
       .row
-        .span4
-          .well.white.plan
-            h3 Pet Project
-            h2 Free
-            p Limited to 5 tables
-            p Heroku collaborators
-            p &nbsp;
-        .span4
-          .well.white.plan
-            h3 Startup
-            h2
-              sup $
-              span 10/month
-            p No table limit
-            p Heroku collaborators
-            p &nbsp;
-        .span4
-          .well.white.plan
-            h3 Enterprise
-            h2
-              sup $
-              span 25/month
-            p No table limit
-            p External collaborators
-            p Roles and access control
+        = render 'pricing', install_button: false
       .centered
-        a.btn.btn-large.btn-success.cta href="https://addons.heroku.com/adminium" Install the add-on on your Heroku app
+        a.btn.btn-large.btn-success.cta href="/install" Install the add-on on your Heroku apps
         p.more All plans come with full support. You can upgrade or downgrade anytime.
     .container
       footer
@@ -142,3 +124,15 @@ html lang="en"
     - unless Rails.env.development?
       = render 'layouts/ga'
       = render 'layouts/uservoice'
+    
+    .modal.fade.hide#login
+      .modal-body.centered
+        h1 Log In or Sign Up
+        .row-fluid
+          .span6
+            = link_to "/auth/heroku" do
+              = image_tag 'logos/heroku.png'
+          .span6
+            = link_to "/auth/google" do
+              = image_tag 'logos/google.png'
+            p available only to collaborators of Enterprise accounts

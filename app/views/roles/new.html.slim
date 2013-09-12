@@ -1,7 +1,7 @@
 .page-header
   h3== @role.new_record? ? 'New role' : "Edit role <i>#{@role.name}</i>"
 
-= simple_form_for @role, html: {class: 'form-vertical'} do |f|
+= simple_form_for @role, html: {class: 'form-vertical edit_role'} do |f|
   .row
     .span6
       = f.input :name
@@ -26,12 +26,18 @@
                   - %w(create read update delete).each do |action|
                     td= check_box_tag "role[permissions][#{table}][#{action}]", '1', @role.permissions[table].try(:[], action)
     .span6
-      - if current_account.collaborators.present?
-        = f.association :collaborators, as: :check_boxes, collection: current_account.collaborators.map {|collaborator|[collaborator.name, collaborator.id]}
+      - non_admin_collaborators = current_account.collaborators.where(is_administrator: false)
+      - if non_admin_collaborators.present?
+        = f.association :collaborators, as: :check_boxes, collection: non_admin_collaborators.map {|collaborator|[collaborator.name, collaborator.id]}
       - else
+        .control-group
+          label.control-label Collaborators
         .alert.alert-warning
-          p A role should be assigned to collaborators but you have not invited any yet.
-          = link_to "Add a collaborator", edit_account_path, class: 'btn btn-primary'
+          - if current_account.collaborators.empty?
+            p A role should be assigned to collaborators but you have not invited any yet.
+            = link_to "Add a collaborator", edit_account_path, class: 'btn btn-primary'
+          - else
+            p Your collaborators are administrators of this account, thus they have all permissions on all tables and cannot be assigned a role.
 
   .form-actions
     = f.submit class: 'btn-primary', data: {disable_with: 'Sending...'}

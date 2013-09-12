@@ -1,18 +1,30 @@
 class DocsController < ApplicationController
 
-  skip_filter :require_authentication, except: :missing_db_url
+  skip_filter :require_account
   skip_filter :connect_to_db, unless: :valid_db_url?
 
   def index
     @full_title = "Documentation | Adminium"
   end
-
+  
+  def install
+    redirect_to "/auth/heroku"
+  end
+  
   def homepage
     redirect_to dashboard_url and return if session[:account]
     render layout: 'homepage'
   end
   
   def landing
+    if session[:account]
+      redirect_to dashboard_url
+      return
+    end
+    if session[:user]
+      redirect_to user_path
+      return
+    end
     render layout: false
   end
 
@@ -31,11 +43,6 @@ class DocsController < ApplicationController
   def stop_demo
     session[:account] = session[:account_before_demo]
     redirect_to dashboard_url
-  end
-
-  private
-  def valid_db_url?
-    session[:account] && current_account.valid_db_url?
   end
 
 end

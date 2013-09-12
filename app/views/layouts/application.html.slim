@@ -1,5 +1,5 @@
 doctype html
-html lang="en"
+html lang="en" ng-app=""
   head
     meta charset="utf-8"
     = head_title
@@ -8,9 +8,13 @@ html lang="en"
       = javascript_include_tag "http://html5shim.googlecode.com/svn/trunk/html5.js"
     = stylesheet_link_tag '//fonts.googleapis.com/css?family=Ubuntu'
     = stylesheet_link_tag 'application'
+    
     meta name="viewport" content="width=device-width, initial-scale=1.0"
     meta name="description" content="Administration interface for your database as a service"
     meta name="keywords" content="Adminium, database, administration, interface, export, heroku, add-on"
+    meta name="apple-mobile-web-app-capable" content="yes"
+    - [144, 114, 72].each do |size|
+      link rel="apple-touch-icon" sizes="#{size}x#{size}" href="/images/ios-icons/touch-icon-#{size}.png"
     link href="/images/favicon.ico" rel="shortcut icon"
   body class="#{controller.controller_name} #{controller.action_name}"
     - if session[:account]
@@ -25,9 +29,8 @@ html lang="en"
             span.icon-bar
           = link_to "#{current_account? && current_account.name || 'Adminium'}", dashboard_path, class: 'brand'
           .container-fluid
-            - if current_account? && current_account.db_url.present? && @tables.present?
-              .span4
-                = select_tag 'table_select', options_for_select(@tables), include_blank: true
+            .span4
+              = select_tag 'table_select', options_for_select(table_list), include_blank: true
             = render 'layouts/menu'
     .container-fluid.main-container
       - subnav = yield :subnav
@@ -39,6 +42,8 @@ html lang="en"
               a.close data-dismiss="alert" href="#" &times;
               = raw v
           = yield
+    - modals = yield :modal
+    = modals if modals.present?
     = javascript_include_tag 'application'
     - unless Rails.env.development?
       = render partial: '/layouts/ga'

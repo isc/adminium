@@ -96,13 +96,16 @@ javascript:
       - if params[:where]
         - params[:where].each do |k, v|
           span.label.label-warning
-            == "where #{k} is <i>#{v}</i>"
+            - if resource.column_info(k.to_sym)[:type] == :datetime
+              == "where #{k} is in <i>#{format_date(v).first}</i>"
+            - else
+              == "where #{k} is <i>#{v}</i>"
             span.remove data-param=format_param_for_removal(k, v) x
 .content
   = render partial: 'items', locals: {items: @fetched_items, actions_cell: true}
 = render partial: '/resources/panels/listing_settings'
 = render partial: '/resources/panels/export'
 = render partial: '/resources/panels/advanced_search'
-#column-settings.modal.hide.fade data-remote-path=column_setting_path(params[:table], column: '{column}', view: '{view}')
+#column-settings.modal.hide.fade data-remote-path=column_setting_path('{table}', column: '{column}', view: '{view}')
 #time-chart.modal.hide.fade data-remote-path=generate_time_chart_path
 #bulk-edit-modal.modal.hide.fade(data-remote-path=bulk_edit_resources_path(table: params[:table]))

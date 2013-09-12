@@ -3,7 +3,7 @@ require 'sequel'
 Sequel.extension :pg_array # So that Sequel::Postgres::PGArray used in ResourcesHelper is loaded even though we didn't connect to a Postgres database yet.
 
 class Generic
-  attr_accessor :models, :db_name, :account_id, :db, :account
+  attr_accessor :db_name, :account_id, :db, :account
   attr_reader :current_adapter
 
   def initialize account, opts={}
@@ -21,11 +21,8 @@ class Generic
       @associations = Rails.cache.fetch "account:#@account_id:associations", expires_in: 10.minutes do
         @associations = Hash[tables.map {|t| [t, {belongs_to: {}, has_many: {}}]}]
         tables.each do |table|
-          if foreign_keys[table].present?
-            discover_associations_through_foreign_keys table
-          else
-            discover_associations_through_conventions table
-          end
+          discover_associations_through_foreign_keys table if foreign_keys[table].present?
+          discover_associations_through_conventions table
         end
         @associations
       end
@@ -46,7 +43,7 @@ class Generic
       next unless (name.to_s.ends_with? '_id') && (info[:type] == :integer)
       owner = name.to_s.gsub(/_id$/, '')
       owner_table = owner.tableize.to_sym
-      if tables.include? owner_table
+      if tables.include?(owner_table) && @associations[table][:belongs_to][owner_table].nil?
         @associations[table][:belongs_to][owner_table] =
           @associations[owner_table][:has_many][table] =
           {foreign_key: name, primary_key: :id, referenced_table: owner_table, table: table}
@@ -55,6 +52,8 @@ class Generic
           {foreign_key: name, primary_key: :id, referenced_table: nil, table: table, polymorphic: true}
       end
     end
+  rescue Sequel::DatabaseError
+    # don't fuck up everything when there is a freaky table which doesn't exist
   end
   
   def foreign_keys
@@ -100,7 +99,7 @@ class Generic
 
   def tables
     return @tables if @tables
-    @tables = @db.tables.sort
+    @tables = (@db.tables(schema: :public) + @db.views(schema: :public)).sort
     @account.update_attribute :tables_count, @tables.size if @account.tables_count != @tables.size
     @tables
   end
@@ -140,7 +139,7 @@ class Generic
     else
       table_list.map do |table|
         res = [table]
-        res += @db["select pg_total_relation_size('\"#{table}\"') as fulltblsize, pg_relation_size('\"#{table}\"') as tblsize"].first.values
+        res += @db["select pg_total_relation_size('\"#{table}\"') as fulltblsize, pg_relation_size('\"#{table}\"') as tblsize"].first.values rescue ['?']
       end.compact
     end
   end

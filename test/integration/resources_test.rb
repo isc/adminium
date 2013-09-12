@@ -76,6 +76,17 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert page.has_no_content? 'Haliday'
   end
   
+  test "search with where on a range date weekly" do
+    somedate = 10.weeks.ago
+    FixtureFactory.new(:user, first_name: 'Johnny', activated_at: somedate)
+    FixtureFactory.new(:user, first_name: 'Mariah', activated_at: somedate + 1.week)
+    FixtureFactory.new(:user, first_name: 'Gilles', activated_at: somedate - 1.week)
+    visit resources_path(:users, where: {activated_at: somedate.beginning_of_week}, grouping: 'weekly')
+    assert page.has_content? "where activated_at is in Week"
+    assert page.has_content? '1 record'
+    assert page.has_content? 'Johnny'
+  end
+  
   test "links on index for polymorphic belongs to" do
     user = FixtureFactory.new(:user).factory
     group = FixtureFactory.new(:group).factory
@@ -409,6 +420,18 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     click_button 'Save'
     assert !page.has_css?('.alert.alert-error')
     assert_equal '["Bob", "Bobby"]', find('td[data-column-name="nicknames"]')['data-raw-value']
+  end
+  
+  test "date fields with default" do
+    generic = Generic.new @account
+    generic.db.alter_table(:documents) do
+      set_column_default :some_datetime, Sequel::CURRENT_TIMESTAMP
+      set_column_default :delete_on, Sequel::CURRENT_DATE
+    end
+    visit new_resource_path(:documents)
+    v = Date.today.strftime("%m/%d/%Y")
+    assert_equal v, find('input#documents_delete_on').value
+    assert_equal v, find('input#documents_some_datetime').value
   end
   
   test "search on a string array column" do

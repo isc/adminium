@@ -1,0 +1,43 @@
+script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"
+
+div.row-fluid ng-controller="AppsCtrl"
+  table.table.table-bordered.apps
+    thead
+      tr
+        th Apps
+        th
+          input ng-model="search.name" placeholder="Filter"
+    tbody
+      tr.unauthorized.hide
+        td colspan=2
+          p.alert.alert-error
+            'Your session must have expired, please reconnect to list your apps.
+          = link_to "Reconnect to Heroku", "/auth/heroku", class: 'btn btn-large btn-primary', style: "width: 30%; margin: auto"
+      tr.loading
+        td colspan=2
+          = spinner_tag
+      tr ng-repeat="app in apps | filter:search" ng-cloak="true"
+        td colspan=2 ng-click='appSelection()'
+          i.icon-circle-blank ng-hide="installed()" title="add-on not installed on this application yet"
+          i.icon-circle ng-show="installed()" title="add-on already installed (plan: {{app.plan}})"
+          '  {{app.name}}
+
+  .modal.fade.hide#create-addon-modal
+      .modal-body.centered
+        .step1
+          h1 ng-model="selectedApp" Install Adminium on {{selectedApp.name}}
+          p Adminium Heroku add-on has not yet been provisioned for this app. Choose your plan!
+          .row-fluid.pricing
+            = render '/docs/pricing', install_button: true
+        .step2
+          h2
+          h3
+          p Please wait  ...
+          = spinner_tag
+        .error
+          h2 Failed to install Adminium on your app
+          p.aert.alert-error Something went wrong
+      .modal-footer.step1
+        a.btn.btn-large data-dismiss="modal" Later
+      .modal-footer.error
+        a.btn.btn-large data-dismiss="modal" Close

@@ -1,10 +1,16 @@
 class Heroku::ResourcesController < ApplicationController
 
-  skip_filter :connect_to_db, :require_authentication
+  skip_filter :connect_to_db, :require_account
   before_filter :basic_auth, except: :sso_login
 
   def create
-    account = Account.create params[:resource].reject {|k,v| !%w(heroku_id plan callback_url).include?(k)}
+    attributes = params[:resource].reject {|k,v| !%w(heroku_id plan callback_url).include?(k)}
+    account = Account.deleted.where(heroku_id: attributes[:heroku_id]).first
+    if account
+      account.update_attributes attributes.merge(deleted_at: nil), without_protection: true
+    else
+      account = Account.create attributes
+    end
     render json: { id: account.api_key, config: { 'ADMINIUM_URL' => heroku_account_url(account) } }
   end
 

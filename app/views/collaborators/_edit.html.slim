@@ -1,6 +1,7 @@
 = simple_form_for @collaborator, html: {class: 'form-horizontal'} do |f|
-  = f.input :email, placeholder: 'google account email', type: 'email', required: true, disabled: !!@collaborator.user
-  = f.input :is_administrator, :as => :radio_buttons
+  = f.input :kind, as: :hidden
+  = f.input :email, placeholder: "#{@collaborator.kind.capitalize} account email", type: 'email', required: true, disabled: !!@collaborator.user
+  = f.input :is_administrator, as: :radio_buttons
   - if current_account.roles.present?
-    = f.association :roles, :as => :check_boxes, :collection => current_account.roles.map {|role|[role.name, role.id]}, :html => {:class => "span1"}
+    = f.association :roles, as: :check_boxes, collection: current_account.roles.map {|role|[role.name, role.id]}, html: {:class => "span1"}
   = f.submit class: 'btn-primary', data: {disable_with: 'Sending...'}

@@ -30,35 +30,48 @@
     - if @account.enterprise?
       .alert
         p You can use a Google account to log in to this account and authorize collaborators to log in as well.
-        = simple_form_for @account.collaborators.build, remote: true, html: {class: 'form-horizontal'} do |f|
-          = f.input :email, placeholder: 'google account email', type: 'email', required: true
+        = simple_form_for @account.collaborators.build(kind: 'google'), remote: true, html: {class: 'form-horizontal'} do |f|
+          = f.input :email, placeholder: 'Google account email', type: 'email', required: true
           = f.input :is_administrator, as: :radio_buttons
+          = f.input :kind, as: :hidden
           .control-group
             'or has the following roles
             = link_to '(create a new role)', new_role_path
           - if current_account.roles.present?
             = f.association :roles, as: :check_boxes, collection: current_account.roles.map {|role|[role.name, role.id]}, html: {class: "span1"}
           = f.submit 'Add a collaborator', class: 'btn btn-primary', data: {disable_with: 'Sending...'}
-
+    - else
+      = upgrade_to_enterprise_notice current_account
+    - if @account.collaborators.present? || @collaborators.present?
       .row
         table.table.span6#collaborators data-delete-url="#{collaborator_path(':id')}"
           thead
             tr
-              th colspan=2
+              th
+              th
               th Roles
               th
+          - @heroku_collaborators.each do |collaborator|
+            tr
+              td= image_tag "logos/heroku-icon.png", alt: "Heroku Collaborator"
+              td= collaborator['email']
+              td
+                ' administrator
+                = "(#{collaborator["role"]})" if collaborator['role']
+              td
+                = link_to content_tag(:i, nil, class: 'icon-pencil'), new_collaborator_path(email: collaborator['email']), remote: true,  'data-toggle' => 'modal', 'data-target' => "#modal-window", 'data-backdrop' => true, 'data-keyboard' => true, class: 'btn', title: 'Edit this collaborator roles', rel: 'tooltip' if collaborator['role'] != 'owner'
           - @account.collaborators.each do |collaborator|
             - next if collaborator.new_record?
             - css = collaborator.user_id ? nil : 'deactivated'
-
+      
             tr class=css
+              td= image_tag "logos/#{collaborator.kind}-icon.png", alt: "#{collaborator.kind.capitalize} Collaborator"
               td= collaborator.name
               td= collaborator.human_roles
               td
                 = link_to content_tag(:i, nil, class: 'icon-pencil'), edit_collaborator_path(collaborator), remote: true,  'data-toggle' => 'modal', 'data-target' => "#modal-window", 'data-backdrop' => true, 'data-keyboard' => true, class: 'btn', title: 'Edit this collaborator roles', rel: 'tooltip'
                 = link_to content_tag(:i, nil, class: 'icon-trash'), collaborator, method: :delete, remote: true, class: 'btn trash_collaborator', title: 'remove every access of this collaborator'
-    - else
-      = upgrade_to_enterprise_notice current_account
+      
   - tabs.pane 'Roles and permissions' do
     = render 'roles'
   - tabs.pane 'Display settings' do

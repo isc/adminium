@@ -56,7 +56,7 @@ class Widget
             window.location.href = link.attr('href')
         widget.find('h4 small').show().find('span').text(data.total_count)
       else
-        time_charts.graphData data.graph_data, widget.find('.content')
+        time_charts.graphData data.graph_data, widget.find('.content'), data
 
   setupDeletion: ->
     $('.widget .btn-mini').bind 'ajax:success', ->

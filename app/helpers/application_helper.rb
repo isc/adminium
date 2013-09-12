@@ -58,7 +58,7 @@ module ApplicationHelper
 
   def upgrade_to_enterprise_notice account
     content_tag :div, class: 'alert notice' do
-      "<a class=\"btn btn-warning\" href=\"#{account.upgrade_link}\">Upgrade</a> to the enterprise plan ($25 per month) and add as many collaborators as you need to access your data. Moreover, you can assign roles to your collaborators to limit what tables they may access, or prevent them from editing or deleting rows.".html_safe
+      "<a class=\"btn btn-warning\" href=\"#{upgrade_account_path(plan:'enterprise')}\">Upgrade</a> to the enterprise plan ($25 per month) and add as many external collaborators as you need to access your data. Moreover, you can assign roles to your collaborators to limit what tables they may access, or prevent them from editing or deleting rows.".html_safe
     end
   end
 
@@ -80,6 +80,18 @@ module ApplicationHelper
     return unless column[:default]
     default = column[:ruby_default] || column[:default]
     default = default.respond_to?(:constant) ? default.constant : (default == '' ? 'Empty String' : default)
+  end
+  
+  def support_link msg
+    '<a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="155803">'+msg+'</a>'
+  end
+  
+  def table_list
+   if current_account? && current_account.db_url.present?
+    return @permissions.map {|key, value| key if value['read']}.compact if @permissions
+    return @tables if @tables.present?
+   end
+   return []
   end
 
 end

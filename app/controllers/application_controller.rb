@@ -5,10 +5,11 @@ class ApplicationController < ActionController::Base
   rescue_from Sequel::DatabaseConnectionError, with: :global_db_error
   before_filter :ensure_proper_subdomain
   before_filter :fixed_account
-  before_filter :require_authentication
+  before_filter :require_account
   before_filter :connect_to_db
   before_filter :set_source_cookie
   after_filter :cleanup_generic
+  after_filter :track_account_action
 
   helper_method :global_settings, :current_account, :current_user, :admin?, :current_account?, :resource_for
 
@@ -22,8 +23,12 @@ class ApplicationController < ActionController::Base
     @global_settings ||= Resource::Global.new session[:account]
   end
 
-  def require_authentication
+  def require_account
     redirect_to docs_url unless session[:account]
+  end
+  
+  def require_user
+    redirect_to root_path unless session[:user]
   end
 
   def connect_to_db
@@ -31,7 +36,7 @@ class ApplicationController < ActionController::Base
       @generic = Generic.new current_account
       @tables = @generic.tables
     else
-      redirect_to doc_url(:missing_db_url)
+      redirect_to setup_database_connection_install_path
     end
   end
 
@@ -53,7 +58,7 @@ class ApplicationController < ActionController::Base
   end
 
   def admin?
-    (session[:account] && current_user.nil?) || current_collaborator.try(:is_administrator)
+    (session[:account] && current_user.nil?) || current_collaborator.try(:is_administrator) || (current_user.try(:heroku_provider?) && current_collaborator.nil?)
   end
 
   def require_admin
@@ -94,6 +99,34 @@ class ApplicationController < ActionController::Base
   def ensure_proper_subdomain
     return unless Rails.env.production?
     redirect_to params.merge(host: 'www.adminium.io') if request.host_with_port != 'www.adminium.io'
+  end
+  
+  def heroku_api
+    @api ||= Heroku::API.new(api_key: session[:heroku_access_token], mock: Rails.env.test?) if session[:heroku_access_token]
+  end
+  
+  def heroku_api_v3 method, path
+    if session[:heroku_access_token]
+      headers = {}
+      headers["Accept"] = "application/vnd.heroku+json; version=3"
+      headers["Authorization"] = Base64.encode64(":#{session[:heroku_access_token]}\n").chomp
+      headers["User-Agent"] = "adminium-addon-client"
+      resource = Excon.new 'https://api.heroku.com/'
+      JSON.parse resource.request({:method => method, :path => path, :headers => headers}).data[:body]
+    end
+  end
+  
+  def track_account_action
+    format = ".#{request.format.to_s.split("/").last}" if request.format != 'text/html'
+    if session[:account]
+      attrs = {account_id: session[:account], action: "#{params[:controller]}##{params[:action]}#{format}"}
+      rows = Statistic.where(attrs).update_all ["value = value + 1, updated_at = ?", Time.zone.now]
+      Statistic.create attrs.merge(value: 1) if rows == 0
+    end
+  end
+  
+  def valid_db_url?
+    session[:account] && current_account.valid_db_url?
   end
   
 end

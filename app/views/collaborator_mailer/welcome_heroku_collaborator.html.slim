@@ -1,0 +1,12 @@
+p Hi there,
+p
+  b= link_to "Adminium add-on", '/'
+  == " has just been installed by #{@user.email} on <b>#{@account.name}</b>, an Heroku application you both share."
+p = "Not heard about Adminium yet? it's a backend for your database to visualise and manipulate your database content (edition, export, import, search...)."
+p
+  = "You can connect and try Adminium anytime, just log in to the service through Heroku's secure authentication service with your existing Heroku account credentials."
+p
+  'Here is the link:
+  = link_to 'https://www.adminium.io', "https://www.adminium.io"
+
+p Welcome on board !

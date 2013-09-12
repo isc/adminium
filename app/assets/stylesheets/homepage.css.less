@@ -43,40 +43,109 @@ a.btn.btn-navbar .icon-bar {
   background: white;
 }
 
-.landing {
-  .pricing {
-    padding-top: 20px;
-    > .row > h2 {
-      margin-bottom: 20px;
+.apps {
+  margin: 20px auto 0;
+  width: 50%;
+  font-size: 1.3em;
+  td {
+    cursor: pointer;
+    color: #413877;
+    i {
+      color: lighten(#413877, 50%);
+      margin: 0px 10px;
     }
-    .plan {
-      margin: 0 7% 20px 7%;
-      padding-top: 5px;
-      border: 3px solid #DDD;
-      text-align: center;
-      h2 {
-        border-bottom: 1px solid #EEE;
-        font-style: italic;
-        font-family: Georgia;
-        margin-bottom: 10px;
-      }
-      p {
-        font-weight: bold;
-        font-size: 1.2em;
-      }
-      h3 {
-        color: #888;
-        margin-top: 0px;
-        padding-top: 0px;
-      }
+    &:hover i {
+      color: #413877;
     }
-    .more {
-      margin-top: 10px;
-      color: #999;
-      font-size: 1.1em;
-      font-style: italic;
+    background: white;
+  }
+  th {
+    input {
+      margin-bottom: 0px;
+    }
+    color: white;
+    border: none;
+    background: #413877;
+    &:last-child {
+      text-align: right;
     }
   }
+}
+#create-addon-modal {
+  width: 730px;
+  margin-left: -365px;
+}
+.modal .pricing {
+  margin-top: 10px;
+  .plan {
+    margin: 0 0% 10px 0%;
+    border: 2px solid #DDD;
+    p {
+      font-size: 1.1em;
+    }
+  }
+}
+.pricing {
+  padding-top: 20px;
+  > .row > h2 {
+    margin-bottom: 20px;
+  }
+  .plan {
+    margin: 0 7% 20px 7%;
+    padding-top: 5px;
+    border: 3px solid #DDD;
+    text-align: center;
+    h2 {
+      border-bottom: 1px solid #EEE;
+      font-style: italic;
+      font-family: Georgia;
+      margin-bottom: 10px;
+    }
+    p {
+      font-weight: bold;
+      font-size: 1.2em;
+    }
+    h3 {
+      color: #888;
+      margin-top: 0px;
+      padding-top: 0px;
+    }
+  }
+  .more {
+    margin-top: 10px;
+    color: #999;
+    font-size: 1.1em;
+    font-style: italic;
+  }
+}
+
+.landing {
+  
+  #login {
+    h1 {
+      margin-bottom: 25px;
+    }
+    p {
+      color: #AAA;
+      margin-top: 5px;
+      font-style: italic;
+    }
+    a {
+      background-color: #DDD;
+      display: block;
+      -webkit-filter: grayscale();
+      &:hover {
+        -webkit-filter: none;
+        background-color: lighten(#7d72bd, 30%);
+      }
+      padding: 10px;
+      border-radius: 5px;
+    }
+    img {
+      height: 41px;
+    }
+  }
+  
   .promise {
     margin: 40px 0px 10px 0;
     font-size: 2.0em;

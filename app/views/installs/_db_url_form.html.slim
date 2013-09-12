@@ -1,0 +1,8 @@
+= form_for current_account, html: {class: 'form-inline'} do |f|
+      = hidden_field_tag :install, 1
+      .input-prepend
+        span.add-on
+          i.icon-th
+        = f.text_field :db_url, class: 'span4', placeholder: 'postgresql://user:password@host/database', required: true, title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database', pattern: "^((mysql2?)|(postgres(ql)?)):\/\/.*"
+      '
+      = f.submit 'Connect', class: 'btn btn-primary'

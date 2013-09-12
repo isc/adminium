@@ -1,0 +1,87 @@
+.hero-unit
+  
+  h1.centered
+    i.icon-flag.icon-4x
+    br
+    'Great, Adminium has just been provisioned for your app!
+  .row
+    .span4.offset2.centered
+      h3
+        'Finally, to get started
+        br
+        = link_to "Connect to your database", "/auth/heroku", class: "btn btn-info btn-large"
+    .span4
+      div(style="margin-top: 10px")
+        'It will securely authenticate you with Heroku and allow Adminium to connect to your database. You can also do it
+        = link_to("manually", "#modal-install-manually", :"data-toggle" => "modal") + "."
+- if @db_urls
+  - if @db_urls.length == 0
+    .modal.hide.fade#error-no-urls data-open-on-load="true"
+      .modal-header
+        a.close data-dismiss="modal" ×
+        h3 No connection url found
+      .modal-body
+        p= "We didn't find any database url in your configuration settings."
+        p= "We support PostgreSQL and MySQL for the moment, If you are using another engine, #{support_link "please let us know"}.".html_safe
+        p If you are using one of those two, you can manually enter the connection url.
+        = render "db_url_form"
+  - if @db_urls.length > 1
+    .modal.hide.fade data-open-on-load="true"
+      .modal-header
+        a.close data-dismiss="modal" x
+        h3 Which database do you want to access ?
+      .modal-body
+        h4= "We detected #{@db_urls.length} different url, which one do you want to go with ?"
+        table.table
+          - @db_urls.each do |db|
+            tr
+              td
+                = form_for current_account do |f|
+                  = hidden_field_tag "db_key", db[:key]
+                  = hidden_field_tag :install, 1
+                  = f.submit db[:key]
+              td= db[:value][0..15] + "******************"
+
+.modal.hide.fade#modal-install-manually(style="margin-left:-375px; width:750px;")
+  .modal-header
+    a.close data-dismiss="modal" ×
+    h3 Connecting to your database
+  .modal-body
+    h3 Command line setup
+    p In your application root, run the following commands :
+    pre= "heroku plugins:install git://github.com/isc/heroku-adminium\nheroku adminium\n"
+    .pull-right
+      == clippy "heroku plugins:install git://github.com/isc/heroku-adminium %26%26 heroku adminium"
+    hr
+    h3 Browser setup
+    = render "db_url_form"
+    hr
+    h5 Finding your Heroku Postgres database url
+    .row-fluid.heroku-connection-instructions
+      .span4
+        = image_tag 'herokuresources-panel.png'
+      .span8
+        ol
+          li
+            ' Go to the
+            = link_to 'resources page', "https://dashboard.heroku.com/apps/#{current_account.name}/resources", target: '_blank'
+            '  for
+            = current_account.name
+            '  and click on your Heroku Postgres database add-on
+          li
+            ' In the
+            i Connection settings
+            '  section, use the
+            i.icon-cog
+            ' button to switch to
+            i URL
+            '  display and copy the connection string
+          li
+            '  Paste it in the text input above and click
+            b Connect
+        = image_tag 'herokupostgres-panel.png', width: '420px'
+    hr
+    h3 Not your job ?
+    = link_to setup_mailto_href(current_account), target: '_blank' do
+      i.icon-envelope
+      '  Ask a coworker

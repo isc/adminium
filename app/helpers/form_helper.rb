@@ -49,7 +49,6 @@ module FormHelper
       when /country/   then [:select, country_options_for_select(value)]
       when /email/     then :email_field
       when /phone/     then :telephone_field
-      when /url/       then :url_field
       else
         :text_field
       end
@@ -62,7 +61,8 @@ module FormHelper
     input_options[:class] = 'datepicker span2'
     res = ''.html_safe
     if [:date, :datetime].include? input_type
-      value_string = input_value ? input_value.to_date.strftime('%m/%d/%Y') : ''
+      input_value = Time.now if input_value.is_a? Sequel::SQL::Constant
+      value_string = input_value.nil? ? '' : input_value.to_date.strftime('%m/%d/%Y')
       res << (text_field_tag nil, value_string, input_options)
       [:year, :month, :day].each_with_index do |type, i|
         v = input_value ? input_value.try(type).to_s : ''
