@@ -114,7 +114,6 @@ GEM
       excon (~> 0.25.1)
     hike (1.2.3)
     hiredis (0.4.5)
-    hpricot (0.8.6)
     htmlentities (4.3.1)
     http_parser.rb (0.5.3)
     httpauth (0.2.0)
@@ -346,7 +345,6 @@ DEPENDENCIES
   guard-livereload
   heroku-api (= 0.3.15)
   hiredis (= 0.4.5)
-  hpricot
   jquery-rails (= 2.0.1)
   kaminari
   kensa
