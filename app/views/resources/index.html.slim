@@ -12,14 +12,13 @@ javascript:
 
         - if resource.columns[:search].any?
           .span4
-            form.form-inline.subnav-search
+            form.form-inline.subnav-search.row-fluid
               - request.query_string.to_s.split('&').each do |param|
                 - name, value = unescape_name_value_pair param
                 - next if name == 'search'
                 input type="hidden" name=name value=value
-              input.span3 name="search" id="search_input" type='text' value=params[:search] placeholder="search on #{resource.columns[:search].map{|e|e.to_s.humanize}.join(', ').downcase}"
-              '
-              .btn-group
+              input.span9 name="search" id="search_input" type='text' value=params[:search] placeholder="search on #{resource.columns[:search].map{|e|e.to_s.humanize}.join(', ').downcase}"
+              .btn-group.span3
                 button.btn#search_btn
                   i.icon-search
                 button.btn.dropdown-toggle data-toggle="dropdown"

@@ -12,7 +12,7 @@ td.operators
   - filter_type = 'date' if %(date datetime).include? filter_type
   - filter_type = 'string' if filter_type == 'text'
   = render partial: "/settings/filters/#{filter_type}", locals: {g: g, operator: filter["operator"]}
-td.span1
+td
   - options = {class: 'operand'}
   - options[:class] += ' datepicker' if %w(datetime date).include? filter_type
   - options['data-type'] = filter_type
