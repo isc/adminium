@@ -21,7 +21,11 @@ class DashboardsController < ApplicationController
         end
       rescue Timeout::Error => e
         Rails.logger.warn "table #{table_name} took too long"
-        res[table_name] = "?"
+        if @generic.postgresql?
+          res[table_name] = "~#{@generic.loose_count(table_name)}"
+        else
+          res[table_name] = "?"
+        end
       end
       break if Time.now > timeout
     end

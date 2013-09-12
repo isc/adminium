@@ -104,6 +104,10 @@ class Generic
     @tables
   end
   
+  def loose_count(table_name)
+    @db.loose_count(table_name)
+  end
+  
   def schema table
     raise TableNotFoundException.new(table) unless tables.include? table
     @schema ||= {}
@@ -153,7 +157,10 @@ class Generic
     @current_adapter = uri.scheme
     opts[:logger] ||= Rails.logger
     @db = Sequel.connect uri.to_s, opts
-    @db.extension :pg_array if uri.scheme == 'postgres'
+    if uri.scheme == 'postgres'
+      @db.extension :pg_array
+      @db.extension :pg_loose_count
+    end
     @db.extension :named_timezones
     @db.timezone = ActiveSupport::TimeZone.new(@account.database_time_zone).tzinfo.name
     Sequel.application_timezone = ActiveSupport::TimeZone.new(@account.application_time_zone).tzinfo.name
