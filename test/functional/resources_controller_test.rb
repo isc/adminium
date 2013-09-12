@@ -183,10 +183,10 @@ class ResourcesControllerTest < ActionController::TestCase
     @records = @fixtures.map &:save!
     get :index, table: 'users'
     assert_equal({
-      "age"=>{"max"=>19, "min"=>17, "avg"=>18.0},
-      "role"=>{{"color"=>"black", "label"=>"Role1"}=>0, {"color"=>"white", "label"=>"Role2"}=>0},
-      "kind"=>{{"color"=>"bleu", "label"=>"Kind1"}=>0, {"color"=>"red", "label"=>"Kind2"}=>0},
-      "admin"=>{"true"=>1, "false"=>3, "null"=>0}
+      :age =>{"max"=>19, "min"=>17, "avg"=>18.0},
+      :role =>{{"color"=>"black", "label"=>"Role1"}=>0, {"color"=>"white", "label"=>"Role2"}=>0},
+      :kind =>{{"color"=>"bleu", "label"=>"Kind1"}=>0, {"color"=>"red", "label"=>"Kind2"}=>0},
+      :admin =>{"true"=>1, "false"=>3, "null"=>0}
       }, assigns(:statistics))
   end
   
