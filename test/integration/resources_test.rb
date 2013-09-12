@@ -432,6 +432,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     v = Date.today.strftime("%m/%d/%Y")
     assert_equal v, find('input#documents_delete_on').value
     assert_equal v, find('input#documents_some_datetime').value
+    generic.cleanup
   end
   
   test "search on a string array column" do
