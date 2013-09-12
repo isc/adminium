@@ -19,7 +19,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit resources_path(:users)
     assert page.has_css?('table.items-list')
     assert page.has_css?('th a', text: 'First name')
-    uncheck 'First name'
+    within('#listing_columns_list') {uncheck 'First name'}
     click_button 'Save settings'
     assert !page.has_css?('th a', text: 'First name')
   end
@@ -436,8 +436,8 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   
   test "search on a string array column" do
     stub_resource_columns listing: [:nicknames, :pseudo], search: [:nicknames]
-    FixtureFactory.new(:user, nicknames: "{Bob, Bobby, Bobulus}", pseudo: 'Pierre')
-    FixtureFactory.new(:user, nicknames: "{Bob, Rob}", pseudo: 'Jacques')
+    FixtureFactory.new(:user, nicknames: ['Bob', 'Bobby', 'Bobulus'], pseudo: 'Pierre')
+    FixtureFactory.new(:user, nicknames: ['Bob', 'Rob'], pseudo: 'Jacques')
     visit resources_path(:users)
     assert page.has_content?('Pierre')
     assert page.has_content?('Jacques')
