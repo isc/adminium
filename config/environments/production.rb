@@ -14,11 +14,6 @@ Adminium::Application.configure do
   
   # Compress JavaScripts and CSS
   config.assets.compress = true
-  if defined? Uglifier
-    config.assets.js_compressor = Uglifier.new(
-      :beautify => true,
-      :beautify_options => {:indent_level => 0}
-      )
 end
 
 
