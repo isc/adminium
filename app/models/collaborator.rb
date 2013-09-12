@@ -9,6 +9,7 @@ class Collaborator < ActiveRecord::Base
   after_create :mail_collaborator
 
   has_and_belongs_to_many :roles
+  attr_accessible :kind, :is_administrator, :email
 
   def permissions
     roles.inject({}) do |res, role|

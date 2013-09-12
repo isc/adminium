@@ -2,9 +2,8 @@ class User < ActiveRecord::Base
 
   has_many :collaborators
   has_many :accounts, through: :collaborators
-  has_many :enterprise_accounts, through: :collaborators, source: :account,
-    conditions: {plan: [Account::Plan::ENTERPRISE, Account::Plan::COMPLIMENTARY]},
-    order: 'name'
+  has_many :enterprise_accounts, ->{where(plan: [Account::Plan::ENTERPRISE, Account::Plan::COMPLIMENTARY]).order('name')},
+    through: :collaborators, source: :account
 
   after_create :match_collaborators
   

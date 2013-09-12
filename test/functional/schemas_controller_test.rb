@@ -3,7 +3,7 @@ require 'test_helper'
 class SchemasControllerTest < ActionController::TestCase
 
   def setup
-    @account = Factory :account, plan: 'startup'
+    @account = create :account, plan: 'startup'
     session[:account] = @account.id
     @generic = Generic.new @account
   end
@@ -14,7 +14,7 @@ class SchemasControllerTest < ActionController::TestCase
   end
   
   def test_not_admin_not_allowed
-   collaborator = Factory :collaborator, is_administrator: false
+   collaborator = create :collaborator, is_administrator: false
    @generic.cleanup
    session[:user] = collaborator.user.id
    session[:collaborator] = collaborator.id
@@ -26,7 +26,7 @@ class SchemasControllerTest < ActionController::TestCase
   end
   
   def test_admin_collaborators_allowed
-    collaborator = Factory :collaborator, is_administrator: true
+    collaborator = create :collaborator, is_administrator: true
     @generic.cleanup
     session[:user] = collaborator.user.id
     session[:collaborator] = collaborator.id

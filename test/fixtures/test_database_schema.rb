@@ -2,7 +2,7 @@ conn_spec = ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
 ActiveRecord::Base.establish_connection conn_spec
 ActiveRecord::Schema.verbose = false
 version = 24
-if ActiveRecord::Migrator.current_version != version
+# if ActiveRecord::Migrator.current_version != version
   ActiveRecord::Base.connection.tables.each do |table|
     ActiveRecord::Base.connection.drop_table table
   end
@@ -65,7 +65,7 @@ if ActiveRecord::Migrator.current_version != version
       t.references :user
     end
   end
-end
+# end
 
 
 # load some models

@@ -1,7 +1,10 @@
+## Rails 4 migration TODOS / FIXMES :
+
+  - collaborator role assignment on creation still working ?
+
 ## Sequel Migration TODOS / FIXMES :
 
   - composite primary keys for import, bulk edit
-  - support for views
   - bug time chart day of week ; 2 sundays
 
 ## FEATURES:

@@ -6,9 +6,9 @@ class UsersControllerTest < ActionController::TestCase
     heroku_api = Heroku::API.new(api_key: '123', mock: true)
     app1 = heroku_api.post_app(name: 'app-with-addon-installed').data[:body]
     Account.delete_all
-    Factory :account, heroku_id: "app#{app1['id']}@heroku.com", name: app1['name']
+    create :account, heroku_id: "app#{app1['id']}@heroku.com", name: app1['name']
     heroku_api.post_app(name: 'app-with-addon-not-installed').data[:body]
-    user = Factory :user, name: nil, email: 'jessy@cluscrive.fr', provider: 'heroku'
+    user = create :user, name: nil, email: 'jessy@cluscrive.fr', provider: 'heroku'
     session[:user] = user.id
     session[:heroku_access_token] = '123'
     get :show, format: :json
@@ -18,14 +18,14 @@ class UsersControllerTest < ActionController::TestCase
   end
   
   def test_show_user_apps_with_just_an_account
-    account = Factory :account
+    account = create :account
     session[:account] = account.id
     get :apps
     assert_response :success
   end
   
   def test_show_user_heroku_apps_with_a_user_and_no_account
-    user = Factory :user, provider: 'heroku'
+    user = create :user, provider: 'heroku'
     session[:user] = user.id
     session[:heroku_access_token] = '123'
     get :apps
@@ -35,7 +35,7 @@ class UsersControllerTest < ActionController::TestCase
   end
   
   def test_show_user_apps_with_a_user_and_no_account
-    collaborator = Factory :collaborator, account: Factory(:account, plan: 'enterprise')
+    collaborator = create :collaborator, account: create(:account, plan: 'enterprise')
     session[:user] = collaborator.user_id
     session[:account] = collaborator.account_id
     get :apps

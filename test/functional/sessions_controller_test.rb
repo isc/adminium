@@ -23,7 +23,7 @@ class SessionsControllerTest < ActionController::TestCase
     heroku_api.post_collaborator(app_name, "jean@michel.com")
     app_id = "app#{data['id']}@heroku.com"
     heroku_api.put_config_vars(app_name, "DATABASE_URL" => db_url)
-    account = Factory :account, heroku_id: app_id, db_url: nil, name: nil, owner_email: nil
+    account = create :account, heroku_id: app_id, db_url: nil, name: nil, owner_email: nil
     session[:account] = account.id
     request.env['omniauth.auth'] = {'credentials' => {'token' => '123'}}
     get :create_from_heroku
@@ -42,8 +42,8 @@ class SessionsControllerTest < ActionController::TestCase
     app_name = 'my-test-app-2'
     app = heroku_api.post_app(:name => app_name).data[:body]
     session[:heroku_access_token] = '123'
-    account = Factory :account, heroku_id: "app#{app['id']}@heroku.com", name: app_name
-    user = Factory :user, provider: 'heroku'
+    account = create :account, heroku_id: "app#{app['id']}@heroku.com", name: app_name
+    user = create :user, provider: 'heroku'
     session[:user] = user.id
     assert_difference 'SignOn.count' do
       get :login_heroku_app, id: app['id']

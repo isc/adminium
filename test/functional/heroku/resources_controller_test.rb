@@ -10,7 +10,7 @@ class Heroku::ResourcesControllerTest < ActionController::TestCase
 
   def test_update_deleted_account
     id = "app37@heroku.com"
-    account = Factory :account, heroku_id: id, plan: 'deleted', deleted_at: 3.days.ago
+    account = create :account, heroku_id: id, plan: 'deleted', deleted_at: 3.days.ago
     assert_no_difference 'Account.count' do
       create_account(id)
     end
