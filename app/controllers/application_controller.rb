@@ -97,7 +97,7 @@ class ApplicationController < ActionController::Base
   end
   
   def ensure_proper_subdomain
-    return unless Rails.env.production?
+    return unless Rails.env.production? || ENV["STAGING"]
     redirect_to params.merge(host: 'www.adminium.io') if request.host_with_port != 'www.adminium.io'
   end
   
