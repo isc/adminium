@@ -19,7 +19,7 @@ module ResourcesHelper
     res = ""
     {'up' => key, 'down' => "#{key} desc"}.each do |direction, dorder|
       active = dorder == params[:order] ? 'active' : nil
-      res << link_to(params.merge(order: dorder), title: sort_title(display_name, direction=='up', original_key), rel: 'tooltip') do
+      res << link_to(url_for(params.merge(order: dorder)), title: sort_title(display_name, direction=='up', original_key), rel: 'tooltip') do
         content_tag('i', '', class: "icon-chevron-#{direction} #{active}")
       end
     end
@@ -33,9 +33,9 @@ module ResourcesHelper
       a,z = ['A', 'Z']
     end
     if ascend
-      "Sort by #{display_name} #{a} &rarr; #{z}"
+      "Sort by #{display_name} #{a} &rarr; #{z}".html_safe
     else
-      "Sort by #{display_name} #{z} &rarr; #{a}"
+      "Sort by #{display_name} #{z} &rarr; #{a}".html_safe
     end
   end
   

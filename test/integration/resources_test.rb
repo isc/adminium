@@ -34,9 +34,9 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, pseudo: 'Alberto' )
     FixtureFactory.new(:user, pseudo: 'Zoé' )
     visit resources_path(:users)
-    find('a[title="Sort by Pseudo A &rarr; Z"]').click
+    first('a[title="Sort by Pseudo A → Z"]').click
     assert_equal 'Zoé', find(".items-list tr:nth-child(2) td[data-column-name=pseudo]").text
-    find('a[title="Sort by Pseudo Z &rarr; A"]').click
+    first('a[title="Sort by Pseudo Z → A"]').click
     assert_equal 'Alberto', find(".items-list tr:nth-child(2) td[data-column-name=pseudo]").text
   end
   
@@ -179,7 +179,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     stub_resource_columns listing: [:'has_many/comments']
     visit resources_path(:users)
     assert page.has_css?("tr[data-item-id=\"#{user.id}\"] td.hasmany a", text: '2')
-    find('a[title="Sort by Comments count 9 &rarr; 0"]').click
+    find('a[title="Sort by Comments count 9 → 0"]').click
     assert page.has_css?("table.items-list tbody tr:first-child td.hasmany a", text: '2')
   end
 
@@ -197,7 +197,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     Resource::Base.any_instance.stubs(:default_order).returns 'users.pseudo'
     visit resources_path(:comments)
     assert_equal %w(bob zob), page.all('table.items-list tr td:last-child').map(&:text)
-    find('a[title="Sort by Users.pseudo Z &rarr; A"]').click
+    first('a[title="Sort by Users.pseudo Z → A"]').click
     assert_equal %w(zob bob), page.all('table.items-list tr td:last-child').map(&:text)
   end
   
