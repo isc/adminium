@@ -306,7 +306,7 @@ GEM
     thread_safe (0.1.0)
       atomic
     tilt (1.4.1)
-    timecop (0.6.1)
+    timecop (0.6.3)
     tins (0.8.2)
     treetop (1.4.14)
       polyglot
