@@ -23,8 +23,12 @@ loadTablesCount = ->
       success: (data) ->
         for table_name, value of data
           td = $("td[data-table-name=#{table_name}]")
-          td.text(number_with_delimiter(value)).attr('data-status', 'loaded').attr('data-value', value)
-          total = Number($("tfoot td.total_table_count").attr('data-value')) + value
+          datavalue = if value == '?' then -1 else value
+          td.text(number_with_delimiter(value)).attr('data-status', 'loaded').attr('data-value', datavalue)
+          if value != "?"
+            total = Number($("tfoot td.total_table_count").attr('data-value')) + value
+          else
+            td.tooltip({title: 'the query to perform this count was too slow'})
           $("tfoot td.total_table_count").text(number_with_delimiter(total)).attr('data-value', total)
         loadTablesCount()
 $ ->

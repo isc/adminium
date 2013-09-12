@@ -1,4 +1,6 @@
 class DashboardsController < ApplicationController
+  
+  TIMEOUT_VALUE = 0.5
 
   before_filter :fetch_permissions
 
@@ -13,7 +15,14 @@ class DashboardsController < ApplicationController
     res = {}
     timeout = 5.seconds.from_now
     params[:tables].each do |table_name|
-      res[table_name] = (@generic.table(table_name).count rescue 0)
+      begin
+        Timeout::timeout(TIMEOUT_VALUE) do
+          res[table_name] = (@generic.table(table_name).count rescue 0)
+        end
+      rescue Timeout::Error => e
+        Rails.logger.warn "table #{table_name} took too long"
+        res[table_name] = "?"
+      end
       break if Time.now > timeout
     end
     render json: res
