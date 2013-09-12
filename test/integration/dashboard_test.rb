@@ -24,7 +24,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
     create :table_widget, account: account
     login account
     visit dashboard_path
-    assert page.has_css?('li.widget', count: 2)
+    assert page.has_css?('.widget', count: 2)
   end
 
 end
