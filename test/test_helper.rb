@@ -37,6 +37,7 @@ class ActionDispatch::IntegrationTest
   
   def logout
     page.set_rack_session account: nil
+    page.set_rack_session user: nil
   end
   
   teardown do
