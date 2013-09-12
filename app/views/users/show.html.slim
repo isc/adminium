@@ -17,8 +17,10 @@ div.row-fluid ng-controller="AppsCtrl"
         td colspan=2
           = spinner_tag
       tr ng-repeat="app in apps | filter:search" ng-cloak="true"
-        td colspan=2
-          a ng-click='appSelection()' {{app.name}}
+        td colspan=2 ng-click='appSelection()'
+          i.icon-circle-blank ng-hide="installed()" title="add-on not installed on this application yet"
+          i.icon-circle ng-show="installed()" title="add-on already installed (plan: {{app.plan}})"
+          '  {{app.name}}
 
   .modal.fade.hide#create-addon-modal
       .modal-body.centered

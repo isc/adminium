@@ -7,6 +7,8 @@
       $("tr.unauthorized").show()
     else
       $scope.apps = data.apps
+  $scope.installed = ->
+    !!@app.plan
     
   $scope.appSelection = ->
     $scope.selectedApp = @app

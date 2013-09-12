@@ -47,12 +47,16 @@ a.btn.btn-navbar .icon-bar {
   margin: 20px auto 0;
   width: 50%;
   font-size: 1.3em;
-  a {
-    cursor: pointer;
-    display: block;
-    width: 100%;
-  }
   td {
+    cursor: pointer;
+    color: #413877;
+    i {
+      color: lighten(#413877, 50%);
+      margin: 0px 10px;
+    }
+    &:hover i {
+      color: #413877;
+    }
     background: white;
   }
   th {
