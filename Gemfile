@@ -35,7 +35,7 @@ gem 'binary_search', require: 'binary_search/pure'
 group :assets do
   gem 'coffee-rails', '~> 3.2.1'
   gem 'uglifier', '>= 1.0.3'
-  gem 'twitter-bootstrap-rails', '~> 2.0.4'
+  gem 'twitter-bootstrap-rails', '2.0.4'
 end
 
 group :development do
