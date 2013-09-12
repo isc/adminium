@@ -1,7 +1,7 @@
-                                                                                                                                # encoding: UTF-8
+# encoding: UTF-8
 require 'test_helper'
 
-class StatititicsTest < ActionDispatch::IntegrationTest
+class StatisticsTest < ActionDispatch::IntegrationTest
   
   def setup
     FixtureFactory.clear_db
@@ -13,9 +13,9 @@ class StatititicsTest < ActionDispatch::IntegrationTest
       visit dashboard_path
       visit dashboard_path
     end
-    stat = Statistic.all.last
+    stat = Statistic.order(:created_at).last
     assert_equal 2, stat.value
-    assert_equal "dashboards#show", stat.action
+    assert_equal 'dashboards#show', stat.action
   end
   
 end
