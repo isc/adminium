@@ -28,7 +28,7 @@ gem 'airbrake', '3.1.8'
 gem 'bootstrap-components-helpers'
 gem 'bootstrap-wysihtml5-rails', require: 'bootstrap-wysihtml5-rails',
   git: 'git://github.com/Nerian/bootstrap-wysihtml5-rails.git'
-gem 'newrelic_rpm', '3.5.8.72'
+gem 'newrelic_rpm'
 gem 'select2-rails'
 gem 'binary_search', require: 'binary_search/pure'
 gem 'protected_attributes'
