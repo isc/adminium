@@ -21,7 +21,7 @@ class Account < ActiveRecord::Base
   # and the fact that this validation causes a new connection to be established
   validate :db_url_validation unless Rails.env.test?
 
-  attr_encryptor :db_url, key: (ENV['ENCRYPTION_KEY'] || 'shablagoo')
+  attr_encrypted :db_url, key: (ENV['ENCRYPTION_KEY'] || 'shablagoo')
   
   scope :deleted, -> {where plan: Plan::DELETED}
   scope :not_deleted,  -> {where ["plan != ?", Plan::DELETED]}
