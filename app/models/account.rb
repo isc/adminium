@@ -126,7 +126,6 @@ class Account < ActiveRecord::Base
 
   def fill_adapter
     self.adapter = db_url.split(':').first if db_url.present? && encrypted_db_url_changed?
-    self.decrypted_db_url = db_url # should not be on rails4 branch
   end
 
   def track_plan_migration
