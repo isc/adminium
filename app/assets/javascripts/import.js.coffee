@@ -3,7 +3,7 @@ class window.ImportManager
   limit: 1500
 
   constructor: ->
-    return unless document.getElementById('import_file')
+    return unless $('#import_file').length
     window.importManager = this
     document.getElementById('import_file').addEventListener('change', @handleFileSelect, false)
     @table = $(".items-list").data("table")
@@ -16,7 +16,7 @@ class window.ImportManager
     dropZone.addEventListener 'drop', @handleFileDrop, false
     $('.importHeader').jscrollspy
         min: $('.importHeader .btn').offset().top,
-        max: () -> $(document).height(),
+        max: -> $(document).height(),
         onEnter: (element, position) ->
           $(".importHeader").addClass('subnav-fixed')
         ,

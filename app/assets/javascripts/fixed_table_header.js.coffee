@@ -5,7 +5,7 @@ class @FixedTableHeader
       console.log('FixedTableHeader activated only in dev for now')
     else
       return
-    return if $('table.items-list').length == 0
+    return if $('table.items-list').length == 0 or $(".breadcrumb").length is 0
     for elt in $('table.items-list thead th')
       width =  $(elt).width()
       $(elt).attr('style', "width:#{width}px !important")
