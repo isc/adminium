@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130913094925) do
+ActiveRecord::Schema.define(version: 20130913105120) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,8 +38,9 @@ ActiveRecord::Schema.define(version: 20130913094925) do
     t.string   "source"
     t.string   "db_url_setup_method"
     t.integer  "total_heroku_collaborators"
-    t.string   "encrypted_password_salt"
-    t.string   "encrypted_password_iv"
+    t.string   "encrypted_db_url_salt"
+    t.string   "encrypted_db_url_iv"
+    t.string   "decrypted_db_url"
   end
 
   create_table "app_profiles", force: true do |t|
