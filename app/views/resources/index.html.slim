@@ -17,7 +17,7 @@ javascript:
                 - name, value = unescape_name_value_pair param
                 - next if name == 'search'
                 input type="hidden" name=name value=value
-              input.span9 name="search" id="search_input" type='text' value=params[:search] placeholder="search on #{resource.columns[:search].map{|e|e.to_s.humanize}.join(', ').downcase}"
+              input.span8 name="search" id="search_input" type='text' value=params[:search] placeholder="search on #{resource.columns[:search].map{|e|e.to_s.humanize}.join(', ').downcase}"
               .btn-group.span3
                 button.btn#search_btn
                   i.icon-search
