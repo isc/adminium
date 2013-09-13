@@ -23,7 +23,7 @@ class Navigation
     options.matcher = adminiumSelect2Matcher
     @selector = '#table_select'
     $(@selector).select2(options).on 'change', (object) =>
-      $(@selector).select2('destroy').replaceWith("<div class='loading_table'>loading page ...</div>")
+      $(@selector).select2('destroy').replaceWith("<div class='loading_table'>Loading page...</div>")
       window.location.href = "/resources/#{object.val}"
     $('.modal').on 'hide', ->
       $(this).find('input:focus').blur()

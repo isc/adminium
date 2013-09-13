@@ -6,7 +6,7 @@ javascript:
   header.jumbotron.subhead
     .breadcrumb
       .row-fluid.btn-toolbar
-        .span1.table-name
+        .span2.table-name
           strong
             = params[:table].humanize
 
@@ -44,7 +44,7 @@ javascript:
               i.icon-cloud-upload
 
 
-        .span3
+        .span2
           = render partial: 'next_previous_page', locals: {scope: @items}
         .span1
           a.btn data-toggle="modal" href="#settings" title="Listing Settings" data-placement="bottom" rel="tooltip"

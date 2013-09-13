@@ -89,8 +89,7 @@
     h3 New dashboard widget
   = simple_form_for Widget.new, html: {class: 'form-horizontal'} do |f|
     .modal-body
-      # TODO Rails 4 selectionner l'option table
-      = f.input :type, collection: [['Table', 'TableWidget'], ['Time Chart', 'TimeChartWidget']], as: :radio_buttons
+      = f.input :type, collection: [['Table', 'TableWidget'], ['Time Chart', 'TimeChartWidget']], as: :radio_buttons, checked: 'TableWidget'
       = f.input :table, as: :select, collection: @generic.tables
       .hide data-widget-type="TimeChartWidget"
         = f.input :columns, as: :select, collection: []
