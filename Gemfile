@@ -23,7 +23,7 @@ gem 'excon'
 gem 'openid-store-redis'
 gem 'rest-client'
 gem 'country_select'
-gem 'attr_encrypted', git: 'git://github.com/hron/attr_encrypted.git', branch: 'issue-2-ruby19-compatibility'
+gem 'attr_encryptor'
 gem 'airbrake', '3.1.8'
 gem 'bootstrap-components-helpers'
 gem 'bootstrap-wysihtml5-rails', require: 'bootstrap-wysihtml5-rails',
