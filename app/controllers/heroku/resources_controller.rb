@@ -2,6 +2,7 @@ class Heroku::ResourcesController < ApplicationController
 
   skip_filter :connect_to_db, :require_account
   before_filter :basic_auth, except: :sso_login
+  skip_before_filter :verify_authenticity_token
 
   def create
     attributes = params[:resource].reject {|k,v| !%w(heroku_id plan callback_url).include?(k)}
