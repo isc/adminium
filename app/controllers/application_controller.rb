@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   before_filter :set_source_cookie
   after_filter :cleanup_generic
   after_filter :track_account_action
+  around_filter :tag_current_account
 
   helper_method :global_settings, :current_account, :current_user, :admin?, :current_account?, :resource_for
 
@@ -122,6 +123,10 @@ class ApplicationController < ActionController::Base
   
   def valid_db_url?
     session[:account] && current_account.valid_db_url?
+  end
+  
+  def tag_current_account
+    logger.tagged("Account: #{session[:account] || 'No account'}") {yield}
   end
   
 end
