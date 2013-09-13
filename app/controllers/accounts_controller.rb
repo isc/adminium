@@ -62,7 +62,7 @@ class AccountsController < ApplicationController
     end
     if current_account.update_attributes! params[:account]
       if params[:install]
-        redirect_to_invite_collaborators_if_wise_or_dashbord
+        redirect_to_invite_collaborators_or_dashbord
       else
         redirect_to edit_account_path, notice: 'Changes saved.'
       end
