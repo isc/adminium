@@ -8,7 +8,7 @@ class Heroku::ResourcesController < ApplicationController
     attributes = params[:resource].reject {|k,v| !%w(heroku_id plan callback_url).include?(k)}
     account = Account.deleted.where(heroku_id: attributes[:heroku_id]).first
     if account
-      account.update_attributes attributes.merge(deleted_at: nil), without_protection: true
+      account.reactivate attributes
     else
       account = Account.create attributes
     end
@@ -44,7 +44,6 @@ class Heroku::ResourcesController < ApplicationController
   private
   def basic_auth
     authenticate_or_request_with_http_basic do |user, pass|
-      logger.warn "user #{user}, pass : #{pass}"
       user == HEROKU_MANIFEST['id'] && pass == HEROKU_MANIFEST['api']['password']
     end
   end

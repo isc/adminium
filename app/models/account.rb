@@ -4,7 +4,7 @@ class Account < ActiveRecord::Base
     :database_time_zone, :application_time_zone, :db_url_setup_method
   serialize :plan_migrations
 
-  before_create :generate_api_key
+  before_create :setup_api_key
   before_save :fill_adapter, :track_plan_migration
   has_many :collaborators
   has_many :users, through: :collaborators
@@ -87,7 +87,7 @@ class Account < ActiveRecord::Base
     self.api_key = nil
     self.plan = Plan::DELETED
     self.deleted_at = Time.now
-    self.save!
+    save!
   end
 
   def displayed_next_tip
@@ -109,10 +109,18 @@ class Account < ActiveRecord::Base
     heroku_id.match(/\d+/).to_s
   end
 
+  def reactivate attributes
+    update_attributes attributes.merge(deleted_at: nil, api_key: generate_api_key), without_protection: true
+  end
+  
   private
-
+  
+  def setup_api_key
+    self.api_key = generate_api_key
+  end
+  
   def generate_api_key
-    self.api_key = Digest::SHA1.hexdigest(Time.now.to_s + heroku_id.to_s)[8..16]
+    Digest::SHA1.hexdigest(Time.now.to_s + heroku_id.to_s)[8..16]
   end
 
   def db_url_validation
