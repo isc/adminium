@@ -1,7 +1,3 @@
-## Rails 4 migration TODOS / FIXMES :
-
-  - collaborator role assignment on creation still working ?
-
 ## Sequel Migration TODOS / FIXMES :
 
   - composite primary keys for import, bulk edit
@@ -45,7 +41,7 @@ attr_accessible avec role pour proteger plan sur account
 données stockées dans redis pour les comptes deprovisionnés ?
 
 ## BUGS:
-
+cas de l'install / switch sur une app heroku ou ca fail sur la db url
 column settings sur une colonne d'une table associée ; quand on change la visibilité ca s'applique sur le listing de la table associee, pas la table de depart.
 searchable columns only integer, rechercher une string ne veut rien dire mais ramene tous les results
 ugly show avec une text column bien remplie (https://www.adminium.io/resources/stories/15 sur enigmatic-beach-4845)

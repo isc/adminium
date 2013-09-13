@@ -60,13 +60,14 @@ class AccountsController < ApplicationController
     else
       params[:account][:db_url_setup_method] = 'web'
     end
-    if current_account.update_attributes! params[:account]
+    if current_account.update_attributes params[:account]
       if params[:install]
         redirect_to_invite_collaborators_or_dashbord
       else
         redirect_to edit_account_path, notice: 'Changes saved.'
       end
     else
+      @heroku_collaborators = []
       render :edit
     end
   end
