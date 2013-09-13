@@ -24,7 +24,7 @@ gem 'openid-store-redis'
 gem 'rest-client'
 gem 'country_select'
 gem 'attr_encryptor'
-gem 'airbrake', '3.1.8'
+gem 'airbrake'
 gem 'bootstrap-components-helpers'
 gem 'bootstrap-wysihtml5-rails', require: 'bootstrap-wysihtml5-rails',
   git: 'git://github.com/Nerian/bootstrap-wysihtml5-rails.git'
@@ -39,11 +39,9 @@ gem 'twitter-bootstrap-rails', '2.0.4'
 group :development do
   gem 'kensa'
   gem 'populator'
-  gem 'faker'
   gem 'better_errors'
-  gem 'binding_of_caller', '0.7.1'
+  gem 'binding_of_caller'
   gem 'quiet_assets'
-  gem 'sextant'
   gem 'rack-webconsole-pry', require: 'rack-webconsole'
   gem 'pry-rails'
   gem 'xray-rails'
@@ -64,7 +62,7 @@ group :test do
   gem 'capybara'
   gem 'launchy'
   gem 'timecop'
-  gem 'mocha', '0.13.3', require: false
+  gem 'mocha', require: false
   gem 'factory_girl_rails'
   gem 'rack_session_access'
   gem 'simplecov', require: false
