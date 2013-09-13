@@ -29,8 +29,7 @@ html lang="en" ng-app=""
             span.icon-bar
           = link_to "#{current_account? && current_account.name || 'Adminium'}", dashboard_path, class: 'brand'
           .container-fluid
-            .span4
-              = select_tag 'table_select', options_for_select(table_list), include_blank: true
+            = select_tag 'table_select', options_for_select(table_list), include_blank: true, class: 'span3'
             = render 'layouts/menu'
     .container-fluid.main-container
       - subnav = yield :subnav
