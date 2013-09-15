@@ -12,8 +12,7 @@
           = link_to "last page", params.merge(page: @items.page_count)
         = "."
   - else
-    .alert.alert-info
-      'No records were found.
+    .alert.alert-info.flash No records were found.
 - else
   table.table-striped.table-bordered.table.items-list data-table=params[:table]
     thead.header
