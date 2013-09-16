@@ -95,7 +95,7 @@ javascript:
       - if params[:where]
         - params[:where].each do |k, v|
           span.label.label-warning
-            - if resource.column_info(k.to_sym)[:type] == :datetime
+            - if resource.is_date_column? k.to_sym
               == "where #{k} is in <i>#{format_date(v).first}</i>"
             - else
               == "where #{k} is <i>#{v}</i>"

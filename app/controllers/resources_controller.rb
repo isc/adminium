@@ -332,11 +332,17 @@ class ResourcesController < ApplicationController
   def apply_where
     return unless params[:where].present?
     where_hash = Hash[params[:where].map do |k, v|
-      if resource.column_info(k.to_sym)[:type] == :datetime
+      if resource.is_date_column? k.to_sym
         datetime = application_time_zone.parse(v)
         [time_chart_aggregate(k.to_sym), v]
       else
-        [qualify(resource.table, k.to_sym), v]
+        if k['.']
+          table, k = k.split('.')
+          join_belongs_to table
+        else
+          table = resource.table
+        end
+        [qualify(table, k.to_sym), v]
       end
     end]
     @items = @items.where(where_hash)
@@ -389,9 +395,8 @@ class ResourcesController < ApplicationController
     return unless order
     column, descending = order.split(" ")
     if column['.']
-      assoc_info = resource.associations[:belongs_to][column.split('.').first.to_sym]
-      @items = @items.left_outer_join(assoc_info[:referenced_table], assoc_info[:primary_key] => assoc_info[:foreign_key])
-        .select_append(Sequel.lit(column))
+      join_belongs_to column.split('.').first
+      @items = @items.select_append Sequel.lit(column)
     end
     column = case order
       when /\./
@@ -504,6 +509,11 @@ class ResourcesController < ApplicationController
         redirect_to dashboard_url, notice: notice
       end
     end
+  end
+  
+  def join_belongs_to assoc_name
+    assoc_info = resource.associations[:belongs_to][assoc_name.to_sym]
+    @items = @items.left_outer_join(assoc_info[:referenced_table], assoc_info[:primary_key] => assoc_info[:foreign_key])
   end
 
   def qualify table, column

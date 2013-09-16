@@ -190,6 +190,25 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert page.has_css?('td', text: 'bob')
   end
   
+  test "filter by enum label from a custom column" do
+    FixtureFactory.new(:comment, title: 'Funny joke', user_id:
+      FixtureFactory.new(:user, pseudo: 'InternGuy', role: 'noob').factory.id)
+    FixtureFactory.new(:comment, title: 'You are fired', user_id:
+      FixtureFactory.new(:user, pseudo: 'BossMan', role: 'admin').factory.id)
+    stub_resource_columns listing: ['title', 'users.role']
+    Resource::Base.any_instance.stubs(:enum_values_for).returns nil
+    Resource::Base.any_instance.stubs(:enum_values_for).with(:role).returns 'admin' => {'label' => 'Chef'},
+      'noob' => {'label' => 'Débutant'}
+    visit resources_path(:comments)
+    assert page.has_content?('Funny joke')
+    assert page.has_content?('You are fired')
+    assert page.has_css?('a', text: 'Débutant')
+    assert page.has_css?('a', text: 'Chef')
+    click_link 'Chef'
+    assert page.has_content?('You are fired')
+    assert page.has_no_content?('Funny joke')
+  end
+  
   test "sort by custom column belongs_to" do
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'bob').factory.id)
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'zob').factory.id)
