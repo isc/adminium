@@ -283,9 +283,7 @@ module ResourcesHelper
     [CGI.unescape(param.split('=').first), CGI.unescape(param.split('=').last)]
   end
   
-
-
-  def options_for_custom_columns resource
+  def columns_options_for_resource resource, options = {}
     res = content_tag :optgroup, label: resource.table.to_s.humanize do
       resource.column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe
     end
@@ -295,10 +293,12 @@ module ResourcesHelper
         resource_for(assoc[:referenced_table]).column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe
       end
     end
-    resource.associations[:has_many].each do |name, assoc|
-      res << content_tag(:optgroup, label: name.to_s.humanize, data: {name: name, kind: 'has_many'}) do
-        #resource_for(assoc[:table]).column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe
-        content_tag(:option, 'count', value: "#{assoc} count")
+    if options[:has_many]
+      resource.associations[:has_many].each do |name, assoc|
+        res << content_tag(:optgroup, label: name.to_s.humanize, data: {name: name, kind: 'has_many'}) do
+          #resource_for(assoc[:table]).column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe
+          content_tag(:option, 'count', value: "#{assoc} count")
+        end
       end
     end
     res

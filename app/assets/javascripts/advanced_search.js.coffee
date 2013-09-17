@@ -7,18 +7,18 @@ class AdvancedSearch
       $(this).parents('tr').remove()
     selects = $('table.filters td.operators select')
     selects.live 'change', @selectedOperator
-    for select in selects
-      @updateFilterForm $(select)
-    $("#new_filter").select2({placeholder: 'choose a column', matcher: adminiumSelect2Matcher})
-    $("#new_filter").bind 'change', (event) =>
-      column_name = $('#new_filter option:selected').val()
-      table = $('#new_filter').attr('data-table')
+    @updateFilterForm $(select) for select in selects
+    $("#new_filter").select2({placeholder: 'Choose a column', matcher: adminiumSelect2Matcher})
+    $("#new_filter").bind 'change', (object) =>
+      column_name = object.val
+      optgroup = $(object.added.element).closest('optgroup')
+      assoc = optgroup.data('name')
+      table = assoc or $('#new_filter').attr('data-table')
       $('#new_filter').select2("val", "")
-      $.get "/settings/#{table}?column_name=#{column_name}", (resp) =>
+      $.get "/settings/#{table}", {column_name: column_name, assoc: assoc}, (resp) =>
         filterDiv = $("<tr>").append(resp).appendTo($(".filters"))
-        selectFilter = filterDiv.find('td.operators select')
-        selectFilter.focus()
-        @updateFilterForm(selectFilter)
+        selectFilter = filterDiv.find('td.operators select').focus()
+        @updateFilterForm selectFilter
         $('.datepicker').datepicker onClose: (dateText, inst) ->
           $("##{inst.id}_1i").val(inst.selectedYear)
           $("##{inst.id}_2i").val(inst.selectedMonth + 1)

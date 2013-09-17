@@ -425,29 +425,35 @@ class ResourcesController < ApplicationController
 
   def apply_filter filter
     operators = {
-      'null' => {:operator => :IS, :right => nil},
-      'not_null' => {:operator => :'IS NOT', :right => nil},
-      'is_true' => {:operator => :'=', :right => true},
-      'is_false' => {:operator => :'=', :right => false},
-      '!=' => {:operator => :'!='},
-      '=' => {:operator => :'='},
-      '>' => {:operator => :>},
-      '>=' => {:operator => :>=},
-      '<' => {:operator => :<},
-      '<=' => {:operator => :<=},
-      'IN' => {:operator => :IN, :right => filter['operand'].to_s.split(/[, ]/).map(&:strip).delete_if(&:empty?)},
-      'is' => {:operator => :'='},
-      'blank' => {:specific => 'blank'},
-      'present' => {:specific => 'present'}
+      'null' => {operator: :IS, right: nil},
+      'not_null' => {operator: :'IS NOT', right: nil},
+      'is_true' => {operator: :'=', right: true},
+      'is_false' => {operator: :'=', right: false},
+      '!=' => {operator: :'!='},
+      '=' => {operator: :'='},
+      '>' => {operator: :>},
+      '>=' => {operator: :>=},
+      '<' => {operator: :<},
+      '<=' => {operator: :<=},
+      'IN' => {operator: :IN, right: filter['operand'].to_s.split(/[, ]/).map(&:strip).delete_if(&:empty?)},
+      'is' => {operator: :'='},
+      'blank' => {specific: 'blank'},
+      'present' => {specific: 'present'}
     }
-    type = resource.column_info(filter['column'].to_sym)[:type]
+    if filter['assoc'].present?
+      assoc = resource.associations[:belongs_to].detect{|k,_|k.to_s == filter['assoc']}
+      resource_with_column = resource_for assoc.second[:referenced_table]
+      join_belongs_to assoc.first
+      table = assoc.second[:referenced_table]
+    else
+      resource_with_column, table = resource, params[:table]
+    end
+    type = resource_with_column.column_info(filter['column'].to_sym)[:type]
     operators.merge! datetime_operators if [:date, :datetime].index(type)
     operators.merge! string_operators if [:string, :text].index(type)
-    column = qualify params[:table], filter['column'].to_sym
+    column = qualify table, filter['column'].to_sym
     operation = operators[filter['operator']]
-    if operation[:named_function]
-      column = Sequel.function operation[:named_function], column
-    end
+    column = Sequel.function operation[:named_function], column if operation[:named_function]
     return send("apply_filter_#{operation[:specific]}", column) if operation[:specific]
     return Sequel::SQL::BooleanExpression.from_value_pairs({column => operation[:right]}) if operation[:boolean_operator]
     return Sequel::SQL::ComplexExpression.new operation[:operator], column, right_value(operation, filter['operand']) if operation[:operator]

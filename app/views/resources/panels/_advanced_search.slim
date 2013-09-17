@@ -8,10 +8,9 @@
       .control-group
         = label_tag :new_filter, 'Add a filter on column', class: 'control-label'
         .controls
-          select#new_filter.span3 data-table=params[:table]
-            option value=""= ""
-            - resource.column_names.each do |name|
-              option value=name = name
+          select#new_filter.input-large data-table=params[:table]
+            option value=""= ''
+            = columns_options_for_resource resource
 
       table.table.table-condensed.filters
         - @current_filter.each do |filter|

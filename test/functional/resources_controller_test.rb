@@ -69,6 +69,15 @@ class ResourcesControllerTest < ActionController::TestCase
       assert_asearch filter_name, expected_result
     end
   end
+  
+  def test_advanced_search_on_column_from_assoc
+    @resource = Resource::Base.new @generic, :users
+    filter_name = 'with group like admin'
+    @resource.filters[filter_name] =
+      [{'column' => 'name', 'assoc' => 'groups', 'type' => 'string', 'operator' => 'like', 'operand' => 'admin'}]
+    @resource.save
+    assert_asearch filter_name, ['Loulou']
+  end
 
   def test_index_without_statements
     @account.update_attribute :tables_count, 37
