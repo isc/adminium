@@ -512,6 +512,9 @@ class ResourcesController < ApplicationController
   end
   
   def join_belongs_to assoc_name
+    @joined_belongs_to ||= []
+    return if @joined_belongs_to.include? assoc_name.to_sym
+    @joined_belongs_to << assoc_name.to_sym
     assoc_info = resource.associations[:belongs_to][assoc_name.to_sym]
     @items = @items.left_outer_join(assoc_info[:referenced_table], assoc_info[:primary_key] => assoc_info[:foreign_key])
   end
