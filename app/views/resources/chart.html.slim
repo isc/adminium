@@ -1,7 +1,7 @@
 .modal-header
   a.close data-dismiss="modal" ×
   h3
-    == "Time chart for column #{params[:column]} "
+    == "#{params[:type].underscore.humanize} for column #{params[:column]} "
     - if @widget
       i.icon-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
     - else
