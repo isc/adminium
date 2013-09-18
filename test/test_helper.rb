@@ -23,6 +23,7 @@ class ActiveSupport::TestCase
   teardown do
     REDIS.flushdb
     Rails.cache.clear
+    ObjectSpace.each_object(Generic){|g|g.cleanup}
   end
 end
 
