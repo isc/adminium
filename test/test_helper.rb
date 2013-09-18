@@ -12,7 +12,7 @@ end
 
 require File.expand_path('../../config/environment', __FILE__)
 require 'rails/test_help'
-require 'fixtures/test_database_schema.rb'
+require 'test_database_schema.rb'
 require 'capybara/rails'
 require 'mocha/setup'
 require 'rack_session_access/capybara'

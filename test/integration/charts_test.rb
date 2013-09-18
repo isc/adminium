@@ -29,7 +29,6 @@ class ChartsTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, admin: false)
     FixtureFactory.new(:user, admin: nil)
     visit chart_resources_path(:users, column: 'admin', type: 'PieChart')
-    # FIXME because of timezones we end up with Sunday and Tuesday
     json = "data_for_graph = {\"chart_data\":[[\"not set\",1,null,\"#DDD\"],[\"False\",1,false,\"#777\"],[\"True\",2,true,\"#07be25\"]],\"chart_type\":\"PieChart\"}"
     assert_equal json, page.find('script[type="text/javascript"]', visible: false).text(:all)
   end
@@ -39,7 +38,6 @@ class ChartsTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, kind: 10)
     FixtureFactory.new(:user, kind: nil)
     visit chart_resources_path(:users, column: 'kind', type: 'StatChart')
-    # FIXME because of timezones we end up with Sunday and Tuesday
     json = "data_for_graph = {\"chart_data\":[[\"Maximum\",\"10\",10],[\"Average\",\"6.67\"],[\"Median\",\"5\"],[\"Minimum\",\"5\",5],[\"Sum\",\"20\"],[\"Count\",3],[\"Number of distinct values\",2]],\"chart_type\":\"StatChart\"}"
     assert_equal json, page.find('script[type="text/javascript"]', visible: false).text(:all)
   end
