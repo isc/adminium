@@ -12,16 +12,14 @@ class Widget
       for option, i in $('#widget_table').find('option') when i > 5
         $(option).attr('disabled', 'disabled')
     $('#widget_table').change (e) =>
-      if $('input[name="widget[type]"]:checked').val() is 'TableWidget'
-        @fetchAdvancedSearches e.target.value
-      else
-        @fetchDateColumns e.target.value
+      @fetchAdvancedSearches e.target.value
+      @fetchDateColumns e.target.value if $('input[name="widget[type]"]:checked').val() is 'TimeChartWidget'
     $('input[name="widget[type]"]').click (e) =>
-      $('div[data-widget-type="TableWidget"]').toggle(e.target.value is 'TableWidget')
       $('div[data-widget-type="TimeChartWidget"]').toggle(e.target.value is 'TimeChartWidget')
       $('#widget_columns').attr('required', e.target.value is 'TimeChartWidget')
       return unless table = $('#widget_table').val()
-      if e.target.value is 'TimeChartWidget' then @fetchDateColumns table else @fetchAdvancedSearches table
+      @fetchDateColumns table if e.target.value is 'TimeChartWidget'
+      @fetchAdvancedSearches table
 
   fetchAdvancedSearches: (table) ->
     $.getJSON "/searches/#{table}", (data) ->

@@ -1,5 +1,6 @@
 .modal-header
-  a.close data-dismiss="modal" ×
+  a.close data-dismiss="modal"
+    i.icon-remove
   h3
     == "#{params[:type].underscore.humanize} for column #{params[:column]} "
     - if @widget
