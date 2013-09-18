@@ -116,8 +116,12 @@ class ApplicationController < ActionController::Base
     format = ".#{request.format.to_s.split("/").last}" if request.format != 'text/html'
     if session[:account]
       attrs = {account_id: session[:account], action: "#{params[:controller]}##{params[:action]}#{format}"}
-      rows = Statistic.where(attrs).update_all ["value = value + 1, updated_at = ?", Time.zone.now]
-      Statistic.create attrs.merge(value: 1) if rows == 0
+      begin
+        rows = Statistic.where(attrs).update_all ["value = value + 1, updated_at = ?", Time.zone.now]
+        Statistic.create attrs.merge(value: 1) if rows == 0
+      rescue PG::UniqueViolation
+        retry
+      end
     end
   end
   
