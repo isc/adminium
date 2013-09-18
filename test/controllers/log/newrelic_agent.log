@@ -1,0 +1,153 @@
+# Logfile created on 2013-09-17 23:46:39 +0200 by logger.rb/36483
+[09/17/13 23:46:39 +0200 Ivans-MacBook-Air.local (47679)] INFO : Starting the New Relic agent in "test" environment.
+[09/17/13 23:46:39 +0200 Ivans-MacBook-Air.local (47679)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "test" section of your newrelic.yml.
+[09/17/13 23:46:39 +0200 Ivans-MacBook-Air.local (47679)] INFO : Reading configuration from 
+[09/17/13 23:46:39 +0200 Ivans-MacBook-Air.local (47679)] ERROR : Unable to read configuration file : Is a directory - /Users/ivan/Code/adminium/test/functional
+[09/17/13 23:46:39 +0200 Ivans-MacBook-Air.local (47679)] INFO : Enabling the Request Sampler.
+[09/17/13 23:46:39 +0200 Ivans-MacBook-Air.local (47679)] INFO : Environment: test
+[09/17/13 23:46:39 +0200 Ivans-MacBook-Air.local (47679)] INFO : No known dispatcher detected.
+[09/17/13 23:46:39 +0200 Ivans-MacBook-Air.local (47679)] INFO : Application: test
+[09/17/13 23:46:39 +0200 Ivans-MacBook-Air.local (47679)] WARN : No license key found in newrelic.yml config. This often means your newrelic.yml is missing a section for the running environment 'test'
+[09/17/13 23:46:39 +0200 Ivans-MacBook-Air.local (47679)] INFO : Installing ActiveRecord 4 instrumentation
+[09/17/13 23:46:39 +0200 Ivans-MacBook-Air.local (47679)] INFO : Installing middleware-based Excon instrumentation
+[09/17/13 23:46:39 +0200 Ivans-MacBook-Air.local (47679)] INFO : Installing Net instrumentation
+[09/17/13 23:46:39 +0200 Ivans-MacBook-Air.local (47679)] INFO : Installing deferred Rack instrumentation
+[09/17/13 23:46:39 +0200 Ivans-MacBook-Air.local (47679)] INFO : Installing Sequel instrumentation
+[09/17/13 23:46:39 +0200 Ivans-MacBook-Air.local (47679)] INFO : Installing Rails 4 Controller instrumentation
+[09/17/13 23:46:40 +0200 Ivans-MacBook-Air.local (47679)] INFO : Installing Rails 4 view instrumentation
+[09/17/13 23:46:40 +0200 Ivans-MacBook-Air.local (47679)] INFO : Installing Rails4 Error instrumentation
+[09/17/13 23:46:40 +0200 Ivans-MacBook-Air.local (47679)] INFO : Finished instrumentation
+[09/17/13 23:46:41 +0200 Ivans-MacBook-Air.local (47679)] INFO : Doing deferred dependency-detection before Rack startup
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : Starting the New Relic agent in "test" environment.
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "test" section of your newrelic.yml.
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : Reading configuration from 
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] ERROR : Unable to read configuration file : Is a directory - /Users/ivan/Code/adminium/test/functional
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : Enabling the Request Sampler.
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : Environment: test
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : No known dispatcher detected.
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : Application: test
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] WARN : No license key found in newrelic.yml config. This often means your newrelic.yml is missing a section for the running environment 'test'
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : Installing ActiveRecord 4 instrumentation
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : Installing middleware-based Excon instrumentation
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : Installing Net instrumentation
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : Installing deferred Rack instrumentation
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : Installing Sequel instrumentation
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : Installing Rails 4 Controller instrumentation
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : Installing Rails 4 view instrumentation
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : Installing Rails4 Error instrumentation
+[09/17/13 23:47:11 +0200 Ivans-MacBook-Air.local (47736)] INFO : Finished instrumentation
+[09/17/13 23:47:12 +0200 Ivans-MacBook-Air.local (47736)] INFO : Doing deferred dependency-detection before Rack startup
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : Starting the New Relic agent in "test" environment.
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "test" section of your newrelic.yml.
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : Reading configuration from 
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] ERROR : Unable to read configuration file : Is a directory - /Users/ivan/Code/adminium/test/functional
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : Enabling the Request Sampler.
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : Environment: test
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : No known dispatcher detected.
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : Application: test
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] WARN : No license key found in newrelic.yml config. This often means your newrelic.yml is missing a section for the running environment 'test'
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : Installing ActiveRecord 4 instrumentation
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : Installing middleware-based Excon instrumentation
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : Installing Net instrumentation
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : Installing deferred Rack instrumentation
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : Installing Sequel instrumentation
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : Installing Rails 4 Controller instrumentation
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : Installing Rails 4 view instrumentation
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : Installing Rails4 Error instrumentation
+[09/17/13 23:57:13 +0200 Ivans-MacBook-Air.local (49652)] INFO : Finished instrumentation
+[09/17/13 23:57:14 +0200 Ivans-MacBook-Air.local (49652)] INFO : Doing deferred dependency-detection before Rack startup
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : Starting the New Relic agent in "test" environment.
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "test" section of your newrelic.yml.
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : Reading configuration from 
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] ERROR : Unable to read configuration file : Is a directory - /Users/ivan/Code/adminium/test/functional
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : Enabling the Request Sampler.
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : Environment: test
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : No known dispatcher detected.
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : Application: test
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] WARN : No license key found in newrelic.yml config. This often means your newrelic.yml is missing a section for the running environment 'test'
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : Installing ActiveRecord 4 instrumentation
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : Installing middleware-based Excon instrumentation
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : Installing Net instrumentation
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : Installing deferred Rack instrumentation
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : Installing Sequel instrumentation
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : Installing Rails 4 Controller instrumentation
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : Installing Rails 4 view instrumentation
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : Installing Rails4 Error instrumentation
+[09/18/13 09:49:45 +0200 Ivans-MacBook-Air.local (50965)] INFO : Finished instrumentation
+[09/18/13 09:49:46 +0200 Ivans-MacBook-Air.local (50965)] INFO : Doing deferred dependency-detection before Rack startup
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : Starting the New Relic agent in "test" environment.
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "test" section of your newrelic.yml.
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : Reading configuration from 
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] ERROR : Unable to read configuration file : Is a directory - /Users/ivan/Code/adminium/test/functional
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : Enabling the Request Sampler.
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : Environment: test
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : No known dispatcher detected.
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : Application: test
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] WARN : No license key found in newrelic.yml config. This often means your newrelic.yml is missing a section for the running environment 'test'
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : Installing ActiveRecord 4 instrumentation
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : Installing middleware-based Excon instrumentation
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : Installing Net instrumentation
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : Installing deferred Rack instrumentation
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : Installing Sequel instrumentation
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : Installing Rails 4 Controller instrumentation
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : Installing Rails 4 view instrumentation
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : Installing Rails4 Error instrumentation
+[09/18/13 09:56:37 +0200 Ivans-MacBook-Air.local (52042)] INFO : Finished instrumentation
+[09/18/13 09:56:38 +0200 Ivans-MacBook-Air.local (52042)] INFO : Doing deferred dependency-detection before Rack startup
+[09/18/13 09:59:17 +0200 Ivans-MacBook-Air.local (52479)] INFO : Starting the New Relic agent in "test" environment.
+[09/18/13 09:59:17 +0200 Ivans-MacBook-Air.local (52479)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "test" section of your newrelic.yml.
+[09/18/13 09:59:17 +0200 Ivans-MacBook-Air.local (52479)] INFO : Reading configuration from 
+[09/18/13 09:59:17 +0200 Ivans-MacBook-Air.local (52479)] ERROR : Unable to read configuration file : Is a directory - /Users/ivan/Code/adminium/test/functional
+[09/18/13 09:59:17 +0200 Ivans-MacBook-Air.local (52479)] INFO : Enabling the Request Sampler.
+[09/18/13 09:59:17 +0200 Ivans-MacBook-Air.local (52479)] INFO : Environment: test
+[09/18/13 09:59:17 +0200 Ivans-MacBook-Air.local (52479)] INFO : No known dispatcher detected.
+[09/18/13 09:59:17 +0200 Ivans-MacBook-Air.local (52479)] INFO : Application: test
+[09/18/13 09:59:17 +0200 Ivans-MacBook-Air.local (52479)] WARN : No license key found in newrelic.yml config. This often means your newrelic.yml is missing a section for the running environment 'test'
+[09/18/13 09:59:17 +0200 Ivans-MacBook-Air.local (52479)] INFO : Installing ActiveRecord 4 instrumentation
+[09/18/13 09:59:17 +0200 Ivans-MacBook-Air.local (52479)] INFO : Installing middleware-based Excon instrumentation
+[09/18/13 09:59:17 +0200 Ivans-MacBook-Air.local (52479)] INFO : Installing Net instrumentation
+[09/18/13 09:59:17 +0200 Ivans-MacBook-Air.local (52479)] INFO : Installing deferred Rack instrumentation
+[09/18/13 09:59:17 +0200 Ivans-MacBook-Air.local (52479)] INFO : Installing Sequel instrumentation
+[09/18/13 09:59:17 +0200 Ivans-MacBook-Air.local (52479)] INFO : Installing Rails 4 Controller instrumentation
+[09/18/13 09:59:18 +0200 Ivans-MacBook-Air.local (52479)] INFO : Installing Rails 4 view instrumentation
+[09/18/13 09:59:18 +0200 Ivans-MacBook-Air.local (52479)] INFO : Installing Rails4 Error instrumentation
+[09/18/13 09:59:18 +0200 Ivans-MacBook-Air.local (52479)] INFO : Finished instrumentation
+[09/18/13 09:59:18 +0200 Ivans-MacBook-Air.local (52479)] INFO : Doing deferred dependency-detection before Rack startup
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : Starting the New Relic agent in "test" environment.
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "test" section of your newrelic.yml.
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : Reading configuration from 
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] ERROR : Unable to read configuration file : Is a directory - /Users/ivan/Code/adminium/test/functional
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : Enabling the Request Sampler.
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : Environment: test
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : No known dispatcher detected.
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : Application: test
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] WARN : No license key found in newrelic.yml config. This often means your newrelic.yml is missing a section for the running environment 'test'
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : Installing ActiveRecord 4 instrumentation
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : Installing middleware-based Excon instrumentation
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : Installing Net instrumentation
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : Installing deferred Rack instrumentation
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : Installing Sequel instrumentation
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : Installing Rails 4 Controller instrumentation
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : Installing Rails 4 view instrumentation
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : Installing Rails4 Error instrumentation
+[09/18/13 10:00:44 +0200 Ivans-MacBook-Air.local (52747)] INFO : Finished instrumentation
+[09/18/13 10:00:45 +0200 Ivans-MacBook-Air.local (52747)] INFO : Doing deferred dependency-detection before Rack startup
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : Starting the New Relic agent in "test" environment.
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : To prevent agent startup add a NEWRELIC_ENABLE=false environment variable or modify the "test" section of your newrelic.yml.
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : Reading configuration from 
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] ERROR : Unable to read configuration file : Is a directory - /Users/ivan/Code/adminium/test/functional
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : Enabling the Request Sampler.
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : Environment: test
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : No known dispatcher detected.
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : Application: test
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] WARN : No license key found in newrelic.yml config. This often means your newrelic.yml is missing a section for the running environment 'test'
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : Installing ActiveRecord 4 instrumentation
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : Installing middleware-based Excon instrumentation
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : Installing Net instrumentation
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : Installing deferred Rack instrumentation
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : Installing Sequel instrumentation
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : Installing Rails 4 Controller instrumentation
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : Installing Rails 4 view instrumentation
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : Installing Rails4 Error instrumentation
+[09/18/13 10:01:21 +0200 Ivans-MacBook-Air.local (52905)] INFO : Finished instrumentation
+[09/18/13 10:01:22 +0200 Ivans-MacBook-Air.local (52905)] INFO : Doing deferred dependency-detection before Rack startup
