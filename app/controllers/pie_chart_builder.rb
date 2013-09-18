@@ -20,7 +20,7 @@ module PieChartBuilder
     enum.merge!({nil=> {"color"=>"#DDD", "label" => "not set"}})
     @data = @items.group_and_count(column).all.map do |row|
       key, count = row.values
-      v = enum[key]
+      v = enum[key] || {"label" => key, "color" => new_color}
       [v["label"], count, key, v["color"]]
     end
     
@@ -39,6 +39,12 @@ module PieChartBuilder
         }
       end
     end
+  end
+  
+  def new_color
+    @i ||= 0
+    @i += 1
+    ['#CCC', '#AAA'][@i%2]
   end
   
   def sum_case_when c, x

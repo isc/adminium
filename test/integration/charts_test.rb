@@ -24,12 +24,26 @@ class ChartsTest < ActionDispatch::IntegrationTest
     assert_equal json, page.find('script[type="text/javascript"]', visible: false).text(:all)
   end
   
-  test "display piechart" do
+  test "display pie chart on boolean" do
     2.times { FixtureFactory.new(:user, admin: true) }
     FixtureFactory.new(:user, admin: false)
     FixtureFactory.new(:user, admin: nil)
     visit chart_resources_path(:users, column: 'admin', type: 'PieChart')
     json = "data_for_graph = {\"chart_data\":[[\"not set\",1,null,\"#DDD\"],[\"False\",1,false,\"#777\"],[\"True\",2,true,\"#07be25\"]],\"chart_type\":\"PieChart\"}"
+    assert_equal json, page.find('script[type="text/javascript"]', visible: false).text(:all)
+  end
+  
+  test "display pie chart on enums" do
+    Resource::Base.any_instance.stubs(:enum_values_for).with('role').returns 'admin' => {'label' => 'Chef'},
+      'noob' => {'label' => 'Débutant'}
+    FixtureFactory.new(:user, role: 'admin')
+    FixtureFactory.new(:user, role: 'noob')
+    FixtureFactory.new(:user, role: 'new_role_1')
+    FixtureFactory.new(:user, role: 'new_role_2')
+    FixtureFactory.new(:user, role: 'new_role_3')
+    FixtureFactory.new(:user, role: nil)
+    visit chart_resources_path(:users, column: 'role', type: 'PieChart')
+    json = "data_for_graph = {\"chart_data\":[[\"not set\",1,null,\"#DDD\"],[\"new_role_3\",1,\"new_role_3\",\"#AAA\"],[\"new_role_2\",1,\"new_role_2\",\"#CCC\"],[\"Débutant\",1,\"noob\",null],[\"new_role_1\",1,\"new_role_1\",\"#AAA\"],[\"Chef\",1,\"admin\",null]],\"chart_type\":\"PieChart\"}"
     assert_equal json, page.find('script[type="text/javascript"]', visible: false).text(:all)
   end
   
