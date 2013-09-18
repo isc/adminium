@@ -12,6 +12,8 @@ class Account < ActiveRecord::Base
   has_many :widgets, dependent: :destroy
   has_many :table_widgets
   has_many :time_chart_widgets
+  has_many :pie_chart_widgets
+  has_many :stat_chart_widgets
   has_many :sign_ons
   has_one :app_profile
 

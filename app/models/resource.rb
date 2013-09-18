@@ -224,7 +224,11 @@ module Resource
     end
 
     def is_number_column? column_name
-      [:integer, :decimal].include? column_type(column_name)
+      [:integer, :float, :decimal].include? column_type(column_name)
+    end
+    
+    def is_boolean_column? column_name
+      column_type(column_name) == :boolean
     end
     
     def is_text_column? column_name

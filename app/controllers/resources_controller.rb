@@ -1,6 +1,8 @@
 class ResourcesController < ApplicationController
-
+  
   include TimeChartBuilder
+  include PieChartBuilder
+  include StatChartBuilder
   include Import
 
   before_filter :table_access_limitation, except: [:search]
@@ -45,7 +47,6 @@ class ResourcesController < ApplicationController
         check_per_page_setting
         @items = @items.extension(:pagination).paginate page, resource.per_page.to_i
         fetch_associated_items
-        apply_statistics
       end
       format.json do
         @items = @items.extension(:pagination).paginate page, 10
@@ -168,6 +169,19 @@ class ResourcesController < ApplicationController
     Account.find_by_sql 'select pg_sleep(10)'
     render json: @generic.table('accounts').first.inspect
   end
+  
+  def chart
+    case params[:type]
+    when 'TimeChart'
+      time_chart
+    when 'PieChart'
+      pie_chart
+    when 'StatChart'
+      stat_chart
+    else
+      render text: 'cant render this page'
+    end
+  end
 
   private
 
@@ -235,79 +249,6 @@ class ResourcesController < ApplicationController
     "#{resource.human_name} #<b>#{params[:id] || resource.primary_key_value(@item)}</b>"
   end
 
-  def apply_statistics
-    @projections = []
-    @select_values = []
-    apply_number_statistics
-    apply_enum_statistics
-    apply_boolean_statistics
-    return if @projections.empty?
-    @statistics = {}
-    begin
-      first_projection = @projections.shift
-      @items_for_stats = @items_for_stats.select(first_projection)
-      @projections.each do |projection|
-        @items_for_stats = @items_for_stats.select_append(projection)
-      end
-      @items_for_stats.all.first.values.each_with_index do |value, index|
-        column, calculation = @select_values[index]
-        @statistics[column] ||= {}
-        value = value.to_s.index('.') ? ((value.to_f * 100).round / 100.0) : value.to_i if value.present?
-        @statistics[column][calculation] = value
-      end
-    rescue => ex
-      if Rails.env.production?
-        notify_airbrake ex
-      else
-        raise ex
-      end
-    end
-  end
-
-  def apply_boolean_statistics
-    resource.schema_hash.each do |name,c|
-      next unless (c[:type] == :boolean) && resource.columns[:listing].include?(name)
-      [true, false, nil].each do |value|
-        @projections.push sum_case_when(name, value)
-        value = value.nil? ? 'null' : value.to_s
-        @select_values.push [name, value]
-      end
-    end
-  end
-  
-  def sum_case_when c, x
-    Sequel.as(Sequel.function(:sum, Sequel.case({{qualify(resource.table, c) => x} => 1}, 0)), "c#{rand(1000)}")
-  end
-  
-  def apply_enum_statistics
-    resource.schema_hash.each do |name,c|
-      enum_values = resource.enum_values_for(name)
-      next if enum_values.blank?
-      enum_values.each do |key, value|
-        @projections.push sum_case_when(name, key)
-        @select_values.push [name, value]
-      end
-    end
-  end
-
-  def apply_number_statistics
-    statistics_columns = []
-    resource.schema.each do |name, info|
-      if [:integer, :float, :decimal].include?(info[:type]) && !name.to_s.ends_with?('_id') &&
-        resource.enum_values_for(name).nil? && resource.columns[:listing].include?(name) &&
-        !resource.primary_keys.include?(name)
-        statistics_columns.push name
-      end
-    end
-    @projections += statistics_columns.map do |column_name|
-      quoted_column = qualify(resource.table, column_name)
-      ['max', 'min', 'avg'].map do |calculation|
-        @select_values.push [column_name, calculation]
-        Sequel.as(Sequel.function(calculation.to_sym, quoted_column), "d#{rand(1000)}")
-      end
-    end.flatten
-  end
-
   def apply_search
     return unless params[:search].present?
     conds = []
@@ -332,6 +273,7 @@ class ResourcesController < ApplicationController
   def apply_where
     return unless params[:where].present?
     where_hash = Hash[params[:where].map do |k, v|
+      v = nil if v == 'null'
       if resource.is_date_column? k.to_sym
         datetime = application_time_zone.parse(v)
         [time_chart_aggregate(k.to_sym), v]

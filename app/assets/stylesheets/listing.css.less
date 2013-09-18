@@ -7,7 +7,8 @@ header {
   overflow:none;
   padding: 0;
   background: white;
-  max-height:300px;
+  max-height:305px;
+  height: 305px;
   box-shadow: 0px 0px 15px darken(#EEE, 5%);
   margin-bottom: 20px;
   i.icon-cog {
@@ -21,8 +22,11 @@ header {
     margin-right:2px;
     margin-top:2px;
   }
-  &.time_chart_widget {
+  &.time_chart_widget, &.pie_chart_widget {
     overflow: hidden;
+  }
+  &.stat_chart_widget .content {
+      padding: 10px;
   }
   h4 {
     padding:3px 3px 3px 6px;
@@ -53,6 +57,20 @@ header {
   &.table_widget .content {
     max-height:300px - 26px;
     overflow: auto;
+  }
+}
+
+.stat_chart_widget, #chart_div {
+  .table {
+    td, th {padding: 5px 20px}
+    thead {font-weight: bold}
+    th {color: @orange}
+    th:first-child {
+      width: 33%;
+      border-right: 1px solid #CCC;
+      text-align: right;
+    }
+    a {text-decoration: underline}
   }
 }
 
@@ -109,97 +127,6 @@ header {
   }
 }
 
-.items-list {
-  tfoot {
-    td {
-      padding: 3px;
-      overflow: hidden;
-      height: 80px;
-    }
-    th {
-      border-bottom: none !important;
-      background-color: #eee;
-      background-image: none;
-    }
-    tr {
-      td {
-        background: lighten(@orange, 20%) !important;
-        color: white;
-        border-color: lighten(@orange, 20%);
-        text-transform: uppercase;
-        text-align: right;
-      }
-      dl {
-        margin: 0px;
-      }
-
-      dd {
-        font-size: 90%;
-        font-family: "Monaco";
-        &.zero {
-          color: lighten(@orange, 30%);
-        }
-      }
-      dt {
-        float: left;
-        font-size: 70%;
-        color: lighten(@orange, 50%);
-        &.label {
-          color: white;
-          box-shadow: 0px 0px 3px darken(@orange, 5%);
-        }
-
-        &.true {
-          border-left: 4px solid lighten(@orange, 50%);
-          padding-left: 4px
-        }
-        &.false {
-          border-left: 4px solid lighten(@orange, 40%);
-          padding-left: 4px
-        }
-        &.null {
-          border-left: 4px solid lighten(@orange, 30%);
-          padding-left: 4px
-        }
-      }
-
-      .boolean_bar, .enum_bar {
-        margin-top: 2px;
-        width: 100%;
-        height: 15px;
-        background: lighten(@orange, 30%);
-        div {
-          height: 100%;
-          float: left;
-          font-size: 80%;
-          text-align: left;
-          overflow: hidden;
-          span {
-            padding-left: 4px;
-          }
-        }
-      }
-      .boolean_bar {
-        .true {
-          background: lighten(@orange, 50%);
-          color: lighten(@orange, 30%);
-        }
-        .null {
-          color: lighten(@orange, 50%)
-        }
-        .false {
-          background: lighten(@orange, 40%);
-        }
-      }
-      .sparkline-pie {
-        width: 100%;
-        height: 80px;
-        text-align: center;
-      }
-    }
-  }
-
-}
 .search-where-filters {
   margin: 5px;
 }

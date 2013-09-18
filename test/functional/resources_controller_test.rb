@@ -181,23 +181,6 @@ class ResourcesControllerTest < ActionController::TestCase
     assert_equal nil, item[:age]
     assert_equal '', item[:last_name]
   end
-
-  def test_statistics
-    settings = Resource::Base.new @generic, :users
-    enum_integer = {"column_name"=>"kind", "values"=>{"1"=>{"color"=>"bleu", "label"=>"Kind1"}, "2"=>{"color"=>"red", "label"=>"Kind2"}}}
-    enum_string = {"column_name"=>"role", "values"=>{"1"=>{"color"=>"black", "label"=>"Role1"}, "2"=>{"color"=>"white", "label"=>"Role2"}}}
-    settings.enum_values = [enum_integer, enum_string]
-    settings.columns[:listing] = [:id, :pseudo, :first_name, :last_name, :age, :activated_at, :admin, :role, :kind]
-    settings.save
-    @records = @fixtures.map &:save!
-    get :index, table: 'users'
-    assert_equal({
-      :age =>{"max"=>19, "min"=>17, "avg"=>18.0},
-      :role =>{{"color"=>"black", "label"=>"Role1"}=>0, {"color"=>"white", "label"=>"Role2"}=>0},
-      :kind =>{{"color"=>"bleu", "label"=>"Kind1"}=>0, {"color"=>"red", "label"=>"Kind2"}=>0},
-      :admin =>{"true"=>1, "false"=>3, "null"=>0}
-      }, assigns(:statistics))
-  end
   
   def test_import
     user = FixtureFactory.new(:user, pseudo: 'Johnny').factory

@@ -5,28 +5,32 @@ module TimeChartBuilder
   GROUPING_OPTIONS = DEFAULT_GROUPING + DEFAULT_GROUPING_PERIODIC
   DEFAULT_DATE_FORMATS = {'monthly' => '%b', 'weekly' => 'Week %W', 'daily' => '%b %d',
     'yearly' => '%Y', 'hourly' => '%l%P', 'minutely' => '%H:%M'}
+    
+  private
   
   def time_chart
-    aggregate = time_chart_aggregate params[:column]
+    column = qualify params[:table], params[:column]
     @items = resource.query
     apply_where
     apply_filters
     apply_search
+    aggregate = time_chart_aggregate column
     @items = @items.group(aggregate).
       select(aggregate.as('chart_date'), Sequel.function(:count, Sequel.lit('*'))).
       order(aggregate)
     @items = @items.where(qualify(params[:table], params[:column]) => date_range) unless periodic_grouping?
     aggregation @items.all
     add_missing_zeroes if grouping == 'daily' && @data.present?
-    @widget = current_account.time_chart_widgets
-      .where(table: params[:table], columns: params[:column], grouping: grouping).first
+    @data = @data.map{|e|[e[0], e[2].to_i, e[1]]} if @data
     respond_to do |format|
       format.html do
+        @widget = current_account.time_chart_widgets.where(table: params[:table], columns: params[:column], grouping: grouping).first
         render layout: false
       end
       format.json do
         render json: {
-          graph_data: @data.map{|e|[e[0], e[2].to_i, e[1]]},
+          chart_data: @data,
+          chart_type: 'TimeChart',
           grouping: grouping,
           column: params[:column],
           id: params[:widget_id]
@@ -35,10 +39,7 @@ module TimeChartBuilder
     end
   end
   
-  private
-  
   def time_chart_aggregate column
-    column = qualify params[:table], column
     if @generic.postgresql?
       if periodic_grouping?
         column.extract grouping

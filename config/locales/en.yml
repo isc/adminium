@@ -14,3 +14,11 @@ en:
         db_url: Database URL
   items:
     destroy_warning: Are you sure that you want to destroy that record?
+  statistics:
+    max: Maximum
+    min: Minimum
+    avg: Average
+    median: Median
+    sum: Sum
+    count: Count
+    distinct: Number of distinct values

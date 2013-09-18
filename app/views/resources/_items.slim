@@ -29,27 +29,12 @@
             div
               == header_link name
               - if resource.is_date_column?(name) && actions_cell
-                i.time-chart.icon-bar-chart
+                i.time-chart.icon-bar-chart[data-type='TimeChart']
+              - if (resource.enum_values_for(name) || resource.is_boolean_column?(name)) && actions_cell
+                i.time-chart.icon-bar-chart[data-type='PieChart']
+              - if (is_stat_chart_column(resource, name) && actions_cell)
+                i.time-chart.icon-bar-chart[data-type='StatChart']
               i.column_settings.icon-cog
-        
-    - if @statistics.present?
-      tfoot
-        tr
-          - if actions_cell
-            th(colspan=2)
-          - resource.columns[:listing].each do |name|
-            td
-              - if @statistics.has_key?(name)
-                - if resource.enum_values_for(name)
-                  div.sparkline-pie(data-table=(@statistics[name].map{|v,d| [v['label'], d]}) data-colors=@statistics[name].keys.map{|d|d['color']})
-                  - next
-                - if resource.column_type(name) == :boolean
-                  div.sparkline-pie(data-table=(@statistics[name].to_a) data-colors=(['#75c181', '#fca3e6', '#8175c9']))
-                - else
-                  dl
-                    - @statistics[name].each do |calculation, value|
-                      dt(class=calculation)= calculation
-                      dd(title=value class="#{(value.to_i == 0) ? 'zero' : ''}")= display_number name, nil, resource, value.to_i
 
 
     tbody

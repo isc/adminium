@@ -15,7 +15,7 @@ Adminium::Application.routes.draw do
       post :check_existence
       post :perform_import
       get :search
-      get :time_chart
+      get :chart
     end
   end
   resources :settings do
