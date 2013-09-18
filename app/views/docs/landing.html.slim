@@ -12,7 +12,7 @@ html lang="en"
     meta name="keywords" content="Adminium, database, administration, interface, export, heroku, add-on"
     meta name="viewport" content="width=device-width, initial-scale=1.0"
     link href="images/favicon.ico" rel="shortcut icon"
-
+    = render 'layouts/zopim' unless Rails.env.development?
   body.landing
     .container
       .row.header

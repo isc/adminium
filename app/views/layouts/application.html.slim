@@ -16,6 +16,7 @@ html lang="en" ng-app=""
     - [144, 114, 72].each do |size|
       link rel="apple-touch-icon" sizes="#{size}x#{size}" href="/images/ios-icons/touch-icon-#{size}.png"
     link href="/images/favicon.ico" rel="shortcut icon"
+    = render 'layouts/zopim' unless Rails.env.development?
   body class="#{controller.controller_name} #{controller.action_name}"
     - if session[:account]
       div#plan style="display:none" = current_account.plan
@@ -76,6 +77,13 @@ html lang="en" ng-app=""
         #blockG_3.facebook_blockG
     javascript:
       adminium_account = #{{current_account? ? current_account.to_json(only: ['plan', 'name']) : 'null'}}
+    - unless Rails.env.development?
+      javascript:
+        $zopim(function() {
+            $zopim.livechat.setName('#{{current_user ? current_user.name : 'Non loggé'}}')
+            $zopim.livechat.setEmail('#{{current_user ? current_user.email : 'Non loggé'}}')
+            $zopim.livechat.addTags(#{{zopim_tags}})
+          })
     - if Rails.env.development?
       javascript:
         environment = 'development'

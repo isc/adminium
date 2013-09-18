@@ -15,11 +15,14 @@ ul.nav.pull-right.nav-collapse
         li
           a Loading...
         li.divider
+        - if admin? && current_account
+          li class=active_or_not('accounts') = link_to 'Edit account', edit_account_path
         li= link_to 'Sign out', signout_path
   li.dropdown
     a.dropdown-toggle data-toggle="dropdown" href="#"
-      i.icon-cog.icon-white
+      i.icon-question-sign.icon-white
     ul.dropdown-menu
-      - if admin? && current_account
-        li class=active_or_not('accounts') = link_to 'Edit Account', edit_account_path
+      li.uservoice-trigger
+        a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="support" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-forum-id="155803" Report a bug
+        a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="feedback" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-forum-id="155803" Submit a feature request
       li class=active_or_not('docs') = link_to 'Docs', docs_path
