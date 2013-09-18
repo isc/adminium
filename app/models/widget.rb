@@ -4,7 +4,7 @@ class Widget < ActiveRecord::Base
   belongs_to :account
   
   def name
-    [advanced_search.presence, table].uniq.join(" on ")
+    [advanced_search.presence || 'Listing', table].uniq.join(" on ")
   end
   
 end
