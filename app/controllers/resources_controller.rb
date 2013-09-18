@@ -38,7 +38,6 @@ class ResourcesController < ApplicationController
     apply_where
     apply_filters
     apply_search
-    @items_for_stats = @items
     apply_has_many_counts
     apply_order
     page = (params[:page].presence || 1).to_i
