@@ -283,10 +283,6 @@ module ResourcesHelper
     [CGI.unescape(param.split('=').first), CGI.unescape(param.split('=').last)]
   end
   
-  def is_stat_chart_column resource, name
-    resource.is_number_column?(name) && !name.to_s.ends_with?('_id') && resource.enum_values_for(name).nil? && !resource.primary_keys.include?(name)
-  end
-
   def columns_options_for_resource resource, options={}
     res = content_tag :optgroup, label: resource.table.to_s.humanize do
       resource.column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe

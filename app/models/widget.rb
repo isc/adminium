@@ -7,4 +7,8 @@ class Widget < ActiveRecord::Base
     [advanced_search.presence || 'Listing', table].uniq.join(" on ")
   end
   
+  def self.widget_types
+    [['Table', 'TableWidget'], ['Time Chart', 'TimeChartWidget'], ['Pie Chart', 'PieChartWidget'], ['Statistics', 'StatChartWidget']]
+  end
+  
 end

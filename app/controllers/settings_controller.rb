@@ -33,11 +33,16 @@ class SettingsController < ApplicationController
   end
 
   def columns
-    names = if params[:time_chart]
-      resource_for(params[:table]).date_column_names
-    else
-      resource_for(params[:table]).column_names
-    end
+    names = case params[:chart_type]
+      when 'TimeChartWidget'
+        resource_for(params[:table]).date_column_names
+      when 'PieChartWidget'
+        resource_for(params[:table]).pie_chart_column_names
+      when 'StatChartWidget'
+        resource_for(params[:table]).stat_chart_column_names
+      else
+        resource_for(params[:table]).column_names
+      end
     render json: names.sort
   end
 

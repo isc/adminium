@@ -90,12 +90,13 @@
     h3 New dashboard widget
   = simple_form_for Widget.new, html: {class: 'form-horizontal'} do |f|
     .modal-body
-      = f.input :type, collection: [['Table', 'TableWidget'], ['Time Chart', 'TimeChartWidget']], as: :radio_buttons, checked: 'TableWidget'
+      = f.input :type, collection: Widget.widget_types, as: :radio_buttons, checked: 'TableWidget', item_wrapper_class: 'inline'
       = f.input :table, as: :select, collection: @generic.tables
       .hide
         = f.input :advanced_search, as: :select, collection: []
-      .hide data-widget-type="TimeChartWidget"
+      .hide
         = f.input :columns, as: :select, collection: []
+      .hide
         = f.input :grouping, collection: TimeChartBuilder::GROUPING_OPTIONS, include_blank: false
     .modal-footer
       = f.submit class: 'btn btn-primary'

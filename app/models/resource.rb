@@ -242,7 +242,23 @@ module Resource
     def is_date_column? column_name
       [:datetime, :date, :timestamp].include? column_type(column_name)
     end
+    
+    def is_pie_chart_column? name
+      enum_values_for(name) || is_boolean_column?(name)
+    end
+    
+    def is_stat_chart_column? name
+      is_number_column?(name) && !name.to_s.ends_with?('_id') && enum_values_for(name).nil? && !primary_keys.include?(name)
+    end
 
+    def stat_chart_column_names
+      column_names.find_all {|n| is_stat_chart_column? n}
+    end
+    
+    def pie_chart_column_names
+      column_names.find_all {|n| is_pie_chart_column? n}
+    end
+    
     def string_column_names
       schema.find_all{|c, info|info[:type] == :string}.map(&:first)
     end

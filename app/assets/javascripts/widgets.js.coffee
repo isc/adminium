@@ -12,14 +12,12 @@ class Widget
       for option, i in $('#widget_table').find('option') when i > 5
         $(option).attr('disabled', 'disabled')
     $('#widget_table').change (e) =>
-      @fetchAdvancedSearches e.target.value
-      @fetchDateColumns e.target.value if $('input[name="widget[type]"]:checked').val() is 'TimeChartWidget'
+      @fillColumnsSelection e.target.value
     $('input[name="widget[type]"]').click (e) =>
-      $('div[data-widget-type="TimeChartWidget"]').toggle(e.target.value is 'TimeChartWidget')
-      $('#widget_columns').attr('required', e.target.value is 'TimeChartWidget')
+      $('#widget_columns').closest('.control-group').parent().toggle(e.target.value isnt 'TableWidget')
+      $('#widget_grouping').closest('.control-group').parent().toggle(e.target.value is 'TimeChartWidget')
       return unless table = $('#widget_table').val()
-      @fetchDateColumns table if e.target.value is 'TimeChartWidget'
-      @fetchAdvancedSearches table
+      @fillColumnsSelection table
 
   fetchAdvancedSearches: (table) ->
     $.getJSON "/searches/#{table}", (data) ->
@@ -27,10 +25,14 @@ class Widget
         $('#widget_advanced_search').empty().append($('<option>'))
         $('<option>').text(search).val(search).appendTo('#widget_advanced_search') for search in data
       $('#widget_advanced_search').closest('.control-group').parent().toggle(data.length isnt 0)
-
-  fetchDateColumns: (table) ->
-    $.getJSON "/settings/columns?table=#{table}&time_chart=true", (data) ->
-      $('#widget_columns').empty()
+  
+  fillColumnsSelection: (table) ->
+    @fetchAdvancedSearches table
+    widgetType = $('input[name="widget[type]"]:checked').val()
+    $('#widget_columns').empty()
+    $('#widget_columns').attr('required', widgetType isnt 'TableWidget')
+    return if widgetType is 'TableWidget'
+    $.getJSON "/settings/columns?table=#{table}&chart_type=#{widgetType}", (data) ->
       $('<option>').text(column).val(column).appendTo('#widget_columns') for column in data
 
   setupCreationFromListing: ->
