@@ -24,11 +24,11 @@ loadTablesCount = ->
         for table_name, value of data
           td = $("td[data-table-name=#{table_name}]")
           datavalue = value
-          datavalue = -1 if value == '?'
-          datavalue = "#{value}".match(/~(\d+)/)[1] if "#{value}".indexOf('~') == 0
+          datavalue = -1 if value is '?'
+          datavalue = "#{value}".match(/~(\d+)/)[1] if "#{value}".indexOf('~') is 0
           td.text(number_with_delimiter(value)).attr('data-status', 'loaded').attr('data-value', datavalue)
-          if value != "?"
-            total = Number($("tfoot td.total_table_count").attr('data-value')) + value
+          if value isnt '?'
+            total = Number($("tfoot td.total_table_count").attr('data-value')) + datavalue
           else
             td.tooltip({title: 'the query to perform this count was too slow'})
           $("tfoot td.total_table_count").text(number_with_delimiter(total)).attr('data-value', total)
