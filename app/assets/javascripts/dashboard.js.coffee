@@ -25,7 +25,7 @@ loadTablesCount = ->
           td = $("td[data-table-name=#{table_name}]")
           datavalue = value
           datavalue = -1 if value is '?'
-          datavalue = "#{value}".match(/~(\d+)/)[1] if "#{value}".indexOf('~') is 0
+          datavalue = Number("#{value}".match(/~(\d+)/)[1]) if "#{value}".indexOf('~') is 0
           td.text(number_with_delimiter(value)).attr('data-status', 'loaded').attr('data-value', datavalue)
           if value isnt '?'
             total = Number($("tfoot td.total_table_count").attr('data-value')) + datavalue
