@@ -21,8 +21,13 @@ class Generic
       @associations = Rails.cache.fetch "account:#@account_id:associations", expires_in: 10.minutes do
         @associations = Hash[tables.map {|t| [t, {belongs_to: {}, has_many: {}}]}]
         tables.each do |table|
-          discover_associations_through_foreign_keys table if foreign_keys[table].present?
-          discover_associations_through_conventions table
+          begin
+            discover_associations_through_foreign_keys table if foreign_keys[table].present?
+            discover_associations_through_conventions table
+          rescue Sequel::Error => e
+            # A table with no columns generates a Sequel::Error for instance
+            Airbrake.notify_or_ignore e
+          end
         end
         @associations
       end
