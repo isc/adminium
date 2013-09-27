@@ -1,6 +1,7 @@
 class @FixedTableHeader
   
   constructor: ->
+    return
     if window.environment == 'development'
       console.log('FixedTableHeader activated only in dev for now')
     else

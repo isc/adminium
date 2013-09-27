@@ -139,21 +139,19 @@ class ColumnSettings
     $('.template_line input').eq(1).focus()
 
 class UIListing
+  
+  adjustTableHeight: ->
+    $('.content').height(window.innerHeight - $('.content').offset().top - 37)
+    
   constructor: ->
+    if $('.content').length
+      @adjustTableHeight()
+      window.onresize = @adjustTableHeight
     $('span.label span.remove, i.remove').click ->
       if $(this).data('param-kind')
         location.href = location.href.replace(new RegExp("([&?])#{$(this).data('param-kind')}=.*?(&|$)"), '$1')
       else
         location.href = location.href.replace(new RegExp("#{$(this).data('param')}&?"), '')
-    if $('.breadcrumb').length > 0
-      $('.breadcrumb').jscrollspy
-        min: $('.breadcrumb').offset().top,
-        max: () -> $(document).height(),
-        onEnter: (element, position) ->
-          $(".breadcrumb").addClass('subnav-fixed')
-        ,
-        onLeave: (element, position) ->
-          $(".breadcrumb").removeClass('subnav-fixed')
 
 $ ->
   new BulkActions()
