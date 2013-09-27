@@ -31,16 +31,14 @@
     thead
       tr
         th
-        th
-          'Table
-          i= "(#{@table_sizes.length})"
+        th Table
         th Full table size
         th Table size
         th Record count
     tfoot
       tr
-        td
         td Totals
+        td= "#{@table_sizes.length} tables"
         td= number_to_human_size @table_sizes.sum{|e|e[1].to_i}
         td= number_to_human_size @table_sizes.sum{|e|e[2].to_i}
         td.total_table_count data-value='0' 0
@@ -51,9 +49,9 @@
         
         tr class=((current_account.try(:pet_project?) && index > 5) ? 'deactivated' : '')
           td
-            = link_to schema_path(table) do
+            = link_to schema_path(table), rel: 'tooltip', title: 'Schema' do
               i.icon.icon-table
-            = link_to resources_path(table) do
+            = link_to resources_path(table), rel: 'tooltip', title: 'Records' do
               i.icon.icon-eye-open
           td= link_to table, resources_path(table)
           td data-value=fulltblsize = number_to_human_size fulltblsize
