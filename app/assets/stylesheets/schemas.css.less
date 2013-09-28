@@ -78,11 +78,10 @@ table.black.schema-columns {
   
 }
 
-body.schemas .main-container form {
+#drop-table form, #rename-table form, #rename-column form, #change-column-type form, #create_table {
   background: #EEE;
   color: #333;
   padding: 10px;
-  margin-top: 30px;
   border-radius: 5px;
   i {
     cursor: pointer;
@@ -105,15 +104,6 @@ body.schemas .modal {
   color: #333;
   .modal-footer a {
     color: #333;
-  }
-}
-body.schemas .modal {
-  p.error {
-    background-color: lightcoral;
-    padding: 18px;
-    border-radius: 10px;
-    color: white;
-    margin-top: 20px;
   }
   .success a {
     margin-left: 10px;

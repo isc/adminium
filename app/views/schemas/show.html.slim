@@ -57,59 +57,45 @@ table.table.table-striped.black.schema-indices
     tr
       td.no-indices colspan=4 No indices on this table.
 
-= link_to "Delete this table", "#drop-table", :class => "btn btn-danger pull-right", "data-toggle" => "modal"
-
+a.btn.btn-danger.pull-right href="#drop-table" data-toggle="modal" Delete this table
 a.btn.btn-primary.pull-right#rename_link href="#rename-table" data-toggle="modal" Rename this table
 
-.modal.fade.hide#rename-table
-  .modal-body
-    h2 How should this table be renamed?
-    = form_tag schema_path(params[:table]), method: :put do
-      input type="text" name="table_name" value=params[:table] required="true"
-      = submit_tag "Rename", class: 'btn btn-primary btn-large pull-right'
-  .modal-footer
-    .span2.pull-right
-      a.btn data-dismiss="modal" Cancel
-
-.modal.fade.hide#rename-column
-  .modal-body
-    h2 Rename your column
-    = form_tag schema_path(params[:table]), method: :put do
-      input type="hidden" name="column_name"
-      input type="text" name="new_column_name" required="true"
-      = submit_tag "Rename", class: 'btn btn-primary btn-large pull-right'
-  .modal-footer
-    a.btn.pull-right data-dismiss="modal" Cancel
-
-.modal.fade.hide#change-column-type
-  .modal-body
-    h2 Change your column type
-    = form_tag schema_path(params[:table]), method: :put do
-      input type="hidden" name="column_name"
-      select name="new_column_type"
-        - [:integer, :string, :datetime, :text, :float, :decimal, :time, :date, :blob, :boolean].each do |type|
-          option= type
-      = submit_tag "Change type", class: 'btn btn-primary btn-large pull-right'
-  .modal-footer
-    a.btn.pull-right data-dismiss="modal" Cancel
-
-.modal.fade.hide#drop-table
-  .modal-body
-    h2 Are you serious about that ?
-    p.error
-      = "You are about to destroy the table <u>#{params[:table]}</u> with all its data.".html_safe
-      br
-      'You won't be able to rollback this action!
-    p
-      'To proceed, confirm by entering the table name: 
-      b= params[:table]
-    = form_tag schema_path(params[:table]), method: "delete" do
-      input type="text" name="table_name_confirmation" required="true" placeholder="type your table name to confirm"
-      = submit_tag "Destroy the table", class: "btn btn-danger btn-large pull-right"
-  .modal-footer
-    a.btn.pull-right data-dismiss="modal" Cancel
-
 - content_for :modal do
+  = modal 'How should this table be renamed?', id: 'rename-table' do |modal|
+    - modal.body do
+      = form_tag schema_path(params[:table]), method: :put do
+        input type="text" name="table_name" value=params[:table] required="true"
+        = submit_tag "Rename", class: 'btn btn-primary btn-large pull-right'
+
+  = modal 'Rename your column', id: 'rename-column' do |modal|
+    - modal.body do
+      = form_tag schema_path(params[:table]), method: :put do
+        input type="hidden" name="column_name"
+        input.input-large type="text" name="new_column_name" required="true"
+        = submit_tag "Rename", class: 'btn btn-primary btn-large pull-right'
+
+  = modal 'Change your column type', id: 'change-column-type' do |modal|
+    - modal.body do
+      = form_tag schema_path(params[:table]), method: :put do
+        input type="hidden" name="column_name"
+        select name="new_column_type"
+          - [:integer, :string, :datetime, :text, :float, :decimal, :time, :date, :blob, :boolean].each do |type|
+            option= type
+        = submit_tag "Change type", class: 'btn btn-primary btn-large pull-right'
+
+  = modal 'Are you serious about that ?', id: 'drop-table' do |modal|
+    - modal.body do
+      p.alert.alert-error
+        = "You are about to destroy the table <u>#{params[:table]}</u> with all its data.".html_safe
+        br
+        'You won't be able to rollback this action!
+      p
+        'To proceed, confirm by entering the table name: 
+        b= params[:table]
+      = form_tag schema_path(params[:table]), method: "delete" do
+        input type="text" name="table_name_confirmation" required="true" placeholder="Type your table name to confirm"
+        = submit_tag "Destroy the table", class: "btn btn-danger btn-large pull-right"
+
   .modal.fade.hide#add-column
     = form_tag schema_path(params[:table]), method: :put, class: 'form-horizontal' do
       .modal-header

@@ -125,10 +125,9 @@ html lang="en"
       = render 'layouts/ga'
       = render 'layouts/uservoice'
     
-    .modal.fade.hide#login
-      .modal-body.centered
-        h1 Log In or Sign Up
-        .row-fluid
+    = modal 'Log In or Sign Up', id: 'login', skip_footer: true do |modal|
+      - modal.body do
+        .row-fluid.centered
           .span6
             = link_to "/auth/heroku" do
               = image_tag 'logos/heroku.png'

@@ -98,5 +98,5 @@ module ApplicationHelper
     return 'visitor'.to_json unless current_account
     [current_account.name, current_account.plan, "Tables:#{current_account.tables_count}", "Adapter:#{current_account.adapter}"].map(&:to_json).join(',')
   end
-  
+
 end

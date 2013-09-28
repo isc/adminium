@@ -1,9 +1,10 @@
 script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"
 div ng-controller="SchemasCtrl" ng-init="reset()"
-  h1 Create a new table
+  .page-header
+    h1 Create a new table
   .row-fluid
     .span12
-      = form_tag schemas_path, :"data-remote" => true, :class => "form", id: 'create_table' do
+      = form_tag schemas_path, data: {remote: true}, class: 'form', id: 'create_table' do
         fieldset
           h3 Table Name
           .controls
@@ -42,8 +43,7 @@ div ng-controller="SchemasCtrl" ng-init="reset()"
                 td
                   i.icon-remove-sign ng-click="remove($index)"
           a.btn style="color:black; margin-left: 7px; margin-top: -30px" ng-click="addColumn()" Add another column
-        fieldset.actions.centered
-          = submit_tag "Create", class: "btn btn-info btn-large"
+        fieldset.actions.centered= submit_tag "Create", class: "btn btn-info btn-large"
   .modal.fade.hide#create-table-modal
     .modal-body.centered
       h1.s.before Creating table {{table_name}}
