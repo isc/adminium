@@ -53,8 +53,7 @@ group :development do
 end
 
 group :production do
-  gem 'unicorn'
-  gem 'unicorn-worker-killer'
+  gem 'puma'
   gem 'rails_12factor'
 end
 

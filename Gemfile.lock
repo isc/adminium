@@ -123,7 +123,6 @@ GEM
       mechanize (~> 2.6.0)
       rest-client (>= 1.4.0, < 1.7.0)
       term-ansicolor (~> 1.0)
-    kgio (2.8.1)
     launchy (2.3.0)
       addressable (~> 2.3)
     less (2.0.12)
@@ -203,6 +202,8 @@ GEM
       slop (~> 3.4)
     pry-rails (0.3.2)
       pry (>= 0.9.10)
+    puma (2.6.0)
+      rack (>= 1.1, < 2.0)
     quiet_assets (1.0.2)
       railties (>= 3.1, < 5.0)
     rack (1.5.2)
@@ -239,7 +240,6 @@ GEM
       activesupport (= 4.0.0)
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
-    raindrops (0.12.0)
     rake (10.1.0)
     rb-fsevent (0.9.3)
     rb-inotify (0.9.2)
@@ -316,12 +316,6 @@ GEM
     unf (0.1.2)
       unf_ext
     unf_ext (0.0.6)
-    unicorn (4.6.3)
-      kgio (~> 2.6)
-      rack
-      raindrops (~> 0.7)
-    unicorn-worker-killer (0.4.1)
-      unicorn (~> 4)
     webrobots (0.1.1)
     xpath (2.0.0)
       nokogiri (~> 1.3)
@@ -367,6 +361,7 @@ DEPENDENCIES
   premailer-rails
   protected_attributes
   pry-rails
+  puma
   quiet_assets
   rack-livereload
   rack-webconsole-pry
@@ -387,6 +382,4 @@ DEPENDENCIES
   timecop
   twitter-bootstrap-rails (= 2.0.4)
   uglifier (>= 1.3.0)
-  unicorn
-  unicorn-worker-killer
   xray-rails
