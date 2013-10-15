@@ -261,7 +261,7 @@ GEM
     sendgrid (1.2.0)
       json
       json
-    sequel (4.2.0)
+    sequel (4.3.0)
     sequel_pg (1.6.8)
       pg (>= 0.8.0)
       sequel (>= 3.39.0)
@@ -373,7 +373,7 @@ DEPENDENCIES
   rest-client
   select2-rails
   sendgrid
-  sequel (= 4.2.0)
+  sequel (= 4.3.0)
   sequel_pg (= 1.6.8)
   simple_form (= 3.0.0.rc)
   simplecov

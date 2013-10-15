@@ -7,7 +7,7 @@ gem 'pg'
 gem 'mysql2'
 gem 'sendgrid'
 gem 'premailer-rails'
-gem 'sequel', '4.2.0'
+gem 'sequel', '4.3.0'
 gem 'sequel_pg', '1.6.8', require: 'sequel'
 gem 'hiredis', '0.4.5'
 gem 'redis', '3.0.4', require: ["redis", "redis/connection/hiredis"]
