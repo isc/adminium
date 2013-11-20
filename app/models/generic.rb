@@ -167,6 +167,7 @@ class Generic
     if uri.scheme == 'postgres'
       @db.extension :pg_array
       @db.extension :pg_loose_count
+      @db.schema_parse_complete
     end
     @db.extension :named_timezones
     @db.timezone = ActiveSupport::TimeZone.new(@account.database_time_zone).tzinfo.name
