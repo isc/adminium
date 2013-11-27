@@ -15,6 +15,7 @@ class TextEdition
   enableRichTextEditor: ->
     parserRules = {tags: {}}
     parserRules.tags[tag] = {check_attributes: {}} for tag in @fullTagList
+    parserRules.tags['a'].check_attributes = {href: 'url', target: 'alt'}
     $('form.resource-form textarea').wysihtml5 html: true, parserRules: parserRules
   
   disableRichTextEditor: ->
