@@ -1,6 +1,8 @@
 require 'uri'
 require 'sequel'
 Sequel.extension :pg_array # So that Sequel::Postgres::PGArray used in ResourcesHelper is loaded even though we didn't connect to a Postgres database yet.
+Sequel.extension :named_timezones
+Sequel.tzinfo_disambiguator = proc{|datetime, periods| periods.first}
 
 class Generic
   attr_accessor :db_name, :account_id, :db, :account
@@ -165,6 +167,7 @@ class Generic
     if uri.scheme == 'postgres'
       @db.extension :pg_array
       @db.extension :pg_loose_count
+      @db.schema_parse_complete
     end
     @db.extension :named_timezones
     @db.timezone = ActiveSupport::TimeZone.new(@account.database_time_zone).tzinfo.name
