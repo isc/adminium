@@ -6,7 +6,7 @@ class CsvStreamer
     @items, @associated_items = items, associated_items
     @resource, @other_resources = resource, other_resources
     @associated_items.each do |k, v| # sort items for binary search
-      @associated_items[k] = v.sort {|e| e[other_resources[k].primary_key]}
+      v.sort_by! {|e| -e[other_resources[k].primary_key]}
     end
   end
 
