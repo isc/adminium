@@ -60,7 +60,7 @@ class AccountsController < ApplicationController
     else
       params[:account][:db_url_setup_method] = 'web'
     end
-    if current_account.update_attributes params[:account]
+    if (current_account.id == ENV['DEMO_ACCOUNT_ID']) || current_account.update_attributes(params[:account])
       if params[:install]
         redirect_to_invite_collaborators_or_dashbord
       else
