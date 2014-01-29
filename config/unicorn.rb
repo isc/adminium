@@ -1,5 +1,5 @@
 # config/unicorn.rb
-worker_processes 3
+worker_processes 2
 timeout 120
 preload_app true
 
