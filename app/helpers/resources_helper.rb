@@ -53,7 +53,7 @@ module ResourcesHelper
   def display_file wrapper_tag, item, key, resource
     size = item[key].try(:bytesize)
     item_pk = resource.primary_key_value item
-    column_content_tag wrapper_tag, link_to("dowload (#{number_to_human_size(size)})", download_resource_path(params[:table], item_pk, key: key)), {}
+    column_content_tag wrapper_tag, link_to("Download (#{number_to_human_size(size)})", download_resource_path(params[:table], item_pk, key: key)), {}
   end
 
   def display_attribute wrapper_tag, item, key, resource, original_key = nil
