@@ -102,7 +102,7 @@ javascript:
             span.remove data-param=format_param_for_removal(k, v) x
 .content
   = render partial: 'items', locals: {items: @fetched_items, actions_cell: true}
-//= render partial: '/resources/panels/listing_settings'
+= render partial: '/resources/panels/listing_settings'
 = render partial: '/resources/panels/export'
 = render partial: '/resources/panels/advanced_search'
 #column-settings.modal.hide.fade data-remote-path=column_setting_path('{table}', column: '{column}', view: '{view}')
