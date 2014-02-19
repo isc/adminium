@@ -17,6 +17,9 @@ Adminium::Application.routes.draw do
       get :search
       get :chart
     end
+    member do
+      get :download
+    end
   end
   resources :settings do
     get :values, on: :member

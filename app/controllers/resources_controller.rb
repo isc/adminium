@@ -8,7 +8,7 @@ class ResourcesController < ApplicationController
   before_filter :table_access_limitation, except: [:search]
   before_filter :check_permissions
   before_filter :dates_from_params
-  before_filter :fetch_item, only: [:show, :edit]
+  before_filter :fetch_item, only: [:show, :edit, :download]
   before_filter :warn_if_no_primary_key, only: [:index, :new]
   helper_method :user_can?
   helper_method :grouping, :resource
@@ -64,7 +64,12 @@ class ResourcesController < ApplicationController
       end
     end
   end
-
+  
+  def download
+    filename = find_an_extension || "#{params[:table]}-#{params[:key]}-#{params[:id]}.data"
+    send_data @item[params[:key].to_sym], filename: filename
+  end
+  
   def show
     @title = "Show #{resource.item_label @item}"
     @prevent_truncate = true
@@ -183,6 +188,13 @@ class ResourcesController < ApplicationController
   end
 
   private
+
+  def find_an_extension
+    resource.string_column_names.each do |key|
+      return @item[key] if @item[key].match(/.+(\.\w{1,6})$/)
+    end
+    nil
+  end
 
   def update_export_settings
     if params[:export_columns].present?

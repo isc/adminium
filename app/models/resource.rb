@@ -259,8 +259,12 @@ module Resource
       column_names.find_all {|n| is_pie_chart_column? n}
     end
     
+    def binary_column_names
+      schema.find_all{|c, info|info[:type] == :blob}.map(&:first)
+    end
+    
     def string_column_names
-      schema.find_all{|c, info|info[:type] == :string}.map(&:first)
+      schema.find_all {|c, info| info[:type] == :string}.map(&:first)
     end
 
     def string_or_text_column_names

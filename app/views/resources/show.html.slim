@@ -54,7 +54,7 @@ javascript:
             i.column_settings.icon-cog
             = resource.column_display_name name
           == display_attribute :td, @item, name, resource
-    - columns = item_attributes_type([:boolean], resource)
+    - columns = item_attributes_type([:boolean, :blob], resource)
     - if columns.present?
       table.table.table-condensed
         - columns.each do |name|
