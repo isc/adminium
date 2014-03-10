@@ -287,7 +287,7 @@ class ResourcesController < ApplicationController
       v = nil if v == 'null'
       if resource.is_date_column? k.to_sym
         datetime = application_time_zone.parse(v)
-        [time_chart_aggregate(k.to_sym), v]
+        [time_chart_aggregate(qualify params[:table], k), v]
       else
         if k['.']
           table, k = k.split('.')
