@@ -1,5 +1,9 @@
 - css_class = defined?(sortable) ? 'sortable' : nil
 input type="hidden" name="#{type}_columns[]"
+ul
+  li.setting_attribute.master_checkbox
+    input type='checkbox' id="#{type}_master_checkbox" checked="checked"
+    label for="#{type}_master_checkbox" Check / uncheck all
 ul id="#{type}_columns_list" data-type=type class=css_class
   - resource.columns_options(type).each do |name, checked|
     li.setting_attribute

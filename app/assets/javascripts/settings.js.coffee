@@ -4,6 +4,7 @@ $ ->
   setupValidations()
   setupDbUrlPresence()
   showModalOnLoad()
+  masterCheckboxes()
 
 addToHiddenParams = (pane_id, group, params) ->
   div = $("#{pane_id} .params")
@@ -39,3 +40,7 @@ setupDbUrlPresence = ->
     $.get '/account/db_url_presence', (data) ->
       window.location = '/dashboard?step=done' if data
   , 6000
+
+masterCheckboxes = ->
+  $('.master_checkbox input').on 'change', ->
+    $(this).closest('ul').next().find('input[type="checkbox"]').prop('checked', $(this).prop('checked'))
