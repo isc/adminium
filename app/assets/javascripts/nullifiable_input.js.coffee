@@ -11,7 +11,7 @@ class @NullifiableInput
     return unless match
     @column_name = match[1]
     @type ||= columns_hash[@column_name].type if columns_hash[@column_name]
-    return if @type isnt 'string'
+    return if @type isnt 'string' and @type isnt 'text'
     @controls = input.parents('.controls')
     title_n = "Will save a NULL value if selected"
     title_e = "Will save an empty string if selected"
@@ -33,7 +33,7 @@ class @NullifiableInput
     else
       @switchEmptyInputValue @null_btn, false if input.data('null-value')
   
-  displaySwitchEmptyValueLink: (evt) =>
+  displaySwitchEmptyValueLink: =>
     @toggleBtns()
   
   toggleBtns: =>
