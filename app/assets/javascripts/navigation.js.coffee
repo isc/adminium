@@ -33,8 +33,9 @@ class Navigation
       if e.which is 115 # 's' key
         $(@selector).select2('open')
         e.preventDefault()
-      if e.which is 99 # 'c' for create
-        location.href = $('a.btn.create')[0].href if $('a.btn.create').length
+      for action, key of {create: 99, destroy: 116, edit: 101}
+        if e.which is key # 'c' for create
+          $("a.btn.#{action}").get(0).click() if $("a.btn.#{action}").length
       if e.which is 63 # '?' for help
         @toggleKeyboardShortcutsHelp()
 

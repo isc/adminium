@@ -17,9 +17,9 @@ javascript:
             = link_to new_resource_path(table:params[:table], clone_id: params[:id]), class: "btn create", rel: "tooltip", title: "Clone", "data-placement" => "bottom" do
               i.icon-copy
           - if user_can? 'edit', params[:table]
-            = link_to content_tag(:i, nil, class: 'icon-pencil'), edit_resource_path(resource.table, params[:id]), title: 'Edit', rel: 'tooltip', :'data-placement' => "bottom", class: 'btn'
+            = link_to content_tag(:i, nil, class: 'icon-pencil'), edit_resource_path(resource.table, params[:id]), title: 'Edit', rel: 'tooltip', :'data-placement' => "bottom", class: 'btn edit'
           - if user_can? 'destroy', params[:table]
-            = link_to content_tag(:i, nil, class: 'icon-trash'), resource_path(resource.table, params[:id], redirect: 'index'), method: :delete, data: {confirm: t('items.destroy_warning')}, class: 'btn', title: 'Destroy', rel: 'tooltip', 'data-placement' => 'bottom'
+            = link_to content_tag(:i, nil, class: 'icon-trash'), resource_path(resource.table, params[:id], redirect: 'index'), method: :delete, data: {confirm: t('items.destroy_warning')}, class: 'btn destroy', title: 'Destroy', rel: 'tooltip', 'data-placement' => 'bottom'
         .span1.pull-right
           a.btn data-toggle="modal" href="#settings" title="Show Settings" data-placement="bottom" rel="tooltip"
             i.icon-cog
