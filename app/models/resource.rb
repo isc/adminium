@@ -158,7 +158,7 @@ module Resource
     end
 
     def per_page= per_page
-      @per_page = per_page.to_i
+      @per_page = [per_page.to_i, 25].max
     end
 
     def per_page

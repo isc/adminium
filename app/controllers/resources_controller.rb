@@ -44,7 +44,7 @@ class ResourcesController < ApplicationController
     respond_with @items do |format|
       format.html do
         check_per_page_setting
-        @items = @items.extension(:pagination).paginate page, resource.per_page.to_i
+        @items = @items.extension(:pagination).paginate page, [resource.per_page.to_i, 25].max
         fetch_associated_items
       end
       format.json do
