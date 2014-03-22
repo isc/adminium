@@ -62,20 +62,28 @@ body.schemas {
 }
 table.black.schema-columns {
   table-layout: fixed;
-  
-  tr {
-    i { opacity: 0; }
-    &:hover {
-      i { opacity: 0.25; }
-      th:hover, td:hover {
-        i { 
-          opacity: 0.5;
-          &:hover { opacity: 1}
+  .change_column_type, .rename_column, .remove_column {
+    i {
+      opacity: 0;
+    } 
+  }
+  tr:hover {
+    .change_column_type, .rename_column, .remove_column {
+      i {
+        opacity: 0.25;
+      }
+    }
+  }
+  td:hover, th:hover {
+    .change_column_type, .rename_column, .remove_column {
+      i {
+        opacity: 0.5;
+        &:hover {
+          opacity: 1;
         }
       }
     }
   }
-  
 }
 
 #drop-table form, #rename-table form, #rename-column form, #change-column-type form, #create_table {

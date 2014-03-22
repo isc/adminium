@@ -34,7 +34,7 @@ table.table.table-striped.black.schema-columns
         = display_column_default column
         = 'AUTO_INCREMENT' if column[:auto_increment]
       td
-        = link_to schema_path(params[:id], remove_column: name), data: {confirm: "Do you really want to permanently remove the column #{name} with all its data ?"}, method: "PUT" do
+        = link_to schema_path(params[:id], remove_column: name), data: {confirm: "Do you really want to permanently remove the column #{name} with all its data ?"}, method: "PUT", class: 'remove_column' do
           i.icon-trash
 = link_to "Add a column", "#add-column", "data-toggle" => "modal", class: "btn btn-primary pull-right"
 table.table.table-striped.black.schema-indices
