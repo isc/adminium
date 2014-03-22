@@ -57,7 +57,7 @@ table.table.table-striped.black.schema-indices
     tr
       td.no-indices colspan=4 No indices on this table.
 .pull-right
-  a.btn.btn-primary#rename_link> href="#rename-table" data-toggle="modal" Rename this table
+  a.btn.btn-primary> href="#rename-table" data-toggle="modal" Rename this table
   a.btn.btn-danger> href="#truncate-table" data-toggle="modal" Truncate this table
   a.btn.btn-danger href="#drop-table" data-toggle="modal" Delete this table
 
@@ -84,7 +84,7 @@ table.table.table-striped.black.schema-indices
             option= type
         = submit_tag "Change type", class: 'btn btn-primary btn-large pull-right'
 
-  = modal 'Are you serious about that ?', id: 'drop-table' do |modal|
+  = modal 'Are you serious about deleting?', id: 'drop-table' do |modal|
     - modal.body do
       p.alert.alert-error
         = "You are about to destroy the table <u>#{params[:table]}</u> with all its data.".html_safe
@@ -97,7 +97,7 @@ table.table.table-striped.black.schema-indices
         input type="text" name="table_name_confirmation" required="true" placeholder="Type the name of the table to confirm"
         = submit_tag "Destroy the table", class: "btn btn-danger btn-large pull-right"
 
-  = modal 'Are you serious about that ?', id: 'truncate-table' do |modal|
+  = modal 'Are you serious about truncating?', id: 'truncate-table' do |modal|
     - modal.body do
       p.alert.alert-error
         = "You are about to remove all data from the table <u>#{params[:table]}</u>.".html_safe
