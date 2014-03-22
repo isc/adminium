@@ -17,6 +17,7 @@ class SchemasController < ApplicationController
     rename_column and return if params[:new_column_name]
     add_column and return if params[:add_column]
     change_column_type and return if params[:new_column_type]
+    truncate and return if params[:truncate]
   end
 
   def create
@@ -41,7 +42,7 @@ class SchemasController < ApplicationController
     if params[:id] == params[:table_name_confirmation]
       @generic.db.drop_table params[:id]
     else
-      flash[:error] = "Destroying the table failed: the confirmation mismatch"
+      flash[:error] = "Destroying the table failed: the table name confirmation mismatched."
     end
   rescue Sequel::Error => e
     flash[:error] = "Destroying the table failed: #{e.message}"
@@ -63,7 +64,7 @@ class SchemasController < ApplicationController
     column_name = params[:remove_column]
     @generic.db.alter_table(params[:id].to_sym){drop_column column_name}
   rescue Sequel::Error => e
-    flash[:error] = "Droping column #{column_name} failed: #{e.message}"
+    flash[:error] = "Dropping column #{column_name} failed: #{e.message}"
   ensure
     redirect_to schema_path(params[:id])
   end
@@ -92,6 +93,17 @@ class SchemasController < ApplicationController
     redirect_to schema_path(params[:id])
   end
   
+  def truncate
+    if params[:id] == params[:table_name_confirmation]
+      @generic.db[params[:id].to_sym].truncate
+    else
+      flash[:error] = "Truncating the table failed: the table name confirmation mismatched."
+    end
+  rescue Sequel::Error => e
+    flash[:error] = "Truncating the table failed: #{e.message}"
+  ensure
+    redirect_to dashboard_path
+  end
   
   def reformat_columns_params
     primary_column_names = []

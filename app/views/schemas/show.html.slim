@@ -56,9 +56,10 @@ table.table.table-striped.black.schema-indices
   - else
     tr
       td.no-indices colspan=4 No indices on this table.
-
-a.btn.btn-danger.pull-right href="#drop-table" data-toggle="modal" Delete this table
-a.btn.btn-primary.pull-right#rename_link href="#rename-table" data-toggle="modal" Rename this table
+.pull-right
+  a.btn.btn-primary#rename_link> href="#rename-table" data-toggle="modal" Rename this table
+  a.btn.btn-danger> href="#truncate-table" data-toggle="modal" Truncate this table
+  a.btn.btn-danger href="#drop-table" data-toggle="modal" Delete this table
 
 - content_for :modal do
   = modal 'How should this table be renamed?', id: 'rename-table' do |modal|
@@ -92,9 +93,23 @@ a.btn.btn-primary.pull-right#rename_link href="#rename-table" data-toggle="modal
       p
         'To proceed, confirm by entering the table name: 
         b= params[:table]
-      = form_tag schema_path(params[:table]), method: "delete" do
-        input type="text" name="table_name_confirmation" required="true" placeholder="Type your table name to confirm"
+      = form_tag schema_path(params[:table]), method: :delete do
+        input type="text" name="table_name_confirmation" required="true" placeholder="Type the name of the table to confirm"
         = submit_tag "Destroy the table", class: "btn btn-danger btn-large pull-right"
+
+  = modal 'Are you serious about that ?', id: 'truncate-table' do |modal|
+    - modal.body do
+      p.alert.alert-error
+        = "You are about to remove all data from the table <u>#{params[:table]}</u>.".html_safe
+        br
+        'You won't be able to rollback this action!
+      p
+        'To proceed, confirm by entering the table name: 
+        b= params[:table]
+      = form_tag schema_path(params[:table]), method: :put do
+        input type="hidden" name="truncate"
+        input type="text" name="table_name_confirmation" required="true" placeholder="Type the name of the table to confirm"
+        = submit_tag "Truncate the table", class: "btn btn-danger btn-large pull-right"
 
   .modal.fade.hide#add-column
     = form_tag schema_path(params[:table]), method: :put, class: 'form-horizontal' do
