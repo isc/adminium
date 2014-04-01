@@ -62,7 +62,7 @@ class CustomColumns
   columnSelected: (object) =>
     column = object.val
     optgroup = $(object.added.element).closest('optgroup')
-    ul = optgroup.parents('.custom-column').siblings('ul')
+    ul = optgroup.parents('.custom-column').siblings('ul:not(.master_checkbox)')
     kind = optgroup.data('kind')
     assoc = optgroup.data('name')
     switch kind
