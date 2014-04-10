@@ -2,8 +2,8 @@
   "id": "adminium",
   "api": {
     "config_vars": [ "ADMINIUM_URL" ],
-    "password": "ARuxKq0aRSaXVyoD",
-    "sso_salt": "iOy1l96mXADxSETP",
+    "password": "HkQU6z2HyYSUapC.2Q631",
+    "sso_salt": "elkwmf:$apr1$dWA0us",
     "regions": ["us","eu"],
     "production": {
       "base_url": "https://www.adminium.io/heroku/resources",
