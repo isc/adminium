@@ -119,7 +119,7 @@ html lang="en"
         p.centered
           = render partial: "twitter_widget"
         p.copyright.centered
-          = link_to "&copy; 2013 Cluscrive".html_safe, "http://cluscrive.fr", target: '_blank'
+          = link_to "&copy; #{Date.today.year} Cluscrive".html_safe, "http://cluscrive.fr", target: '_blank'
     = javascript_include_tag 'application'
     - unless Rails.env.development?
       = render 'layouts/ga'
