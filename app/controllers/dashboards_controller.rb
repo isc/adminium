@@ -6,9 +6,9 @@ class DashboardsController < ApplicationController
 
   def show
     @db_size = @generic.db_size
-    table_list = @permissions.map {|key, value| key if value['read']}.compact if @permissions
-    @table_sizes = @generic.table_sizes table_list
-    @widgets = current_account.widgets
+    @table_list = @permissions.map {|key, value| key if value['read']}.compact if @permissions
+    @table_sizes = @generic.table_sizes @table_list
+    @widgets = current_account.widgets.find_all {|w| @table_list.include? w.table}
   end
 
   def tables_count

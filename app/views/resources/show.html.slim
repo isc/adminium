@@ -78,6 +78,7 @@ javascript:
     - if resource.associations[:has_many].any?
       table.table.table-condensed
         - resource.associations[:has_many].each do |name, assoc|
+          - next unless user_can? :show, name
           tr
             - count, assoc_params = (resource.has_many_count @item, name), {assoc[:foreign_key] => @item[assoc[:primary_key]]}
             th.span2= name.to_s.humanize
