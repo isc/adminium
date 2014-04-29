@@ -7,9 +7,10 @@ javascript:
     .breadcrumb
       .row-fluid.btn-toolbar
         .span2.table-name
-          strong
-            = params[:table].humanize
-
+          strong= params[:table].humanize
+          '
+          = link_to schema_path(params[:table]), rel: 'tooltip', title: 'Schema' do
+            i.icon.icon-table
         - if resource.columns[:search].any?
           .span4
             form.form-inline.subnav-search.row-fluid
