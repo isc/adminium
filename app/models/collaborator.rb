@@ -11,6 +11,7 @@ class Collaborator < ActiveRecord::Base
   has_and_belongs_to_many :roles
   attr_accessible :kind, :is_administrator, :email, :role_ids
 
+  # FIXME check table existence
   def permissions
     roles.inject({}) do |res, role|
       role.permissions.each do |table, rights|

@@ -3,8 +3,8 @@
 #   config.async = true
 # end
 Airbrake.configure do |config|
-  config.api_key = '1c1382d74eb21147db1207740c108f96'
-  config.host    = 'cluscrive-errbit.herokuapp.com'
+  config.api_key = 'bc398701ffc00d54f56509480415a34b'
+  config.host    = 'errbit-cluscrive.herokuapp.com'
   config.port    = 443
   config.secure  = config.port == 443
 end
