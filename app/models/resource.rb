@@ -286,8 +286,8 @@ module Resource
     def set_missing_columns_conf
       [:listing, :show, :form, :search, :serialized, :export].each do |type|
         if @columns[type]
-          @columns[type] = @columns[type].map(&:to_sym)
-          @columns[type].delete_if {|name| !association_column?(name) && !(column_names.include? name) }
+          @columns[type].map!(&:to_sym)
+          @columns[type].delete_if {|name| !valid_association_column?(name) && !(column_names.include? name) }
         else
           @columns[type] =
           {listing: column_names, show: column_names,
@@ -319,8 +319,12 @@ module Resource
       table.to_s.humanize.singularize
     end
     
-    def association_column? name
-      name.to_s.include?('.') || name.to_s.starts_with?('has_many/')
+    def valid_association_column? name
+      if name.to_s.starts_with?('has_many/')
+        associations[:has_many].keys.include? name.to_s.gsub('has_many/').to_sym
+      elsif name.to_s.include?('.')
+        associations[:belongs_to].keys.include? name.to_s.split('.').last.to_sym
+      end
     end
 
     def enum_values_for column_name
