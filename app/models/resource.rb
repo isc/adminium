@@ -321,7 +321,7 @@ module Resource
     
     def valid_association_column? name
       if name.to_s.starts_with?('has_many/')
-        associations[:has_many].keys.include? name.to_s.gsub('has_many/').to_sym
+        associations[:has_many].keys.include? name.to_s.gsub('has_many/', '').to_sym
       elsif name.to_s.include?('.')
         associations[:belongs_to].keys.include? name.to_s.split('.').last.to_sym
       end
