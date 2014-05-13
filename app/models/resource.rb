@@ -286,6 +286,7 @@ module Resource
     def set_missing_columns_conf
       [:listing, :show, :form, :search, :serialized, :export].each do |type|
         if @columns[type]
+          @columns[type].uniq!
           @columns[type].map!(&:to_sym)
           @columns[type].delete_if {|name| !valid_association_column?(name) && !(column_names.include? name) }
         else
@@ -323,7 +324,7 @@ module Resource
       if name.to_s.starts_with?('has_many/')
         associations[:has_many].keys.include? name.to_s.gsub('has_many/', '').to_sym
       elsif name.to_s.include?('.')
-        associations[:belongs_to].keys.include? name.to_s.split('.').last.to_sym
+        associations[:belongs_to].keys.include? name.to_s.split('.').first.to_sym
       end
     end
 
