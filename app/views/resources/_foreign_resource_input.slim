@@ -1,12 +1,13 @@
 - record = foreign_resource.find_by_primary_key value unless value.nil?
 .adminium-association
   - if resource.is_array_column? name
-    = hidden_field_tag "#{resource.table}[#{name}][]"
+    = hidden_field_tag "#{resource.table}[#{name}][]" if value
     .multiple-records.sortable data-input-name="#{resource.table}[#{name}][]"
-      - record.each do |r|
-        label
-          input> type="checkbox" checked="checked" name="#{resource.table}[#{name}][]" value=r[foreign_resource.primary_keys.first]
-          = foreign_resource.item_label(r)
+      - if record
+        - record.each do |r|
+          label
+            input> type="checkbox" checked="checked" name="#{resource.table}[#{name}][]" value=r[foreign_resource.primary_keys.first]
+            = foreign_resource.item_label(r)
   - else
     span.single-record class="#{'hide' if value.blank?}"
       span= foreign_resource.item_label(record) || value
