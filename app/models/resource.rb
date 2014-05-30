@@ -316,6 +316,13 @@ module Resource
       table_fks.detect {|h| h[:column] == name}
     end
     
+    def foreign_key_array? name
+      if name.to_s.ends_with?('_ids') && is_array_column?(name)
+        table = name.to_s.gsub(/_ids$/, '').pluralize.to_sym
+        table if @generic.tables.include? table
+      end
+    end
+    
     def human_name
       table.to_s.humanize.singularize
     end
@@ -430,7 +437,13 @@ module Resource
     end
     
     def find_by_primary_key primary_key_value
-      pk_filter(primary_key_value).first
+      if primary_key_value.is_a? Sequel::Postgres::PGArray
+        keys = primary_key_value.to_a
+        keys.map!(&:to_i) if column_type(primary_keys.first) == :integer
+        query.where("#{primary_keys.first} in ?", keys).to_a.sort_by {|r| primary_key_value.index(r[primary_keys.first])}
+      else
+        pk_filter(primary_key_value).first
+      end
     end
     
     def delete primary_key_value
@@ -441,13 +454,14 @@ module Resource
       return value unless (col_schema = schema_hash[column])
       value = nil if '' == value && ![:string, :blob].include?(col_schema[:type])
       raise(Sequel::InvalidValue, "nil/NULL is not allowed for the #{column} column") if value.nil? && !col_schema[:allow_null]
-      if value && col_schema[:type].to_s['_array']
+      if value && value.is_a?(String) && col_schema[:type].to_s['_array']
         begin
           value = JSON.parse value
         rescue JSON::ParserError => e
           raise Sequel::InvalidValue, "invalid value for array type: #{e.message}"
         end
       end
+      value = value.find_all(&:presence) if value.is_a? Array
       if value.is_a?(String) && [:datetime, :timestamp].include?(col_schema[:type])
         value = application_time_zone.parse value
       end

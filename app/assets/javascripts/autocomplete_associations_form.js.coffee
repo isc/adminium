@@ -8,19 +8,20 @@ class window.AutocompleteAssociationsForm
     return if search_input.data('autocomplete-association') is 'done'
     control = search_input.parents('div.controls')
     @hidden_input = control.find('input[type=hidden]')
-    @record_selected_area = control.find('.record_selected')
-    @record_selected_value = control.find('.record_selected span')
+    @single_record_area = control.find('.single-record')
+    @single_record_value = control.find('.single-record span')
+    @selected_records_area = control.find('.multiple-records')
     @spinner = control.find('.icon-refresh')
     @list = control.find('ul')
     search_input.on 'keyup', @keyUp
-    @record_selected_area.find('.icon-remove-sign').on 'click', @clearSelected
+    @single_record_area.find('.icon-remove-sign').on 'click', @clearSelected
     @url = search_input.data('autocomplete-url')
     @current_requests = 0
     search_input.data('autocomplete-association', 'done')
 
   clearSelected: =>
-    @record_selected_area.toggle(false)
-    @record_selected_value.text('')
+    @single_record_area.toggle(false)
+    @single_record_value.text('')
     @hidden_input.val('')
 
   keyUp: (evt) =>
@@ -59,13 +60,20 @@ class window.AutocompleteAssociationsForm
 
   selectRecord: (evt) =>
     li = $(evt.currentTarget)
-    @hidden_input.val li.data('record_pk')
-    @record_selected_value.text li.data('label')
-    @record_selected_area.toggle(true)
-    @record_selected_area.find('i').toggle(false)
-    setTimeout =>
-      @record_selected_area.find('i').toggle(true)
-    , 25
+    if @single_record_value.length
+      @hidden_input.val li.data('record_pk')
+      @single_record_value.text li.data('label')
+      @single_record_area.toggle(true)
+      @single_record_area.find('i').toggle(false)
+      setTimeout =>
+        @single_record_area.find('i').toggle(true)
+      , 25
+    else
+      label = $('<label>')
+      input = $('<input type="checkbox" checked="checked">').
+        attr(name: @selected_records_area.data('input-name')).val(li.data('record_pk')).appendTo(label)
+      label.append(" #{li.data('label')}")
+      label.appendTo(@selected_records_area)
     li.siblings('.selected').removeClass('selected')
     li.addClass('selected')
 

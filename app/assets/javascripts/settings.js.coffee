@@ -1,6 +1,6 @@
 $ ->
   $("#welcome-modal").modal()
-  $('ul.sortable').sortable()
+  $('.sortable').sortable()
   setupValidations()
   setupDbUrlPresence()
   showModalOnLoad()

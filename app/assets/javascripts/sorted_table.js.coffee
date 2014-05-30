@@ -20,4 +20,4 @@ makeSortable = (selector) ->
     table.find('tbody').get(0).appendChild(row) for row in rows
 
 $ ->
-  makeSortable '.sortable'
+  makeSortable '.table-sortable'
