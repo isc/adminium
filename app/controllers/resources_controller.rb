@@ -279,7 +279,7 @@ class ResourcesController < ApplicationController
     array_columns = resource.columns[:search].select{|c| resource.is_array_column?(c)}
     if array_columns.any?
       search_array = @generic.db.literal Sequel.pg_array(params[:search].split(" "), :text)
-      conds += array_columns.map {|column| Sequel.lit "#{column}::text[] @> #{search_array}"}
+      conds += array_columns.map {|column| Sequel.lit "\"#{column}\"::text[] @> #{search_array}"}
     end
     @items = @items.filter(Sequel::SQL::BooleanExpression.new :OR, *conds) if conds.any?
   end
