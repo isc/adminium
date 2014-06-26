@@ -1,7 +1,7 @@
 .control-group
   = label_tag :per_page, 'Items per page', class: 'control-label'
   .controls
-    input.span2#per_page type="number" step=25 min=25 max=250 name="per_page" value=resource.per_page
+    input.span2#per_page type="number" step=25 min=25 max=200 name="per_page" value=resource.per_page
 .control-group
   = label_tag 'default_order[]', 'Default order', class: 'control-label'
   .controls
