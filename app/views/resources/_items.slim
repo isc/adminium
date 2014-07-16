@@ -20,7 +20,7 @@
         - if actions_cell
           th.actions
           th.checkboxes
-            - if user_can? 'destroy', params[:table]
+            - if user_can?('destroy', params[:table]) || user_can?('edit', params[:table])
               input type="checkbox"
         - else
           th
