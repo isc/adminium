@@ -86,7 +86,7 @@ javascript:
               = link_to resources_path(name, where: assoc_params) do
                 span.badge.badge-warning = count
             td
-              == display_associated_items resource, @item, name
+              = display_associated_items resource, @item, name
               - if count > 5
                 '  
                 = link_to "...", resources_path(name, where: assoc_params)

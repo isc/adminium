@@ -83,6 +83,8 @@ module ResourcesHelper
     elsif value.present? && resource.columns[:serialized].include?(key)
       content = value.present? ? (YAML.load(value).inspect rescue value) : value
       css_class, content = 'serialized', content_tag(:pre, content, class: 'sh_ruby')
+    elsif referenced_table = (resource.foreign_key_array? key)
+      content = display_foreign_key_array referenced_table, item[key]
     else
       css_class, content = display_value item, key, resource
       is_editable = true
@@ -161,10 +163,20 @@ module ResourcesHelper
     items = resource.fetch_associated_items source_item, assoc_name, 5
     referenced_column = resource.associations[:has_many][assoc_name][:primary_key]
     resource = resource_for assoc_name
+    display_items items, resource
+  end
+  
+  def display_foreign_key_array table, ids
+    resource = resource_for table
+    items = resource.query.where(resource.primary_keys.first => ids.map(&:to_i)).all
+    display_items items, resource
+  end
+  
+  def display_items items, resource
     items.map do |item|
-      item_pk = item[referenced_column]
+      item_pk = item[resource.primary_keys.first]
       link_to_if item_pk, resource.item_label(item), (resource_path(resource.table, item_pk) if item_pk)
-    end.join(", ")
+    end.join(", ").html_safe
   end
   
   def display_value item, key, resource
