@@ -6,8 +6,7 @@ class @EnumerateInput
     @values = adminium_column_options[column].values
     options = {matcher: adminiumSelect2Matcher, formatResult: @format, dropdownCssClass: 'enumedit'}
     input.select2(options)
-    if action
-      input.select2(action)
+    input.select2(action) if action
     input
 
   format: (state) =>
@@ -17,7 +16,7 @@ class @EnumerateInput
       state.text
   
   @setupForEdit: (scope) ->
-    return if $(scope).length == 0
+    return unless $(scope).length
     for name, info of adminium_column_options
       if info['is_enum']
         new EnumerateInput($("#{scope} select[id*=_#{name}]"))

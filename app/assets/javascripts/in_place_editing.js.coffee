@@ -89,9 +89,10 @@ class InPlaceEditing
   enumEditionMode: (td, name, raw_value) =>
     options = ""
     column = td.attr('data-column-name')
+    select = $('<select>')
     for value, info of adminium_column_options[column].values
-      options += "<option value=#{value}>#{info.label}</option>"
-    $("<select>#{options}</select>")
+      $('<option>').attr('value', value).text(info.label).appendTo(select)
+    select
 
   booleanEditionMode: (td, name) =>
     options = ""
