@@ -24,7 +24,7 @@
               = "Default is \"#{params[:column].humanize}\"."
       - unless belongs_to_column? || has_many_count_column? || resource.foreign_key?(params[:column].to_sym)
         - partial = {float: :decimal, timestamp: :datetime}[column[:type]] || column[:type]
-        - if ![:string, :time].include?(partial)
+        - if %i(boolean date datetime decimal integer).include? partial
           = accordion.pane "#{partial.to_s.pluralize.humanize} display" do
             = render partial: "/column_settings/types/#{partial}"
         - if resource.possible_serializable_column column
