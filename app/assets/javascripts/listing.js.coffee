@@ -142,7 +142,7 @@ class UIListing
   
   adjustTableHeight: ->
     $('.content').height(window.innerHeight - $('.content').offset().top - 37)
-    
+
   constructor: ->
     if $('.content').length
       @adjustTableHeight()
@@ -151,7 +151,9 @@ class UIListing
       if $(this).data('param-kind')
         location.href = location.href.replace(new RegExp("([&?])#{$(this).data('param-kind')}=.*?(&|$)"), '$1')
       else
-        location.href = location.href.replace(new RegExp("#{$(this).data('param')}&?"), '')
+        escapeRegExp = (str) ->
+          str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
+        location.href = location.href.replace(new RegExp("#{escapeRegExp $(this).data('param')}&?"), '')
 
 $ ->
   new BulkActions()
