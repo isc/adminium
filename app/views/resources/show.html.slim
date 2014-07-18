@@ -68,7 +68,7 @@ javascript:
       table.table.table-condensed
         - resource.associations[:belongs_to].each do |name, assoc|
           tr
-            th title="Belongs to" = name.to_s.humanize.singularize
+            th title="Belongs to" = assoc[:foreign_key].to_s.humanize
             - foreign_key_value = @item[assoc[:foreign_key]]
             - if foreign_key_value
               td= display_belongs_to @item, assoc[:foreign_key], foreign_key_value, resource
