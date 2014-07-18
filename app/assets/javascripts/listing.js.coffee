@@ -115,7 +115,6 @@ class ColumnSettings
 
   nextDefaultColor: =>
     index = $("table.enum_details_area .color").length
-    console.log(index)
     colors = ['#2a8bcc', '#86b558', '#ffb650', '#d15b47', '#9585bf', '#a0a0a0', '#555555', '#d6487e', '#6fb3e0', '#892e65', '#2e8965', '#996666']
     if index > 1 && (index) < colors.length
       colors[index - 2]
