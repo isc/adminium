@@ -35,6 +35,7 @@ gem 'protected_attributes'
 gem 'coffee-rails'
 gem 'uglifier', '>= 1.3.0'
 gem 'twitter-bootstrap-rails', '2.0.4'
+gem 'figaro'
 
 group :mysql_support do
   gem 'mysql2'
