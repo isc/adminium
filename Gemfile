@@ -4,7 +4,6 @@ ruby '2.0.0'
 
 gem 'rails', '4.0.0'
 gem 'pg'
-gem 'mysql2'
 gem 'sendgrid'
 gem 'premailer-rails'
 gem 'sequel', '4.4.0'
@@ -37,6 +36,10 @@ gem 'coffee-rails'
 gem 'uglifier', '>= 1.3.0'
 gem 'twitter-bootstrap-rails', '2.0.4'
 
+group :mysql_support do
+  gem 'mysql2'
+end
+
 group :development do
   gem 'kensa'
   gem 'populator'
@@ -51,6 +54,10 @@ group :development do
   gem 'terminal-notifier-guard', require: false
   gem 'guard-livereload', require: false
   gem 'rack-livereload'
+  gem 'capistrano'
+  gem 'capistrano-rails', '~> 1.1'
+  gem 'capistrano3-puma', github: 'seuros/capistrano-puma', require: false
+  gem 'capistrano-rbenv', require: false
 end
 
 group :production do
