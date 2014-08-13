@@ -6,6 +6,7 @@ set :repo_url, "https://#{ENV['GITHUB_OAUTH_TOKEN']}@github.com/isc/adminium.git
 set :rbenv_ruby, '2.0.0-p481'
 set :bundle_flags, "--deployment"
 set :bundle_without, 'development test mysql_support'
+set :rails_env, 'production'
 
 set :nginx_server_name, 'adminium.doctolib.vgt'
 # Default branch is :master
@@ -27,7 +28,7 @@ set :deploy_to, '/app/adminium'
 # set :pty, true
 
 # Default value for :linked_files is []
-# set :linked_files, %w{config/database.yml}
+set :linked_files, %w{config/database.yml}
 
 # Default value for linked_dirs is []
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}

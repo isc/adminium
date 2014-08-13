@@ -403,6 +403,7 @@ DEPENDENCIES
   premailer-rails
   protected_attributes
   pry-rails
+  puma
   quiet_assets
   rack-livereload
   rack-webconsole-pry
