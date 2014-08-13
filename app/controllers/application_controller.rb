@@ -93,7 +93,7 @@ class ApplicationController < ActionController::Base
   end
   
   def ensure_proper_subdomain
-    return if !Rails.env.production? || ENV["STAGING"] || request.host_with_port == 'eu-adminium.herokuapp.com'
+    return if !Rails.env.production? || ENV["STAGING"] || request.host_with_port == 'eu-adminium.herokuapp.com' || request.host_with_port['doctolib']
     redirect_to params.merge(host: 'www.adminium.io') if request.host_with_port != 'www.adminium.io'
   end
   

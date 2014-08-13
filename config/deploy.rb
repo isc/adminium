@@ -60,3 +60,18 @@ namespace :deploy do
   end
 
 end
+
+namespace :migration do
+  task :copy_database do
+    on roles(:app), in: :sequence do
+      Bundler.with_clean_env do
+        url_dump = `heroku pgbackups:url -a eu-adminium`.strip
+        # execute :wget, "\"#{url_dump}\" -O /tmp/adminium.dump"
+        execute :echo, 'localhost:*:*:doctolib:mypassword > ~/.pgpass'
+        execute :chmod, '0600 ~/.pgpass'
+        execute :psql, "-c \"SELECT pg_terminate_backend(pg_stat_activity.pid) FROM pg_stat_activity WHERE datname = 'adminium' AND pid <> pg_backend_pid() \" adminium --user doctolib -h localhost -w"
+        execute :pg_restore, "-d adminium --user doctolib -h localhost /tmp/adminium.dump"
+      end
+    end
+  end
+end
