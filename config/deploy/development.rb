@@ -4,7 +4,7 @@
 # server list. The second argument is a, or duck-types, Hash and is
 # used to set extended properties on the server.
 
-server '192.168.50.4', user: 'vagrant', password: 'vagrant', roles: %w{web app puma_nginx}
+server '192.168.50.6', user: 'vagrant', password: 'vagrant', roles: %w{web app puma_nginx}
 
 
 # Custom SSH Options
