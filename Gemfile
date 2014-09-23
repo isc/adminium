@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 ruby '2.0.0'
 
-gem 'rails', '4.0.0'
+gem 'rails', '4.0.10'
 gem 'pg'
 gem 'sendgrid'
 gem 'premailer-rails'
@@ -15,7 +15,7 @@ gem 'jquery-rails', '2.0.1'
 gem 'slim-rails'
 gem 'kaminari'
 gem 'json', "1.8.1"
-gem 'simple_form', '3.0.0.rc'
+gem 'simple_form', '3.0.2'
 gem 'omniauth-openid'
 gem 'omniauth-heroku'
 gem 'heroku-api', '0.3.15'
