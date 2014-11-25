@@ -34,7 +34,7 @@ gem 'binary_search', require: 'binary_search/pure'
 gem 'protected_attributes'
 gem 'coffee-rails'
 gem 'uglifier', '>= 1.3.0'
-gem 'twitter-bootstrap-rails', '2.0.4'
+gem 'twitter-bootstrap-rails', '2.2.8'
 gem 'figaro'
 
 group :mysql_support do
