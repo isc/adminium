@@ -1,6 +1,6 @@
 ul.nav.pull-right.nav-collapse
   - if current_user.nil? && current_account.nil?
-    li= link_to 'Sign in', '/auth/google'
+    li= link_to 'Sign in', '/auth/google_oauth2'
   - else
     li.dropdown
       a.apps-list.dropdown-toggle data-toggle="dropdown" href="#"

@@ -3,6 +3,7 @@ Adminium::Application.routes.draw do
   get '/auth/heroku/callback' => 'sessions#create_from_heroku'
   get '/install' => "docs#install"
   post '/auth/:provider/callback' => 'sessions#create'
+  get '/auth/:provider/callback' => 'sessions#create'
   get '/signout' => 'sessions#destroy', as: :signout
 
   resources :resources, path: "/resources/:table", constraints: {id: /.*/} do

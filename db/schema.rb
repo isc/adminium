@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20130913105120) do
+ActiveRecord::Schema.define(version: 20141126133312) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,8 +25,8 @@ ActiveRecord::Schema.define(version: 20130913105120) do
     t.string   "owner_email"
     t.string   "encrypted_db_url"
     t.string   "adapter"
-    t.datetime "created_at",                                 null: false
-    t.datetime "updated_at",                                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "tables_count"
     t.datetime "deleted_at"
     t.text     "plan_migrations"
@@ -47,16 +47,16 @@ ActiveRecord::Schema.define(version: 20130913105120) do
     t.text     "app_infos"
     t.text     "addons_infos"
     t.integer  "account_id"
-    t.datetime "created_at",   null: false
-    t.datetime "updated_at",   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "collaborators", force: true do |t|
     t.integer  "user_id"
     t.integer  "account_id"
     t.string   "email",                            null: false
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "is_administrator", default: false, null: false
     t.string   "kind"
   end
@@ -69,22 +69,22 @@ ActiveRecord::Schema.define(version: 20130913105120) do
     t.integer "collaborator_id"
   end
 
-  add_index "collaborators_roles", ["role_id", "collaborator_id"], name: "index_roles_users_on_role_id_and_user_id", using: :btree
+  add_index "collaborators_roles", ["role_id", "collaborator_id"], name: "index_collaborators_roles_on_role_id_and_collaborator_id", using: :btree
 
   create_table "roles", force: true do |t|
     t.string   "name"
     t.integer  "account_id"
     t.text     "permissions"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "sign_ons", force: true do |t|
     t.integer  "account_id"
     t.string   "plan"
     t.string   "remote_ip"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "kind"
     t.integer  "user_id"
   end
@@ -93,8 +93,8 @@ ActiveRecord::Schema.define(version: 20130913105120) do
     t.integer  "account_id",             null: false
     t.string   "action",                 null: false
     t.integer  "value",      default: 0, null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "users", force: true do |t|
@@ -102,8 +102,8 @@ ActiveRecord::Schema.define(version: 20130913105120) do
     t.string   "uid"
     t.string   "name"
     t.string   "email"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "total_heroku_apps"
   end
 
@@ -113,8 +113,8 @@ ActiveRecord::Schema.define(version: 20130913105120) do
     t.string   "order"
     t.string   "columns"
     t.integer  "account_id"
-    t.datetime "created_at",      null: false
-    t.datetime "updated_at",      null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "type"
     t.string   "grouping"
   end

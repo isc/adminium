@@ -3,8 +3,11 @@ if ENV["REDISTOGO_URL"]
 else
   REDIS = Redis.new db: (Rails.env.test? ? 3 : 0)
 end
-Rails.application.config.middleware.use OmniAuth::Strategies::OpenID, store: OpenID::Store::Redis.new(REDIS),
-  name: 'google', identifier: 'https://www.google.com/accounts/o8/id'
+
+Rails.application.config.middleware.use OmniAuth::Builder do
+  provider :google_oauth2, ENV['GOOGLE_OAUTH_CLIENT_ID'], ENV['GOOGLE_OAUTH_CLIENT_SECRET'],
+    {scope: ['userinfo.email'], access_type: 'online'}
+end
 
 Rails.application.config.middleware.use OmniAuth::Builder do
   oauth_id = ENV['HEROKU_OAUTH_ID'] || "e7f8380e-7f68-4ce4-acd0-776e7408a304"
