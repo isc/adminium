@@ -6,8 +6,8 @@ $ ->
   # $(".tab").tab "show"
   # $(".tooltip").tooltip()
   # $(".typeahead").typeahead()
-  $('span[rel=tooltip], button[rel=tooltip], a[rel*=tooltip], i[rel=tooltip]').tooltip()
-  $("a.text-more, span.text-more, i.text-more").popover()
+  $('span[rel=tooltip], button[rel=tooltip], a[rel*=tooltip], i[rel=tooltip]').tooltip(container: 'body')
+  $("a.text-more, span.text-more, i.text-more").popover(trigger: 'hover')
   $('.datepicker').datepicker
     weekHeader: "Week"
     showWeek: true
