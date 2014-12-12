@@ -32,9 +32,7 @@ class Collaborator < ActiveRecord::Base
   end
 
   def mail_collaborator
-    if kind == 'google'
-      CollaboratorMailer.notify_collaboration(self).deliver
-    end
+    CollaboratorMailer.notify_collaboration(self).deliver if kind == 'google_oauth2'
   end
 
   def human_roles
