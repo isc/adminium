@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-ruby '2.0.0'
+ruby '2.2.0'
 
 gem 'rails', '4.0.10'
 gem 'pg'
@@ -8,7 +8,7 @@ gem 'sendgrid'
 gem 'premailer-rails'
 gem 'sequel', '4.4.0'
 gem 'sequel_pg', '1.6.8', require: 'sequel'
-gem 'hiredis', '0.4.5'
+gem 'hiredis', '0.6.0'
 gem 'redis', '3.0.4', require: ["redis", "redis/connection/hiredis"]
 gem 'configatron', '2.10.0'
 gem 'jquery-rails', '2.0.1'
