@@ -86,9 +86,9 @@
       h2 How can I access PostgreSQL schemas other than public ?
       p In PostgreSQL, tables are searched by default in a schema named "public".
       p If you need to access tables in a different schema, you can customize the search path by specifying it in your database URL (Edit Account -> Database Connection pane) :
-      pre postgresql://user:pass@host/database?schema_search_path=my_custom_schema
+      pre postgresql://user:pass@host/database?search_path=my_custom_schema
       p You can also specify multiple schema names by separating them with a comma :
-      pre postgresql://user:pass@host/database?schema_search_path=my_custom_schema,public
+      pre postgresql://user:pass@host/database?search_path=my_custom_schema,public
     
     section.well#plugin_comparison
       h2 How similar / different is Adminium from gems such as rails_admin or active_admin ?
