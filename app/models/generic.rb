@@ -106,7 +106,7 @@ class Generic
 
   def tables
     return @tables if @tables
-    @tables = (@db.tables(schema: :public) + @db.views(schema: :public)).sort
+    @tables = (@db.tables + @db.views).sort
     @account.update_attribute :tables_count, @tables.size if @account.tables_count != @tables.size
     @tables
   end
