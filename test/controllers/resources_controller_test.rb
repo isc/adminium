@@ -78,6 +78,18 @@ class ResourcesControllerTest < ActionController::TestCase
     @resource.save
     assert_asearch filter_name, ['Loulou']
   end
+  
+  def test_advanced_search_on_columns_from_two_assocs
+    @resource = Resource::Base.new @generic, :roles_users
+    filter_name = 'admin johns'
+    @resource.filters[filter_name] =
+      [
+        {'column' => 'pseudo', 'assoc' => 'users', 'type' => 'string', 'operator' => 'like', 'operand' => 'john'},
+        {'column' => 'name', 'assoc' => 'roles', 'type' => 'string', 'operator' => 'like', 'operand' => 'admin'}
+      ]
+    @resource.save
+    assert_asearch filter_name, [], 'roles_users', 'role_id'
+  end
 
   def test_index_without_statements
     @account.update_attribute :tables_count, 37
@@ -276,8 +288,8 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   private
-  def assert_asearch name, pseudos
-    get :index, table: 'users', asearch: name, order: 'pseudo'
+  def assert_asearch name, pseudos, table = 'users', order = 'pseudo'
+    get :index, table: table, asearch: name, order: order
     assert_equal pseudos, assigns[:items].map{|r| r[:pseudo]}, "#{name}: #{assigns[:items].inspect}"
   end
 
