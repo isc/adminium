@@ -23,20 +23,24 @@ table.table.table-striped.black.schema-columns
           i.icon.icon-key.foreignKey title="foreign key to table #{fk[:to_table]}"
       th data-value=name
         = name
-        a.rename_column href="#"
-          i.icon-pencil.pull-right
+        - unless @readonly
+          a.rename_column href="#"
+            i.icon-pencil.pull-right
       td class="#{column[:type]}Type"
         = column[:db_type]
-        a.change_column_type href="#" data-column-name=name
-          i.icon-pencil.pull-right
+        - unless @readonly
+          a.change_column_type href="#" data-column-name=name
+            i.icon-pencil.pull-right
       td= 'NOT NULL' if column[:allow_null] == false
       td class=column[:type] title=column[:default]
         = display_column_default column
         = 'AUTO_INCREMENT' if column[:auto_increment]
       td
-        = link_to schema_path(params[:id], remove_column: name), data: {confirm: "Do you really want to permanently remove the column #{name} with all its data ?"}, method: "PUT", class: 'remove_column' do
-          i.icon-trash
-= link_to "Add a column", "#add-column", "data-toggle" => "modal", class: "btn btn-primary pull-right"
+        - unless @readonly
+          = link_to schema_path(params[:id], remove_column: name), data: {confirm: "Do you really want to permanently remove the column #{name} with all its data ?"}, method: "PUT", class: 'remove_column' do
+            i.icon-trash
+- unless @readonly
+  = link_to "Add a column", "#add-column", "data-toggle" => "modal", class: "btn btn-primary pull-right"
 table.table.table-striped.black.schema-indices
   thead
     tr
@@ -56,10 +60,11 @@ table.table.table-striped.black.schema-indices
   - else
     tr
       td.no-indices colspan=4 No indices on this table.
-.pull-right
-  a.btn.btn-primary> href="#rename-table" data-toggle="modal" Rename this table
-  a.btn.btn-danger> href="#truncate-table" data-toggle="modal" Truncate this table
-  a.btn.btn-danger href="#drop-table" data-toggle="modal" Delete this table
+- unless @readonly
+  .pull-right
+    a.btn.btn-primary> href="#rename-table" data-toggle="modal" Rename this table
+    a.btn.btn-danger> href="#truncate-table" data-toggle="modal" Truncate this table
+    a.btn.btn-danger href="#drop-table" data-toggle="modal" Delete this table
 
 - content_for :modal do
   = modal 'How should this table be renamed?', id: 'rename-table' do |modal|
@@ -68,14 +73,14 @@ table.table.table-striped.black.schema-indices
         input type="text" name="table_name" value=params[:table] required="true"
         = submit_tag "Rename", class: 'btn btn-primary btn-large pull-right'
 
-  = modal 'Rename your column', id: 'rename-column' do |modal|
+  = modal 'Rename this column', id: 'rename-column' do |modal|
     - modal.body do
       = form_tag schema_path(params[:table]), method: :put do
         input type="hidden" name="column_name"
         input.input-large type="text" name="new_column_name" required="true"
         = submit_tag "Rename", class: 'btn btn-primary btn-large pull-right'
 
-  = modal 'Change your column type', id: 'change-column-type' do |modal|
+  = modal 'Change this column\'s type', id: 'change-column-type' do |modal|
     - modal.body do
       = form_tag schema_path(params[:table]), method: :put do
         input type="hidden" name="column_name"
@@ -115,7 +120,7 @@ table.table.table-striped.black.schema-indices
     = form_tag schema_path(params[:table]), method: :put, class: 'form-horizontal' do
       .modal-header
         a.close data-dismiss="modal" ×
-        h3 Add a column to your table
+        h3 Add a column to this table
       .modal-body
         input type="hidden" name="add_column"
         .control-group

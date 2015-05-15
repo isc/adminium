@@ -6,6 +6,7 @@ class SchemasController < ApplicationController
     @title = 'Schema'
     params[:table] = params[:id]
     @resource = resource_for params[:table]
+    @readonly = @resource.system_table? || !admin?
   end
 
   def new

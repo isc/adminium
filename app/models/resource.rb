@@ -527,6 +527,10 @@ module Resource
       end
     end
     
+    def system_table?
+      %i(pg_stat_activity pg_stat_statements).include? table
+    end
+    
   end
   
   class RecordNotFound < StandardError
