@@ -107,8 +107,8 @@ class Generic
   def tables
     return @tables if @tables
     @tables = (@db.tables + @db.views).sort
-    @tables << :pg_stat_activity if postgresql?
     @account.update_attribute :tables_count, @tables.size if @account.tables_count != @tables.size
+    @tables << :pg_stat_activity if postgresql?
     @tables
   end
   
