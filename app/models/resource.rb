@@ -391,7 +391,7 @@ module Resource
     def item_label item
       return unless item
       res = item[label_column.to_sym] if label_column
-      res || "#{human_name} ##{primary_key_value item}"
+      res.presence || "#{human_name} ##{primary_key_value item}"
     end
     
     def pk_filter primary_key_value
