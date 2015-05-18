@@ -5,14 +5,6 @@ GIT
     bootstrap-wysihtml5-rails (0.3.1.20)
       railties (>= 3.0)
 
-GIT
-  remote: git://github.com/seuros/capistrano-puma.git
-  revision: 7748efb9a53dc713221d9ea48459b915a2ec5362
-  specs:
-    capistrano3-puma (0.7.0)
-      capistrano (~> 3.0)
-      puma (>= 2.6)
-
 GEM
   remote: http://rubygems.org/
   specs:
@@ -56,19 +48,6 @@ GEM
     bootstrap-components-helpers (0.0.7)
       actionpack (>= 3.2.0)
     builder (3.1.4)
-    capistrano (3.2.1)
-      i18n
-      rake (>= 10.0.0)
-      sshkit (~> 1.3)
-    capistrano-bundler (1.1.3)
-      capistrano (~> 3.1)
-      sshkit (~> 1.2)
-    capistrano-rails (1.1.1)
-      capistrano (~> 3.1)
-      capistrano-bundler (~> 1.1)
-    capistrano-rbenv (2.0.2)
-      capistrano (~> 3.1)
-      sshkit (~> 1.3)
     capybara (2.1.0)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -83,7 +62,6 @@ GEM
       coffee-script-source
       execjs
     coffee-script-source (1.6.3)
-    colorize (0.7.3)
     configatron (2.10.0)
       yamler (>= 0.1.0)
     country_select (1.2.0)
@@ -176,9 +154,6 @@ GEM
     mysql2 (0.3.18)
     net-http-digest_auth (1.4)
     net-http-persistent (2.9)
-    net-scp (1.2.1)
-      net-ssh (>= 2.6.5)
-    net-ssh (2.9.1)
     newrelic_rpm (3.7.3.204)
     nokogiri (1.6.0)
       mini_portile (~> 0.5.0)
@@ -305,10 +280,6 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (~> 2.8)
-    sshkit (1.5.1)
-      colorize
-      net-scp (>= 1.1.2)
-      net-ssh (>= 2.8.0)
     temple (0.6.6)
     term-ansicolor (1.2.2)
       tins (~> 0.8)
@@ -355,10 +326,6 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-components-helpers
   bootstrap-wysihtml5-rails!
-  capistrano
-  capistrano-rails (~> 1.1)
-  capistrano-rbenv
-  capistrano3-puma!
   capybara
   coffee-rails
   configatron (= 2.10.0)

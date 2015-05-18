@@ -55,10 +55,6 @@ group :development do
   gem 'terminal-notifier-guard', require: false
   gem 'guard-livereload', require: false
   gem 'rack-livereload'
-  gem 'capistrano'
-  gem 'capistrano-rails', '~> 1.1'
-  gem 'capistrano3-puma', github: 'seuros/capistrano-puma', require: false
-  gem 'capistrano-rbenv', require: false
 end
 
 group :production do
