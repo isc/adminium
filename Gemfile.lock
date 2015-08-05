@@ -204,7 +204,7 @@ GEM
       rack
     rack-test (0.6.2)
       rack (>= 1.0)
-    rack-timeout (0.2.0)
+    rack-timeout (0.2.4)
     rack-webconsole-pry (0.1.9)
       json
       multi_json (>= 1.0.3)
@@ -347,6 +347,7 @@ DEPENDENCIES
   mocha
   mysql2
   newrelic_rpm
+  nokogiri
   omniauth (~> 1.2.2)
   omniauth-google-oauth2
   omniauth-heroku
