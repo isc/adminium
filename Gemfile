@@ -37,6 +37,7 @@ gem 'coffee-rails'
 gem 'uglifier', '>= 1.3.0'
 gem 'twitter-bootstrap-rails', '2.2.8'
 gem 'figaro'
+gem 'rack-timeout'
 
 group :mysql_support do
   gem 'mysql2'
