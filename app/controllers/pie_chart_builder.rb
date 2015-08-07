@@ -8,17 +8,19 @@ module PieChartBuilder
     apply_where
     apply_filters
     apply_search
-    if resource.column_info(name)[:type] == :boolean
+    if resource.is_boolean_column? name
       options = resource.column_options(name)
       enum = {
         true => {"color"=> "#07be25", "label"=> options["boolean_true"] || 'True'},
         false => {"color"=> "#777", "label" => options["boolean_false"] || "False"}
       }
+    elsif resource.foreign_key? name
+      enum = {}
     else
       enum = resource.enum_values_for(params[:column])
     end
     enum.merge!({nil=> {"color"=>"#DDD", "label" => "not set"}})
-    @data = @items.group_and_count(column).all.map do |row|
+    @data = @items.group_and_count(column).reverse_order(:count).limit(100).map do |row|
       key, count = row.values
       v = enum[key] || {"label" => key, "color" => new_color}
       [v["label"], count, key, v["color"]]

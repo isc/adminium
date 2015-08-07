@@ -244,7 +244,7 @@ module Resource
     end
     
     def is_pie_chart_column? name
-      enum_values_for(name) || is_boolean_column?(name)
+      enum_values_for(name) || is_boolean_column?(name) || foreign_key?(name)
     end
     
     def is_stat_chart_column? name
