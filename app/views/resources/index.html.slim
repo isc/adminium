@@ -2,105 +2,99 @@ javascript:
   columns_hash = #{resource.schema_hash.to_json.html_safe}
   adminium_column_options = #{resource.adminium_column_options.to_json.html_safe}
 
-- content_for :subnav do
-  header.jumbotron.subhead
-    .breadcrumb
-      .row-fluid.btn-toolbar
-        .span2.table-name
-          strong= params[:table].humanize
-          '
-          = link_to schema_path(params[:table]), rel: 'tooltip', title: 'Schema' do
-            i.icon.icon-table
-        - if resource.columns[:search].any?
-          .span4
-            form.form-inline.subnav-search.row-fluid
-              - request.query_string.to_s.split('&').each do |param|
-                - name, value = unescape_name_value_pair param
-                - next if name == 'search'
-                input type="hidden" name=name value=value
-              input.span8 name="search" id="search_input" type='text' value=params[:search] placeholder="search on #{resource.columns[:search].map{|e|e.to_s.humanize}.join(', ').downcase}"
-              .btn-group.span3
-                button.btn#search_btn
-                  i.icon-search
-                button.btn.dropdown-toggle data-toggle="dropdown"
-                  span.caret
-                ul.dropdown-menu.nav.dropdown-searches
-                  li
-                    a data-toggle="modal" href="#advanced_search" Advanced search ...
-        .btn-group.span3
+nav.navbar.navbar-default
+  .container-fluid
+    .navbar-header
+      a.navbar-brand
+        = params[:table].humanize
+    .collapse.navbar-collapse
+      ul.nav.navbar-nav
+        li
+          = link_to schema_path(params[:table]), rel: 'tooltip', title: 'Schema', data: {placement: 'bottom'} do
+            i.fa.fa-table<
+      - if resource.columns[:search].any?
+        form.navbar-form.navbar-left
+          - request.query_string.to_s.split('&').each do |param|
+            - name, value = unescape_name_value_pair param
+            - next if name == 'search'
+            input type="hidden" name=name value=value
+          input.form-control#search_input> name="search" type='text' value=params[:search] placeholder="search on #{resource.columns[:search].map{|e|e.to_s.humanize}.join(', ').downcase}"
+          button.btn.btn-default>
+            i.fa.fa-search
+          button.btn.btn-default> rel="tooltip" title="Advanced search" data-placement="bottom" data-toggle="modal" href="#advanced_search"
+            i.fa.fa-search-plus
           - if user_can? 'create', params[:table]
-            = link_to new_resource_path(table:params[:table]), class: "btn btn-warning create", rel: "tooltip", title: "Create a new row", "data-placement" => "bottom" do
-              ' New record
+            = link_to new_resource_path(table:params[:table]), class: "btn btn-default create", rel: "tooltip", title: "Create a new row", data: {placement: 'bottom'} do
+              i.fa.fa-plus>
           - if user_can? 'edit', params[:table]
-            button.btn.bulk-action.bulk-edit.hide title="Edit selected rows" rel='tooltip' data-toggle="modal" href="#bulk-edit-modal" data-placement="bottom"
-              i.icon-pencil
-          - if user_can? 'destroy', params[:table]
-            = form_tag bulk_destroy_resources_path(params[:table]), class: "bulk-action bulk-destroy hide" do
-              button.btn.btn-danger title='Delete selected rows' rel='tooltip' data-placement="bottom"
-                i.icon-trash
-          a.btn data-toggle="modal" href="#export" title="Export rows" rel='tooltip' data-placement="bottom" style="margin-left:2px"
-            i.icon-cloud-download
-          - if user_can? 'create', params[:table]
-            = link_to import_resources_path(table: params[:table]), class: "btn", rel: "tooltip", title: "Import rows", "data-placement" => 'bottom' do
-              i.icon-cloud-upload
+            button.btn.bulk-action.bulk-edit.hidden title="Edit selected rows" rel='tooltip' data-toggle="modal" href="#bulk-edit-modal" data-placement="bottom"
+              i.fa.fa-pencil>
+        - if user_can? 'destroy', params[:table]
+          = form_tag bulk_destroy_resources_path(params[:table]), class: "bulk-action bulk-destroy hidden navbar-form" do
+            button.btn.btn-danger title='Delete selected rows' rel='tooltip' data-placement="bottom"
+              i.fa.fa-trash
+          form.navbar-form.navbar-left
+            a.btn.btn-default> data-toggle="modal" href="#export" title="Export rows" rel='tooltip' data-placement="bottom" style="margin-left:2px"
+              i.fa.fa-download
+            - if user_can? 'create', params[:table]
+              = link_to import_resources_path(table: params[:table]), class: 'btn btn-default', rel: "tooltip", title: "Import rows", data: {placement: 'bottom'} do
+                i.fa.fa-upload
+      .navbar-right
+        = render partial: 'next_previous_page', locals: {scope: @items}
+        a.btn.btn-default.navbar-btn data-toggle="modal" href="#settings" title="Listing settings" data-placement="bottom" rel="tooltip"
+          i.fa.fa-cog
 
+#nav_searches
+  = form_for Widget.new, remote: true do |t|
+    = t.hidden_field :type, value: 'TableWidget'
+    = t.hidden_field :table, value: params[:table]
+    = t.hidden_field :advanced_search, value: params[:asearch] if params[:asearch].present?
 
-        .span2
-          = render partial: 'next_previous_page', locals: {scope: @items}
-        .span1
-          a.btn data-toggle="modal" href="#settings" title="Listing settings" data-placement="bottom" rel="tooltip"
-            i.icon-cog
-
-  #nav_searches.tabbable.tabs-below
-    = form_for Widget.new, remote: true do |t|
-      = t.hidden_field :type, value: 'TableWidget'
-      = t.hidden_field :table, value: params[:table]
-      = t.hidden_field :advanced_search, value: params[:asearch] if params[:asearch].present?
-
-    ul.nav.nav-tabs
-      - if params[:asearch].blank?
+  ul.nav.nav-pills
+    - if params[:asearch].blank?
+      li.active
+        a
+          span All
+          - if @widget
+            i.icon-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
+          - else
+            i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom" data-form="#nav_searches form"
+    - else
+      li= link_to 'All', params.merge(asearch: nil)
+    - resource.filters.keys.each do |key|
+      - if params[:asearch] == key
         li.active
-          span
-            span All
+          a
+            span.text-more data-placement="right" data-title=key data-content=display_filter(@current_filter) = key
             - if @widget
               i.icon-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
             - else
               i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom" data-form="#nav_searches form"
+            i.icon-pencil data-toggle="modal" href="#advanced_search"  title="Edit this view" rel="tooltip" data-placement="bottom"
+            = link_to search_path(params[:table], name: params[:asearch]), method: 'delete' do
+              i.icon-trash title="Delete this view" rel="tooltip" data-placement="bottom"
+
       - else
-        li= link_to 'All', params.merge(asearch: nil)
-      - resource.filters.keys.each do |key|
-        - if params[:asearch] == key
-          li.active
-            span
-              span.text-more data-placement="right" data-title=key data-content=display_filter(@current_filter) = key
-              - if @widget
-                i.icon-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
-              - else
-                i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom" data-form="#nav_searches form"
-              i.icon-pencil data-toggle="modal" href="#advanced_search"  title="Edit this view" rel="tooltip" data-placement="bottom"
-              = link_to search_path(params[:table], name: params[:asearch]), method: 'delete' do
-                i.icon-trash title="Delete this view" rel="tooltip" data-placement="bottom"
+        li= link_to key, params.merge(asearch: key)
+    li.add_view
+      a data-toggle="modal" href="#advanced_search" title="#{resource.filters.keys.length > 0 ? 'Add another view' : 'Create a custom view'}" rel="tooltip" data-placement="bottom"
+        i.fa.fa-plus-circle
 
+- if params[:search].present? || params[:where]
+  - if params[:search].present?
+    span.label.label-success
+      == "Search for <i>#{params[:search]}</i>"
+      span.btn.btn-mini data-param-kind="search"
+        i.fa.fa-times
+  - if params[:where]
+    - params[:where].each do |k, v|
+      span.label.label-warning
+        - if resource.is_date_column? k.to_sym
+          == "Where #{k} is in <i>#{format_date(v).first}</i>"
         - else
-          li= link_to key, params.merge(asearch: key)
-      li.add_view
-        a data-toggle="modal" href="#advanced_search" title="#{resource.filters.keys.length > 0 ? 'Add another view' : 'Create a custom view'}" rel="tooltip" data-placement="bottom"
-          i.icon-plus-sign
-
-  - if params[:search].present? || params[:where]
-    .page-header.search-where-filters
-      - if params[:search].present?
-        span.label.label-success
-          == "search for <i>#{params[:search]}</i>"
-          span.remove data-param-kind="search" x
-      - if params[:where]
-        - params[:where].each do |k, v|
-          span.label.label-warning
-            - if resource.is_date_column? k.to_sym
-              == "where #{k} is in <i>#{format_date(v).first}</i>"
-            - else
-              == "where #{k} is <i>#{v}</i>"
-            span.remove data-param=format_param_for_removal(k, v) x
+          == "Where #{k} is <i>#{v}</i>"
+        span.btn.btn-mini data-param=format_param_for_removal(k, v) x
+  hr
 .content
   = render partial: 'items', locals: {items: @fetched_items, actions_cell: true}
 = render partial: '/resources/panels/listing_settings'

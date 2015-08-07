@@ -6,19 +6,19 @@ html lang="en"
     = csrf_meta_tags
     /[if lt IE 9]
       = javascript_include_tag "https://html5shim.googlecode.com/svn/trunk/html5.js"
-    = stylesheet_link_tag '//fonts.googleapis.com/css?family=Ubuntu'
-    = stylesheet_link_tag "application"
+    = stylesheet_link_tag '//maxcdn.bootstrapcdn.com/bootswatch/3.3.4/paper/bootstrap.min.css', 'application'
     meta name="description" content="Administration interface for your database as a service"
     meta name="keywords" content="Adminium, database, administration, interface, export, heroku, add-on"
     meta name="viewport" content="width=device-width, initial-scale=1.0"
+    meta name="twitter:widgets:csp" content="on"
     link href="images/favicon.ico" rel="shortcut icon"
   body.landing
     .container
       .row.header
-        .span6
+        .col-md-6
           h2 Adminium
           h4 Database backend as a service
-        .span6.menu
+        .col-md-6.menu
           = link_to "Live Demo", start_demo_docs_path
           b |
           =link_to "Documentation", docs_path
@@ -31,40 +31,40 @@ html lang="en"
             '  Sign Up
     .container.intro
       .row
-        .span8.offset2.centered
+        .col-md-8.col-md-offset-2.centered
           h2.promise Enjoy a full fledged database backend. No coding involved.
       .row.big-screenshot
         = link_to start_demo_docs_path do
-          = image_tag 'docs/screenshot.jpg', class: 'span8 offset2'
+          = image_tag 'docs/screenshot.jpg', class: 'col-md-8 col-md-offset-2'
           div Try the live demo
 
     .container-fluid.white.features
       .container
         .row
-          h2.centered Some of our features
+          h3.centered Some of our features
         .row
-          = image_tag 'advanced_search.png', class: 'offset2 span3 feature'
-          .span5
-            h3 Filters and search
+          = image_tag 'advanced_search.png', class: 'col-md-offset-2 col-md-3 feature'
+          .col-md-5
+            h4 Filters and search
             p Perform search on all your table columns or configure which fields are searchable. For complex queries, including date range for example, you can easily build custom queries and save them for later access.
         .row
-          .span5.offset2
-            h3 Table relationships navigation
+          .col-md-5.col-md-offset-2
+            h4 Table relationships navigation
             p Do you follow standard conventions or have foreign keys defined? Relationships between your tables will be automatically discovered so you can easily explore and manage your data without ever thinking about primary keys. 
-          = image_tag 'associations.png', class: 'span3 feature'
+          = image_tag 'associations.png', class: 'col-md-3 feature'
         .row
-          = image_tag 'collaborators.png', class: 'offset2 span3 feature'
-          .span5
-            h3 Collaborators
+          = image_tag 'collaborators.png', class: 'col-md-offset-2 col-md-3 feature'
+          .col-md-5
+            h4 Collaborators
             p
               'Want your client or coworkers to have access to Adminium?
               br
               'You can invite them to your project. Moreover, you can assign them roles and configure precisely on which tables they can see, edit or create data.
         .row
-          .span5.offset2
-            h3 Enum values
+          .col-md-5.col-md-offset-2
+            h4 Enum values
             p You can map values from your database to human-readable labels for better rendering and easier filtering or edition. 
-          = image_tag 'enums.png', class: 'span3 feature'
+          = image_tag 'enums.png', class: 'col-md-3 feature'
         .row
           h3.centered
             ' There is a lot more! Check out
@@ -72,32 +72,23 @@ html lang="en"
             '.
       .container.testimonials
         .row
-          
-          .span5.offset1.centered
-            = link_to "https://twitter.com/swagner2/status/319505393732710400" do
-              = image_tag "https://si0.twimg.com/profile_images/3464092512/5f407e39c863e4ca8a1c9ed307b0f1b2_normal.jpeg"
-            br
-            quote I love #adminium for @HerokuPostgres! Great tool to admin your db.
-            p
-              = link_to "Steven Wagner, Dealer Ignition", "https://twitter.com/swagner2/status/319505393732710400", target: "_blank"
-          .span5.centered
-            = link_to "https://twitter.com/sobes/status/341271654988644353" do
-              = image_tag "https://si0.twimg.com/profile_images/3620289917/1c4988b16bd60eaf565e32b311a7cc71_normal.png"
-            br
-            quote Thx to @admi_nium for an awesome #herokuaddon and saving us a bunch of time on our backend admin dev, allowing us to focus on customer UX!
-            p
-              = link_to "Paul Sobocinski, Commission Pitch", "https://twitter.com/sobes/status/341271654988644353", target: "_blank"
+          .col-md-5.col-md-offset-1.centered
+            <blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">I love <a href="https://twitter.com/hashtag/adminium?src=hash">#adminium</a> for <a href="https://twitter.com/HerokuPostgres">@HerokuPostgres</a>! Great tool to admin your db. <a href="https://t.co/9zoJCMEn6t">https://t.co/9zoJCMEn6t</a></p>&mdash; Steven Wagner (@TenaciousSteven) <a href="https://twitter.com/TenaciousSteven/status/319505393732710400">April 3, 2013</a></blockquote>
+            <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+          .col-md-5.centered
+            <blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">Thx to <a href="https://twitter.com/admi_nium">@admi_nium</a> for an awesome <a href="https://twitter.com/hashtag/herokuaddon?src=hash">#herokuaddon</a> and saving us a bunch of time on our backend admin dev, allowing us to focus on customer UX!</p>&mdash; Paul Sobocinski (@sobes) <a href="https://twitter.com/sobes/status/341271654988644353">June 2, 2013</a></blockquote>
+            <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
               
     .container-fluid.white.technos
       .container
         .row
-          .span5.offset1.centered
+          .col-md-5.col-md-offset-1.centered
             = image_tag 'logos/mysql.png', class: 'mysql-logo'
             = image_tag 'logos/postgresql.png', class: 'postgresql-logo'
             br
             'Works with both PostgreSQL and MySQL.
-          .span5.centered
+          .col-md-5.centered
             = image_tag 'logos/heroku.png'
             br
             'Available on Heroku as an add-on. Not on Heroku ? Please
@@ -107,9 +98,8 @@ html lang="en"
           
     .container.pricing#pricing
       .row
-        h2.offset3.span6.centered Simple pricing, affordable for all
-      .row
-        = render 'pricing', install_button: false
+        h2.col-md-offset-3.col-md-6.centered Simple pricing, affordable for all
+      .row= render 'pricing', install_button: false
       .centered
         a.btn.btn-large.btn-success.cta href="/install" Install the add-on on your Heroku apps
         p.more All plans come with full support. You can upgrade or downgrade anytime.
@@ -119,18 +109,18 @@ html lang="en"
           = render partial: "twitter_widget"
         p.copyright.centered
           = link_to "&copy; #{Date.today.year} Cluscrive".html_safe, "http://cluscrive.fr", target: '_blank'
-    = javascript_include_tag 'application'
+    = javascript_include_tag '//code.jquery.com/jquery-2.1.4.min.js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js', 'application'
     - unless Rails.env.development?
       = render 'layouts/ga'
       = render 'layouts/uservoice'
     
     = modal 'Log In or Sign Up', id: 'login', skip_footer: true do |modal|
       - modal.body do
-        .row-fluid.centered
-          .span6
+        .row.centered
+          .col-md-6
             = link_to "/auth/heroku" do
               = image_tag 'logos/heroku.png'
-          .span6
+          .col-md-6
             = link_to '/auth/google_oauth2' do
               = image_tag 'logos/google.png'
             p available only to collaborators of Enterprise accounts

@@ -1,7 +1,7 @@
 .page-header
   .pull-right
     button.btn title="Add a widget" rel="tooltip" data-placement="left" data-toggle="modal" href="#new_widget"
-      i.icon-plus-sign
+      i.fa.fa-plus-circle
   h3 Dashboard
 
 - if @widgets.any?
@@ -11,7 +11,7 @@
         .widget.span6 data-query-url=widget_query_path(widget, with_id: true) data-widget-id=widget.id class=(widget.type.underscore)
           .pull-right
             = link_to widget_path(widget), class: 'btn btn-mini', remote: true, method: :delete, data: {confirm: 'Sure ?'} do
-              i.icon-trash
+              i.fa.fa-trash
           h4
             = link_to widget.name, widget_query_path(widget)
             '
@@ -23,7 +23,7 @@
   .alert
     ' Add widgets using the
     button.btn data-toggle="modal" href="#new_widget"
-      i.icon-plus-sign
+      i.fa.fa-plus-circle
     '  button in the top right corner.
 
 - content_for :footer do
@@ -50,9 +50,9 @@
         tr class=((current_account.try(:pet_project?) && index > 5) ? 'deactivated' : '')
           td
             = link_to schema_path(table), rel: 'tooltip', title: 'Schema' do
-              i.icon.icon-table
+              i.fa.fa-table
             = link_to resources_path(table), rel: 'tooltip', title: 'Records' do
-              i.icon.icon-eye-open
+              i.fa.fa-eye
           td= link_to table, resources_path(table)
           td data-value=fulltblsize = number_to_human_size fulltblsize
           td data-value=tblsize = number_to_human_size tblsize
@@ -67,7 +67,7 @@
 #petprojectLimitationModal.modal.fade
   .modal-body.centered
     h1= "This table is not accessible ! Why ?"
-    i.icon-lock.icon-4x
+    i.fa.fa-lock.fa-4x
     p
       'You are actually on the <b>Pet Project plan</b>.
       br
@@ -84,7 +84,7 @@
 #new_widget.modal.hide.fade
   .modal-header
     a.close data-dismiss="modal"
-      i.icon-remove
+      i.fa.fa-remove
     h3 New dashboard widget
   = simple_form_for Widget.new, html: {class: 'form-horizontal'} do |f|
     .modal-body

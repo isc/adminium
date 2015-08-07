@@ -17,7 +17,7 @@ addToTable = (pane_id, cells) ->
   $('<td>').append($('<i>').addClass('icon-remove-sign remove')).appendTo tr
 
 setupRemoval = (pane_id) ->
-  $("#{pane_id} .remove").live 'click', ->
+  $("#{pane_id}").on 'click', '.remove', ->
     index = $(this).closest('tr').index()
     $(this).closest('tr').remove()
     input = $("#{pane_id} .params input").eq(index * 2)

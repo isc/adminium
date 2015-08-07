@@ -19,10 +19,10 @@ class Navigation
       $("ul.accounts-menu").html(data)
     
   tableSelection: ->
-    options = {placeholder: "Select a table", allowClear: true, dropdownCssClass: 'select2OrangeDropDown'}
+    options = {placeholder: "Jump to table (s to focus)", allowClear: true, dropdownCssClass: 'select2OrangeDropDown'}
     options.matcher = adminiumSelect2Matcher
     @selector = '#table_select'
-    $(@selector).select2(options).on 'change', (object) =>
+    $(@selector).select2(options).removeClass('hidden').on 'change', (object) =>
       $(@selector).select2('destroy').replaceWith("<div class='loading_table'>Loading page...</div>")
       window.location.href = "/resources/#{object.val}"
     $('.modal').on 'hide', ->
@@ -49,7 +49,7 @@ class Navigation
         $(selector).modal('show')
       else
         docs_url = '/docs/keyboard_shortcuts?no_layout=true'
-        $('<div>').attr('id', selector.replace('#', '')).addClass('modal')
+        $('<div>').attr('id', selector.replace('#', '')).addClass('modal fade')
           .appendTo('body').html($(".loading_modal").html()).modal('show')
         $.get docs_url, (data) => $(selector).html(data)
         $(selector).on 'hidden', => @helpShown = false
@@ -60,22 +60,22 @@ class Navigation
     $(document).keypress (e) =>
       return if $(e.target).is(':input')
       if e.which is 47
-        $('form.subnav-search input[type=text]').focus()
+        $('form.navbar-form input[type=text]').focus()
         e.preventDefault()
 
   itemList: ->
     $(document).keydown (e) =>
       return if $(e.target).is(':input') or $('.items-list').length is 0
-      row = $('.items-list tr.selected')
+      row = $('.items-list tr.success')
       if row.length is 0
         if [74, 40].indexOf(e.which) isnt -1
-          $('.items-list tbody tr').first().addClass('selected')
+          $('.items-list tbody tr').first().addClass('success')
           e.preventDefault()
         return
       if [74, 40].indexOf(e.which) isnt -1 # j or down arrow
-        row.removeClass('selected').next().addClass('selected') if row.next().length
+        row.removeClass('success').next().addClass('success') if row.next().length
       else if [75, 38].indexOf(e.which) isnt -1 # k or up arrow
-        row.removeClass('selected').prev().addClass('selected') if row.prev().length
+        row.removeClass('success').prev().addClass('success') if row.prev().length
       else if [13, 39, 79].indexOf(e.which) isnt -1 # return or right arrow or o
         location.href = row.find('td:first-child a:first-child').attr('href')
       else if e.which is 88 # x

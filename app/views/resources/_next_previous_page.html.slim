@@ -1,14 +1,16 @@
 .btn-group
   - unless scope.current_page == 1
-    = link_to url_for(params.merge(page: (scope.current_page - 1))), rel: 'tooltip', title: 'Previous page', data: {placement: 'bottom'}, class: 'btn' do
-      i.icon-arrow-left
+    = link_to url_for(params.merge(page: (scope.current_page - 1))), rel: 'tooltip', title: 'Previous page', data: {placement: 'bottom'}, class: 'btn btn-default' do
+      i.fa.fa-arrow-left
+
   - unless (scope.current_page == scope.page_count) || scope.page_count.zero?
-    = link_to url_for(params.merge(page: (scope.current_page + 1))), rel: 'tooltip', title: 'Next page', data: {placement: 'bottom'}, class: 'btn' do
-      i.icon-arrow-right
+    = link_to url_for(params.merge(page: (scope.current_page + 1))), rel: 'tooltip', title: 'Next page', data: {placement: 'bottom'}, class: 'btn btn-default' do
+      i.fa.fa-arrow-right
+
 - if scope.page_count.nonzero?
   - warning_class = scope.current_page > scope.page_count ? 'btn-danger' : ''
-  .btn-group
-    = link_to "#", class: "btn dropdown-toggle #{warning_class}", data: {toggle: 'dropdown'} do
+  .btn-group<
+    = link_to "#", class: "btn btn-default dropdown-toggle #{warning_class}", data: {toggle: 'dropdown'} do
       = page_entries_info(scope, entry_name: 'record').html_safe
       '
       span.caret
@@ -23,8 +25,8 @@
       - if scope.current_page != scope.page_count
         li
           = link_to "Go to last page (page #{scope.page_count})", params.merge(page: (scope.page_count))
-      li.divider
-      li.nav-header rows per page
+        li.divider
+      li.dropdown-header Rows per page
       - ([25, 50, 100, 200] + [resource.per_page.to_i]).uniq.sort.each do |per_page|
         li(class="#{'active' if resource.per_page == per_page}")
           = link_to per_page, params.merge(per_page: per_page)

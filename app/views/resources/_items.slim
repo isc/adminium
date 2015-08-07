@@ -29,11 +29,11 @@
             div
               == header_link name
               - if resource.is_date_column?(name) && actions_cell
-                i.time-chart.icon-bar-chart[data-type='TimeChart']
+                i.fa.time-chart.fa-bar-chart[data-type='TimeChart']
               - if resource.is_pie_chart_column?(name) && actions_cell
-                i.time-chart.icon-bar-chart[data-type='PieChart']
+                i.fa.time-chart.fa-pie-chart[data-type='PieChart']
               - if resource.is_stat_chart_column?(name) && actions_cell
-                i.time-chart.icon-bar-chart[data-type='StatChart']
+                i.fa.time-chart.fa-bar-chart[data-type='StatChart']
               i.column_settings.icon-cog
 
 
@@ -44,11 +44,11 @@
           - if actions_cell
             td.actions
               - if item_pk
-                = link_to content_tag('i', nil, class: 'icon-eye-open'), resource_path(params[:table], item_pk)
+                = link_to content_tag('i', nil, class: 'fa fa-eye'), resource_path(params[:table], item_pk)
                 - if user_can? 'edit', params[:table]
-                  = link_to content_tag('i', nil, class: 'icon-pencil'), edit_resource_path(params[:table], item_pk)
+                  = link_to content_tag('i', nil, class: 'fa fa-pencil'), edit_resource_path(params[:table], item_pk)
                 - if user_can? 'destroy', params[:table]
-                  = link_to content_tag('i', nil, class: 'icon-trash'), resource_path(params[:table], item_pk), method: :delete, data: {confirm: t('items.destroy_warning')}
+                  = link_to content_tag('i', nil, class: 'fa fa-trash'), resource_path(params[:table], item_pk), method: :delete, data: {confirm: t('items.destroy_warning')}
             td.checkboxes.click_checkbox
               - if item_pk && (user_can?('destroy', params[:table]) || user_can?('update', params[:table]))
                 input type="checkbox"

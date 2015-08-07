@@ -1,4 +1,4 @@
-ul.nav.pull-right.nav-collapse
+ul.nav.navbar-nav.navbar-right
   - if current_user.nil? && current_account.nil?
     li= link_to 'Sign in', '/auth/google_oauth2'
   - else
@@ -20,7 +20,7 @@ ul.nav.pull-right.nav-collapse
         li= link_to 'Sign out', signout_path
   li.dropdown
     a.dropdown-toggle data-toggle="dropdown" href="#"
-      i.icon-question-sign.icon-white
+      i.fa.fa-question-circle
     ul.dropdown-menu
       li.uservoice-trigger
         a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="support" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-forum-id="155803" Report a bug

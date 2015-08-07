@@ -3,11 +3,10 @@ class AdvancedSearch
   unary_operators: ['null', 'not_null', 'present', 'blank', 'is_true', 'is_false', 'today', 'yesterday', 'this_week', 'last_week']
 
   constructor: ->
-    $('table.filters span.btn').live 'click', ->
+    $('table.filters').on 'click', 'span.btn', ->
       $(this).parents('tr').remove()
-    selects = $('table.filters td.operators select')
-    selects.live 'change', @selectedOperator
-    @updateFilterForm $(select) for select in selects
+    $('table.filters').on 'change', 'td.operators select', @selectedOperator
+    @updateFilterForm $(select) for select in $('table.filters td.operators select')
     $("#new_filter").select2({placeholder: 'Choose a column', matcher: adminiumSelect2Matcher})
     $("#new_filter").bind 'change', (object) =>
       column_name = object.val

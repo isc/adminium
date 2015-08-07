@@ -1,11 +1,11 @@
 $ ->
-  $('#new_collaborator').live 'ajax:before', ->
+  $(document).on 'ajax:before', '#new_collaborator', ->
     input = $(this).find('input[type=email]')
     tr = $('<tr>').addClass("deactivated").appendTo('#collaborators')
     $('<td>').attr("colspan", 3).text(input.val()).appendTo(tr)
-  $('#new_collaborator').live 'ajax:complete', ->
+  $(document).on 'ajax:complete', '#new_collaborator', ->
     $(this).find('input[type=email]').val('')
-  $('a.trash_collaborator').live 'ajax:complete', ->
+  $(document).on 'ajax:complete', 'a.trash_collaborator', ->
     $(this).closest('tr').remove()
 
   $("input[name=all_actions]").click ->

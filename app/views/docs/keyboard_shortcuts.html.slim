@@ -1,50 +1,52 @@
-.modal-header
-  a.close data-dismiss="modal" ×
-  h3 Keyboard shortcuts
-.modal-body
-  ul.keyboard-shortcuts
-    li
-      ' Anywhere
-      ul
+.modal-dialog
+  .modal-content
+    .modal-header
+      a.close data-dismiss="modal" ×
+      h4.modal-title Keyboard shortcuts
+    .modal-body
+      ul.keyboard-shortcuts
         li
-          b s
-          '  : focus table selection
+          ' Anywhere
+          ul
+            li
+              b s
+              '  : focus table selection
+            li
+              b ?
+              '  : open keyboard shortcut help
         li
-          b ?
-          '  : open keyboard shortcut help
-    li
-      ' On table listing
-      ul
-        li
-          b= "/"
-          '  : focus search field for the current table
-        li
-          b j
-          = " / "
-          b k
-          '  or 
-          b ↓
-          = " / "
-          b ↑
-          '  : move selection to next / previous row
-        li
-          b x
-          '  : check selected row
-        li
-          b o
-          '  or  
-          b= "<Enter>"
-          '  or  
-          b →
-          '  : show selected row
-        li
-          b e
-          '  : edit selected row
-        li
-          b c
-          '  : create a new row
-        li
-          b t
-          '  : trash selected row
-.modal-footer
-  a.btn.btn-primary data-dismiss="modal" Close
+          ' On table listing
+          ul
+            li
+              b= "/"
+              '  : focus search field for the current table
+            li
+              b j
+              = " / "
+              b k
+              '  or 
+              b ↓
+              = " / "
+              b ↑
+              '  : move selection to next / previous row
+            li
+              b x
+              '  : check selected row
+            li
+              b o
+              '  or  
+              b= "<Enter>"
+              '  or  
+              b →
+              '  : show selected row
+            li
+              b e
+              '  : edit selected row
+            li
+              b c
+              '  : create a new row
+            li
+              b t
+              '  : trash selected row
+    .modal-footer
+      a.btn.btn-default data-dismiss="modal" Close
