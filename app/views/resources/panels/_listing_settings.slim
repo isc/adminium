@@ -3,16 +3,15 @@
     .modal-content
       = form_tag setting_path(id: params[:table]), method: :put, class: '' do
         .modal-header
-          a.close data-dismiss="modal" &times;
+          a.close data-dismiss="modal" ×
           h4.modal-title Listing settings
         .modal-body
           = accordion do |accordion|
             = accordion.pane 'Displayed columns' do
-              = render partial: 'resources/panels/column_listing', locals: {resource: resource, type: :listing, sortable: true}
-              = render partial: 'resources/panels/extra_columns', locals: {resource: resource}
+              = render 'resources/panels/column_listing', resource: resource, type: :listing, sortable: true
+              = render 'resources/panels/extra_columns', resource: resource
             = accordion.pane 'Searchable columns' do
-              = render partial: 'resources/panels/column_listing', locals: {resource: resource, type: :search}
+              = render 'resources/panels/column_listing', resource: resource, type: :search
             = accordion.pane 'Miscellaneous' do
-              = render partial: 'resources/panels/misc'
-        .modal-footer
-          input#save_settings.btn.btn-primary type='submit' value='Save settings'
+              = render 'resources/panels/misc'
+        .modal-footer= submit_tag 'Save settings', class: 'btn btn-primary'

@@ -2,27 +2,26 @@ javascript:
   columns_hash = #{resource.schema_hash.to_json.html_safe}
   adminium_column_options = #{resource.adminium_column_options.to_json.html_safe}
 
-- content_for :subnav do
-  header.jumbotron.subhead
-    .breadcrumb
-      .row-fluid.btn-toolbar
-        .span3
-          strong= link_to params[:table].humanize, resources_path(params[:table])
-          span.divider >
-          = "#{resource.human_name} ##{params[:id]}"
-        .btn-group.span8
-          - if user_can? 'create', params[:table]
-            = link_to new_resource_path(table:params[:table]), class: "btn create", rel: "tooltip", title: "Create a new row", "data-placement" => "bottom" do
-              i.icon-file
-            = link_to new_resource_path(table:params[:table], clone_id: params[:id]), class: "btn create", rel: "tooltip", title: "Clone", "data-placement" => "bottom" do
-              i.icon-copy
-          - if user_can? 'edit', params[:table]
-            = link_to content_tag(:i, nil, class: 'icon-pencil'), edit_resource_path(resource.table, params[:id]), title: 'Edit', rel: 'tooltip', :'data-placement' => "bottom", class: 'btn edit'
-          - if user_can? 'destroy', params[:table]
-            = link_to content_tag(:i, nil, class: 'icon-trash'), resource_path(resource.table, params[:id], redirect: 'index'), method: :delete, data: {confirm: t('items.destroy_warning')}, class: 'btn destroy', title: 'Destroy', rel: 'tooltip', 'data-placement' => 'bottom'
-        .span1.pull-right
-          a.btn data-toggle="modal" href="#settings" title="Show Settings" data-placement="bottom" rel="tooltip"
-            i.icon-cog
+nav.navbar.navbar-default
+  .container-fluid
+    .navbar-header
+      = link_to params[:table].humanize, resources_path(params[:table]), class: 'navbar-brand'
+      .navbar-text
+        = "#{resource.human_name} ##{params[:id]}"
+    .collapse.navbar-collapse
+      .btn-group
+        - if user_can? 'create', params[:table]
+          = link_to new_resource_path(table:params[:table]), class: "btn navbar-btn btn-default create", rel: "tooltip", title: "Create a new row", data: {placement: 'bottom'} do
+            i.fa.fa-file
+          = link_to new_resource_path(table:params[:table], clone_id: params[:id]), class: "btn navbar-btn btn-default create", rel: "tooltip", title: "Clone", data: {placement: 'bottom'} do
+            i.fa.fa-copy
+        - if user_can? 'edit', params[:table]
+          = link_to content_tag(:i, nil, class: 'fa fa-pencil'), edit_resource_path(resource.table, params[:id]), title: 'Edit', rel: 'tooltip', data: {placement: 'bottom'}, class: 'btn navbar-btn btn-default edit'
+        - if user_can? 'destroy', params[:table]
+          = link_to content_tag(:i, nil, class: 'fa fa-trash'), resource_path(resource.table, params[:id], redirect: 'index'), method: :delete, data: {confirm: t('items.destroy_warning'), placement: 'bottom'}, class: 'btn navbar-btn btn-default destroy', title: 'Destroy', rel: 'tooltip'
+      .navbar-right
+        a.btn.navbar-btn.btn-default data-toggle="modal" href="#settings" title="Show Settings" data-placement="bottom" rel="tooltip"
+          i.fa.fa-cog
 
 .row-fluid.item-attributes data-table=params[:table] data-item-id=params[:id]
   .span7
@@ -33,7 +32,7 @@ javascript:
           - columns.each do |name|
             tr
               th.span3 title=name
-                i.column_settings.icon-cog
+                i.column_settings.fa.fa-cog
                 = resource.column_display_name name
               == display_attribute :td, @item, name, resource
     - columns = item_attributes_type([:text], resource)
@@ -42,7 +41,7 @@ javascript:
         - columns.each do |name|
           tr
             th title=name
-              i.column_settings.icon-cog
+              i.column_settings.fa.fa-cog
               = resource.column_display_name name
           tr
             == display_attribute :td, @item, name, resource
@@ -51,7 +50,7 @@ javascript:
       - primary_keys_and_time_fields_for_show(resource).each do |name|
         tr
           th.span3 title=name
-            i.column_settings.icon-cog
+            i.column_settings.fa.fa-cog
             = resource.column_display_name name
           == display_attribute :td, @item, name, resource
     - columns = item_attributes_type([:boolean, :blob], resource)
@@ -60,7 +59,7 @@ javascript:
         - columns.each do |name|
           tr
             th.span3 title=name
-              i.column_settings.icon-cog
+              i.column_settings.fa.fa-cog
               = resource.column_display_name name
             == display_attribute :td, @item, name, resource
 
@@ -92,7 +91,7 @@ javascript:
                 = link_to "...", resources_path(name, where: assoc_params)
             td
               = link_to new_resource_path(name, attributes: assoc_params), class: 'btn btn-mini', rel: "tooltip", :"data-placement" => :left,  title: "Create a new associated #{name.to_s.singularize.humanize}" do
-                i.icon-plus
+                i.fa.fa-plus
 
 = render 'resources/panels/show_settings'
-#column-settings.modal.hide.fade data-remote-path=column_setting_path('{table}', column: '{column}', view: '{view}')
+#column-settings.modal.fade data-remote-path=column_setting_path('{table}', column: '{column}', view: '{view}')

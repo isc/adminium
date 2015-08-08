@@ -1,14 +1,14 @@
-#settings.modal.hide.fade
-  .modal-header
-    a.close data-dismiss="modal" ×
-    h3 Form settings
-  = form_tag setting_path(id: params[:table]), method: :put, class: 'form-horizontal' do
-    .modal-body
-      = accordion do |accordion|
-        = accordion.pane 'Form fields' do
-          = render partial: 'resources/panels/column_listing', locals: {resource: resource, type: :form, sortable: true}
-        = accordion.pane 'Validations' do
-          = render partial: 'resources/panels/validations'
-            
-    .modal-footer
-      input#save_settings.btn.btn-primary type='submit' value='Save settings'
+#settings.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        a.close data-dismiss="modal" ×
+        h4.modal-title Form settings
+      = form_tag setting_path(id: params[:table]), method: :put, class: 'form-horizontal' do
+        .modal-body
+          = accordion do |accordion|
+            = accordion.pane 'Form fields' do
+              = render 'resources/panels/column_listing', resource: resource, type: :form, sortable: true
+            = accordion.pane 'Validations' do
+              = render 'resources/panels/validations'
+        .modal-footer= submit_tag 'Save settings', class: 'btn btn-primary'

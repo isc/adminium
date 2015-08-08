@@ -15,7 +15,7 @@
         'Fill in the inputs you want to update. All the records will have the same value.
         br
         'Leave the other inputs empty to preserve the original record values.
-    = render partial: 'form_fields', locals: {item: @item, input_class: 'span4', required_constraints: false}
+    = render 'form_fields', item: @item, input_class: 'span4', required_constraints: false
   .modal-footer
     - submit_tag_label = @item.present? ? "Update #{params[:table].humanize} ##{@item[resource.primary_key]}" : "Update #{@record_ids.length} #{params[:table].humanize}"
     = submit_tag submit_tag_label, class: 'btn-primary', data: {disable_with: 'Sending...'}

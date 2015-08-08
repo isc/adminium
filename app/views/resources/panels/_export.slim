@@ -1,39 +1,41 @@
-#export.modal.hide.fade
-  .modal-header
-    a.close data-dismiss="modal" ×
-    h3 Export results
-  form.form-horizontal
-    - request.query_string.to_s.split('&').each do |param|
-      input type="hidden" name=CGI.unescape(param.split('=').first) value=CGI.unescape(param.split('=').last)
-    input type="hidden" name="format" value="csv"
-    .modal-body
-      = accordion do |accordion|
-        = accordion.pane 'Select exported fields' do
-          = render partial: 'resources/panels/column_listing', locals: {resource: resource, type: :export, sortable: true}
-          = render partial: 'resources/panels/extra_columns', locals: {resource: resource}
-        = accordion.pane 'CSV file options' do
-          .control-group
-            - guessed_encoding = (Rails.configuration.database_configuration[Rails.env]['encoding'].presence rescue 'UTF-8') || 'UTF-8'
-            label.control-label for="csv_options_encoding_to"= t('export.csv.encoding_to')
-            .controls
-              = select_tag 'csv_options[encoding_to]', options_for_select(["UTF-8", "UTF-16LE", "UTF-16BE", "UTF-32LE", "UTF-32BE", "UTF-7", "ISO-8859-1", "ISO-8859-15", "IBM-850", "MacRoman", "Windows-1252", "ISO-8859-3", "IBM-852", "ISO-8859-2", "MacCE", "Windows-1250", "IBM-855", "ISO-8859-5", "ISO-IR-111", "KOI8-R", "MacCyrillic", "Windows-1251", "CP-866", "KOI-U", "MacUkranian", "GB2312", "GBK", "GB18030", "HZ", "ISO-2022-CN", "Big5", "Big5-HKSCS", "EUC-TW", "EUC-JP", "ISO-2022-JP", "Shift_JIS", "EUC-KR", "UHC", "JOHAB", "ISO-2022-KR"])
-              p.help-block= t('export.csv.encoding_to_help', :name => guessed_encoding)
+#export.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        a.close data-dismiss="modal" ×
+        h4.modal-title Export results
+      form.form-horizontal
+        - request.query_string.to_s.split('&').each do |param|
+          input type="hidden" name=CGI.unescape(param.split('=').first) value=CGI.unescape(param.split('=').last)
+        input type="hidden" name="format" value="csv"
+        .modal-body
+          = accordion do |accordion|
+            = accordion.pane 'Select exported fields' do
+              = render 'resources/panels/column_listing', resource: resource, type: :export, sortable: true
+              = render 'resources/panels/extra_columns', resource: resource
+            = accordion.pane 'CSV file options' do
+              .control-group
+                - guessed_encoding = (Rails.configuration.database_configuration[Rails.env]['encoding'].presence rescue 'UTF-8') || 'UTF-8'
+                label.control-label for="csv_options_encoding_to"= t('export.csv.encoding_to')
+                .controls
+                  = select_tag 'csv_options[encoding_to]', options_for_select(["UTF-8", "UTF-16LE", "UTF-16BE", "UTF-32LE", "UTF-32BE", "UTF-7", "ISO-8859-1", "ISO-8859-15", "IBM-850", "MacRoman", "Windows-1252", "ISO-8859-3", "IBM-852", "ISO-8859-2", "MacCE", "Windows-1250", "IBM-855", "ISO-8859-5", "ISO-IR-111", "KOI8-R", "MacCyrillic", "Windows-1251", "CP-866", "KOI-U", "MacUkranian", "GB2312", "GBK", "GB18030", "HZ", "ISO-2022-CN", "Big5", "Big5-HKSCS", "EUC-TW", "EUC-JP", "ISO-2022-JP", "Shift_JIS", "EUC-KR", "UHC", "JOHAB", "ISO-2022-KR"])
+                  p.help-block= t('export.csv.encoding_to_help', :name => guessed_encoding)
 
-          .control-group
-            label.control-label for="csv_options_skip_header"= t('export.csv.skip_header')
-            .controls
-              = check_box_tag 'csv_options[skip_header]', 'checked', resource.export_skip_header
-              p.help-block= t('export.csv.skip_header_help')
+              .control-group
+                label.control-label for="csv_options_skip_header"= t('export.csv.skip_header')
+                .controls
+                  = check_box_tag 'csv_options[skip_header]', 'checked', resource.export_skip_header
+                  p.help-block= t('export.csv.skip_header_help')
 
-          .control-group
-            label.control-label for="csv_options_generator_col_sep"= t('export.csv.col_sep')
-            .controls
-              = select_tag 'csv_options[col_sep]', options_for_select({"<comma> ','" => ',', "<semicolon> ';'" => ';', '<tabs>' => "\t" }, resource.export_col_sep)
-              p.help-block= t('export.csv.col_sep_help', :value => t('export.csv.default_col_sep'))
+              .control-group
+                label.control-label for="csv_options_generator_col_sep"= t('export.csv.col_sep')
+                .controls
+                  = select_tag 'csv_options[col_sep]', options_for_select({"<comma> ','" => ',', "<semicolon> ';'" => ';', '<tabs>' => "\t" }, resource.export_col_sep)
+                  p.help-block= t('export.csv.col_sep_help', :value => t('export.csv.default_col_sep'))
 
 
-    .modal-footer
-      - if @items.pagination_record_count.nonzero?
-        = submit_tag "Export #{@items.pagination_record_count} #{params[:table].humanize.downcase} to csv", class: "btn btn-primary"
-      - else
-        i There is nothing to export
+        .modal-footer
+          - if @items.pagination_record_count.nonzero?
+            = submit_tag "Export #{@items.pagination_record_count} #{params[:table].humanize.downcase} to csv", class: "btn btn-primary"
+          - else
+            i There is nothing to export

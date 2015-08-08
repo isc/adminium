@@ -3,49 +3,50 @@ javascript:
   adminium_column_options = #{resource.adminium_column_options.to_json.html_safe}
   primary_key = '#{resource.primary_key}'
 
-- content_for :subnav do
-  h4== "#{link_to(params[:table].capitalize, resources_path(params[:table]))} | New import"
-  br
-  header.jumbotron.subhead.importHeader
-    .well
-      .row-fluid
-        #select-file.span3
-          h5 Step 1 of 3
-          .btn.btn-warning.btn-large Select a CSV file and preview
-          .hint The first row of the CSV must contain the column names
-        #start-import.span3.hide
-          h5 Step 2 of 3
-          = submit_tag "", class: "btn btn-primary btn-large", id: 'perform-import'
-          .hint Just review your data and go on !
-        #processing.span3.hide
-          h5 Processing, please wait
-          .progress.progress-striped.active
-            .bar style="width: 100%;"
-          .hint
-        #import-success.span3.hide
-          h5 Step 3 of 3
-          = link_to "See imported data", resources_path(params[:table], asearch: 'Last import', order: resource.primary_key), class: 'btn btn-large btn-success'
-          .hint Your data has been successfully imported
-        .span6.file-description
-          p
-            .i.icon.icon-list-alt
-            == " #{params[:table]} table"
-          p.file-info.hide
-            i.icon.icon-file
-            '
-            span.filename
-            a.change Change file
-          p.importable_rows.hide
-            i.icon.icon-list
-            '
-            span
-          p.status
+nav.navbar.navbar-default
+  .container-fluid
+    .navbar-header
+      = link_to params[:table].capitalize, resources_path(params[:table]), class: 'navbar-brand'
+      .navbar-text Import
+.well.importHeader
+  .row-fluid
+    #select-file.span3
+      h5 Step 1 of 3
+      .btn.btn-warning.btn-large Select a CSV file and preview
+      .hint The first row of the CSV must contain the column names
+    #start-import.span3.hide
+      h5 Step 2 of 3
+      = submit_tag "", class: "btn btn-primary btn-large", id: 'perform-import'
+      .hint Just review your data and go on !
+    #processing.span3.hide
+      h5 Processing, please wait
+      .progress.progress-striped.active
+        .bar style="width: 100%;"
+      .hint
+    #import-success.span3.hide
+      h5 Step 3 of 3
+      = link_to "See imported data", resources_path(params[:table], asearch: 'Last import', order: resource.primary_key), class: 'btn btn-large btn-success'
+      .hint Your data has been successfully imported
+    .span6.file-description
+      p
+        .i.fa.fa-list-alt
+        == " #{params[:table]} table"
+      p.file-info.hide
+        i.fa.fa-file
+        '
+        span.filename
+        a.change Change file
+      p.importable_rows.hide
+        i.fa.fa-list
+        '
+        span
+      p.status
 
 table.table-striped.table-bordered.table.items-list data-table=params[:table]
   thead
     tr
   tbody
-input type="file" id="import_file" name="file" class="hide"
+input#import_file.hide type="file" name="file"
 .well.importHelp
   h2 How does importing work ?
   p

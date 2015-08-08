@@ -1,17 +1,16 @@
-- content_for :subnav do
-  header.jumbotron.subhead
-    .breadcrumb
-      .row-fluid.btn-toolbar
-        .span11
-          strong= link_to params[:table].humanize, resources_path(params[:table])
-          span.divider >
-          ' New #{resource.human_name}
-          - if params.has_key? :clone_id
-            small
-              == "| cloning #{link_to "#{resource.human_name} ##{params[:clone_id]}", resource_path(params[:table], params[:clone_id])}"
-        .span1
-          a.btn data-toggle="modal" href="#settings" title="Form Settings" data-placement="bottom" rel="tooltip"
-            i.icon-cog
+nav.navbar.navbar-default
+  .container-fluid
+    .navbar-header
+      = link_to params[:table].humanize, resources_path(params[:table]), class: 'navbar-brand'
+      .navbar-text
+        ' New #{resource.human_name}
+        - if params.has_key? :clone_id
+          small
+            == "| cloning #{link_to "#{resource.human_name} ##{params[:clone_id]}", resource_path(params[:table], params[:clone_id])}"
+    .collapse.navbar-collapse
+      .navbar-right
+        a.navbar-btn.btn.btn-default data-toggle="modal" href="#settings" title="Form Settings" data-placement="bottom" rel="tooltip"
+          i.fa.fa-cog
 
-= render :partial => 'resources/form'
+= render 'resources/form'
 = render 'resources/panels/form_settings'

@@ -3,7 +3,7 @@
     .modal-content
       = form_tag search_path(id: params[:table]), method: :put, class: 'form-horizontal' do
         .modal-header
-          a.close data-dismiss="modal" &times;
+          a.close data-dismiss="modal" ×
           h4.modal-title Advanced Search
         .modal-body
           .control-group
@@ -15,7 +15,7 @@
 
           table.table.table-condensed.filters
             - @current_filter.each do |filter|
-              tr= render partial: '/settings/filter', locals: {filter: filter}
+              tr= render '/settings/filter', filter: filter
         .modal-footer
           = label_tag :name, 'Save as', class: 'control-label'
           = text_field_tag :name, (params[:asearch] || 'last search')

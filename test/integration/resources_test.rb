@@ -45,13 +45,13 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, first_name: 'Johnny', last_name: "Deep", role: "actor")
     visit resources_path(:users)
     fill_in 'search_input', with: "Johnny"
-    click_button 'search_btn'
+    find('form.navbar-form button[title=Search]').click()
     assert page.has_content? 'Haliday'
     assert page.has_content? 'Deep'
     assert page.has_no_content? 'Carey'
     
     fill_in 'search_input', with: "Johnny singer"
-    click_button 'search_btn'
+    find('form.navbar-form button[title=Search]').click()
     assert page.has_content? 'Haliday'
     assert page.has_no_content? 'Deep'
     assert page.has_no_content? 'Carey'
@@ -62,7 +62,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, first_name: 'Mariah', last_name: 'Carey', age: 661, group_id: 5)
     visit resources_path(:users)
     fill_in 'search_input', with: "61"
-    click_button 'search_btn'
+    find('form.navbar-form button[title=Search]').click()
     assert page.has_content? 'Haliday'
     assert page.has_no_content? 'Carey'
     
@@ -70,7 +70,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert page.has_content? 'Carey'
     assert page.has_no_content? 'Haliday'
     fill_in 'search_input', with: '61'
-    click_button 'search_btn'
+    find('form.navbar-form button[title=Search]').click()
     assert page.has_no_content? 'Carey'
     assert page.has_no_content? 'Haliday'
   end
@@ -81,7 +81,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, first_name: 'Mariah', activated_at: somedate + 1.week)
     FixtureFactory.new(:user, first_name: 'Gilles', activated_at: somedate - 1.week)
     visit resources_path(:users, where: {activated_at: somedate.beginning_of_week}, grouping: 'weekly')
-    assert page.has_content? "where activated_at is in Week"
+    assert page.has_content? "Where activated_at is in Week"
     assert page.has_content? '1 record'
     assert page.has_content? 'Johnny'
   end
@@ -284,7 +284,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     fill_in 'Age', with: out_of_range_int
     click_button 'Save'
     assert page.has_css?('.alert.alert-error')
-    assert page.has_content?("Editing User ##{user.id}")
+    assert page.has_content?("Edit User ##{user.id}")
     assert_equal out_of_range_int, find('input[type=number][name="users[age]"]').value
   end
   
@@ -461,11 +461,11 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert page.has_content?('Pierre')
     assert page.has_content?('Jacques')
     fill_in 'search_input', with: 'Bobulus'
-    click_button 'search_btn'
+    find('form.navbar-form button[title=Search]').click()
     assert page.has_content?('Pierre')
     assert page.has_no_content?('Jacques')
     fill_in 'search_input', with: 'Bob Bobby'
-    click_button 'search_btn'
+    find('form.navbar-form button[title=Search]').click()
     assert page.has_content?('Pierre')
     assert page.has_no_content?('Jacques')
   end

@@ -1,21 +1,19 @@
-- content_for :subnav do
-  header.jumbotron.subhead
-    .breadcrumb
-      .row-fluid.btn-toolbar
-        .span3
-          strong= link_to params[:table].humanize, resources_path(params[:table])
-          span.divider >
-          = "Editing #{resource.item_label @item}"
-        .btn-group.span8
-          = link_to content_tag(:i, nil, class: 'icon-eye-open'), resource_path(resource.table, params[:id]), class: 'btn', :'data-placement' => 'bottom', rel: 'tooltip', title: 'Show'
-          - if user_can? 'create', params[:table]
-            = link_to new_resource_path(table:params[:table], clone_id: params[:id]), class: "btn create", rel: "tooltip", title: "Clone", "data-placement" => "bottom" do
-              i.icon-copy
-          - if user_can? 'destroy', params[:table]
-            = link_to content_tag(:i, nil, class: 'icon-trash'), resource_path(resource.table, params[:id], redirect: 'index'), method: :delete, data: {confirm: t('items.destroy_warning')}, class: 'btn destroy', title: 'Destroy', rel: 'tooltip', 'data-placement' => 'bottom'
-        .span1
-          a.btn data-toggle="modal" href="#settings" title="Form Settings" data-placement="bottom" rel="tooltip"
-            i.icon-cog
+nav.navbar.navbar-default
+  .container-fluid
+    .navbar-header
+      = link_to params[:table].humanize, resources_path(params[:table]), class: 'navbar-brand'
+      .navbar-text= "Edit #{resource.item_label @item}"
+    .collapse.navbar-collapse
+      .btn-group
+        = link_to content_tag(:i, nil, class: 'fa fa-eye'), resource_path(resource.table, params[:id]), class: 'btn btn-default navbar-btn', data: {placement: 'bottom'}, rel: 'tooltip', title: 'Show'
+        - if user_can? 'create', params[:table]
+          = link_to new_resource_path(table:params[:table], clone_id: params[:id]), class: "btn create btn-default navbar-btn", rel: "tooltip", title: "Clone", data: {placement: 'bottom'} do
+            i.fa.fa-copy
+        - if user_can? 'destroy', params[:table]
+          = link_to content_tag(:i, nil, class: 'fa fa-trash'), resource_path(resource.table, params[:id], redirect: 'index'), method: :delete, data: {confirm: t('items.destroy_warning'), placement: 'bottom'}, class: 'btn btn-default navbar-btn destroy', title: 'Destroy', rel: 'tooltip'
+      .navbar-right
+        a.navbar-btn.btn.btn-default data-toggle="modal" href="#settings" title="Form Settings" data-placement="bottom" rel="tooltip"
+          i.fa.fa-cog
 
-= render :partial => 'resources/form'
+= render 'resources/form'
 = render 'resources/panels/form_settings'
