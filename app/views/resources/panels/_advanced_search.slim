@@ -1,22 +1,23 @@
-#advanced_search.modal.hide.fade
-  = form_tag search_path(id: params[:table]), method: :put, class: 'form-horizontal' do
-    .modal-header
-      a.close data-dismiss="modal"
-        i.icon-remove
-      h3 Advanced Search
-    .modal-body
-      .control-group
-        = label_tag :new_filter, 'Add a filter on column', class: 'control-label'
-        .controls
-          select#new_filter.input-large data-table=params[:table]
-            option value=""= ''
-            = columns_options_for_resource resource
+#advanced_search.modal.fade
+  .modal-dialog
+    .modal-content
+      = form_tag search_path(id: params[:table]), method: :put, class: 'form-horizontal' do
+        .modal-header
+          a.close data-dismiss="modal" &times;
+          h4.modal-title Advanced Search
+        .modal-body
+          .control-group
+            = label_tag :new_filter, 'Add a filter on column', class: 'control-label'
+            .controls
+              select#new_filter.input-large data-table=params[:table]
+                option value=""= ''
+                = columns_options_for_resource resource
 
-      table.table.table-condensed.filters
-        - @current_filter.each do |filter|
-          tr= render partial: '/settings/filter', locals: {filter: filter}
-    .modal-footer
-      = label_tag :name, 'Save as', class: 'control-label'
-      = text_field_tag :name, (params[:asearch] || 'last search')
-      '
-      input#save_advanced_search.btn.btn-primary type="submit" value="Search"
+          table.table.table-condensed.filters
+            - @current_filter.each do |filter|
+              tr= render partial: '/settings/filter', locals: {filter: filter}
+        .modal-footer
+          = label_tag :name, 'Save as', class: 'control-label'
+          = text_field_tag :name, (params[:asearch] || 'last search')
+          '
+          input#save_advanced_search.btn.btn-primary type="submit" value="Search"

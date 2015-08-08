@@ -21,7 +21,7 @@ nav.navbar.navbar-default
           input.form-control#search_input> name="search" type='text' value=params[:search] placeholder="search on #{resource.columns[:search].map{|e|e.to_s.humanize}.join(', ').downcase}"
           button.btn.btn-default>
             i.fa.fa-search
-          button.btn.btn-default> rel="tooltip" title="Advanced search" data-placement="bottom" data-toggle="modal" href="#advanced_search"
+          a.btn.btn-default> rel="tooltip" title="Advanced search" data-placement="bottom" data-toggle="modal" href="#advanced_search"
             i.fa.fa-search-plus
           - if user_can? 'create', params[:table]
             = link_to new_resource_path(table:params[:table]), class: "btn btn-default create", rel: "tooltip", title: "Create a new row", data: {placement: 'bottom'} do
