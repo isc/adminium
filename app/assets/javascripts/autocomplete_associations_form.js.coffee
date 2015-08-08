@@ -11,10 +11,10 @@ class window.AutocompleteAssociationsForm
     @single_record_area = control.find('.single-record')
     @single_record_value = control.find('.single-record span')
     @selected_records_area = control.find('.multiple-records')
-    @spinner = control.find('.icon-refresh')
+    @spinner = control.find('.fa-refresh')
     @list = control.find('ul')
     search_input.on 'keyup', @keyUp
-    @single_record_area.find('.icon-remove-sign').on 'click', @clearSelected
+    @single_record_area.find('.fa-remove-sign').on 'click', @clearSelected
     @url = search_input.data('autocomplete-url')
     @current_requests = 0
     search_input.data('autocomplete-association', 'done')

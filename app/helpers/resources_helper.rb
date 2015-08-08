@@ -214,8 +214,8 @@ module ResourcesHelper
     if options["boolean_#{value}"].present?
       options["boolean_#{value}"]
     else
-      cssClass = value == true ? 'ok' : 'remove'
-      content_tag :i, nil, class: "icon icon-#{cssClass}"
+      cssClass = value == true ? 'check' : 'times'
+      content_tag :i, nil, class: "fa fa-#{cssClass}"
     end
   end
 
@@ -241,7 +241,7 @@ module ResourcesHelper
     if @prevent_truncate || value.length < 100
       value
     else
-      popover = content_tag :a, content_tag(:i, nil, class:'icon-plus-sign'),
+      popover = content_tag :a, content_tag(:i, nil, class:'fa fa-plus-circle'),
         data: {content:ERB::Util.h(value), title:key}, class: 'text-more'
       (ERB::Util.h(value.truncate(100)) + popover).html_safe
     end

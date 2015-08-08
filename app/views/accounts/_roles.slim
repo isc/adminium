@@ -9,7 +9,7 @@
               td
                 = pluralize role.collaborators.count, "collaborator"
               td= link_to role_path(role), method: 'delete', data: {confirm: 'Are you sure?'}, class: 'btn' do
-                i.icon-trash
+                i.fa.fa-trash
       .span6= link_to 'Create a new role', new_role_path, class: 'btn btn-primary'
     - else
       .span6.alert

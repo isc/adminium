@@ -3,13 +3,13 @@ class InPlaceEditing
   constructor: ->
     $('.items-list, .resources.show table')
       .on('hover', 'td[data-column-name]', @setupEditableColumn)
-      .on('click', 'td[data-column-name] i.icon-pencil', @switchToEditionModeByClickingIcon)
+      .on('click', 'td[data-column-name] i.fa-pencil', @switchToEditionModeByClickingIcon)
       .on('dblclick', 'td[data-column-name]', @switchToEditionModeByDblClicking)
 
   setupEditableColumn: (elt) =>
     td = $(elt.currentTarget)
-    if td.find('i.icon-pencil').length is 0 and td.attr('data-mode') isnt 'editing'
-      $("<i class='icon-pencil'>").appendTo(td)
+    if td.find('i.fa-pencil').length is 0 and td.attr('data-mode') isnt 'editing'
+      $("<i class='fa fa-pencil'>").appendTo(td)
 
   switchToEditionModeByClickingIcon: (elt) =>
     td = $(elt.currentTarget).parents('td')
@@ -32,11 +32,11 @@ class InPlaceEditing
     # TODO enum for associated column
     type = 'enum' if adminium_column_options[column]?.is_enum
     id = td.data('item-id') or td.parents('tr').data('item-id') or $('.item-attributes').data('item-id')
-    if td.find('a i.icon-plus-sign').length
+    if td.find('a i.fa-plus').length
       type = 'text'
       raw_value = td.find('a').attr('data-content')
     td.attr("data-original-content", td.html())
-    td.html($("<form class='form form-inline' action='/resources/#{table}/#{id}'><div class='control-group'><div class='controls'><div class='in-place-actions'><button class='btn'><i class='icon-ok' /></button><a class='cancel'><i class='icon-remove'></i></a></div></div</div></form>"))
+    td.html($("<form class='form form-inline' action='/resources/#{table}/#{id}'><div class='control-group'><div class='controls'><div class='in-place-actions'><button class='btn'><i class='fa-check' /></button><a class='cancel'><i class='fa fa-remove'></i></a></div></div</div></form>"))
     td.attr("data-mode", "editing")
     td.find('a.cancel').click @cancelEditionMode
     td.find('form').submit @submitColumnEdition

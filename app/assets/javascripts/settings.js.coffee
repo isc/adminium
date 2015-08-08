@@ -14,7 +14,7 @@ addToHiddenParams = (pane_id, group, params) ->
 addToTable = (pane_id, cells) ->
   tr = $('<tr>').appendTo("#{pane_id} table")
   $('<td>').text(cell).appendTo tr for cell in cells
-  $('<td>').append($('<i>').addClass('icon-remove-sign remove')).appendTo tr
+  $('<td>').append($('<i class="fa fa-minus-circle remove">')).appendTo tr
 
 setupRemoval = (pane_id) ->
   $("#{pane_id}").on 'click', '.remove', ->

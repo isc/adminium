@@ -26,7 +26,7 @@ class TextEdition
   
   addSwitchingLinks: ->
     $('.text-edition-switch').remove()
-    text = if @pref is 'rich_text_editor' then '<i class="icon-exchange"></i> Plain text area' else '<i class="icon-exchange"></i> Rich text editor'
+    text = if @pref is 'rich_text_editor' then '<i class="fa fa-exchange"></i> Plain text area' else '<i class="fa fa-exchange"></i> Rich text editor'
     for textarea in $('form.resource-form textarea')
       $('<a />').html(text).attr('href', '#').insertAfter($(textarea).parent()).addClass('text-edition-switch')
   

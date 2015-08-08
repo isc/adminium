@@ -76,7 +76,7 @@ class CustomColumns
         value = text = column
     label = $('<label>').text(text)
     input = $('<input>').attr('type': 'checkbox', 'checked': 'checked', 'name':"#{ul.data('type')}_columns[]", 'value':value)
-    icon = $('<i>').addClass('icon-resize-vertical')
+    icon = $('<i class="fa fa-arrows-v">')
     $('<li>').append(input).append(label).append(icon).addClass('setting_attribute').appendTo ul
 
 class ColumnSettings

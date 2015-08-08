@@ -71,7 +71,7 @@ class window.ImportManager
     @toggleStartImport('select-file')
     $(".importHeader").toggleClass("fail", true)
     details = if details then "(#{details})" else ""
-    $(".status").html("<i class='icon icon-ban-circle' /> <b>#{msg}</b> #{details}").show()
+    $(".status").html("<i class='fa fa-ban' /> <b>#{msg}</b> #{details}").show()
     Analytics.importEvent 'error', tracker_code
 
   notice: (msg) =>
@@ -155,7 +155,7 @@ class window.ImportManager
     @readyToImport = true
     $("#perform-import").val("Import #{@rows.length} rows")
     @toggleStartImport('start-import')
-    $(".status").html("<i class='icon  icon-ok-sign' /> Ready to import")
+    $(".status").html("<i class='fa fa-check' /> Ready to import")
 
   preview: ->
     $(".items-list").hide()
@@ -189,7 +189,7 @@ class window.ImportManager
               row[i] = null
         if column_name is primary_key
           if cell is ''
-            cell = "<i class='icon-star' /><span class='label label-success'>new</span>"
+            cell = "<i class='fa fa-star' /><span class='label label-success'>new</span>"
           else
             @update_rows.push(index)
         $('<td>').addClass(css).html(cell).appendTo(tr)
