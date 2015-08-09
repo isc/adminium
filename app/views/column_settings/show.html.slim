@@ -10,7 +10,7 @@
       .modal-body
         = accordion accordion_id: 'column-settings-accordion' do |accordion|
           = accordion.pane 'Visibility' do
-            .control-group
+            .form-group
               label.control-label for="column_options_hide" Hidden column
               .controls
                 = check_box_tag 'column_options[hide]', 'checked', @hidden

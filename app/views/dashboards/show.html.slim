@@ -52,7 +52,7 @@
         tr class=((current_account.try(:pet_project?) && index > 5) ? 'deactivated' : '')
           td
             = link_to schema_path(table), rel: 'tooltip', title: 'Schema' do
-              i.fa.fa-table
+              i.fa.fa-table>
             = link_to resources_path(table), rel: 'tooltip', title: 'Records' do
               i.fa.fa-eye
           td= link_to table, resources_path(table)

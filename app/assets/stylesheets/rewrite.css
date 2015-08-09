@@ -8,9 +8,17 @@
 body { padding-top: 70px; }
 
 .navbar-left .select2-container {
-  width: 300px;
+  width: 270px;
 }
 
 .nav-tabs {
   margin-bottom: 15px;
+}
+
+.dashboards.show .deactivated {
+  opacity: 0.5;
+}
+
+.table-sortable th {
+  cursor:pointer;
 }

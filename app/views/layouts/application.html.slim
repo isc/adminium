@@ -44,7 +44,7 @@ html lang="en" ng-app=""
           = yield
     - modals = yield :modal
     = modals if modals.present?
-    = javascript_include_tag '//code.jquery.com/jquery-2.1.4.min.js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js', 'application'
+    = javascript_include_tag 'jquery-2.1.4.min.js', 'bootstrap-3.3.5.min.js', 'application'
     - unless Rails.env.development?
       = render '/layouts/ga'
       = render '/layouts/uservoice'
