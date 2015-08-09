@@ -1,16 +1,15 @@
 module FormHelper
 
-  def input resource, item, name, input_class, required_constraints
+  def input resource, item, name, required_constraints
     input_name, input_value, input_id = "#{resource.table}[#{name}]", item[name], "#{resource.table}_#{name}"
     input_value = resource.default_value name if required_constraints && input_value.nil?
     input_type, options = default_input_type(resource, name, input_value)
     required = required_constraints && resource.required_column?(name)
-    input_options = {id: input_id, required: required, class: input_class}
+    input_options = {id: input_id, required: required, class: 'form-control'}
     input_options[:'data-null-value'] = true if input_value.nil?
     return "..." unless input_type
     case input_type
     when :select
-      input_options.delete :class
       select_tag input_name, options_for_select(options, input_value), input_options.merge(include_blank: true)
     when :date, :datetime, :time
       datetime_input input_options, input_value, input_name, input_id, input_type
@@ -58,31 +57,31 @@ module FormHelper
   end
 
   def datetime_input input_options, input_value, input_name, input_id, input_type
-    input_options[:class] = 'datepicker span2'
+    input_options[:class] = 'datepicker form-control'
     res = ''.html_safe
     if [:date, :datetime].include? input_type
       input_value = Time.now if input_value.is_a? Sequel::SQL::Constant
-      value_string = input_value.nil? ? '' : input_value.to_date.strftime('%m/%d/%Y')
-      res << (text_field_tag nil, value_string, input_options)
+      value_string = input_value.nil? ? '' : input_value.to_date#.strftime('%m/%d/%Y')
+      res << (date_field_tag nil, value_string, input_options)
       [:year, :month, :day].each_with_index do |type, i|
         v = input_value ? input_value.try(type).to_s : ''
         res << (hidden_field_tag "#{input_name}[#{i+1}i]", v, id: "#{input_id}_#{i+1}i")
       end
     end
     if [:datetime, :time].include? input_type
-      options = {class: 'span1', include_blank: true}
+      options = {class: 'form-control', include_blank: true}
       hour = input_value.strftime '%H' if input_value
       minute = input_value.strftime '%M' if input_value
       res << (' '.html_safe + select_tag("#{input_name}[4i]", options_for_select(('00'...'24'), hour), options.clone))
       res << (' : '.html_safe + select_tag("#{input_name}[5i]", options_for_select(('00'...'60'), minute), options))
     end
-    res
+    content_tag :div, res, class: 'form-inline'
   end
   
   def belongs_to_select_tag resource, item, foreign_resource, name
     options = foreign_resource.query.select(foreign_resource.primary_keys).order(foreign_resource.label_column.try(:to_sym) || foreign_resource.primary_keys.first)
     options = options.select_append(foreign_resource.label_column.to_sym) if foreign_resource.label_column
-    select_tag "#{resource.table}[#{name}]", options_for_select(options.all.map{|i|[foreign_resource.item_label(i), foreign_resource.primary_key_value(i)]}, item[name]), include_blank: true 
+    select_tag "#{resource.table}[#{name}]", options_for_select(options.all.map{|i|[foreign_resource.item_label(i), foreign_resource.primary_key_value(i)]}, item[name]), include_blank: true, class: 'form-control'
   end
 
 end

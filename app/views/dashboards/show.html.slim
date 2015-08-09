@@ -6,19 +6,21 @@
 
 - if @widgets.any?
   - @widgets.each_slice 2 do |slice|
-    .row-fluid
+    .row
       - slice.each do |widget|
-        .widget.span6 data-query-url=widget_query_path(widget, with_id: true) data-widget-id=widget.id class=(widget.type.underscore)
+        .widget.col-md-6 data-query-url=widget_query_path(widget, with_id: true) data-widget-id=widget.id class=(widget.type.underscore)
           .pull-right
             = link_to widget_path(widget), class: 'btn btn-mini', remote: true, method: :delete, data: {confirm: 'Sure ?'} do
               i.fa.fa-trash
           h4
             = link_to widget.name, widget_query_path(widget)
             '
-            small.hide
+            small.hidden
               span
               '  records
-          .content= spinner_tag
+          .content
+            .text-center
+              i.fa.fa-spin.fa-5x.fa-spinner
 - else
   .alert
     ' Add widgets using the
@@ -26,8 +28,8 @@
       i.fa.fa-plus-circle
     '  button in the top right corner.
 
-- content_for :footer do
-  table.table.table-striped.tables-info.table-sortable.black
+.container
+  table.table.table-striped.tables-info.table-sortable
     thead
       tr
         th
@@ -46,7 +48,7 @@
       - index = 0
       - @table_sizes.each do |table, fulltblsize, tblsize|
         - index += 1
-        
+    
         tr class=((current_account.try(:pet_project?) && index > 5) ? 'deactivated' : '')
           td
             = link_to schema_path(table), rel: 'tooltip', title: 'Schema' do
@@ -58,45 +60,48 @@
           td data-value=tblsize = number_to_human_size tblsize
           td data-table-name=table data-status='loading' data-value=0 = '-'
 
-  .row-fluid
-    .span6.centered
-      - if admin?
-        = link_to "Add a new table", new_schema_path, class: "btn btn-info"
-    .span6= "Database size #{number_to_human_size @db_size}"
+  .pull-left
+    - if admin?
+      = link_to "Add a new table", new_schema_path, class: "btn btn-info"
+  .pull-right= "Database size #{number_to_human_size @db_size}"
 
-#petprojectLimitationModal.modal.fade
-  .modal-body.centered
-    h1= "This table is not accessible ! Why ?"
-    i.fa.fa-lock.fa-4x
-    p
-      'You are actually on the <b>Pet Project plan</b>.
-      br
-      'This means you can only access the <b>5 first tables</b> of your database.
-      br
-      'To access <b>all</b> your tables, you must upgrade to our <b>Startup Plan</b>.
-    .btn-group style="margin-left: 100px"
-      = link_to "Upgrade to Startup Plan", upgrade_account_path(plan: :startup), class: "btn btn-success btn-large"
-      button.btn.btn-large.disabled $10/month
-    
-  .modal-footer
-    a.btn data-dismiss="modal" Maybe later…
-    
-#new_widget.modal.hide.fade
-  .modal-header
-    a.close data-dismiss="modal"
-      i.fa.fa-remove
-    h3 New dashboard widget
-  = simple_form_for Widget.new, html: {class: 'form-horizontal'} do |f|
-    .modal-body
-      = f.input :type, collection: Widget.widget_types, as: :radio_buttons, checked: 'TableWidget', item_wrapper_class: 'inline'
-      = f.input :table, as: :select, collection: table_list
-      .hide
-        = f.input :advanced_search, as: :select, collection: []
-      .hide
-        = f.input :columns, as: :select, collection: []
-      .hide
-        = f.input :grouping, collection: TimeChartBuilder::GROUPING_OPTIONS, include_blank: false
-    .modal-footer
-      = f.submit class: 'btn btn-primary'
+#upgrade_from_pet_project.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        a.close data-dismiss="modal" ×
+        h4.modal-title
+          i.fa.fa-lock
+          '  This table is not accessible ! Why ?
+      .modal-body.text-center
+        p
+          'You are actually on the free <b>Pet Project plan</b>.
+          br
+          'This means you can only access the <b>5 first tables</b> of your database.
+          br
+          'To access <b>all</b> your tables, you must upgrade to our <b>Startup Plan</b>.
+          hr
+          = link_to "Upgrade to Startup Plan ($10/month)", upgrade_account_path(plan: :startup), class: 'btn btn-success'
+      .modal-footer
+        a.btn.btn-default data-dismiss="modal" Maybe later…
+  
+#new_widget.modal.fade
+  .modal-dialog
+    .modal-content
+      .modal-header
+        a.close data-dismiss="modal" ×
+        h4.modal-title New dashboard widget
+      = simple_form_for Widget.new, html: {class: 'form-horizontal'} do |f|
+        .modal-body
+          = f.input :type, collection: Widget.widget_types, as: :radio_buttons, checked: 'TableWidget', item_wrapper_class: 'inline'
+          = f.input :table, as: :select, collection: table_list
+          .hide
+            = f.input :advanced_search, as: :select, collection: []
+          .hide
+            = f.input :columns, as: :select, collection: []
+          .hide
+            = f.input :grouping, collection: TimeChartBuilder::GROUPING_OPTIONS, include_blank: false
+        .modal-footer
+          = f.submit class: 'btn btn-primary'
 
 = display_a_tip

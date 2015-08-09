@@ -2,16 +2,18 @@ javascript:
   columns_hash = #{resource.schema_hash.to_json.html_safe}
   adminium_column_options = #{resource.adminium_column_options.to_json.html_safe}
 - if resource.columns[:form].any?
-  = form_tag @form_url, class: 'form-horizontal resource-form' do
-    = hidden_field_tag '_method', 'put' if @form_method == 'put'
-    = render 'form_fields', item: @item, input_class: 'span6', required_constraints: true
-    .form-actions
-      = submit_tag 'Save', class: 'btn-primary', data: {disable_with: 'Sending...'}, name: 'then_redirect'
-      '
-      = submit_tag 'Save and create another', class: 'btn', data: {disable_with: 'Sending...'}, name: 'then_redirect'
-      '
-      = submit_tag 'Save and continue editing', class: 'btn', data: {disable_with: 'Sending...'}, name: 'then_redirect'
+  .col-lg-8
+    = form_tag @form_url, class: 'form-horizontal resource-form' do
+      = hidden_field_tag '_method', 'put' if @form_method == 'put'
+      = render 'form_fields', item: @item, required_constraints: true
+      .form-group
+        .col-sm-offset-4.col-sm-8
+          = submit_tag 'Save', class: 'btn btn-primary', data: {disable_with: 'Sending...'}, name: 'then_redirect'
+          '
+          = submit_tag 'Save and create another', class: 'btn', data: {disable_with: 'Sending...'}, name: 'then_redirect'
+          '
+          = submit_tag 'Save and continue editing', class: 'btn', data: {disable_with: 'Sending...'}, name: 'then_redirect'
 - else
   .alert.alert-warning
-    h3 No form fields configured
+    h4 No form fields configured
     p There are no form fields configured for this resource. Click on the cog icon in the upper right corner to select the fields you want to fill in when creating a row for this table.

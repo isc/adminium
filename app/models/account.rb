@@ -100,7 +100,7 @@ class Account < ActiveRecord::Base
       tip = tips[(tips.index(last_tip_identifier) || -1) + 1]
     end
     if tip
-      self.last_tip_at = Time.now
+      self.last_tip_at = Time.current
       self.last_tip_identifier = tip
       save!
     end

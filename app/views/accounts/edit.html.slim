@@ -4,7 +4,7 @@
     br
     small= " #{@account.plan.humanize} plan"
   - if @account.pet_project?
-    p.alert
+    p.alert.alert-warning
       ' You are currently on the free plan meant for pet projects which is limited to the 5 first tables of your schema.
       br
       = link_to 'Upgrade', current_account.upgrade_link, class: 'btn btn-warning'
@@ -14,24 +14,25 @@
     = simple_form_for @account, html: {class: 'form-horizontal'} do |f|
       - if @account.errors.any?
         .row
-          .alert.alert-block.alert-error.span8
-            h4.alert-heading
+          .alert.alert-error
+            h4
               = pluralize @account.errors.count, 'error'
               = " prohibited this #{@account.class.name.humanize} from being saved:"
             ul
               - @account.errors.full_messages.each do |msg|
                 li= msg
       - if @account.id == ENV['DEMO_ACCOUNT_ID']
-        .control-group
-          label.control-label.optional Database url
-          .controls
-            input disabled="disabled" value="NOT EDITABLE IN THE DEMO"
-            p.help-block This is were you will set your own database connection string, encrypted and securely stored.
+        .form-group
+          label.control-label.optional.col-sm-3 Database url
+          .col-sm-9
+            input.form-control disabled="disabled" value="NOT EDITABLE IN THE DEMO"
+            p.help-block This is where you will set your own database connection string, encrypted and securely stored.
       - else
-        = f.input :db_url, required: true, input_html: {title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database', class: 'span8'}
+        = f.input :db_url, required: true, input_html: {title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database'}
       = f.input :application_time_zone, input_html: {class: 'timezone_select2'}
       = f.input :database_time_zone, input_html: {class: 'timezone_select2'}
-      .form-actions= f.button :submit, class: 'btn-primary'
+      .form-group
+        .col-sm-offset-3.col-sm-9= f.button :submit, class: 'btn-primary'
   - tabs.pane 'Collaborators' do
     - if @account.enterprise?
       .alert

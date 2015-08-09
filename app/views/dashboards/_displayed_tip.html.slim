@@ -1,17 +1,17 @@
-.modal.fade.hide#welcome-modal
-  .modal-header
-    a.close data-dismiss="modal" ×
-    h3
-      - if @small_title
-        small TIP&nbsp;
-      = @tip_title
-  .modal-body
-    = yield :tip
-  .modal-footer
-    .span3.cancelTip
-      'One tip is displayed every day.
-      br
-      = link_to 'Click here', cancel_tips_account_path(current_account), method: 'POST', remote: true, id: 'cancel_tip'
-      '  to stop.
-    .span2.pull-right
-      a.btn.btn-primary.btn-large data-dismiss="modal" Close
+.modal.fade#welcome-modal
+  .modal-dialog
+    .modal-content
+      .modal-header
+        a.close data-dismiss="modal" ×
+        h4.modal-title
+          - if @small_title
+            small TIP&nbsp;
+          = @tip_title
+      .modal-body
+        = yield :tip
+      .modal-footer
+        .pull-left
+          'One tip is displayed every day.
+          = link_to 'Click here to stop.', cancel_tips_account_path(current_account), method: 'POST', remote: true, id: 'cancel_tip'
+        .pull-right
+          a.btn.btn-primary.btn-large data-dismiss="modal" Close

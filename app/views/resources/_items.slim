@@ -1,6 +1,6 @@
 - if items.empty?
   - if @items.current_page > @items.page_count && @items.page_count > 0
-    .alert.alert-block
+    .alert
       h4 Warning!
       p
         == "You are looking for results on page #{@items.current_page}, but your query only has #{pluralize @items.page_count, 'result page'}, so there are no results on this page, but still #{pluralize @items.pagination_record_count, 'record'}."
@@ -12,7 +12,7 @@
           = link_to "last page", params.merge(page: @items.page_count)
         = "."
   - else
-    .alert.alert-info.flash No records were found.
+    .alert.alert-info No records were found.
 - else
   table.table-striped.table-bordered.table.items-list data-table=params[:table]
     thead.header

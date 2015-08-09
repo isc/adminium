@@ -1,11 +1,11 @@
 - resource.columns[:form].each do |name|
-  .control-group
-    label.control-label for="#{resource.table}_#{name}"
+  .form-group
+    label.control-label.col-sm-4 for="#{resource.table}_#{name}"
       - if required_constraints && resource.required_column?(name)
         abbr title="required" *
         ' 
       = resource.column_display_name name
-    .controls
+    .col-sm-8
       - if (assoc_info = resource.foreign_key?(name)) && !assoc_info[:polymorphic]
         - foreign_resource = resource_for assoc_info[:referenced_table]
         - if foreign_resource.query.count <= 25
@@ -16,4 +16,4 @@
         - foreign_resource = resource_for referenced_table
         = render 'foreign_resource_input', value: item[name], name: name, foreign_resource: foreign_resource
       - else
-        = input resource, item, name, input_class, required_constraints
+        = input resource, item, name, required_constraints

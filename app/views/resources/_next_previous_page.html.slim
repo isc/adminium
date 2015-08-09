@@ -14,7 +14,7 @@
       = page_entries_info(scope, entry_name: 'record').html_safe
       '
       span.caret
-    ul.dropdown-menu.nav
+    ul.dropdown-menu
       - if scope.current_page != 1
         li
           = link_to "Go to first page", params.merge(page: 1)

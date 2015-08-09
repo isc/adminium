@@ -41,23 +41,12 @@ module ApplicationHelper
     end.join("<br/>")
   end
 
-  def spinner_tag
-    content_tag :div, id: 'bowlG' do
-      content_tag :div, id: 'bowl_ringG' do
-        content_tag :div, class: 'ball_holderG' do
-          content_tag :div, class: 'ballG' do
-          end
-        end
-      end
-    end
-  end
-
   def format_param_for_removal k, v
     "#{CGI.escape("where[#{k}]")}=#{CGI.escape(v)}"
   end
 
   def upgrade_to_enterprise_notice account
-    content_tag :div, class: 'alert notice' do
+    content_tag :div, class: 'alert alert-warning' do
       "<a class=\"btn btn-warning\" href=\"#{upgrade_account_path(plan:'enterprise')}\">Upgrade</a> to the enterprise plan ($25 per month) and add as many external collaborators as you need to access your data. Moreover, you can assign roles to your collaborators to limit what tables they may access, or prevent them from editing or deleting rows.".html_safe
     end
   end

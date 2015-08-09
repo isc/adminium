@@ -262,7 +262,7 @@ GEM
     sequel_pg (1.6.8)
       pg (>= 0.8.0)
       sequel (>= 3.39.0)
-    simple_form (3.0.2)
+    simple_form (3.1.0)
       actionpack (~> 4.0)
       activemodel (~> 4.0)
     simplecov (0.7.1)
@@ -372,7 +372,7 @@ DEPENDENCIES
   sendgrid
   sequel (= 4.4.0)
   sequel_pg (= 1.6.8)
-  simple_form (= 3.0.2)
+  simple_form (= 3.1.0)
   simplecov
   slim-rails
   terminal-notifier-guard

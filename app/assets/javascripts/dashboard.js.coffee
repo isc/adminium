@@ -6,8 +6,8 @@ number_with_delimiter = (number, delimiter=',') ->
   split.join('.')
 
 petprojectLimitationPopup = ->
-  $(".black tr.deactivated a").on 'click', (evt) ->
-    $("#petprojectLimitationModal").modal("show")
+  $(".dashboards.show tr.deactivated a").on 'click', (evt) ->
+    $("#upgrade_from_pet_project").modal('show')
     evt.preventDefault()
 
 loadTablesCount = ->

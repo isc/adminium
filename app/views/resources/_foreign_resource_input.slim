@@ -14,10 +14,10 @@
       i.icon.icon-remove-sign
     .clear
     = hidden_field_tag "#{resource.table}[#{name}]", value
-  .input-prepend.input-append
-    span.add-on Search
-    input(type='search' data-autocomplete-url=search_resources_path(foreign_resource.table) autocomplete='off' class='span4 search-query' placeholder="#{foreign_resource.columns[:search].map(&:to_s).map(&:humanize).join(', ').downcase}")
-    span.add-on
-      i.icon.icon-refresh.icon-spin
-  ul.span6
+  .input-group
+    .input-group-addon Search
+    input.form-control(type='search' data-autocomplete-url=search_resources_path(foreign_resource.table) autocomplete='off' placeholder="#{foreign_resource.columns[:search].map(&:to_s).map(&:humanize).join(', ').downcase}")
+    .input-group-addon
+      i.fa.fa-refresh.fa-spin
+  ul.list-unstyled
     li

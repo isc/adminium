@@ -16,7 +16,7 @@ gem 'jquery-rails', '2.0.1'
 gem 'slim-rails'
 gem 'kaminari'
 gem 'json', "1.8.1"
-gem 'simple_form', '3.0.2'
+gem 'simple_form', '3.1.0'
 gem 'omniauth', '~> 1.2.2'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-heroku'

@@ -1,7 +1,7 @@
 script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"
 div ng-controller="SchemasCtrl" ng-init="reset()"
   .page-header
-    h1 Create a new table
+    h2 Create a new table
   .row-fluid
     .span12
       = form_tag schemas_path, data: {remote: true}, class: 'form', id: 'create_table' do
