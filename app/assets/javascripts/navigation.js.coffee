@@ -19,11 +19,11 @@ class Navigation
       $("ul.accounts-menu").html(data)
     
   tableSelection: ->
-    options = {placeholder: "Jump to table (s to focus)", allowClear: true, dropdownCssClass: 'select2OrangeDropDown'}
+    options = {placeholder: "Jump to table (s to focus)", allowClear: true}
     options.matcher = adminiumSelect2Matcher
     @selector = '#table_select'
     $(@selector).select2(options).removeClass('hidden').on 'change', (object) =>
-      $(@selector).select2('destroy').replaceWith("<div class='loading_table'>Loading page...</div>")
+      $(@selector).select2('destroy').replaceWith("<div class='loading_table'>Loading...</div>")
       window.location.href = "/resources/#{object.val}"
     $('.modal').on 'hide', ->
       $(this).find('input:focus').blur()

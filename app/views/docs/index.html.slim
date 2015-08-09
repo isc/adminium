@@ -1,4 +1,4 @@
-.row#documentation
+.row
   .col-md-3
     .well
       ul.nav.nav-list
@@ -9,7 +9,6 @@
           a href="#installation" Add-on Install
           a href="#access" Accessing Adminium Interface
         li#features.nav-header Features
-
         li.divider
         li.nav-header FAQ
         li
@@ -19,7 +18,7 @@
     h1 Documentation
     br
     section#demo.well
-      h2 Sandbox account
+      h3 Sandbox account
       p
         'If you want to try Adminium with minimum effort, we've setup for you a sandbox account with some populated data.
         br
@@ -27,33 +26,33 @@
       p
         = link_to "Check out the demo account", start_demo_docs_path, :class => "btn btn-success btn-large"
     section#installation.well
-      h2 Add-on Install
+      h3 Add-on Install
       p
         'In order to use Adminium with your own data, we need to access your database. To retrieve your database url securely and easily, we use
         = link_to "Heroku's oauth API", "#heroku_oauth"
         '  to read the <code>DATABASE_URL</code> configuration variable of your app.
       'There are also two other ways to retrieve your database url.
-      h3 Command line installation
+      h4 Command line installation
       p Adminium can be installed to a Heroku application via the CLI:
       pre= "heroku addons:add adminium:petproject"
       p In order to provide you with an administration interface for your data, Adminium needs to be able to connect to your database. The easiest way to do that is to install and run a plugin for the Heroku command line tool :
       pre="heroku plugins:install git://github.com/isc/heroku-adminium\nheroku adminium"
       p The plugin execution will store an encrypted version of the <code>DATABASE_URL</code> of your application in the Adminium database. Your <code>DATABASE_URL</code> is sent using SSL and is never logged in the Adminium application logs. Removing the add-on from your application will delete that info from the Adminium database.
-      h3 Browser installation
+      h4 Browser installation
       p== "Visit the #{link_to "adminium page", 'https://addons.heroku.com/marketplace/addons/adminium', :target=>'_blank'} on Heroku's marketplace and select a plan and your project."
-      h4 Find your Heroku Postgres database url
+      h5 Find your Heroku Postgres database url
       p Go to the resources page of your application and click on your Heroku Postgres database add-on.
-      = image_tag 'herokuresources-panel.png'
+      p= image_tag 'herokuresources-panel.png', class: 'img-thumbnail img-responsive'
       p
         'In the <code>Connection settings</code> section, use the <i class="fa fa-cog"></i> button to switch to
         i URL
         '  display and copy the connection string.
-      = image_tag 'herokupostgres-panel.png', width: '420px'
-      h3 Integration
+      p= image_tag 'herokupostgres-panel.png', width: '420px', class: 'img-thumbnail img-responsive'
+      h4 Integration
       p
         'Adminium doesn’t need to integrate at a code-level and thus isn’t tied to a particular language. It can be used with any app hosted on Heroku, be it Ruby, Node.js, Clojure, Java, Python, or Scala, as long as it makes use of a PostgreSQL or MySQL database.
     section#access.well
-      h2#access Accessing Adminium Interface
+      h3#access Accessing Adminium Interface
       p
         'Sign in and log in in with
         = link_to "Heroku's oauth API", "#heroku_oauth"
@@ -70,7 +69,7 @@
         '  and login through a Google account once you have declared collaborators in your
         = link_to 'account settings', edit_account_path
         '.
-        h3 Heroku oauth Authentification and scopes
+        h4 Heroku oauth Authentification and scopes
         p
          'We rely on
          = link_to "Heroku's oauth API", "https://blog.heroku.com/archives/2013/7/22/oauth-for-platform-api-in-public-beta", target: "_blank"
@@ -80,7 +79,7 @@
     - Account::TIPS.each do |tip|
       - tip_body = render partial: "/docs/tips/#{tip}"
       section.feature-description.well(id=tip)
-        h2== @tip_title
+        h3== @tip_title
         = tip_body
     
     section.well#schema_search_path

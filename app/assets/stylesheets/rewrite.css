@@ -10,15 +10,22 @@ body { padding-top: 70px; }
 .navbar-left .select2-container {
   width: 270px;
 }
-
 .nav-tabs {
   margin-bottom: 15px;
 }
-
 .dashboards.show .deactivated {
   opacity: 0.5;
 }
-
 .table-sortable th {
   cursor:pointer;
+}
+.loading_table {
+  margin-top: 7px;
+  color: #BBB;
+}
+i.fa.discrete {
+  opacity: 0.3;
+}
+i.fa.discrete:hover {
+  opacity: 1;
 }

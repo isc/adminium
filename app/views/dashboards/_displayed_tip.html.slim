@@ -4,8 +4,7 @@
       .modal-header
         a.close data-dismiss="modal" ×
         h4.modal-title
-          - if @small_title
-            small TIP&nbsp;
+          small TIP&nbsp;
           = @tip_title
       .modal-body
         = yield :tip

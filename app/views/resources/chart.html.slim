@@ -1,13 +1,13 @@
-.modal-dialog
+.modal-dialog.modal-lg
   .modal-content
     .modal-header
       a.close data-dismiss="modal" ×
       h4.modal-title
         == "#{params[:type].underscore.humanize} for column #{params[:column]} "
         - if @widget
-          i.fa.fa-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
+          i.fa.fa-star title="This view is on your dashboard" rel="tooltip" data-placement="right"
         - else
-          i.fa.fa-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom" data-form="#time-chart form"
+          i.fa.fa-star.add_widget.discrete title="Add to your dashboard" rel="tooltip" data-placement="right" data-form="#time-chart form"
     .modal-body
       = form_for Widget.new, remote: true do |t|
         = t.hidden_field :type, value: "#{params[:type]}Widget"
@@ -18,6 +18,7 @@
 
       - if params[:type] == 'TimeChart'
         = select_tag 'grouping', options_for_select(TimeChartBuilder::GROUPING_OPTIONS, grouping), class: 'form-control'
+      hr
       #chart_div
       javascript:
         data_for_graph = #{{chart_data: @data, chart_type: params[:type]}.to_json.html_safe}

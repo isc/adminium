@@ -49,8 +49,8 @@ class BulkActions
       $(".bulk-action").hide()
     else
       $(".bulk-action").show()#.css('display', 'inline-block')
-    $("table.items-list input:checked").parents("tr").addClass("checked")
-    $("table.items-list input:not(:checked)").parents("tr").removeClass("checked")
+    $("table.items-list input:checked").parents('tr').addClass('warning')
+    $("table.items-list input:not(:checked)").parents("tr").removeClass('warning')
 
 class CustomColumns
 

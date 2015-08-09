@@ -6,7 +6,6 @@ module DashboardHelper
     content_for :tip do
       render partial: "/docs/tips/#{tip}"
     end
-    @small_title = true
     render partial: 'displayed_tip'
   end
 

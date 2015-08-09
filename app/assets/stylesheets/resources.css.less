@@ -1,20 +1,4 @@
 @import 'variables';
-.resources.index {
-  
-}
-
-
-td i.icon-envelope, i.icon-external-link {
-  cursor: pointer;
-  opacity: 0.3;
-  color: #333;
-  font-size: 100%;
-  margin-left: 3px;
-  &:hover {
-    opacity: 1;
-  }
-}
-
 .resources.show .item-attributes {
   .table {
     border: 1px solid #DDD;
@@ -51,7 +35,6 @@ td i.icon-envelope, i.icon-external-link {
       }
     }
   }
-
   .type_text {
     th {
       text-align: left;
@@ -72,105 +55,5 @@ td i.icon-envelope, i.icon-external-link {
         }
       }
     }
-  }
-}
-.loading_table {
-  margin-top: 10px;
-  color: #BBB;
-  padding-left: 20px;
-  float: left;
-}
-.select2OrangeDropDown {
-  background: #413877;
-  border: 3px solid darken(#413877, 15%);
-  border-top: none;
-  color: #CCC;
-  .select2-highlighted {
-    background: lighten(#413877, 10%);
-    color: #FFF;
-  }
-  input {
-    background: darken(#413877, 10%);
-    color: #CCC;
-  }
-  .select2-no-results {
-    background: none;
-    color: white;
-    font-style: italic;
-    text-align: center;
-    padding: 3px;
-  }
-}
-#table_select {
-  display: none;
-}
-#s2id_table_select {
-  a {
-    background: darken(#413877, 10%);
-    border: 3px solid darken(#413877, 13%);
-    font-size: 14px;
-    margin-top: 4px;
-    color: #CCC;
-  }
-  .select2-arrow {
-    background: transparent;
-    border-left: none;
-  }
-  div {
-    border: none;
-    background: darken(#413877, 15%);
-  }
-  &.select2-dropdown-open {
-    a {
-      -webkit-box-shadow: none !important;
-      background: white;
-      box-shadow: none;
-      color: white;
-      border: 1px solid #5897fb;
-      border-bottom: none;
-    }
-  }
-}
-.select2-highlighted .timezoneselect_format {
-  b { color: white }
-  color: white;
-} 
-
-.enumedit {
-  .label {
-    opacity: 0.75;
-  }
-  .select2-highlighted {
-    .label {
-      opacity: 1;
-    }
-    background: #CCC;
-  }
-}
-
-.timezoneselect_format {
-  color: gray;
-  padding-right: 4px;
-  b {
-    color: @orange;
-    padding-left: 5px;
-  }
-}
-
-.timezone_select2 {
-  width: 300px;
-}
-
-.label.label-info {
-  font-weight: normal;
-  font-size: 12px;
-  padding: 3px 6px 4px;
-}
-#search_input {
-  float: left;
-}
-.selected-records {
-  label {
-    cursor: ns-resize;
   }
 }

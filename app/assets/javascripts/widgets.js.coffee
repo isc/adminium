@@ -37,7 +37,7 @@ class Widget
 
   setupCreationFromListing: ->
     $('#nav_searches, #time-chart').on 'click', 'i.add_widget', (evt) ->
-      $(evt.currentTarget).addClass('active').removeClass('add_widget')
+      $(evt.currentTarget).removeClass('discrete add_widget')
       $($(evt.currentTarget).data('form')).submit()
 
   fetchAllContent: ->
