@@ -4,16 +4,11 @@ class DocsController < ApplicationController
   skip_filter :connect_to_db, unless: :valid_db_url?
 
   def index
-    @full_title = "Documentation | Adminium"
+    @full_title = 'Documentation | Adminium'
   end
   
   def install
-    redirect_to "/auth/heroku"
-  end
-  
-  def homepage
-    redirect_to dashboard_url and return if session[:account]
-    render layout: 'homepage'
+    redirect_to '/auth/heroku'
   end
   
   def landing

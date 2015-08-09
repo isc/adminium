@@ -14,14 +14,6 @@ class window.ImportManager
     dropZone = $('body')[0]
     dropZone.addEventListener 'dragover', @handleDragOver, false
     dropZone.addEventListener 'drop', @handleFileDrop, false
-    $('.importHeader').jscrollspy
-        min: $('.importHeader .btn').offset().top,
-        max: -> $(document).height(),
-        onEnter: (element, position) ->
-          $(".importHeader").addClass('subnav-fixed')
-        ,
-        onLeave: (element, position) ->
-          $(".importHeader").removeClass('subnav-fixed')
     if !$.isFunction(FileReader)
       @error("html5-incompatibility", "Your browser is missing some HTML5 support required for this import feature (FileReader is not defined)")
 

@@ -11,7 +11,7 @@
         .widget.col-md-6 data-query-url=widget_query_path(widget, with_id: true) data-widget-id=widget.id class=(widget.type.underscore)
           .pull-right
             = link_to widget_path(widget), class: 'btn btn-mini', remote: true, method: :delete, data: {confirm: 'Sure ?'} do
-              i.fa.fa-trash
+              i.fa.fa-trash.discrete
           h4
             = link_to widget.name, widget_query_path(widget)
             '

@@ -42,8 +42,7 @@ html lang="en" ng-app=""
               a.close data-dismiss="alert" href="#" ×
               = raw v
           = yield
-    - modals = yield :modal
-    = modals if modals.present?
+    = yield :modal
     = javascript_include_tag 'jquery-2.1.4.min.js', 'bootstrap-3.3.5.min.js', 'application'
     - unless Rails.env.development?
       = render '/layouts/ga'
