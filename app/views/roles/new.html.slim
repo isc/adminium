@@ -3,29 +3,27 @@
 
 = simple_form_for @role, html: {class: 'form-vertical edit_role'} do |f|
   .row
-    .span6
+    .col-md-6
       = f.input :name
-      .control-group
-        label.control-label Permissions
-        .controls.permissions
-          table.table.table-condensed.table-striped
-            thead
-              th colspan="2"
-                'Table name
+      label.control-label Permissions
+      table.table.table-condensed.table-striped
+        thead
+          th colspan="2"
+            'Table name
+          - %w(create read update delete).each do |action|
+            th
+              = check_box_tag "#{action}_all"
+              label< for="#{action}_all"= action.capitalize
+        tbody
+          - @generic.tables.each do |table|
+            tr
+              td
+                = check_box_tag 'all_actions', nil, nil, id: "all_actions_#{table}"
+              td
+                label for="all_actions_#{table}"= table.to_s.humanize
               - %w(create read update delete).each do |action|
-                th
-                  = check_box_tag "#{action}_all"
-                  label for="#{action}_all"= action.capitalize
-            tbody
-              - @generic.tables.each do |table|
-                tr
-                  td
-                    = check_box_tag 'all_actions', nil, nil, id: "all_actions_#{table}"
-                  td
-                    label for="all_actions_#{table}"= table.to_s.humanize
-                  - %w(create read update delete).each do |action|
-                    td= check_box_tag "role[permissions][#{table}][#{action}]", '1', @role.permissions[table].try(:[], action)
-    .span6
+                td= check_box_tag "role[permissions][#{table}][#{action}]", '1', @role.permissions[table].try(:[], action)
+    .col-md-6
       - non_admin_collaborators = current_account.collaborators.where(is_administrator: false)
       - if non_admin_collaborators.present?
         = f.association :collaborators, as: :check_boxes, collection: non_admin_collaborators.map {|collaborator|[collaborator.name, collaborator.id]}
@@ -39,5 +37,4 @@
           - else
             p Your collaborators are administrators of this account, thus they have all permissions on all tables and cannot be assigned a role.
 
-  .form-actions
-    = f.submit class: 'btn-primary', data: {disable_with: 'Sending...'}
+  .form-group= f.submit class: 'btn btn-primary', data: {disable_with: 'Sending...'}

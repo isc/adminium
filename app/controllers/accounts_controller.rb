@@ -7,6 +7,7 @@ class AccountsController < ApplicationController
   skip_filter :require_account, only: :create
 
   def edit
+    @active_pane = params[:pane] || 'database_connection'
     @account = current_account
     @heroku_collaborators = []
     if current_user.try(:heroku_provider?)

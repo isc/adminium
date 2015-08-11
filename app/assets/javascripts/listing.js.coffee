@@ -38,10 +38,7 @@ class BulkActions
       e.stopPropagation()
       @formVisibility()
     $('.items-list thead input[type=checkbox]').click (e) =>
-      if e.target.checked
-        $(@checkbox_selector).attr('checked', 'checked')
-      else
-        $(@checkbox_selector).removeAttr('checked')
+      $(@checkbox_selector).prop('checked', e.target.checked)
       @formVisibility()
 
   formVisibility: ->

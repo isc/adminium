@@ -36,7 +36,7 @@ class Collaborator < ActiveRecord::Base
   end
 
   def human_roles
-    return "administrator" if is_administrator
+    return 'Administrator' if is_administrator
     roles.map(&:name).join(", ") if roles.present?
   end
 
