@@ -10,11 +10,11 @@ table.table.table-bordered
         td= validation['validator'].humanize
         td= validation['column_name']
         td
-          i.icon-remove-sign.remove
-.control-group
-  label Validator
-  .controls
-    select
+          i.fa.fa-minus-circle.remove
+.form-group
+  label.control-label.col-sm-4 Validator
+  .col-sm-8
+    select.form-control
       - Resource::Base::VALIDATORS.each do |validator|
         option value=validator = validator.humanize
 input type="hidden" name="validations[]"
@@ -22,12 +22,12 @@ input type="hidden" name="validations[]"
   - resource.validations.each do |validation|
     = hidden_field_tag 'validations[][validator]', validation['validator']
     = hidden_field_tag 'validations[][column_name]', validation['column_name']
-.control-group
-  label Column
-  .controls
-    select
+.form-group
+  label.control-label.col-sm-4 Column
+  .col-sm-8
+    select.form-control
       - resource.columns_options(:form, only_checked: true).each do |name|
         option value=name = name
-.control-group
-  .controls
-    a.btn Add
+.form-group
+  .col-sm-8.col-sm-offset-4
+    a.btn.btn-info Add

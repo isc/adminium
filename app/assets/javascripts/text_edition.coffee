@@ -28,7 +28,7 @@ class TextEdition
     $('.text-edition-switch').remove()
     text = if @pref is 'rich_text_editor' then '<i class="fa fa-exchange"></i> Plain text area' else '<i class="fa fa-exchange"></i> Rich text editor'
     for textarea in $('form.resource-form textarea')
-      $('<a />').html(text).attr('href', '#').insertAfter($(textarea).parent()).addClass('text-edition-switch')
+      $('<a />').html(text).attr('href', '#').insertAfter(textarea).addClass('text-edition-switch')
   
   switchEditionPreference: =>
     @pref = if @pref is 'rich_text_editor' then 'plain_text_area' else 'rich_text_editor'

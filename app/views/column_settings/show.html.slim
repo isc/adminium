@@ -11,15 +11,14 @@
         = accordion accordion_id: 'column-settings-accordion' do |accordion|
           = accordion.pane 'Visibility' do
             .form-group
-              label.control-label for="column_options_hide" Hidden column
-              .controls
+              label.control-label.col-sm-5 for="column_options_hide" Hidden column
+              .col-sm-7
                 = check_box_tag 'column_options[hide]', 'checked', @hidden
                 p.help-block= "Don't display this column in the current view."
-
-            .control-group
-              label.control-label for="column_options_rename" Column displayed name
-              .controls
-                = text_field_tag 'column_options[rename]', resource.column_options(params[:column])['rename']
+            .form-group
+              label.control-label.col-sm-5 for="column_options_rename" Column displayed name
+              .col-sm-7
+                = text_field_tag 'column_options[rename]', resource.column_options(params[:column])['rename'], class: 'form-control'
                 p.help-block
                   'Override the column name in the user interface.
                   br
@@ -31,12 +30,9 @@
                 = render partial: "/column_settings/types/#{partial}"
             - if resource.possible_serializable_column column
               = accordion.pane "Serialized data" do
-                .row-fluid
-                  .span1
-                    = check_box_tag 'column_options[serialized]', 'checked', @serialized
-                  .span10
-                    label for="column_options_serialized"
-                      'Check this if your data represents a serialized Ruby Core Class
+                label.checkbox-inline
+                  = check_box_tag 'column_options[serialized]', 'checked', @serialized
+                  'Check this if your data represents a serialized Ruby Core Class
               
             - if resource.possible_enum_column column
               = accordion.pane "Enumerable data" do

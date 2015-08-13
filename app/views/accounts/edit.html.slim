@@ -11,28 +11,30 @@
       '  to the startup plan ($10 per month) to access your full schema with Adminium.
 = tabs do |tabs|
   - tabs.pane 'Database connection', active: (@active_pane == 'database_connection') do
-    = simple_form_for @account, html: {class: 'form-horizontal'} do |f|
-      - if @account.errors.any?
-        .row
-          .alert.alert-error
-            h4
-              = pluralize @account.errors.count, 'error'
-              = " prohibited this #{@account.class.name.humanize} from being saved:"
-            ul
-              - @account.errors.full_messages.each do |msg|
-                li= msg
-      - if @account.id == ENV['DEMO_ACCOUNT_ID']
-        .form-group
-          label.control-label.optional.col-sm-3 Database url
-          .col-sm-9
-            input.form-control disabled="disabled" value="NOT EDITABLE IN THE DEMO"
-            p.help-block This is where you will set your own database connection string, encrypted and securely stored.
-      - else
-        = f.input :db_url, required: true, input_html: {title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database'}
-      = f.input :application_time_zone, input_html: {class: 'timezone_select2'}
-      = f.input :database_time_zone, input_html: {class: 'timezone_select2'}
-      .form-group
-        .col-sm-offset-3.col-sm-9= f.button :submit, class: 'btn-primary'
+    .row
+      .col-lg-8
+        = simple_form_for @account, html: {class: 'form-horizontal'} do |f|
+          - if @account.errors.any?
+            .row
+              .alert.alert-error
+                h4
+                  = pluralize @account.errors.count, 'error'
+                  = " prohibited this #{@account.class.name.humanize} from being saved:"
+                ul
+                  - @account.errors.full_messages.each do |msg|
+                    li= msg
+          - if @account.id == ENV['DEMO_ACCOUNT_ID']
+            .form-group
+              label.control-label.optional.col-sm-3 Database url
+              .col-sm-9
+                input.form-control disabled="disabled" value="NOT EDITABLE IN THE DEMO"
+                p.help-block This is where you will set your own database connection string, encrypted and securely stored.
+          - else
+            = f.input :db_url, required: true, input_html: {title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database'}
+          = f.input :application_time_zone, input_html: {class: 'timezone_select2'}
+          = f.input :database_time_zone, input_html: {class: 'timezone_select2'}
+          .form-group
+            .col-sm-offset-3.col-sm-9= f.button :submit, class: 'btn-primary'
   - tabs.pane 'Collaborators', active: (@active_pane == 'collaborators') do
     - if @account.enterprise?
       .alert.alert-info

@@ -1,4 +1,4 @@
-.control-group.custom-column
-  label.control-label Add column
-  .controls
-    = select_tag 'add_column_table', columns_options_for_resource(resource, has_many: true), include_blank: true, data: {columns_path: columns_settings_path}, class: 'select-custom-column input-large'
+.form-group.custom-column
+  label.control-label.col-sm-4 Add column
+  .col-sm-8
+    = select_tag 'add_column_table', columns_options_for_resource(resource, has_many: true), include_blank: true, data: {columns_path: columns_settings_path}, class: 'select-custom-column form-control'

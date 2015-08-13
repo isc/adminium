@@ -1,75 +1,7 @@
-td.fixnum, td.bigdecimal, td.integer, td.float, td.decimal {
-  font-family:Monaco;
-  font-weight:bold;
-  text-align:right;
-}
-
-td.fixnum, td.bigdecimal, td.integer, td.float, td.decimal, td.decimalType, td.floatType, td.integerType {
-  color:green;
-}
-
-.trueclass, .falseclass {
-  color: #777;
-  text-align: center !important;
-  vertical-align: middle;
-  i {
-    display: inline-block;
-  }
-}
-.trueclass {
-  color: rgb(7, 190, 37);
-}
-
-.nilclass, .emptystring, td.nilclass {
-  color:lightGray;
-  font-style:italic;
-}
-
-.serialized pre {
-  font-size:10px;
-}
-
 .table td.hasmany {
   text-align:right;
 }
 
-.tab-content ul {
-  max-height:200px;
-  overflow:auto;
-  margin-left:0px;
-}
-
-.time, .datetime, .activesupport-timewithzone, .date, .sequel-sqltime, td.dateType, td.datetimeType, td.timeType {
-  color:purple;
-}
-td.booleanType {
-  color: orange;
-}
-.master_checkbox label {
-  color: gray
-}
-.setting_attribute {
-  border-bottom:1px solid rgba(0,0,0,0.1);
-  position:relative;
-  padding:2px;
-  margin-bottom:3px;
-  list-style-type:none;
-  &:last-child {
-    border-bottom:none;
-  }
-  input {
-    float:left;
-    margin:3px;
-  }
-  i.icon-resize-vertical {
-    position:absolute;
-    top:5px;
-    right:5px;
-  }
-}
-thead.header-fixed th:hover {
-  height: inherit;
-}
 .items-list, thead.header-fixed {
   .column_header {
     min-height:28px;
@@ -78,12 +10,6 @@ thead.header-fixed th:hover {
   }
   th {
     vertical-align:middle;
-    background-image: -moz-linear-gradient(top, #eee 90%, #dfdfdf 100%); /* FF3.6+ */
-    background-image: -webkit-gradient(linear, left top, left bottom, color-stop(90%,#eee), color-stop(100%,#dfdfdf)); /* Chrome,Safari4+ */
-    background-image: -webkit-linear-gradient(top, #eee 90%, #dfdfdf 100%); /* Chrome 10+,Safari 5.1+ */
-    background-image: -ms-linear-gradient(top, #eee 90%,#dfdfdf 100%); /* IE10+ */
-    background-image: -o-linear-gradient(top, #eee 90%,#dfdfdf 100%); /* Opera 11.10+ */
-    background-image: linear-gradient(top, #eee 90%,#dfdfdf 100%); /* W3C */
     padding: 0;
     div {
       padding: 8px 20px;

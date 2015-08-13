@@ -21,10 +21,10 @@ module ApplicationHelper
     if opts[:allow_blank]
       datas = [[opts[:allow_blank], '']] + datas
     end
-    content_tag :div, class: "control-group" do
-      l = content_tag(:label, opts[:label], class: "control-label")
-      l + content_tag(:div, class: "controls") do
-        content_tag(:select, name: opts[:input_name]) do
+    content_tag :div, class: 'form-group' do
+      l = content_tag(:label, opts[:label], class: 'control-label col-sm-3')
+      l + content_tag(:div, class: 'col-sm-9') do
+        content_tag(:select, name: opts[:input_name], class: 'form-control') do
           options_for_select(datas, opts[:selected])
         end
       end

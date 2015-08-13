@@ -1,0 +1,35 @@
+td.fixnum, td.bigdecimal, td.integer, td.float, td.decimal {
+  font-family: Monaco;
+  font-weight: bold;
+  text-align: right;
+}
+
+td.fixnum, td.bigdecimal, td.integer, td.float, td.decimal, td.decimalType, td.floatType, td.integerType {
+  color: green;
+}
+
+.trueclass, .falseclass {
+  color: #777;
+  text-align: center;
+}
+
+.trueclass {
+  color: rgb(7, 190, 37);
+}
+
+.nilclass, .emptystring, td.nilclass {
+  color: lightGray;
+  font-style: italic;
+}
+
+.serialized pre {
+  font-size: 10px;
+}
+
+.time, .datetime, .activesupport-timewithzone, .date, .sequel-sqltime, td.dateType, td.datetimeType, td.timeType {
+  color:purple;
+}
+
+td.booleanType {
+  color: orange;
+}

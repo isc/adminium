@@ -23,8 +23,8 @@ nav.navbar.navbar-default
         a.btn.navbar-btn.btn-default data-toggle="modal" href="#settings" title="Show Settings" data-placement="bottom" rel="tooltip"
           i.fa.fa-cog
 
-.row-fluid.item-attributes data-table=params[:table] data-item-id=params[:id]
-  .span7
+.row.item-attributes data-table=params[:table] data-item-id=params[:id]
+  .col-md-7
     - [[:string, :string_array], [:integer, :float, :decimal]].each do |types|
       - columns = item_attributes_type types, resource
       - if columns.present?
@@ -45,7 +45,7 @@ nav.navbar.navbar-default
               = resource.column_display_name name
           tr
             == display_attribute :td, @item, name, resource
-  .span5
+  .col-md-5
     table.table.table-condensed
       - primary_keys_and_time_fields_for_show(resource).each do |name|
         tr

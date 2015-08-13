@@ -3,6 +3,7 @@
  *= require font-awesome
  *= require select2
  *= require select2-bootstrap
+ *= require types
 */
 
 body { padding-top: 70px; }

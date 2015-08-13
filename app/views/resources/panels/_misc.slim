@@ -1,20 +1,20 @@
-.control-group
-  = label_tag :per_page, 'Items per page', class: 'control-label'
-  .controls
-    input.span2#per_page type="number" step=25 min=25 max=200 name="per_page" value=resource.per_page
-.control-group
-  = label_tag 'default_order[]', 'Default order', class: 'control-label'
-  .controls
+.form-group
+  = label_tag :per_page, 'Items per page', class: 'control-label col-sm-4'
+  .col-sm-2
+    input.form-control#per_page type="number" step=25 min=25 max=200 name="per_page" value=resource.per_page
+.form-group
+  = label_tag 'default_order[]', 'Default order', class: 'control-label col-sm-4'
+  .col-sm-5
     = select_tag 'default_order[]', \
-      options_from_collection_for_select(resource.schema, :first, :first, resource.default_order_column), class: 'select2 input-large'
-    div
-      = label_tag 'default_order__asc', class: 'radio inline' do
-        = radio_button_tag 'default_order[]', 'asc', (resource.default_order_direction == 'asc')
-        ' asc
-      = label_tag 'default_order__desc', class: 'radio inline' do
-        = radio_button_tag 'default_order[]', 'desc', (resource.default_order_direction == 'desc')
-        ' desc
-.control-group
-  = label_tag 'label_column', nil, class: 'control-label'
-  .controls
-    = select_tag 'label_column', options_from_collection_for_select(resource.schema, :first, :first, resource.label_column), include_blank: true, class: 'select2 input-large'
+      options_from_collection_for_select(resource.schema, :first, :first, resource.default_order_column), class: 'select2 form-control'
+  .col-sm-3
+    = label_tag 'default_order__asc', class: 'radio-inline' do
+      = radio_button_tag 'default_order[]', 'asc', (resource.default_order_direction == 'asc')
+      ' asc
+    = label_tag 'default_order__desc', class: 'radio-inline' do
+      = radio_button_tag 'default_order[]', 'desc', (resource.default_order_direction == 'desc')
+      ' desc
+.form-group
+  = label_tag 'label_column', nil, class: 'control-label col-sm-4'
+  .col-sm-5
+    = select_tag 'label_column', options_from_collection_for_select(resource.schema, :first, :first, resource.label_column), include_blank: true, class: 'select2 form-control'
