@@ -23,7 +23,7 @@ class Navigation
     options.matcher = adminiumSelect2Matcher
     @selector = '#table_select'
     $(@selector).select2(options).removeClass('hidden').on 'change', (object) =>
-      $(@selector).select2('destroy').replaceWith("<div class='loading_table'>Loading...</div>")
+      $(@selector).select2('destroy').closest('form').replaceWith('<div class="navbar-text">Loading...</div>')
       window.location.href = "/resources/#{object.val}"
     $('.modal').on 'hide', ->
       $(this).find('input:focus').blur()
@@ -34,8 +34,8 @@ class Navigation
         $(@selector).select2('open')
         e.preventDefault()
       for action, key of {create: 99, destroy: 116, edit: 101}
-        if e.which is key # 'c' for create
-          $("a.btn.#{action}").get(0).click() if $("a.btn.#{action}").length
+        if e.which is key and $("a.btn.#{action}-action").length
+          $("a.btn.#{action}-action").get(0).click()
       if e.which is 63 # '?' for help
         @toggleKeyboardShortcutsHelp()
 

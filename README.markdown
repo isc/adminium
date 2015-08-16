@@ -1,9 +1,9 @@
-## Sequel Migration TODOS / FIXMES :
+### Sequel Migration TODOS / FIXMES :
 
   - composite primary keys for import, bulk edit
   - bug time chart day of week ; 2 sundays
 
-## FEATURES:
+### FEATURES:
 
 nullifier une date depuis l'edit plus facilement
 pour remplir une date null dans l'edit il faut selectionner une heure sinon ca reste null
@@ -34,12 +34,12 @@ in-place edit improvements :
 gestion de tables sans PK : pour le moment on peut creer, on pourrait supprimer (delete from table where <tous les attr> limit 1)
 fail on forms ameliorables (highlight des champs en erreur)
 
-## TODOS:
+### TODOS:
 
 attr_accessible avec role pour proteger plan sur account
 données stockées dans redis pour les comptes deprovisionnés ?
 
-## BUGS:
+### BUGS:
 cas de l'install / switch sur une app heroku ou ca fail sur la db url
 column settings sur une colonne d'une table associée ; quand on change la visibilité ca s'applique sur le listing de la table associee, pas la table de depart.
 searchable columns only integer, rechercher une string ne veut rien dire mais ramene tous les results
@@ -48,3 +48,8 @@ serialized columns containing smth else than a basic type
 subnav flickers on a page slightly too long for the screen
 on peut pas mettre un espace comme thousand delimiter (or j'aurais bien voulu pouvoir le faire sur une colonne zipcode)
 pas de completion des tables sur la page d'edition de compte
+
+### refacto
+
+- remplir une date / un timestamp ne fonctionne pas
+

@@ -3,5 +3,7 @@
   = f.input :email, placeholder: "#{@collaborator.kind.capitalize} account email", type: 'email', required: true, disabled: !!@collaborator.user
   = f.input :is_administrator, as: :radio_buttons
   - if current_account.roles.present?
-    = f.association :roles, as: :check_boxes, collection: current_account.roles.map {|role|[role.name, role.id]}, html: {:class => "span1"}
-  = f.submit class: 'btn-primary', data: {disable_with: 'Sending...'}
+    = f.association :roles, as: :check_boxes, collection: current_account.roles.map {|role|[role.name, role.id]}
+  .form-group
+    .col-sm-offset-3.col-sm-9
+      = f.submit class: 'btn btn-primary', data: {disable_with: 'Sending...'}

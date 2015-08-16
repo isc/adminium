@@ -45,13 +45,13 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, first_name: 'Johnny', last_name: "Deep", role: "actor")
     visit resources_path(:users)
     fill_in 'search_input', with: "Johnny"
-    find('form.navbar-form button[title=Search]').click()
+    find('form.navbar-left button').click()
     assert page.has_content? 'Haliday'
     assert page.has_content? 'Deep'
     assert page.has_no_content? 'Carey'
     
     fill_in 'search_input', with: "Johnny singer"
-    find('form.navbar-form button[title=Search]').click()
+    find('form.navbar-left button').click()
     assert page.has_content? 'Haliday'
     assert page.has_no_content? 'Deep'
     assert page.has_no_content? 'Carey'
@@ -62,7 +62,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, first_name: 'Mariah', last_name: 'Carey', age: 661, group_id: 5)
     visit resources_path(:users)
     fill_in 'search_input', with: "61"
-    find('form.navbar-form button[title=Search]').click()
+    find('form.navbar-left button').click()
     assert page.has_content? 'Haliday'
     assert page.has_no_content? 'Carey'
     
@@ -70,7 +70,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert page.has_content? 'Carey'
     assert page.has_no_content? 'Haliday'
     fill_in 'search_input', with: '61'
-    find('form.navbar-form button[title=Search]').click()
+    find('form.navbar-left button').click()
     assert page.has_no_content? 'Carey'
     assert page.has_no_content? 'Haliday'
   end
@@ -130,7 +130,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit new_resource_path(:users)
     fill_in 'Age', with: '123123123183829384728832'
     click_button 'Save'
-    assert page.has_css?('.alert.alert-error')
+    assert page.has_css?('.alert.alert-danger')
     assert page.has_content?('New User')
     assert_equal '123123123183829384728832', find('input[type=number][name="users[age]"]').value
   end
@@ -139,7 +139,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit new_resource_path(:users)
     fill_in 'Age', with: 'va bien te faire mettre'
     click_button 'Save'
-    assert page.has_css?('.alert.alert-error')
+    assert page.has_css?('.alert.alert-danger')
     assert page.has_content?('New User')
     assert_equal 'va bien te faire mettre', find('input[type=number][name="users[age]"]').value
   end
@@ -147,7 +147,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test "failed save due to nil value" do
     visit new_resource_path(:groups)
     click_button 'Save'
-    assert page.has_css?('.alert.alert-error')
+    assert page.has_css?('.alert.alert-danger')
     assert page.has_content?('New Group')
   end
 
@@ -283,7 +283,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit edit_resource_path(:users, user)
     fill_in 'Age', with: out_of_range_int
     click_button 'Save'
-    assert page.has_css?('.alert.alert-error')
+    assert page.has_css?('.alert.alert-danger')
     assert page.has_content?("Edit User ##{user.id}")
     assert_equal out_of_range_int, find('input[type=number][name="users[age]"]').value
   end
@@ -295,7 +295,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit edit_resource_path(:users, user)
     fill_in 'Pseudo', with: 'Rob'
     click_button 'Save'
-    assert_match "Rob has already been taken.", find('.alert.alert-error').text
+    assert_match "Rob has already been taken.", find('.alert.alert-danger').text
     fill_in 'Pseudo', with: 'Robert'
     click_button 'Save'
     assert page.has_css?('.alert.alert-success')
@@ -433,10 +433,10 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit edit_resource_path(:users, user.id)
     fill_in 'Nicknames', with: '["Bob" "Bobby"]'
     click_button 'Save'
-    assert page.has_css?('.alert.alert-error')
+    assert page.has_css?('.alert.alert-danger')
     fill_in 'Nicknames', with: '["Bob", "Bobby"]'
     click_button 'Save'
-    assert !page.has_css?('.alert.alert-error')
+    assert !page.has_css?('.alert.alert-danger')
     assert_equal '["Bob", "Bobby"]', find('td[data-column-name="nicknames"]')['data-raw-value']
   end
   
@@ -461,11 +461,11 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert page.has_content?('Pierre')
     assert page.has_content?('Jacques')
     fill_in 'search_input', with: 'Bobulus'
-    find('form.navbar-form button[title=Search]').click()
+    find('form.navbar-left button').click()
     assert page.has_content?('Pierre')
     assert page.has_no_content?('Jacques')
     fill_in 'search_input', with: 'Bob Bobby'
-    find('form.navbar-form button[title=Search]').click()
+    find('form.navbar-left button').click()
     assert page.has_content?('Pierre')
     assert page.has_no_content?('Jacques')
   end

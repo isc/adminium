@@ -5,27 +5,23 @@ javascript:
 nav.navbar.navbar-default
   .container-fluid
     .navbar-header
+      = navbar_toggle 'subnavbar'
       = link_to params[:table].humanize, resources_path(params[:table]), class: 'navbar-brand'
-      .navbar-text
-        = "#{resource.human_name} ##{params[:id]}"
-    .collapse.navbar-collapse
+      .navbar-text= "#{resource.human_name} ##{params[:id]}"
+    #subnavbar.collapse.navbar-collapse
       .btn-group
         - if user_can? 'create', params[:table]
-          = link_to new_resource_path(table:params[:table]), class: "btn navbar-btn btn-default create", rel: "tooltip", title: "Create a new row", data: {placement: 'bottom'} do
-            i.fa.fa-file
-          = link_to new_resource_path(table:params[:table], clone_id: params[:id]), class: "btn navbar-btn btn-default create", rel: "tooltip", title: "Clone", data: {placement: 'bottom'} do
-            i.fa.fa-copy
+          = icon_button_link new_resource_path(table:params[:table]), 'plus', 'Create a new row', class: 'create-action'
+          = icon_button_link new_resource_path(table:params[:table], clone_id: params[:id]), 'copy', 'Clone'
         - if user_can? 'edit', params[:table]
-          = link_to content_tag(:i, nil, class: 'fa fa-pencil'), edit_resource_path(resource.table, params[:id]), title: 'Edit', rel: 'tooltip', data: {placement: 'bottom'}, class: 'btn navbar-btn btn-default edit'
+          = icon_button_link edit_resource_path(resource.table, params[:id]), 'pencil', 'Edit', class: 'edit-action'
         - if user_can? 'destroy', params[:table]
-          = link_to content_tag(:i, nil, class: 'fa fa-trash'), resource_path(resource.table, params[:id], redirect: 'index'), method: :delete, data: {confirm: t('items.destroy_warning'), placement: 'bottom'}, class: 'btn navbar-btn btn-default destroy', title: 'Destroy', rel: 'tooltip'
-      .navbar-right
-        a.btn.navbar-btn.btn-default data-toggle="modal" href="#settings" title="Show Settings" data-placement="bottom" rel="tooltip"
-          i.fa.fa-cog
+          = icon_button_link resource_path(resource.table, params[:id], redirect: 'index'), 'trash', 'Destroy', method: :delete, data: {confirm: t('items.destroy_warning')}, class: 'destroy-action'
+      .navbar-right= settings_button 'Show settings'
 
 .row.item-attributes data-table=params[:table] data-item-id=params[:id]
   .col-md-7
-    - [[:string, :string_array], [:integer, :float, :decimal]].each do |types|
+    - [%i(string string_array), %i(integer float decimal)].each do |types|
       - columns = item_attributes_type types, resource
       - if columns.present?
         table.table.table-condensed
@@ -90,7 +86,7 @@ nav.navbar.navbar-default
                 '  
                 = link_to "...", resources_path(name, where: assoc_params)
             td
-              = link_to new_resource_path(name, attributes: assoc_params), class: 'btn btn-mini', rel: "tooltip", :"data-placement" => :left,  title: "Create a new associated #{name.to_s.singularize.humanize}" do
+              = link_to new_resource_path(name, attributes: assoc_params), class: 'btn btn-mini', rel: "tooltip", data: {placement: :left}, title: "Create a new associated #{name.to_s.singularize.humanize}" do
                 i.fa.fa-plus
 
 = render 'resources/panels/show_settings'

@@ -1,19 +1,17 @@
 nav.navbar.navbar-default
   .container-fluid
     .navbar-header
+      = navbar_toggle 'subnavbar'
       = link_to params[:table].humanize, resources_path(params[:table]), class: 'navbar-brand'
       .navbar-text= "Edit #{resource.item_label @item}"
-    .collapse.navbar-collapse
+    #subnavbar.collapse.navbar-collapse
       .btn-group
-        = link_to content_tag(:i, nil, class: 'fa fa-eye'), resource_path(resource.table, params[:id]), class: 'btn btn-default navbar-btn', data: {placement: 'bottom'}, rel: 'tooltip', title: 'Show'
+        = icon_button_link resource_path(resource.table, params[:id]), 'eye', 'Show'
         - if user_can? 'create', params[:table]
-          = link_to new_resource_path(table:params[:table], clone_id: params[:id]), class: "btn create btn-default navbar-btn", rel: "tooltip", title: "Clone", data: {placement: 'bottom'} do
-            i.fa.fa-copy
+          = icon_button_link new_resource_path(table:params[:table], clone_id: params[:id]), 'copy', 'Clone'
         - if user_can? 'destroy', params[:table]
-          = link_to content_tag(:i, nil, class: 'fa fa-trash'), resource_path(resource.table, params[:id], redirect: 'index'), method: :delete, data: {confirm: t('items.destroy_warning'), placement: 'bottom'}, class: 'btn btn-default navbar-btn destroy', title: 'Destroy', rel: 'tooltip'
-      .navbar-right
-        a.navbar-btn.btn.btn-default data-toggle="modal" href="#settings" title="Form Settings" data-placement="bottom" rel="tooltip"
-          i.fa.fa-cog
+          = icon_button_link resource_path(resource.table, params[:id], redirect: 'index'), 'trash', 'Destroy', method: :delete, data: {confirm: t('items.destroy_warning')}, class: 'destroy-action'
+      .navbar-right= settings_button 'Form settings'
 
 = render 'resources/form'
 = render 'resources/panels/form_settings'

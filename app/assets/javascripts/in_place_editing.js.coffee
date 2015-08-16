@@ -36,7 +36,7 @@ class InPlaceEditing
       type = 'text'
       raw_value = td.find('a').attr('data-content')
     td.attr("data-original-content", td.html())
-    td.html($("<form class='form form-inline' action='/resources/#{table}/#{id}'><div class='control-group'><div class='controls'><div class='in-place-actions'><button class='btn'><i class='fa-check' /></button><a class='cancel'><i class='fa fa-remove'></i></a></div></div</div></form>"))
+    td.html($("<form class='form form-inline' action='/resources/#{table}/#{id}'><div class='control-group'><div class='controls'><div class='in-place-actions'><button class='btn'><i class='fa fa-check' /></button><a class='cancel'><i class='fa fa-remove'></i></a></div></div</div></form>"))
     td.attr("data-mode", "editing")
     td.find('a.cancel').click @cancelEditionMode
     td.find('form').submit @submitColumnEdition

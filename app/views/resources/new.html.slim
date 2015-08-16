@@ -1,13 +1,14 @@
 nav.navbar.navbar-default
   .container-fluid
     .navbar-header
+      = navbar_toggle 'subnavbar'
       = link_to params[:table].humanize, resources_path(params[:table]), class: 'navbar-brand'
       .navbar-text
         ' New #{resource.human_name}
         - if params.has_key? :clone_id
           small
             == "| cloning #{link_to "#{resource.human_name} ##{params[:clone_id]}", resource_path(params[:table], params[:clone_id])}"
-    .collapse.navbar-collapse
+    #subnavbar.collapse.navbar-collapse
       .navbar-right
         a.navbar-btn.btn.btn-default data-toggle="modal" href="#settings" title="Form Settings" data-placement="bottom" rel="tooltip"
           i.fa.fa-cog

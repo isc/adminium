@@ -3,8 +3,9 @@ module ApplicationHelper
   def flash_class(level)
     case level
     when :notice then 'info'
-    when :error then 'error'
+    when :error then 'danger'
     when :alert then 'warning'
+    when :success then 'success'
     end
   end
 
@@ -81,6 +82,28 @@ module ApplicationHelper
     return @tables if @tables.present?
    end
    return []
+  end
+
+  def navbar_toggle navbar_id
+    content_tag :button, class: 'navbar-toggle collapsed', type: 'button', data: {toggle: 'collapse', target: "##{navbar_id}"}, 'aria-expanded': 'false' do
+      content_tag(:span, 'Toggle navigation', class: 'sr-only') +
+      (content_tag(:span, nil, class: 'icon-bar') * 3).html_safe
+    end
+  end
+
+  def icon_button_link path, icon, title, options = {}
+    options[:data] ||= {}
+    options[:data].merge! placement: 'bottom'
+    options.merge! rel: 'tooltip', title: title, class: "btn navbar-btn btn-default #{options[:class]}"
+    link_to path, options do
+      content_tag :i, nil, class: "fa fa-#{icon}"
+    end
+  end
+
+  def settings_button title
+    content_tag :a, class: 'btn navbar-btn btn-default', data: {toggle: 'modal', placement: 'bottom'}, href: '#settings', title: title, rel: 'tooltip' do
+      content_tag :i, nil, class: 'fa fa-cog'
+    end
   end
 
 end

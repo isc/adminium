@@ -9,27 +9,29 @@ class BulkActions
   setupBulkEdit: ->
     $("#bulk-edit-modal").on 'hide', =>
       $("#bulk-edit-modal").html($(".loading_modal").html())
-    $("#bulk-edit-modal").on 'shown', =>
-      $("#bulk-edit-modal").html($(".loading_modal").html())
-      item_ids = ""
-      for item in $("#{@checkbox_selector}:checked")
-        item_ids += "record_ids[]=#{$(item).closest('tr').data('item-id')}&"
+    $('.bulk-edit').on 'click', =>
+      return false if $('.bulk-edit').attr('disabled')
+      $("#bulk-edit-modal").html($(".loading_modal").html()).modal('show')
+      item_ids = ("record_ids[]=#{$(item).closest('tr').data('item-id')}" for item in $("#{@checkbox_selector}:checked"))
       path = $("#bulk-edit-modal").attr("data-remote-path")
-      $.get "#{path}?#{item_ids}", (data) =>
-        $("#bulk-edit-modal").html(data)
+      $.get "#{path}?#{item_ids.join('&')}", (data) =>
+        $('#bulk-edit-modal').html(data)
         AutocompleteAssociationsForm.setup()
         $('.datepicker').datepicker onClose: (dateText, inst) ->
           $("##{inst.id}_1i").val(inst.selectedYear)
           $("##{inst.id}_2i").val(inst.selectedMonth + 1)
           $("##{inst.id}_3i").val(inst.selectedDay)
+      false
 
   setupBulkDestroy: ->
-    $('.bulk-destroy').submit =>
+    $('.bulk-destroy').on 'click', =>
       items = $("#{@checkbox_selector}:checked")
       return false unless confirm "Are you sure you want to trash the #{items.length} selected items ?"
       for item in items
         item_id = $(item).closest('tr').data('item-id')
-        $('<input>').attr('type': 'hidden', 'name': 'item_ids[]').val(item_id).appendTo('.bulk-destroy')
+        $('<input>').attr('type': 'hidden', 'name': 'item_ids[]').val(item_id).appendTo('#bulk-destroy-form')
+      $('#bulk-destroy-form').submit()
+      false
 
   setupBulkCheckbox: ->
     $(@checkbox_selector).click => @formVisibility()
@@ -43,17 +45,16 @@ class BulkActions
 
   formVisibility: ->
     if $("#{@checkbox_selector}:checked").length is 0
-      $(".bulk-action").hide()
+      $('.bulk-destroy, .bulk-edit').attr('disabled', 'disabled')
     else
-      $(".bulk-action").show()#.css('display', 'inline-block')
+      $('.bulk-destroy, .bulk-edit').removeAttr('disabled')
     $("table.items-list input:checked").parents('tr').addClass('warning')
     $("table.items-list input:not(:checked)").parents("tr").removeClass('warning')
 
 class CustomColumns
 
   constructor: (root) ->
-    root = $(root)
-    @columnSelect = root.find('select.select-custom-column')
+    @columnSelect = $(root).find('select.select-custom-column')
     @columnSelect.select2({placeholder: 'Select a column', matcher: adminiumSelect2Matcher}).on 'change', @columnSelected
   
   columnSelected: (object) =>
@@ -157,4 +158,3 @@ $ ->
   new CustomColumns('#select-exported-fields_pane')
   new UIListing()
   new ColumnSettings()
-  new FixedTableHeader()

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class GenericTest < ActiveSupport::TestCase
+class ResourceTest < ActiveSupport::TestCase
 
   def setup
     account = create :account

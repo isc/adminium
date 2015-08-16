@@ -23,22 +23,17 @@ html lang="en" ng-app=""
     nav.navbar.navbar-inverse.navbar-fixed-top
       .container-fluid
         .navbar-header
-          button.navbar-toggle.collapsed type="button" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar"
-            span.sr-only Toggle navigation
-            span.icon-bar
-            span.icon-bar
-            span.icon-bar
+          = navbar_toggle 'navbar'
           = link_to "#{current_account.try(:name) || 'Adminium'}", dashboard_path, class: 'navbar-brand'
         #navbar.collapse.navbar-collapse
           form.navbar-left.navbar-form
-            .form-group
-              = select_tag 'table_select', options_for_select(table_list), include_blank: true, class: 'form-control hidden'
+            = select_tag 'table_select', options_for_select(table_list), include_blank: true, class: 'form-control hidden'
           = render 'layouts/menu'
     .container-fluid
       .row
         .col-md-12
           - flash.each do |k, v|
-            .alert.alert-dismissible class="alert-#{k}"
+            .alert.alert-dismissible class="alert-#{flash_class k}"
               a.close data-dismiss="alert" href="#" ×
               = raw v
           = yield
@@ -47,13 +42,15 @@ html lang="en" ng-app=""
     - unless Rails.env.development?
       = render '/layouts/ga'
       = render '/layouts/uservoice'
-    .modal.hide#modal-window
-      .modal-header
-        a.close data-dismiss="modal" ×
-        h4.modal-title Loading...
-      .modal-body
-        i.fa.fa-spin.fa-spinner
-      .modal-footer
+    .modal#modal-window
+      .modal-dialog
+        .modal-content
+          .modal-header
+            a.close data-dismiss="modal" ×
+            h4.modal-title Loading...
+          .modal-body
+            i.fa.fa-spin.fa-spinner
+          .modal-footer
     .loading_modal.hidden
       .modal-dialog
         .modal-content

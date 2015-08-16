@@ -18,11 +18,7 @@ body { padding-top: 70px; }
   opacity: 0.5;
 }
 .table-sortable th {
-  cursor:pointer;
-}
-.loading_table {
-  margin-top: 7px;
-  color: #BBB;
+  cursor: pointer;
 }
 i.fa.discrete {
   opacity: 0.3;

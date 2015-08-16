@@ -5,9 +5,9 @@ javascript:
 nav.navbar.navbar-default
   .container-fluid
     .navbar-header
-      a.navbar-brand
-        = params[:table].humanize
-    .collapse.navbar-collapse
+      = navbar_toggle 'subnavbar'
+      a.navbar-brand= params[:table].humanize
+    #subnavbar.collapse.navbar-collapse
       ul.nav.navbar-nav
         li
           = link_to schema_path(params[:table]), rel: 'tooltip', title: 'Schema', data: {placement: 'bottom'} do
@@ -18,31 +18,26 @@ nav.navbar.navbar-default
             - name, value = unescape_name_value_pair param
             - next if name == 'search'
             input type="hidden" name=name value=value
-          input.form-control#search_input> name="search" type='text' value=params[:search] placeholder="search on #{resource.columns[:search].map{|e|e.to_s.humanize}.join(', ').downcase}"
-          button.btn.btn-default> title="Search" rel="tooltip" data-placement="bottom"
-            i.fa.fa-search
-          a.btn.btn-default> rel="tooltip" title="Advanced search" data-placement="bottom" data-toggle="modal" href="#advanced_search"
+          .input-group
+            input.form-control#search_input> name="search" type='text' value=params[:search] placeholder="search on #{resource.columns[:search].map{|e|e.to_s.humanize}.join(', ').downcase}"
+            .input-group-btn
+              button.btn.btn-default>
+                i.fa.fa-search
+          a.btn.btn-default< rel="tooltip" title="Advanced search" data-placement="bottom" data-toggle="modal" href="#advanced_search"
             i.fa.fa-search-plus
+        .btn-group
           - if user_can? 'create', params[:table]
-            = link_to new_resource_path(table:params[:table]), class: "btn btn-default create", rel: "tooltip", title: "Create a new row", data: {placement: 'bottom'} do
-              i.fa.fa-plus>
+            = icon_button_link new_resource_path(table:params[:table]), 'plus', 'Create a new row'
           - if user_can? 'edit', params[:table]
-            button.btn.bulk-action.bulk-edit.hidden title="Edit selected rows" rel='tooltip' data-toggle="modal" href="#bulk-edit-modal" data-placement="bottom"
-              i.fa.fa-pencil>
-        - if user_can? 'destroy', params[:table]
-          = form_tag bulk_destroy_resources_path(params[:table]), class: "bulk-action bulk-destroy hidden navbar-form" do
-            button.btn.btn-danger title='Delete selected rows' rel='tooltip' data-placement="bottom"
-              i.fa.fa-trash
-          form.navbar-form.navbar-left
-            a.btn.btn-default> data-toggle="modal" href="#export" title="Export rows" rel='tooltip' data-placement="bottom" style="margin-left:2px"
-              i.fa.fa-download
-            - if user_can? 'create', params[:table]
-              = link_to import_resources_path(table: params[:table]), class: 'btn btn-default', rel: "tooltip", title: "Import rows", data: {placement: 'bottom'} do
-                i.fa.fa-upload
+            = icon_button_link '#', 'pencil', 'Edit selected rows', disabled: 'disabled', class: 'bulk-edit'
+          - if user_can? 'destroy', params[:table]
+            = icon_button_link '#', 'trash', 'Delete selected rows', disabled: 'disabled', class: 'bulk-destroy'
+          = icon_button_link '#export', 'download', 'Export rows', data: {toggle: 'modal'}
+          - if user_can? 'create', params[:table]
+            = icon_button_link import_resources_path(table: params[:table]), 'upload', 'Import rows'
       .navbar-right
         = render 'next_previous_page', scope: @items
-        a.btn.btn-default.navbar-btn data-toggle="modal" href="#settings" title="Listing settings" data-placement="bottom" rel="tooltip"
-          i.fa.fa-cog
+        = settings_button 'Listing settings'
 
 #nav_searches
   = form_for Widget.new, remote: true do |t|
@@ -102,4 +97,5 @@ nav.navbar.navbar-default
 = render '/resources/panels/advanced_search'
 #column-settings.modal.fade data-remote-path=column_setting_path('{table}', column: '{column}', view: '{view}')
 #time-chart.modal.fade data-remote-path=generate_chart_path
-#bulk-edit-modal.modal.fade(data-remote-path=bulk_edit_resources_path(table: params[:table]))
+#bulk-edit-modal.modal.fade data-remote-path=bulk_edit_resources_path(table: params[:table])
+= form_tag bulk_destroy_resources_path(params[:table]), id: 'bulk-destroy-form'
