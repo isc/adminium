@@ -33,3 +33,17 @@ td.fixnum, td.bigdecimal, td.integer, td.float, td.decimal, td.decimalType, td.f
 td.booleanType {
   color: orange;
 }
+
+.filters {
+  tr:first-child .grouping_kind select {
+    display: none;
+  }
+  .grouping_kind {
+    border-top: none;
+    select {
+      width: 55px;
+      margin-top: -20px;
+      margin-left: -10px;
+    }
+  }
+}

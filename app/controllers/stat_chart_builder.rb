@@ -10,14 +10,9 @@ module StatChartBuilder
     apply_filters
     apply_search
     @items_for_stats = @items
-    calculations = [:max, :min, :avg, :sum, :count]
-    calculations.each_with_index do |calculation, i|
+    %i(max min avg sum count).each_with_index do |calculation, i|
       clause = Sequel.function(calculation, column)
-      @items = if (i == 0)
-        @items.select(clause)
-      else
-        @items.select_append(clause)
-      end
+      @items = i.zero? ? @items.select(clause) : @items.select_append(clause)
     end
     @items = @items.select_append(Sequel.as(Sequel.function(:count, Sequel.function(:distinct, column)), 'distinct'))
     @data_hash = @items.all.first
@@ -27,9 +22,9 @@ module StatChartBuilder
       @data_hash[:median] = value[params[:column].to_sym]
     end
     @data = []
-    [:max, :avg, :median, :min, :sum, :count, :distinct].each do |calc|
+    %i(max avg median min sum count distinct).each do |calc|
       value = @data_hash[calc]
-      unless [:count, :distinct].include?(calc)
+      unless %i(count distinct).include?(calc)
         value = value.round(2) if [Float, BigDecimal].include?(value.class)
         value = display_number(params[:column].to_sym, nil, resource, value) if value
       end

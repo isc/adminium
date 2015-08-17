@@ -27,7 +27,7 @@ nav.navbar.navbar-default
             i.fa.fa-search-plus
         .btn-group
           - if user_can? 'create', params[:table]
-            = icon_button_link new_resource_path(table:params[:table]), 'plus', 'Create a new row'
+            = icon_button_link new_resource_path(table:params[:table]), 'plus', 'Create a new row', class: 'create-action'
           - if user_can? 'edit', params[:table]
             = icon_button_link '#', 'pencil', 'Edit selected rows', disabled: 'disabled', class: 'bulk-edit'
           - if user_can? 'destroy', params[:table]
@@ -49,11 +49,11 @@ nav.navbar.navbar-default
     - if params[:asearch].blank?
       li.active
         a
-          span All
+          span> All
           - if @widget
-            i.icon-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
+            i.fa.fa-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
           - else
-            i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom" data-form="#nav_searches form"
+            i.fa.fa-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom" data-form="#nav_searches form"
     - else
       li= link_to 'All', params.merge(asearch: nil)
     - resource.filters.keys.each do |key|
@@ -62,12 +62,12 @@ nav.navbar.navbar-default
           a
             span.text-more data-placement="right" data-title=key data-content=display_filter(@current_filter) = key
             - if @widget
-              i.icon-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
+              i.fa.fa-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
             - else
-              i.icon-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom" data-form="#nav_searches form"
-            i.icon-pencil data-toggle="modal" href="#advanced_search"  title="Edit this view" rel="tooltip" data-placement="bottom"
+              i.fa.fa-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom" data-form="#nav_searches form"
+            i.fa.fa-pencil data-toggle="modal" href="#advanced_search"  title="Edit this view" rel="tooltip" data-placement="bottom"
             = link_to search_path(params[:table], name: params[:asearch]), method: 'delete' do
-              i.icon-trash title="Delete this view" rel="tooltip" data-placement="bottom"
+              i.fa.fa-trash title="Delete this view" rel="tooltip" data-placement="bottom"
 
       - else
         li= link_to key, params.merge(asearch: key)

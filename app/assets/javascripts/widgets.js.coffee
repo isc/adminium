@@ -14,8 +14,8 @@ class Widget
     $('#widget_table').change (e) =>
       @fillColumnsSelection e.target.value
     $('input[name="widget[type]"]').click (e) =>
-      $('#widget_columns').closest('.control-group').parent().toggle(e.target.value isnt 'TableWidget')
-      $('#widget_grouping').closest('.control-group').parent().toggle(e.target.value is 'TimeChartWidget')
+      $('#widget_columns').closest('.form-group').parent().toggleClass('hidden', e.target.value is 'TableWidget')
+      $('#widget_grouping').closest('.form-group').parent().toggleClass('hidden', e.target.value isnt 'TimeChartWidget')
       return unless table = $('#widget_table').val()
       @fillColumnsSelection table
 
@@ -24,13 +24,12 @@ class Widget
       if data.length
         $('#widget_advanced_search').empty().append($('<option>'))
         $('<option>').text(search).val(search).appendTo('#widget_advanced_search') for search in data
-      $('#widget_advanced_search').closest('.control-group').parent().toggle(data.length isnt 0)
+      $('#widget_advanced_search').closest('.form-group').parent().toggleClass('hidden', data.length is 0)
   
   fillColumnsSelection: (table) ->
     @fetchAdvancedSearches table
     widgetType = $('input[name="widget[type]"]:checked').val()
-    $('#widget_columns').empty()
-    $('#widget_columns').attr('required', widgetType isnt 'TableWidget')
+    $('#widget_columns').empty().prop('required', widgetType isnt 'TableWidget')
     return if widgetType is 'TableWidget'
     $.getJSON "/settings/columns?table=#{table}&chart_type=#{widgetType}", (data) ->
       $('<option>').text(column).val(column).appendTo('#widget_columns') for column in data

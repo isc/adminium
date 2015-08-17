@@ -6,18 +6,20 @@
           a.close data-dismiss="modal" ×
           h4.modal-title Advanced Search
         .modal-body
-          .control-group
-            = label_tag :new_filter, 'Add a filter on column', class: 'control-label'
-            .controls
-              select#new_filter.input-large data-table=params[:table]
+          .form-group
+            = label_tag :new_filter, 'Add a filter on column', class: 'control-label col-sm-4'
+            .col-sm-8
+              select#new_filter.form-control data-table=params[:table]
                 option value=""= ''
                 = columns_options_for_resource resource
 
-          table.table.table-condensed.filters
+          table.table.table-condensed.table-hover.filters
             - @current_filter.each do |filter|
               tr= render '/settings/filter', filter: filter
         .modal-footer
-          = label_tag :name, 'Save as', class: 'control-label'
-          = text_field_tag :name, (params[:asearch] || 'last search')
-          '
-          input#save_advanced_search.btn.btn-primary type="submit" value="Search"
+          .form-inline
+            = label_tag :name, 'Save as'
+            '
+            = text_field_tag :name, (params[:asearch] || 'last search'), class: 'form-control'
+            '
+            input#save_advanced_search.btn.btn-primary type="submit" value="Search"

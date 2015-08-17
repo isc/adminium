@@ -1,12 +1,12 @@
 - g = rand(1000)
 td.grouping_kind
-  select name="filters[#{g}][grouping]"
+  select.form-control.input-sm name="filters[#{g}][grouping]"
     = options_for_select([['and', 'and'],['or', 'or']], filter['grouping'] || 'and')
 td
   input type="hidden" name="filters[#{g}][column]" value=filter['column']
   input type="hidden" name="filters[#{g}][type]" value=filter['type']
   input type="hidden" name="filters[#{g}][assoc]" value=filter['assoc']
-  label= "#{filter['assoc']} #{filter['column']}".strip
+  label.control-label= "#{filter['assoc']} #{filter['column']}".strip
 td.operators
   - filter_type = filter['type'].to_s
   - filter_type = 'integer' if %w(decimal float).include? filter_type
@@ -14,11 +14,11 @@ td.operators
   - filter_type = 'string' if filter_type == 'text'
   = render "/settings/filters/#{filter_type}", g: g, operator: filter['operator']
 td
-  - options = {class: 'operand'}
+  - options = {class: 'operand form-control'}
   - options[:class] += ' datepicker' if %w(datetime date).include? filter_type
   - options['data-type'] = filter_type
   - options['data-original-type'] = filter['type'].to_s
   = text_field_tag "filters[#{g}][operand]", filter['operand'], options
 td
-  span.btn
-    i.icon-trash
+  span.btn.btn-default
+    i.fa.fa-trash
