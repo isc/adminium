@@ -9,15 +9,16 @@
             input> type="checkbox" checked="checked" name="#{resource.table}[#{name}][]" value=r[foreign_resource.primary_keys.first]
             = foreign_resource.item_label(r)
   - else
-    span.single-record class="#{'hide' if value.blank?}"
-      span= foreign_resource.item_label(record) || value
-      i.icon.icon-remove-sign
-    .clear
+    .input-group.single-record
+      input.form-control readonly=true value=(foreign_resource.item_label(record) || value)
+      .input-group-addon
+        a.clear-selection href="#"
+          i.fa.fa-times-circle class=('invisible' if value.nil?)
     = hidden_field_tag "#{resource.table}[#{name}]", value
   .input-group
     .input-group-addon Search
     input.form-control(type='search' data-autocomplete-url=search_resources_path(foreign_resource.table) autocomplete='off' placeholder="#{foreign_resource.columns[:search].map(&:to_s).map(&:humanize).join(', ').downcase}")
     .input-group-addon
-      i.fa.fa-refresh.fa-spin
+      i.fa.fa-refresh.fa-spin.invisible
   ul.list-unstyled
     li

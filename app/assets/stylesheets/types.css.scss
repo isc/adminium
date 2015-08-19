@@ -47,3 +47,20 @@ td.booleanType {
     }
   }
 }
+
+
+.adminium-association {
+  .input-group {
+    margin-bottom: 5px;
+  }
+  ul {
+    margin-right: 1px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    height: 150px;
+    overflow: scroll;
+    li {
+      padding: 0 5px;
+    }
+  }
+}
