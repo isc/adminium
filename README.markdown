@@ -52,4 +52,5 @@ pas de completion des tables sur la page d'edition de compte
 ### refacto
 
 - remplir une date / un timestamp ne fonctionne pas
-
+- ui-sortable
+- foreign resource input multiple records

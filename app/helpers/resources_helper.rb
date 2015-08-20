@@ -16,14 +16,14 @@ module ResourcesHelper
       order = key
       ascend = true
     end
-    res = ""
+    res = ''
     {'up' => key, 'down' => "#{key} desc"}.each do |direction, dorder|
       active = dorder == params[:order] ? 'active' : nil
-      res << link_to(url_for(params.merge(order: dorder)), title: sort_title(display_name, direction=='up', original_key), rel: 'tooltip') do
-        content_tag('i', '', class: "fa fa-chevron-#{direction} #{active}")
+      res << link_to(url_for(params.merge(order: dorder)), title: sort_title(display_name, direction=='up', original_key)) do
+        content_tag('i', '', class: "fa fa-chevron-#{direction} #{active} discrete")
       end
     end
-    res << (link_to display_name, params.merge(order:order), title: sort_title(display_name, ascend, original_key), rel:'tooltip')
+    res << (link_to display_name, params.merge(order:order), title: sort_title(display_name, ascend, original_key))
   end
   
   def sort_title display_name, ascend, original_key

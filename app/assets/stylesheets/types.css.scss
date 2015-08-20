@@ -64,3 +64,32 @@ td.booleanType {
     }
   }
 }
+
+.items-list thead > tr > th {
+  position: relative;
+  padding: 12px 8px;
+  text-align: center;
+  &:not(:hover) i {
+    opacity: 0;
+  }
+  i {
+    cursor: pointer;
+    position: absolute;
+  }
+  .column_settings {
+    top: 2px;
+    right: 2px;
+  }
+  .time-chart {
+    bottom: 2px;
+    right: 2px;
+  }
+  .fa-chevron-up {
+    top: 2px;
+    left: 2px;
+  }
+  .fa-chevron-down {
+    bottom: 2px;
+    left: 2px;
+  }
+}
