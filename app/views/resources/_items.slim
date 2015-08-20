@@ -28,12 +28,12 @@
           = column_header_with_metadata resource, name do
             == header_link name
             - if resource.is_date_column?(name) && actions_cell
-              i.fa.time-chart.fa-bar-chart.discrete data-type="TimeChart" title="Time chart for #{name}"
+              i.fa.time-chart.fa-bar-chart data-type="TimeChart" title="Time chart for #{name}"
             - if resource.is_pie_chart_column?(name) && actions_cell
-              i.fa.time-chart.fa-pie-chart.discrete data-type="PieChart" title="Pie chart for #{name}"
+              i.fa.time-chart.fa-pie-chart data-type="PieChart" title="Pie chart for #{name}"
             - if resource.is_stat_chart_column?(name) && actions_cell
-              i.fa.time-chart.fa-bar-chart.discrete data-type="StatChart" title="Statistics for #{name}"
-            i.column_settings.fa.fa-cog.discrete title="Column settings"
+              i.fa.time-chart.fa-bar-chart data-type="StatChart" title="Statistics for #{name}"
+            i.column_settings.fa.fa-cog title="Column settings"
 
     tbody
       - items.each do |item|
