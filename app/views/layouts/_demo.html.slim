@@ -1,15 +1,11 @@
 - if session[:account] && session[:account] == ENV['DEMO_ACCOUNT_ID']
-  .demo
-    .container-fluid
-      .row-fluid
-        .span6
-          p
-            strong Welcome!
-            '  Feel free to play with the sample data, it will be reset automatically.
-        .span6
-          - if session[:account_before_demo]
-            = link_to stop_demo_docs_path, class: 'btn btn-warning' do
-              i.icon-arrow-right.icon-white
-              '  Back to my account
-          - else
-            = link_to "Install the add-on on your Heroku apps", "/auth/heroku", class: "btn btn-success"
+  .container.demo-notice
+    .well
+      strong Welcome!
+      '  Feel free to play with the sample data, it will be reset automatically.
+      - if session[:account_before_demo]
+        = link_to stop_demo_docs_path, class: 'btn btn-warning pull-right' do
+          i.fa.fa-arrow-right
+          '  Back to my account
+      - else
+        = link_to "Install the add-on on your Heroku apps", "/auth/heroku", class: "btn btn-success pull-right"
