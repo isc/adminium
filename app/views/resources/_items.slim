@@ -19,7 +19,6 @@
       tr
         - if actions_cell
           th.actions
-          th.checkboxes
             - if user_can?('destroy', params[:table]) || user_can?('edit', params[:table])
               input type="checkbox"
         - else
@@ -49,8 +48,7 @@
                     i.fa.fa-pencil>
                 - if user_can? 'destroy', params[:table]
                   = link_to resource_path(params[:table], item_pk), method: :delete, data: {confirm: t('items.destroy_warning')} do
-                    i.fa.fa-trash
-            td.checkboxes.click_checkbox
+                    i.fa.fa-trash.text-danger>
               - if item_pk && (user_can?('destroy', params[:table]) || user_can?('update', params[:table]))
                 input type="checkbox"
           - else

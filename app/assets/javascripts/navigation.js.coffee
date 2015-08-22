@@ -79,7 +79,7 @@ class Navigation
       else if [13, 39, 79].indexOf(e.which) isnt -1 # return or right arrow or o
         location.href = row.find('td:first-child a:first-child').attr('href')
       else if e.which is 88 # x
-        checkBox = row.find('td:eq(1) input[type=checkbox]').get(0).click()
+        checkBox = row.find('td:eq(0) input[type=checkbox]').get(0).click()
       else if e.which is 84 # t
         row.find('td:first-child a:last-child').trigger('click')
       else if e.which is 69 # e

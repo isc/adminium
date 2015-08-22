@@ -27,10 +27,10 @@ class window.Gravatar
     columnIndex = $("table.items-list th[data-column-name='#{email}']").index()
     emailCells = $("td:nth-child(#{columnIndex + 1})")
     return if emailCells.length is 0
-    $("<th class='gravatar'>").insertAfter $('th.checkboxes')
+    $("<th class='gravatar'>").insertAfter $('th.actions')
     $("<td class='gravatar'>").insertAfter $('.items-list tfoot th')
     for elt in emailCells
-      here = $(elt).parent('tr').find('.click_checkbox')
+      here = $(elt).parent('tr').find('.actions')
       value = $(elt).text()
       image = if value.indexOf('@') isnt -1
         "<a href='#{@profile(value)}' target='_blank'><img src='#{@picture(value)}' /></a>"

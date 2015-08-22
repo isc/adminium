@@ -99,6 +99,13 @@ td.checkboxes {
     left: 2px;
   }
 }
+table.table.items-list {
+  td.actions, th.actions {
+    vertical-align: middle;
+    text-align: right;
+    max-width: 50px;
+  }
+}
 
 .demo-notice {
   line-height: 34px;

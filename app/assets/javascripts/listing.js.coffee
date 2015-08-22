@@ -35,10 +35,6 @@ class BulkActions
 
   setupBulkCheckbox: ->
     $(@checkbox_selector).click => @formVisibility()
-    $('.click_checkbox').click (e) =>
-      $(e.target).find("input[type=checkbox]").click()
-      e.stopPropagation()
-      @formVisibility()
     $('.items-list thead input[type=checkbox]').click (e) =>
       $(@checkbox_selector).prop('checked', e.target.checked)
       @formVisibility()
