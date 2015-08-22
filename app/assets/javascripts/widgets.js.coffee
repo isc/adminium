@@ -35,9 +35,10 @@ class Widget
       $('<option>').text(column).val(column).appendTo('#widget_columns') for column in data
 
   setupCreationFromListing: ->
-    $('#nav_searches, #time-chart').on 'click', 'i.add_widget', (evt) ->
-      $(evt.currentTarget).removeClass('discrete add_widget')
-      $($(evt.currentTarget).data('form')).submit()
+    $('#time-chart').on 'click', '.add_widget', (evt) ->
+      target = $(evt.currentTarget)
+      target.removeClass('discrete add_widget')
+      $(target.data('form')).submit()
 
   fetchAllContent: ->
     @fetchContent widget for widget in $('.widget')

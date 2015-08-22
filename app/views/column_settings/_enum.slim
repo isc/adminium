@@ -2,9 +2,9 @@ label.checkbox-inline
   = check_box_tag 'is_enum', 'checked', @enum, data: {values_url: values_setting_path(resource.table)}
   'Check if this column represents a specific set of values
 
-.alert.alert-info.loading_enum.hide
+.alert.alert-info.loading_enum.hidden
   'Loading possible values ...
-table.table.table-bordered.enum_details_area class=(@enum ? '' : 'hide')
+table.table.enum_details_area class=('hidden' unless @enum)
   thead
     tr
       th
@@ -15,20 +15,16 @@ table.table.table-bordered.enum_details_area class=(@enum ? '' : 'hide')
       - i = 0
       - @enum.each do |value, infos|
         tr
-          td
-            div.color(data-color=infos['color'])
-            = hidden_field_tag "enum_data[#{i}][color]", infos['color']
-          td= text_field_tag "enum_data[#{i}][value]", value, class: 'form-control'
-          td= text_field_tag "enum_data[#{i}][label]", infos['label'], class: 'form-control'
+          td.col-md-1= color_field_tag "enum_data[#{i}][color]", infos['color'], class: 'form-control'
+          td.col-md-5= text_field_tag "enum_data[#{i}][value]", value, class: 'form-control'
+          td.col-md-6.form-inline= text_field_tag "enum_data[#{i}][label]", infos['label'], class: 'form-control'
         - i += 1
     - i = rand(1000)+100
     tr.template_line(data-line-identifer=i)
-      td
-        div.color
-        = hidden_field_tag "enum_data[#{i}][color]", ''
-      td= text_field_tag "enum_data[#{i}][value]", nil, class: 'form-control'
-      td
-        = text_field_tag "enum_data[#{i}][label]", nil, class: 'form-control'
-        '
-        a.btn.btn-default
-          i.fa.fa-plus-circle
+      td.col-md-1= color_field_tag "enum_data[#{i}][color]", nil, class: 'form-control'
+      td.col-md-5= text_field_tag "enum_data[#{i}][value]", nil, class: 'form-control'
+      td.col-md-6
+        .form-inline
+          = text_field_tag "enum_data[#{i}][label]", nil, class: 'form-control'
+          a.btn.btn-default<
+            i.fa.fa-plus-circle

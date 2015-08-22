@@ -80,8 +80,6 @@ class CustomColumns
 class ColumnSettings
 
   constructor: ->
-    $.fn.wColorPicker.defaultSettings['onSelect'] = (color) ->
-      this.settings.target.val(color)
     $('.column_settings').click (evt) =>
       [@column_name, table, view] = if (header = $(evt.currentTarget).closest('.column_header')).length
         [header.data('column-name'), header.data('table-name'), 'listing']
@@ -90,29 +88,26 @@ class ColumnSettings
       remoteModal '#column-settings', {column: @column_name, table: table, view: view}, @setupEnumConfigurationPanel
 
   setupEnumConfigurationPanel: =>
+    $('table.enum_details_area input[type=color]').spectrum()
     $("#is_enum").click @toggleEnumConfigurationPanel
     $('.template_line a').click @addNewEmptyLine
-    $('.color').each ->
-      $(this).wColorPicker
-        target: $(this).siblings('input')
-        initColor: $(this).data('color')
 
   toggleEnumConfigurationPanel: (evt) =>
     checked = $(evt.currentTarget)[0].checked
     $("table.enum_details_area tbody tr:not(.template_line)").remove()
-    if (checked)
-      $('.loading_enum').show().parents(".modal-body").scrollTop(1000)
+    if checked
+      $('.loading_enum').removeClass('hidden').parents(".modal-body").scrollTop(1000)
       $.getJSON $(evt.currentTarget).data('values-url'), column_name: @column_name, (data) =>
-        $('.enum_details_area').show()
+        $('.enum_details_area').removeClass('hidden')
         for value in data
           $('.template_line input[type=text]').val(value)
           @addNewEmptyLine()
-        $('.loading_enum').hide().parents(".modal-body").scrollTop(1000)
+        $('.loading_enum').addClass('hidden').parents(".modal-body").scrollTop(1000)
     else
-      $('.enum_details_area').hide()
+      $('.enum_details_area').addClass('hidden')
 
   nextDefaultColor: =>
-    index = $("table.enum_details_area .color").length
+    index = $("table.enum_details_area tr").length
     colors = ['#2a8bcc', '#86b558', '#ffb650', '#d15b47', '#9585bf', '#a0a0a0', '#555555', '#d6487e', '#6fb3e0', '#892e65', '#2e8965', '#996666']
     if index > 1 && (index) < colors.length
       colors[index - 2]
@@ -120,18 +115,15 @@ class ColumnSettings
       '#0000FF'
 
   addNewEmptyLine: =>
-    line = $('.template_line').clone()
-    line.removeClass('template_line')
+    line = $('.template_line').clone().removeClass('template_line')
     line.find('a').remove()
     $('.template_line').before(line)
     $('.template_line input').val('')
-    color = line.find('.color').html('')
-    
-    color.wColorPicker({target:color.siblings('input'), initColor: @nextDefaultColor()})
+    line.find('input[type=color]').val(@nextDefaultColor())
     previous_id = $('.template_line').data('line-identifer')
     new_id = parseInt(previous_id) + 1
     $('.template_line').data('line-identifer', new_id)
-    for input in $('.template_line input:not(._wColorPicker_customInput)')
+    for input in $('.template_line input')
       $(input).attr('name', $(input).attr('name').replace(previous_id, new_id))
     $('.template_line input').eq(1).focus()
 

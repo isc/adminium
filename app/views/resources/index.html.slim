@@ -12,6 +12,33 @@ nav.navbar.navbar-default
         li
           = link_to schema_path(params[:table]), rel: 'tooltip', title: 'Schema', data: {placement: 'bottom'} do
             i.fa.fa-table<
+        li.dropdown
+          a.dropdown-toggle href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
+            span.text-more data-content=display_filter(@current_filter) = params[:asearch].presence || 'All records'
+            span.caret<
+          ul.dropdown-menu
+            - if params[:asearch].present? || resource.filters.any?
+              li.dropdown-header Filters
+            - if params[:asearch].present?
+              li= link_to 'All records', params.merge(asearch: nil)
+            - resource.filters.keys.each do |key|
+              - next if params[:asearch] == key
+              li= link_to key, params.merge(asearch: key)
+            - if resource.filters.any?
+              li.divider role="separator"
+            li.dropdown-header Current filter
+            - if @widget
+              li= link_to 'Remove from dashboard', widget_path(@widget), method: :delete
+            - else
+              li= link_to 'Add to dashboard', widgets_path(widget: {type: 'TableWidget', table: params[:table], advanced_search: params[:asearch]}), method: :post
+            - if params[:asearch].present?
+              li
+                a data-toggle="modal" href="#advanced_search" Edit
+              li
+                = link_to 'Delete', search_path(params[:table], name: params[:asearch]), method: 'delete'
+            li.divider role="separator"
+            li
+              a data-toggle="modal" href="#advanced_search" New filter
       - if resource.columns[:search].any?
         form.navbar-form.navbar-left
           - request.query_string.to_s.split('&').each do |param|
@@ -23,8 +50,6 @@ nav.navbar.navbar-default
             .input-group-btn
               button.btn.btn-default>
                 i.fa.fa-search
-          a.btn.btn-default< rel="tooltip" title="Advanced search" data-placement="bottom" data-toggle="modal" href="#advanced_search"
-            i.fa.fa-search-plus
         .btn-group
           - if user_can? 'create', params[:table]
             = icon_button_link new_resource_path(table:params[:table]), 'plus', 'Create a new row', class: 'create-action'
@@ -38,42 +63,6 @@ nav.navbar.navbar-default
       .navbar-right
         = render 'next_previous_page', scope: @items
         = settings_button 'Listing settings'
-
-#nav_searches
-  = form_for Widget.new, remote: true do |t|
-    = t.hidden_field :type, value: 'TableWidget'
-    = t.hidden_field :table, value: params[:table]
-    = t.hidden_field :advanced_search, value: params[:asearch] if params[:asearch].present?
-
-  ul.nav.nav-pills
-    - if params[:asearch].blank?
-      li.active
-        a
-          span> All
-          - if @widget
-            i.fa.fa-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
-          - else
-            i.fa.fa-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom" data-form="#nav_searches form"
-    - else
-      li= link_to 'All', params.merge(asearch: nil)
-    - resource.filters.keys.each do |key|
-      - if params[:asearch] == key
-        li.active
-          a
-            span.text-more data-placement="right" data-title=key data-content=display_filter(@current_filter) = key
-            - if @widget
-              i.fa.fa-star.active title="This view is on your dashboard" rel="tooltip" data-placement="bottom"
-            - else
-              i.fa.fa-star.add_widget title="Add to your dashboard" rel="tooltip" data-placement="bottom" data-form="#nav_searches form"
-            i.fa.fa-pencil data-toggle="modal" href="#advanced_search"  title="Edit this view" rel="tooltip" data-placement="bottom"
-            = link_to search_path(params[:table], name: params[:asearch]), method: 'delete' do
-              i.fa.fa-trash title="Delete this view" rel="tooltip" data-placement="bottom"
-
-      - else
-        li= link_to key, params.merge(asearch: key)
-    li.add_view
-      a data-toggle="modal" href="#advanced_search" title="#{resource.filters.keys.length > 0 ? 'Add another view' : 'Create a custom view'}" rel="tooltip" data-placement="bottom"
-        i.fa.fa-plus-circle
 
 - if params[:search].present? || params[:where]
   - if params[:search].present?

@@ -34,6 +34,10 @@ td.booleanType {
   color: orange;
 }
 
+td.checkboxes {
+  text-align: center;
+}
+
 .filters {
   tr:first-child .grouping_kind select {
     display: none;
@@ -98,4 +102,8 @@ td.booleanType {
 
 .demo-notice {
   line-height: 34px;
+}
+
+input.form-control[type=color] {
+  padding: 1px;
 }

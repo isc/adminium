@@ -4,9 +4,9 @@ class WidgetsController < ApplicationController
 
   def create
     widget = current_account.widgets.create params[:widget]
-    respond_with widget do |format|
+    respond_to do |format|
       format.html do
-        redirect_to dashboard_url
+        redirect_to :back
       end
       format.json do
         render nothing: true
@@ -16,7 +16,14 @@ class WidgetsController < ApplicationController
 
   def destroy
     current_account.widgets.destroy params[:id]
-    render nothing: true
+    respond_to do |format|
+      format.html do
+        redirect_to :back
+      end
+      format.js do
+        render nothing: true
+      end
+    end
   end
 
   def update
