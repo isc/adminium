@@ -31,46 +31,48 @@ class window.ImportManager
     @selectFiles evt.target.files
 
   selectFiles: (files) =>
-    $('.importHelp').hide()
+    $('.importHelp').addClass('hidden')
     @disableImport()
     file = files[0]
-    $(".file-info").show()
+    $(".file-info").removeClass('hidden')
     $(".file-info span.filename").html("<b>#{file.name}</b> <i>(#{file.size} bytes)</i>")
     reader = new FileReader()
     reader.onload = @readFile
-    @processing('loading file locally')
+    @processing('Loading file locally')
     Analytics.importEvent('loading-file')
     reader.readAsText(file)
 
   disableImport: =>
     @readyToImport = false
     $(".items-list thead tr, .items-list tbody").html('')
-    @toggleStartImport('select-file')
-    $(".file-info").hide()
+    @toggleStartImport('select-file', 'Step 1 of 3')
+    $(".file-info").addClass('hidden')
     @notice ''
-    $(".importable_rows").hide()
-    $(".importHeader").removeClass("fail success")
+    $(".importable_rows").addClass('hidden')
+    $(".importHeader").removeClass('panel-danger panel-success')
+    false
 
   processing: (msg) =>
-    @toggleStartImport('processing')
-    $("#processing .hint").html(msg)
+    @toggleStartImport('processing', 'Processing, please wait...')
+    $("#processing .help-block").html(msg)
 
-  toggleStartImport: (name) ->
-    $(".importHeader .span3").hide()
-    $("##{name}").show()
+  toggleStartImport: (name, title) ->
+    $(".importHeader .step").addClass('hidden')
+    $("##{name}").removeClass('hidden')
+    $('.importHeader .panel-title').text title
 
   error: (tracker_code, msg, details) =>
-    @toggleStartImport('select-file')
-    $(".importHeader").toggleClass("fail", true)
+    @toggleStartImport('select-file', 'Step 1 of 3')
+    $('.importHeader').toggleClass('panel-danger', true)
     details = if details then "(#{details})" else ""
-    $(".status").html("<i class='fa fa-ban' /> <b>#{msg}</b> #{details}").show()
+    $(".status").html("<i class='fa fa-ban text-danger' /> <b>#{msg}</b> #{details}").removeClass('hidden')
     Analytics.importEvent 'error', tracker_code
 
   notice: (msg) =>
     $('.status').html(msg)
 
   readFile: (evt) =>
-    @processing('parsing your file')
+    @processing('Parsing your file')
     try
       @detectSeparator(evt.target.result)
       @rows = $.csv.toArrays evt.target.result, {separator: @separator}
@@ -78,12 +80,12 @@ class window.ImportManager
       return @error("parsing", "We couldn't parse your file, be sure to provide a CSV file", e.message)
     header = @rows.shift()
     @sql_column_names = []
-    $(".importable_rows").show()
+    $(".importable_rows").removeClass('hidden')
     $(".importable_rows span").text("#{@rows.length} rows detected")
     try
       @detectColumnName $.trim(name) for name in header
     catch e
-      return @error("column_name_resolution", 'column name resolution failed', e)
+      return @error("column_name_resolution", 'Column name resolution failed', e)
     @update_rows = []
     @update_ids = []
     @preview()
@@ -146,11 +148,11 @@ class window.ImportManager
   enableImport: =>
     @readyToImport = true
     $("#perform-import").val("Import #{@rows.length} rows")
-    @toggleStartImport('start-import')
-    $(".status").html("<i class='fa fa-check' /> Ready to import")
+    @toggleStartImport('start-import', 'Step 2 of 3')
+    $(".status").html("<i class='fa fa-check text-success' /> Ready to import")
 
   preview: ->
-    $(".items-list").hide()
+    $(".items-list").addClass('hidden')
     $("<th>").appendTo($(".items-list thead tr"))
     for name in @sql_column_names
       $("<th>").addClass('column_header').text(name).appendTo($(".items-list thead tr"))
@@ -185,7 +187,7 @@ class window.ImportManager
           else
             @update_rows.push(index)
         $('<td>').addClass(css).html(cell).appendTo(tr)
-    $(".items-list").show()
+    $(".items-list").removeClass('hidden')
 
   detectColumnName: (name) =>
     if adminium_column_options[name]
@@ -222,9 +224,9 @@ class window.ImportManager
       Analytics.importEvent('imported', "insert=#{@data.create.length} update=#{@data.update.length} time=#{delay} account=#{adminium_account.name} plan=#{adminium_account.plan}")
 
   success: =>
-    $(".importHeader").removeClass("fail").addClass('success')
+    $('.importHeader').removeClass('panel-danger').addClass('panel-success')
     $(".status").empty()
-    @toggleStartImport 'import-success'
+    @toggleStartImport 'import-success', 'Step 3 of 3'
 
   errorCallback: (data) =>
     @importing = false

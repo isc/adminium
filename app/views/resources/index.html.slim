@@ -65,20 +65,23 @@ nav.navbar.navbar-default
         = settings_button 'Listing settings'
 
 - if params[:search].present? || params[:where]
-  - if params[:search].present?
-    span.label.label-success
-      == "Search for <i>#{params[:search]}</i>"
-      span.btn.btn-mini data-param-kind="search"
-        i.fa.fa-times
-  - if params[:where]
-    - params[:where].each do |k, v|
-      span.label.label-warning
-        - if resource.is_date_column? k.to_sym
-          == "Where #{k} is in <i>#{format_date(v).first}</i>"
-        - else
-          == "Where #{k} is <i>#{v}</i>"
-        span.btn.btn-mini data-param=format_param_for_removal(k, v) x
-  hr
+  .row.search-and-where-params
+    - if params[:search].present?
+      .col-md-3
+        .alert.alert-info.alert-dismissible
+          == "Search for <i>#{params[:search]}</i>"
+          button.close data-param-kind="search"
+            i.fa.fa-times
+    - if params[:where]
+      - params[:where].each do |k, v|
+        .col-md-3
+          .alert.alert-warning.alert-dismissible
+            - if resource.is_date_column? k.to_sym
+              == "Where #{k} is in <i>#{format_date(v).first}</i>"
+            - else
+              == "Where #{k} is <i>#{v}</i>"
+            button.close data-param=format_param_for_removal(k, v)
+              i.fa.fa-times
 .content
   = render 'items', items: @fetched_items, actions_cell: true
 = render '/resources/panels/listing_settings'

@@ -125,14 +125,8 @@ class ColumnSettings
 
 class UIListing
   
-  adjustTableHeight: ->
-    $('.content').height(window.innerHeight - $('.content').offset().top - 37)
-
   constructor: ->
-    if $('.content').length
-      @adjustTableHeight()
-      window.onresize = @adjustTableHeight
-    $('span.label span.remove, i.remove').click ->
+    $('.search-and-where-params .alert button.close').click ->
       if $(this).data('param-kind')
         location.href = location.href.replace(new RegExp("([&?])#{$(this).data('param-kind')}=.*?(&|$)"), '$1')
       else
