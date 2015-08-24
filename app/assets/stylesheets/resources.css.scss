@@ -1,10 +1,6 @@
-@import 'variables';
 .resources.show .item-attributes {
   .table {
     border: 1px solid #DDD;
-    border-radius: 4px;
-    margin: 0px 0px 8px 0px;
-    background: white;
     td, th {
       border: none;
     }
@@ -22,8 +18,8 @@
       background: #F9F9F9;
       color: #5e6469;
       border-right: 1px solid #F1F1F1;
-      text-shadow: 0px 1px #EEE;
       text-align: right;
+      white-space:nowrap;
       .column_settings {
         display: none;
         position: absolute;
@@ -35,28 +31,4 @@
       }
     }
   }
-  .type_text {
-    th {
-      text-align: left;
-    }
-    
-    td {
-      padding-bottom: 20px;
-      border-bottom: 1px solid #DDD;
-      min-height: 20px;
-      display: block;
-      font-family: Georgia;
-      font-size: 1.1em;
-      form {
-        width: 95%;
-        textarea {
-          width: 95%;
-          height: 150px;
-        }
-      }
-    }
-  }
-}
-.table td.hasmany {
-  text-align: right;
 }

@@ -27,25 +27,15 @@ nav.navbar.navbar-default
         table.table.table-condensed
           - columns.each do |name|
             tr
-              th.span3 title=name
+              th.col-md-3 title=name
                 i.column_settings.fa.fa-cog
                 = resource.column_display_name name
               == display_attribute :td, @item, name, resource
-    - columns = item_attributes_type([:text], resource)
-    - if columns.present?
-      table.table.table-condensed.type_text
-        - columns.each do |name|
-          tr
-            th title=name
-              i.column_settings.fa.fa-cog
-              = resource.column_display_name name
-          tr
-            == display_attribute :td, @item, name, resource
   .col-md-5
     table.table.table-condensed
       - primary_keys_and_time_fields_for_show(resource).each do |name|
         tr
-          th.span3 title=name
+          th.col-md-3 title=name
             i.column_settings.fa.fa-cog
             = resource.column_display_name name
           == display_attribute :td, @item, name, resource
@@ -54,7 +44,7 @@ nav.navbar.navbar-default
       table.table.table-condensed
         - columns.each do |name|
           tr
-            th.span3 title=name
+            th.col-md-3 title=name
               i.column_settings.fa.fa-cog
               = resource.column_display_name name
             == display_attribute :td, @item, name, resource
@@ -76,7 +66,7 @@ nav.navbar.navbar-default
           - next unless user_can? :show, name
           tr
             - count, assoc_params = (resource.has_many_count @item, name), {assoc[:foreign_key] => @item[assoc[:primary_key]]}
-            th.span2= name.to_s.humanize
+            th.col-md-2= name.to_s.humanize
             td
               = link_to resources_path(name, where: assoc_params) do
                 span.badge.badge-warning = count

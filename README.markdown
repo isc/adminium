@@ -54,3 +54,4 @@ pas de completion des tables sur la page d'edition de compte
 - remplir une date / un timestamp ne fonctionne pas
 - ui-sortable
 - foreign resource input multiple records
+- clickable area des accordéons de settings popins

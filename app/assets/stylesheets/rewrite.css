@@ -1,10 +1,13 @@
 /*
  *= require_self
+ *= require bootstrap.3.3.5.min
  *= require font-awesome
  *= require select2
  *= require select2-bootstrap
  *= require spectrum
  *= require types
+ *= require resources
+ *= require homepage
 */
 
 body { padding-top: 70px; }
