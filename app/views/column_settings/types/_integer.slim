@@ -1,11 +1,13 @@
-- {separator: 'Sets the separator between the units (defaults to ".")', delimiter: 'Sets the thousands delimiter (defaults to ",")', unit: "sets a unit after the value ($, km, etc)"}.each do |key, description|
-  .control-group
-    label.control-label for="column_options_number_#{key}"= key.to_s.humanize
-    .controls
-      = text_field_tag "column_options[number_#{key}]", resource.column_options(params[:column])["number_#{key}"], class: "span1"
+- {separator: 'Sets the separator between the units (defaults to ".")', delimiter: 'Sets the thousands delimiter (defaults to ",")', unit: "Sets a unit after the value ($, km, etc)"}.each do |key, description|
+  .form-group
+    label.control-label.col-sm-3 for="column_options_number_#{key}"= key.to_s.humanize
+    .col-sm-9
+      = text_field_tag "column_options[number_#{key}]", resource.column_options(params[:column])["number_#{key}"], class: "form-control"
       p.help-block= description
-.control-group
-  label.control-label for="column_options_number_unit_append" Append unit
-  .controls
-    = check_box_tag "column_options[number_unit_append]", 'true', resource.column_options(params[:column])["number_unit_append"]
+.form-group
+  .col-sm-offset-3.col-sm-9
+    .checkbox
+      label
+        = check_box_tag "column_options[number_unit_append]", 'true', resource.column_options(params[:column])["number_unit_append"]
+        '  Append unit
     p.help-block By default, units are prepended to the value

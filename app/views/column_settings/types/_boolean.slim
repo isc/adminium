@@ -1,6 +1,6 @@
 - ["true", "false"].each do |value|
-  .control-group
-    label.control-label for="column_options_boolean_true"= "#{value} values".capitalize
-    .controls
-      = text_field_tag "column_options[boolean_#{value}]", resource.column_options(params[:column])["boolean_#{value}"]
-      p.help-block= "displayed text for #{value} values"
+  .form-group
+    label.control-label.col-sm-3 for="column_options_boolean_true"= "#{value} values".capitalize
+    .col-sm-9
+      = text_field_tag "column_options[boolean_#{value}]", resource.column_options(params[:column])["boolean_#{value}"], class: 'form-control'
+      p.help-block= "Displayed text for #{value} values"

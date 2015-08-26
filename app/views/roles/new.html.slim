@@ -28,7 +28,7 @@
       - if non_admin_collaborators.present?
         = f.association :collaborators, as: :check_boxes, collection: non_admin_collaborators.map {|collaborator|[collaborator.name, collaborator.id]}
       - else
-        .control-group
+        .form-group
           label.control-label Collaborators
         .alert.alert-warning
           - if current_account.collaborators.empty?
