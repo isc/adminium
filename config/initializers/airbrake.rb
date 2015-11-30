@@ -1,10 +1,7 @@
-# Airbrake.configure do |config|
-#   config.api_key = '54713a9e51c89e3667a1239fa002b281'
-#   config.async = true
-# end
+require 'rake'
+require 'airbrake/rake_handler'
+
 Airbrake.configure do |config|
-  config.api_key = 'bc398701ffc00d54f56509480415a34b'
-  config.host    = 'errbit-cluscrive.herokuapp.com'
-  config.port    = 443
-  config.secure  = config.port == 443
+  config.api_key = 'de03551fe3ab192c5ba000258d1c2d93'
+  config.rescue_rake_exceptions = true
 end
