@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-ruby '2.2.2'
+ruby '2.2.3'
 
 gem 'rails', '4.0.10'
 gem 'pg'
@@ -58,6 +58,7 @@ group :development do
   gem 'terminal-notifier-guard', require: false
   gem 'guard-livereload', require: false
   gem 'rack-livereload'
+  gem 'spring'
 end
 
 group :production do

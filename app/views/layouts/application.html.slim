@@ -26,8 +26,9 @@ html lang="en" ng-app=""
           = navbar_toggle 'navbar'
           = link_to "#{current_account.try(:name) || 'Adminium'}", dashboard_path, class: 'navbar-brand'
         #navbar.collapse.navbar-collapse
-          form.navbar-left.navbar-form
-            = select_tag 'table_select', options_for_select(table_list), include_blank: true, class: 'form-control hidden'
+          - if @tables
+            form.navbar-left.navbar-form
+              = select_tag 'table_select', options_for_select(table_list), include_blank: true, class: 'form-control hidden'
           = render 'layouts/menu'
     .container-fluid
       .row

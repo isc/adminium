@@ -1,21 +1,19 @@
 .hero-unit
   
   h1.text-center
-    i.icon-flag.icon-4x
+    i.fa.fa-flag.fa-4x
     br
     'Great, Adminium has just been provisioned for your app!
   .row
-    .span4.offset2.text-center
-      h3
-        'Finally, to get started
-        br
-        = link_to "Connect to your database", "/auth/heroku", class: "btn btn-info btn-large"
-    .span4
+    .col-md-4.col-md-offset-2.text-center
+      h3 Finally, to get started
+      = link_to "Connect to your database", "/auth/heroku", class: "btn btn-info btn-large"
+    .col-md-4
       div(style="margin-top: 10px")
         'It will securely authenticate you with Heroku and allow Adminium to connect to your database. You can also do it
-        = link_to("manually", "#modal-install-manually", :"data-toggle" => "modal") + "."
+        = link_to("manually", "#modal-install-manually", data: {toggle: 'modal'}) + "."
 - if @db_urls
-  - if @db_urls.length == 0
+  - if @db_urls.empty?
     .modal.hide.fade#error-no-urls data-open-on-load="true"
       .modal-header
         a.close data-dismiss="modal" ×
@@ -42,46 +40,48 @@
                   = f.submit db[:key]
               td= db[:value][0..15] + "******************"
 
-.modal.hide.fade#modal-install-manually(style="margin-left:-375px; width:750px;")
-  .modal-header
-    a.close data-dismiss="modal" ×
-    h3 Connecting to your database
-  .modal-body
-    h3 Command line setup
-    p In your application root, run the following commands :
-    pre= "heroku plugins:install git://github.com/isc/heroku-adminium\nheroku adminium\n"
-    .pull-right
-      == clippy "heroku plugins:install git://github.com/isc/heroku-adminium %26%26 heroku adminium"
-    hr
-    h3 Browser setup
-    = render "db_url_form"
-    hr
-    h5 Finding your Heroku Postgres database url
-    .row-fluid.heroku-connection-instructions
-      .span4
-        = image_tag 'herokuresources-panel.png'
-      .span8
-        ol
-          li
-            ' Go to the
-            = link_to 'resources page', "https://dashboard.heroku.com/apps/#{current_account.name}/resources", target: '_blank'
-            '  for
-            = current_account.name
-            '  and click on your Heroku Postgres database add-on
-          li
-            ' In the
-            i Connection settings
-            '  section, use the
-            i.icon-cog
-            ' button to switch to
-            i URL
-            '  display and copy the connection string
-          li
-            '  Paste it in the text input above and click
-            b Connect
-        = image_tag 'herokupostgres-panel.png', width: '420px'
-    hr
-    h3 Not your job ?
-    = link_to setup_mailto_href(current_account), target: '_blank' do
-      i.icon-envelope
-      '  Ask a coworker
+.modal.fade#modal-install-manually
+  .modal-dialog.modal-lg
+    .modal-content
+      .modal-header
+        a.close data-dismiss="modal" ×
+        h4.modal-title Connecting to your database
+      .modal-body
+        h5 Command line setup
+        p In your application root, run the following commands :
+        pre= "heroku plugins:install git://github.com/isc/heroku-adminium\nheroku adminium\n"
+        .pull-right
+          == clippy "heroku plugins:install git://github.com/isc/heroku-adminium %26%26 heroku adminium"
+        hr
+        h5 Browser setup
+        = render "db_url_form"
+        hr
+        h6 Finding your Heroku Postgres database url
+        .row.heroku-connection-instructions
+          .col-md-4
+            = image_tag 'herokuresources-panel.png'
+          .col-md-8
+            ol
+              li
+                ' Go to the
+                = link_to 'resources page', "https://dashboard.heroku.com/apps/#{current_account.name}/resources", target: '_blank'
+                '  for
+                = current_account.name
+                '  and click on your Heroku Postgres database add-on
+              li
+                ' In the
+                i Connection settings
+                '  section, use the
+                i.icon-cog
+                ' button to switch to
+                i URL
+                '  display and copy the connection string
+              li
+                '  Paste it in the text input above and click
+                b Connect
+            = image_tag 'herokupostgres-panel.png', width: '420px'
+        hr
+        h5 Not your job ?
+        = link_to setup_mailto_href(current_account), target: '_blank' do
+          i.icon-envelope
+          '  Ask a coworker

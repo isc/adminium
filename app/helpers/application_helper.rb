@@ -81,7 +81,7 @@ module ApplicationHelper
     return @permissions.map {|key, value| key if value['read']}.compact if @permissions
     return @tables if @tables.present?
    end
-   return []
+   []
   end
 
   def navbar_toggle navbar_id

@@ -38,6 +38,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_account?
+    session[:account] ||= 2
     return !!current_account if session[:account]
     return false
   end

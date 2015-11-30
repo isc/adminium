@@ -26,7 +26,7 @@ class Account < ActiveRecord::Base
   attr_encrypted :db_url, key: (ENV['ENCRYPTION_KEY'] || 'shablagoo')
   
   scope :deleted, -> {where plan: Plan::DELETED}
-  scope :not_deleted,  -> {where ["plan != ?", Plan::DELETED]}
+  scope :not_deleted,  -> {where.not plan: Plan::DELETED}
   
   TIPS = %w(basic_search editing enumerable export_import displayed_record advanced_search serialized relationships time_charts keyboard_shortcuts time_zones)
 
