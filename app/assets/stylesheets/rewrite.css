@@ -8,6 +8,7 @@
  *= require types
  *= require resources
  *= require homepage
+ *= require in_place_editing
 */
 
 body { padding-top: 70px; }

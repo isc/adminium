@@ -2,7 +2,7 @@ class InPlaceEditing
 
   constructor: ->
     $('.items-list, .resources.show table')
-      .on('hover', 'td[data-column-name]', @setupEditableColumn)
+      .on('mouseover', 'td[data-column-name]', @setupEditableColumn)
       .on('click', 'td[data-column-name] i.fa-pencil', @switchToEditionModeByClickingIcon)
       .on('dblclick', 'td[data-column-name]', @switchToEditionModeByDblClicking)
 
@@ -36,7 +36,7 @@ class InPlaceEditing
       type = 'text'
       raw_value = td.find('a').attr('data-content')
     td.attr("data-original-content", td.html())
-    td.html($("<form class='form form-inline' action='/resources/#{table}/#{id}'><div class='control-group'><div class='controls'><div class='in-place-actions'><button class='btn'><i class='fa fa-check' /></button><a class='cancel'><i class='fa fa-remove'></i></a></div></div</div></form>"))
+    td.html($("<form class='well form form-inline' action='/resources/#{table}/#{id}'><div class='control-group'><div class='controls'>&nbsp;<button class='btn btn-sm btn-primary'><i class='fa fa-check' /></button><a class='cancel btn btn-sm'><i class='fa fa-remove'></i></a></div</div></form>"))
     td.attr("data-mode", "editing")
     td.find('a.cancel').click @cancelEditionMode
     td.find('form').submit @submitColumnEdition
@@ -46,7 +46,7 @@ class InPlaceEditing
       @defaultEditionMode td, name, raw_value
     input.prependTo(td.find('.controls'))
     input.val(raw_value).focus()
-    input.attr('name', name)
+    input.attr('name', name).addClass('form-control')
     input.data('null-value', true) if td.hasClass('nilclass')
     new EnumerateInput(input, 'open') if type is 'enum'
     new NullifiableInput(input, false, type)

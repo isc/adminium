@@ -1,0 +1,55 @@
+td[data-column-name] {
+  padding-right: 20px;
+  position: relative;
+  i.fa-pencil {
+    opacity: 0;
+    cursor: pointer;
+    float: right;
+    color: #333;
+  }
+  &:hover i.fa-pencil {
+    opacity: 1;
+  }
+  form {
+    position: absolute;
+    padding: 10px;
+    z-index: 1;
+    top: -8px;
+    left: 0;
+    .ui-datepicker-calendar {
+      td, th {
+        padding: 0px;
+        a {
+          margin: 0px;
+          text-align: center;
+          display: block;
+        }
+      }
+    }
+    select, input[type=text], .select2-container {
+      width: 235px;
+    }
+    textarea {
+      width:300px;
+      height:100px;
+    }
+  }
+}
+.resource-form {
+  .controls {
+    position: relative;
+  }
+}
+.form-horizontal {
+  .null_btn, .empty_string_btn {
+    bottom: 4px;
+  }
+}
+.form-inline {
+  .null_btn, .empty_string_btn {
+    bottom: 16px;
+  }
+}
+.null_btn, .empty_string_btn {
+  position: absolute;
+}
