@@ -1,9 +1,3 @@
-PATH
-  remote: /Users/ivan/Code/bootstrap-components-helpers
-  specs:
-    bootstrap-components-helpers (0.0.8)
-      actionpack (>= 4.0.0)
-
 GEM
   remote: http://rubygems.org/
   specs:
@@ -44,6 +38,8 @@ GEM
     binary_search (0.3.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    bootstrap-components-helpers (1.0.0)
+      actionpack (>= 4.0.0)
     bootstrap-wysihtml5-rails (0.3.3.7)
       railties (>= 3.0)
     builder (3.1.4)
@@ -322,7 +318,7 @@ DEPENDENCIES
   better_errors
   binary_search
   binding_of_caller
-  bootstrap-components-helpers!
+  bootstrap-components-helpers
   bootstrap-wysihtml5-rails
   capybara
   coffee-rails
