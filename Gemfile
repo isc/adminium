@@ -38,7 +38,10 @@ gem 'coffee-rails'
 gem 'uglifier', '>= 1.3.0'
 gem 'figaro'
 gem 'font-awesome-rails'
-gem 'rails-assets-spectrum'
+
+source 'https://rails-assets.org' do
+  gem 'rails-assets-bootstrap-datepicker'
+end
 
 group :mysql_support do
   gem 'mysql2'

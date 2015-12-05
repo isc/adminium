@@ -1,12 +1,11 @@
+//= require modernizr-custom
 //= require jquery_ujs
-//= require jquery-ui-1.8.17.custom
+//= require jquery-ui-1.11.4.custom.min
 //= require sh_main.min
 //= require sh_ruby.min
-//= require jquery-scrollspy
-//= require wColorPicker
 //= require bootstrap-wysihtml5
 //= require jquery.csv-0.71.min
 //= require select2
 //= require md5.min
-//= require spectrum
+//= require bootstrap-datepicker
 //= require_tree .

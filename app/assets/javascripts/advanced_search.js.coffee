@@ -18,10 +18,7 @@ class AdvancedSearch
         filterDiv = $("<tr>").append(resp).appendTo($(".filters"))
         selectFilter = filterDiv.find('td.operators select').focus()
         @updateFilterForm selectFilter
-        $('.datepicker').datepicker onClose: (dateText, inst) ->
-          $("##{inst.id}_1i").val(inst.selectedYear)
-          $("##{inst.id}_2i").val(inst.selectedMonth + 1)
-          $("##{inst.id}_3i").val(inst.selectedDay)
+        initDatepickers()
 
   selectedOperator: (evt) =>
     @updateFilterForm $(evt.currentTarget)

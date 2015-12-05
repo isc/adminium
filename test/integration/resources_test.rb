@@ -377,9 +377,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit new_resource_path(:users)
     find('#users_daily_alarm_4i').select "08"
     select '37'
-    find('#users_birthdate_1i').set '2013'
-    find('#users_birthdate_2i').set '5'
-    find('#users_birthdate_3i').set '22'
+    find('#users_birthdate').set '22/5/2013'
     click_button 'Save'
     assert_equal '08:37', find('td[data-column-name=daily_alarm]').text
     assert_equal 'May 22, 2013', find('td[data-column-name=birthdate]').text
@@ -390,9 +388,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     stub_resource_columns form: [:activated_at], show: [:activated_at]
     user = FixtureFactory.new(:user).factory
     visit edit_resource_path(:users, user.id)
-    find('#users_activated_at_1i').set '2013'
-    find('#users_activated_at_2i').set '6'
-    find('#users_activated_at_3i').set '3'
+    find('#users_activated_at').set '3/6/2013'
     find('#users_activated_at_4i').select '22'
     find('#users_activated_at_5i').select '12'
     click_button 'Save'

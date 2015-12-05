@@ -48,6 +48,7 @@ class InPlaceEditing
     input.val(raw_value).focus()
     input.attr('name', name).addClass('form-control')
     input.data('null-value', true) if td.hasClass('nilclass')
+    initDatepickers()
     new EnumerateInput(input, 'open') if type is 'enum'
     new NullifiableInput(input, false, type)
 
@@ -64,15 +65,15 @@ class InPlaceEditing
     $('<input type="number" step="any">')
 
   dateEditionMode: (td, name, raw_value) =>
-    @datetimeEditionMode td, name, raw_value
+    @datetimeEditionMode td, name, raw_value, 'date'
 
   timestampEditionMode: (td, name, raw_value) =>
     @datetimeEditionMode td, name, raw_value
 
-  datetimeEditionMode: (td, name, raw_value) =>
+  datetimeEditionMode: (td, name, raw_value, type) =>
     d = $('<div>')
     d.prependTo(td.find('.controls'))
-    i = $('<input>')
+    i = $("<input type=\"#{type or 'datetime-local'}\">")
     i.attr('name', name)
     if raw_value && raw_value.length > 0
       time = raw_value.split(" ")
@@ -80,7 +81,6 @@ class InPlaceEditing
       time = time.join(" ")
     else
       time = ''
-    d.datepicker altField:i,  altFormat: "yy-mm-dd #{time}"
     i
 
   defaultEditionMode: (td, name, raw_value) =>

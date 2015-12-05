@@ -47,7 +47,7 @@
 
 ### Refacto
 - remplir une date / un timestamp ne fonctionne pas
-- ui-sortable
 - foreign resource input multiple records
 - clickable area des accordéons de settings popins
 - widgets sur le dashboard
+- color polyfill for safari

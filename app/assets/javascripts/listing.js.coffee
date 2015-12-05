@@ -17,10 +17,7 @@ class BulkActions
       $.get "#{path}?#{item_ids.join('&')}", (data) =>
         $('#bulk-edit-modal').html(data)
         AutocompleteAssociationsForm.setup()
-        $('.datepicker').datepicker onClose: (dateText, inst) ->
-          $("##{inst.id}_1i").val(inst.selectedYear)
-          $("##{inst.id}_2i").val(inst.selectedMonth + 1)
-          $("##{inst.id}_3i").val(inst.selectedDay)
+        initDatepickers()
       false
 
   setupBulkDestroy: ->
@@ -71,7 +68,7 @@ class CustomColumns
     label = $('<label>').text(text)
     input = $('<input>').attr('type': 'checkbox', 'checked': 'checked', 'name':"#{ul.data('type')}_columns[]", 'value':value)
     icon = $('<i class="fa fa-arrows-v">')
-    $('<li>').append(input).append(label).append(icon).addClass('setting_attribute').appendTo ul
+    $('<li>').append(input).append(label).append(icon).appendTo ul
 
 class ColumnSettings
 
@@ -84,7 +81,6 @@ class ColumnSettings
       remoteModal '#column-settings', {column: @column_name, table: table, view: view}, @setupEnumConfigurationPanel
 
   setupEnumConfigurationPanel: =>
-    $('table.enum_details_area input[type=color]').spectrum()
     $("#is_enum").click @toggleEnumConfigurationPanel
     $('.template_line a').click @addNewEmptyLine
 

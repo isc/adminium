@@ -1,13 +1,13 @@
 - css_class = defined?(sortable) ? 'sortable' : nil
 input type="hidden" name="#{type}_columns[]"
 ul.list-unstyled.master_checkbox
-  li.setting_attribute
+  li
     label.text-muted
       input> type='checkbox' id="#{type}_master_checkbox" checked="checked"
       'Check / uncheck all
-ul.list-unstyled id="#{type}_columns_list" data-type=type class=css_class
+ul.list-group.column-listing id="#{type}_columns_list" data-type=type class=css_class
   - resource.columns_options(type).each do |name, checked|
-    li.setting_attribute
+    li.list-group-item
       - input_id = "#{type}_columns_#{name}".parameterize
       label
         input> type='checkbox' name="#{type}_columns[]" id=input_id checked=checked value=name

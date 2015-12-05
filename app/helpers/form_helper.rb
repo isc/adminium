@@ -62,11 +62,7 @@ module FormHelper
     if [:date, :datetime].include? input_type
       input_value = Time.now if input_value.is_a? Sequel::SQL::Constant
       value_string = input_value.nil? ? '' : input_value.to_date#.strftime('%m/%d/%Y')
-      res << (date_field_tag nil, value_string, input_options)
-      [:year, :month, :day].each_with_index do |type, i|
-        v = input_value ? input_value.try(type).to_s : ''
-        res << (hidden_field_tag "#{input_name}[#{i+1}i]", v, id: "#{input_id}_#{i+1}i")
-      end
+      res << (date_field_tag "#{input_name}[date]", value_string, input_options)
     end
     if [:datetime, :time].include? input_type
       options = {class: 'form-control', include_blank: true}

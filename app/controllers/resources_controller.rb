@@ -518,12 +518,12 @@ class ResourcesController < ApplicationController
     return unless item_params.present?
     item_params.each do |key, value|
       if value.is_a? Hash
-        if value.has_key?('1i') && value['1i'].blank? || value.has_key?('4i') && value['4i'].blank?
+        if value.has_key?('date') && value['date'].blank? || value.has_key?('4i') && value['4i'].blank?
           item_params[key] = nil
         else
           res = ''
-          if value.has_key?('1i')
-            res << "#{value['1i']}-#{value['2i']}-#{value['3i']}"
+          if value.has_key?('date')
+            res << value['date']
           end
           item_params[key] = if value['4i']
             application_time_zone.parse "#{res} #{value['4i']}:#{value['5i']}"

@@ -33,3 +33,15 @@
     }
   }
 }
+
+.column-listing {
+  .list-group-item {
+    padding: 5px 15px;
+  }
+  label {
+    margin-bottom: 0;
+  }
+  i.fa.fa-arrows-v {
+    margin-top: 2px;
+  }
+}
