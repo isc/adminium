@@ -20,3 +20,4 @@ coverage
 .powenv
 .sass-cache
 public/assets
+bin

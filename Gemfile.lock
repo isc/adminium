@@ -1,10 +1,3 @@
-GIT
-  remote: git://github.com/Nerian/bootstrap-wysihtml5-rails.git
-  revision: 75d8c060fcee2b5967603abcad5b02a82f83d093
-  specs:
-    bootstrap-wysihtml5-rails (0.3.1.20)
-      railties (>= 3.0)
-
 PATH
   remote: /Users/ivan/Code/bootstrap-components-helpers
   specs:
@@ -51,6 +44,8 @@ GEM
     binary_search (0.3.0)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
+    bootstrap-wysihtml5-rails (0.3.3.7)
+      railties (>= 3.0)
     builder (3.1.4)
     capybara (2.1.0)
       mime-types (>= 1.16)
@@ -297,7 +292,7 @@ GEM
     tilt (1.4.1)
     timecop (0.6.3)
     tins (0.9.0)
-    tzinfo (0.3.44)
+    tzinfo (0.3.46)
     uglifier (2.1.1)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
@@ -328,7 +323,7 @@ DEPENDENCIES
   binary_search
   binding_of_caller
   bootstrap-components-helpers!
-  bootstrap-wysihtml5-rails!
+  bootstrap-wysihtml5-rails
   capybara
   coffee-rails
   configatron (= 2.10.0)

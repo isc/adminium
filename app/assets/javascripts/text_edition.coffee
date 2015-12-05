@@ -13,10 +13,10 @@ class TextEdition
     @addSwitchingLinks()
   
   enableRichTextEditor: ->
-    parserRules = {tags: {}}
+    parserRules = tags: {}
     parserRules.tags[tag] = {check_attributes: {}} for tag in @fullTagList
     parserRules.tags['a'].check_attributes = {href: 'url', target: 'alt'}
-    $('form.resource-form textarea').wysihtml5 html: true, parserRules: parserRules
+    $('form.resource-form textarea').wysihtml5 html: true, parserRules: parserRules, toolbar: {fa: true}
   
   disableRichTextEditor: ->
     $("iframe.wysihtml5-sandbox, input[name='_wysihtml5_mode']").remove()
@@ -28,7 +28,7 @@ class TextEdition
     $('.text-edition-switch').remove()
     text = if @pref is 'rich_text_editor' then '<i class="fa fa-exchange"></i> Plain text area' else '<i class="fa fa-exchange"></i> Rich text editor'
     for textarea in $('form.resource-form textarea')
-      $('<a />').html(text).attr('href', '#').insertAfter(textarea).addClass('text-edition-switch')
+      $(textarea).parent().append $('<a />').html(text).attr('href', '#').addClass('text-edition-switch')
   
   switchEditionPreference: =>
     @pref = if @pref is 'rich_text_editor' then 'plain_text_area' else 'rich_text_editor'

@@ -4,7 +4,8 @@ td[data-column-name] {
   i.fa-pencil {
     opacity: 0;
     cursor: pointer;
-    float: right;
+    position: absolute;
+    right: 5px;
     color: #333;
   }
   &:hover i.fa-pencil {

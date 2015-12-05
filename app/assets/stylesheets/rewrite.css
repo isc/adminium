@@ -1,6 +1,7 @@
 /*
  *= require_self
  *= require bootstrap.3.3.5.min
+ *= require bootstrap-wysihtml5
  *= require font-awesome
  *= require select2
  *= require select2-bootstrap
@@ -30,4 +31,7 @@ i.fa.discrete {
 }
 i.fa.discrete:hover {
   opacity: 1;
+}
+.tab-pane {
+  padding-top: 30px;
 }
