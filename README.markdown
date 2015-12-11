@@ -42,12 +42,9 @@
 - searchable columns only integer, rechercher une string ne veut rien dire mais ramene tous les results
 - ugly show avec une text column bien remplie (https://www.adminium.io/resources/stories/15 sur enigmatic-beach-4845)
 - serialized columns containing smth else than a basic type
-- subnav flickers on a page slightly too long for the screen
 - on peut pas mettre un espace comme thousand delimiter (or j'aurais bien voulu pouvoir le faire sur une colonne zipcode)
 
 ### Refacto
 - remplir une date / un timestamp ne fonctionne pas
-- foreign resource input multiple records
 - clickable area des accordéons de settings popins
-- widgets sur le dashboard
 - color polyfill for safari

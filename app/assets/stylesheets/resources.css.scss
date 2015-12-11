@@ -5,7 +5,7 @@
       border: none;
     }
     td {
-      text-align: left!important;
+      text-align: left !important;
       form {
         width: 99%;
         margin: 0.5%;
@@ -20,7 +20,7 @@
       color: #5e6469;
       border-right: 1px solid #F1F1F1;
       text-align: right;
-      white-space:nowrap;
+      white-space: nowrap;
       .column_settings {
         display: none;
         position: absolute;
@@ -43,5 +43,23 @@
   }
   i.fa.fa-arrows-v {
     margin-top: 2px;
+  }
+}
+
+.widget {
+  margin-bottom: 20px;
+  i.fa-cog {
+    display: none;
+  }
+  .content {
+    overflow: scroll;
+    max-height: 305px;
+  }
+}
+#chart_div, .stat_chart_widget {
+  .table th:first-child {
+    width: 33%;
+    border-right: 1px solid #CCC;
+    text-align: right;
   }
 }
