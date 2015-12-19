@@ -28,7 +28,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, admin: false)
     FixtureFactory.new(:user, admin: nil)
     visit chart_resources_path(:users, column: 'admin', type: 'PieChart')
-    json = "data_for_graph = {\"chart_data\":[[\"not set\",1,null,\"#DDD\"],[\"False\",1,false,\"#777\"],[\"True\",2,true,\"#07be25\"]],\"chart_type\":\"PieChart\"}"
+    json = "data_for_graph = {\"chart_data\":[[\"True\",2,true,\"#07be25\"],[\"not set\",1,null,\"#DDD\"],[\"False\",1,false,\"#777\"]],\"chart_type\":\"PieChart\"}"
     assert_equal json, page.find('script[type="text/javascript"]', visible: false).text(:all)
   end
   
