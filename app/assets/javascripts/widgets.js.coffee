@@ -51,10 +51,8 @@ class Widget
         widget.find('.content a[rel*=tooltip]').tooltip(container: 'body')
         widget.find('.content tr td').click (evt) ->
           link = $(evt.currentTarget).find('a')
-          if link.length
-            link.replaceWith $("#facebookG").clone()
-            window.location.href = link.attr('href')
-        widget.find('h4 small').show().find('span').text(data.total_count)
+          window.location.href = link.attr('href') if link.length
+        widget.find('h4 small').removeClass('hidden').find('span').text(data.total_count)
       else
         time_charts.graphData data, widget.find('.content')
 
