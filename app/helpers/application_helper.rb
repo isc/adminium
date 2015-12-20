@@ -17,7 +17,7 @@ module ApplicationHelper
   def display_datetime_control_group opts={}
     opts[:label] ||= "DateTime format"
     d = Time.now
-    formats = (opts[:kind] == :date) ? configatron.settings.date : configatron.settings.date
+    formats = %i(long default short time_ago_in_words)
     datas = formats.map{|f|[display_datetime(d, format: f),f.to_s]}
     if opts[:allow_blank]
       datas = [[opts[:allow_blank], '']] + datas
