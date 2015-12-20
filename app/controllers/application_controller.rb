@@ -110,7 +110,7 @@ class ApplicationController < ActionController::Base
       headers["Authorization"] = Base64.encode64(":#{session[:heroku_access_token]}\n").chomp
       headers["User-Agent"] = "adminium-addon-client"
       resource = Excon.new 'https://api.heroku.com/'
-      JSON.parse resource.request({:method => method, :path => path, :headers => headers}).data[:body]
+      JSON.parse resource.request(method: method, path: path, headers: headers).data[:body]
     end
   end
   
@@ -119,7 +119,7 @@ class ApplicationController < ActionController::Base
     if session[:account]
       attrs = {account_id: session[:account], action: "#{params[:controller]}##{params[:action]}#{format}"}
       begin
-        rows = Statistic.where(attrs).update_all ["value = value + 1, updated_at = ?", Time.zone.now]
+        rows = Statistic.where(attrs).update_all ["value = value + 1, updated_at = ?", Time.current]
         Statistic.create attrs.merge(value: 1) if rows == 0
       rescue PG::UniqueViolation
         retry

@@ -1,36 +1,35 @@
-.row.invite_heroku_collaborators
-  .span3.well
-    h3 Installation steps
-    i.icon-check.icon-2x
-    'Add-on installed
-    br
-    i.icon-check.icon-2x
-    'Connected to the database
-    br
-    div
-      i.icon-check-empty.icon-2x
-      == "Notify your team (#{link_to 'skip this step', '/'})"
-    br
-  .span7.well
-    h1
-      i.icon-group.icon-2x
-      '  Get everyone on board
-    p
-      - t = @heroku_collaborators.length == 1 ? ['he', 'him', 'he'] : ['they', 'them', 'they']
-      = "You share this app and know Adminium with #{pluralize @heroku_collaborators.length, 'collaborator'} on Heroku."
-      br
-      = "Do you want us to send #{t[1]} a quick email to let #{t[1]} know about Adminium? How it works, how #{t[2]} can connect, etc."
-    = form_tag send_email_team_install_path do
-      ul
-        - @heroku_collaborators.each_with_index do |collaborator, index|
-          li
-            div data-gravatar-email=collaborator["email"]
-              = image_tag "ninja.gif"
-            input id="email_#{index}" name="emails[]" type="checkbox" value=collaborator["email"] checked='checked'
-            label for="email_#{index}"= collaborator["email"]
-            span= collaborator['role']
-      
-      div
-        = submit_tag 'Send a welcome email to the team', class: 'btn btn-success btn-large'
-        input#email_me type="checkbox" checked="checked" name="emails[]" value=current_user.email
-        label for="email_me" I also want a welcome email
+.container-fluid.invite_heroku_collaborators
+  .row
+    .col-md-3
+      .well
+        h4 Installation steps
+        i.fa.fa-check-square-o.fa-2x>
+        'Add-on installed
+        br
+        i.fa.fa-check-square-o.fa-2x>
+        'Connected to the database
+        br
+        div
+          i.fa.fa-square-o.fa-2x>
+          == "Notify your team (#{link_to 'skip this step', '/'})"
+    .col-md-9
+      h1
+        i.fa.fa-group.icon-2x>
+        ' Get everyone on board
+      p
+        - t = @heroku_collaborators.length == 1 ? ['he', 'him', 'he'] : ['they', 'them', 'they']
+        = "You share this app and now Adminium with #{pluralize @heroku_collaborators.length, 'collaborator'} on Heroku."
+        br
+        = "Do you want us to send #{t[1]} a quick email to let #{t[1]} know about Adminium? How it works, how #{t[2]} can connect, etc."
+      = form_tag send_email_team_install_path do
+        ul
+          - @heroku_collaborators.each_with_index do |collaborator, index|
+            li
+              input> id="email_#{index}" name="emails[]" type="checkbox" value=collaborator['email'] checked='checked'
+              label> for="email_#{index}"= collaborator['email']
+              span= collaborator['role']
+    
+        div
+          = submit_tag 'Send a welcome email to the team', class: 'btn btn-success btn-large'
+          input#email_me<> type="checkbox" checked="checked" name="emails[]" value=current_user.email
+          label for="email_me" I also want a welcome email
