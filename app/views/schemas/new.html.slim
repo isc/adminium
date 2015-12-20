@@ -1,63 +1,55 @@
 script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"
-div ng-controller="SchemasCtrl" ng-init="reset()"
-  .page-header
-    h2 Create a new table
-  .row-fluid
-    .span12
-      = form_tag schemas_path, data: {remote: true}, class: 'form', id: 'create_table' do
-        fieldset
-          h3 Table Name
-          .controls
-            input name="table_name" type="text" class="span4" ng-model="table_name" required="true"
-        fieldset
-          h3 Columns
-          table.table
-            thead
-              tr
-                th Name
-                th Type
-                th title="Primary keys are autoincremented, you can make a composite primary key by selecting multiple columns" Primary
-                th Unique
-                th Index
-                th Null allowed
-                th.span3 Default
-                th
-            tbody ng-cloak="true"
-              tr ng-repeat="column in columns"
-                td
-                  input name="columns[][name]" type="text" ng-model="column.name"
-                td
-                  select name="columns[][type]" ng-model="column.type" class="span2"
-                    - [:integer, :string, :datetime, :text, :float, :decimal, :time, :date, :blob, :boolean].each do |type|
-                      option= type
-                td
-                  input type="checkbox" name="columns[][primary]" ng-model="column.primary" ng-disabled="column.unique"
-                td
-                  input type="checkbox" name="columns[][unique]" ng-model="column.unique" ng-disabled="column.primary"
-                td
-                  input type="checkbox" name="columns[][index]" ng-model="column.index" ng-disabled="column.primary || column.unique"
-                td
-                  input type="checkbox" name="columns[][null]" ng-model="column.null" ng-disabled="column.primary || column.unique"
-                td.span3
-                  input type="text" name="columns[][default]" ng-model="column.default" ng-hide="column.primary || column.unique"
-                td
-                  i.icon-remove-sign ng-click="remove($index)"
-          a.btn style="color:black; margin-left: 7px; margin-top: -30px" ng-click="addColumn()" Add another column
-        fieldset.actions.text-center= submit_tag "Create", class: "btn btn-info btn-large"
-  .modal.fade.hide#create-table-modal
-    .modal-body.text-center
-      h1.s.before Creating table {{table_name}}
-      p.s.before Please wait a second.
-      h1.s.success Table {{table_name}} created !
-      p.s.success
-        i.icon-flag.icon-4x
-        br
-        'What do you want to do next ?
+div.container-fluid ng-controller="SchemasCtrl" ng-init="reset()"
+  h3 Create a new table
+  = form_tag schemas_path, data: {remote: true}, id: 'create_table' do
+    fieldset
+      h4 Table Name
+      input.form-control name="table_name" type="text" ng-model="table_name" required="true"
+    fieldset
+      h4 Columns
+      table.table.table-striped.table-hover
+        thead
+          tr
+            th Name
+            th Type
+            th title="Primary keys are autoincremented, you can make a composite primary key by selecting multiple columns" Primary
+            th Unique
+            th Index
+            th Null allowed
+            th Default
+            th
+        tbody ng-cloak="true"
+          tr ng-repeat="column in columns"
+            td
+              input.form-control name="columns[][name]" type="text" ng-model="column.name"
+            td
+              select.form-control name="columns[][type]" ng-model="column.type"
+                - [:integer, :string, :datetime, :text, :float, :decimal, :time, :date, :blob, :boolean].each do |type|
+                  option= type
+            td
+              input type="checkbox" name="columns[][primary]" ng-model="column.primary" ng-disabled="column.unique"
+            td
+              input type="checkbox" name="columns[][unique]" ng-model="column.unique" ng-disabled="column.primary"
+            td
+              input type="checkbox" name="columns[][index]" ng-model="column.index" ng-disabled="column.primary || column.unique"
+            td
+              input type="checkbox" name="columns[][null]" ng-model="column.null" ng-disabled="column.primary || column.unique"
+            td
+              input.form-control type="text" name="columns[][default]" ng-model="column.default" ng-hide="column.primary || column.unique"
+            td
+              i.icon-remove-sign ng-click="remove($index)"
+      a.btn.btn-info ng-click="addColumn()" Add another column
+    fieldset.actions.text-center= submit_tag "Create", class: "btn btn-primary"
+  = modal 'Creating table {{table_name}}...', id: 'create-table-modal' do |modal|
+    - modal.body do
+      p.s.before Please wait a second...
       .s.success
+        h4 Table {{table_name}} created !
+        p What do you want to do next ?
         = link_to "See the schema", "/schemas/{{table_name}}", class: "btn btn-primary btn-large"
+        '
         = link_to "Add your first record", "/resources/{{table_name}}/new", class: "btn btn-primary btn-large"
-        a ng-click="reset()" class="btn btn-info btn-large" Create another table
-      h1.s.error Failed to create your table ...
-      p.s.error
-    .modal-footer.s.error
-      a.btn.btn-primary.btn-large data-dismiss="modal" Close
+        a< ng-click="reset()" class="btn btn-info btn-large" Create another table
+      .s.error
+        h4 Failed to create your table ...
+        p.alert.alert-danger

@@ -4,33 +4,32 @@
   
   $scope.columns = []
 
-  $scope.addColumn = () ->
+  $scope.addColumn = ->
     $scope.columns.push({name: null, type: 'integer', index: null, null: true, default: null});
   
   $scope.remove = (index) ->
     $scope.columns.splice(index,1)
   
-  $scope.reset = () ->
+  $scope.reset = ->
     $scope.table_name = ""
     $scope.columns = [{name: 'id', null: false, unique: false, primary: true, type: 'integer', default: null},
      {name: '', null: true, unique: false, primary: false, type: 'integer', primary: false, default: null}]
     $("#create-table-modal").modal('hide')
 ]
+
 $ ->
-  $("form#create_table").bind 'ajax:before', () ->
-    $("#create-table-modal").modal('show').find('.s').hide().prev().find('.before').show()
+  $("form#create_table").bind 'ajax:before', ->
+    $("#create-table-modal").modal('show')
     $("#create-table-modal .s").hide()
     $("#create-table-modal .before").show()
     
   $("form#create_table").bind 'ajax:error', (evt) ->
     $("#create-table-modal .s").hide()
-    $("#create-table-modal .error").show()
-    $("#create-table-modal p.error").html("Something unusual happened, we've been notified, you can open a ticket if you want to get in touch with us to know more about this issue and its resolving")
+    $("#create-table-modal .error").show().find('p').html("Something unusual happened, we've been notified, you can open a ticket if you want to get in touch with us to know more about this issue and its resolving")
   $("form#create_table").bind 'ajax:success', (evt, data) ->
     $("#create-table-modal .s").hide()
     if data.error
-      $("#create-table-modal .error").show()
-      $("#create-table-modal p.error").html(data.error)
+      $("#create-table-modal .error").show().find('p').html(data.error)
     else
       $("#create-table-modal .success").show()
   
