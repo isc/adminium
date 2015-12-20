@@ -1,10 +1,38 @@
 /*
- * This is a manifest file that'll automatically include all the stylesheets available in this directory
- * and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
- * the top of the compiled file, but it's generally better to create a new file per style scope.
  *= require_self
  *= require sh_emacs.min
+ *= require bootstrap.3.3.5.min
  *= require bootstrap-wysihtml5
+ *= require font-awesome
  *= require select2
- *= require_tree .
+ *= require select2-bootstrap
+ *= require bootstrap-datepicker
+ *= require types
+ *= require resources
+ *= require homepage
+ *= require in_place_editing
 */
+
+body { padding-top: 70px; }
+
+.navbar-left .select2-container {
+  width: 270px;
+}
+.nav-tabs {
+  margin-bottom: 15px;
+}
+.dashboards.show .deactivated {
+  opacity: 0.5;
+}
+.table-sortable th {
+  cursor: pointer;
+}
+i.fa.discrete {
+  opacity: 0.3;
+}
+i.fa.discrete:hover {
+  opacity: 1;
+}
+.tab-pane {
+  padding-top: 30px;
+}
