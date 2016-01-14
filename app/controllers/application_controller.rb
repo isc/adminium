@@ -95,7 +95,7 @@ class ApplicationController < ActionController::Base
   end
   
   def ensure_proper_subdomain
-    return if !Rails.env.production? || ENV["STAGING"] || request.host_with_port['doctolib']
+    return if !Rails.env.production? || request.host_with_port['doctolib']
     redirect_to host: 'www.adminium.io' if request.host_with_port != 'www.adminium.io'
   end
   
