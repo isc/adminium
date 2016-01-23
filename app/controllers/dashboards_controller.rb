@@ -18,7 +18,7 @@ class DashboardsController < ApplicationController
     params[:tables].each do |table_name|
       begin
         Timeout::timeout(TIMEOUT_VALUE) do
-          res[table_name] = (@generic.table(table_name).count rescue 0)
+          res[table_name] = 0#(@generic.table(table_name).count rescue 0)
         end
       rescue Timeout::Error => e
         Rails.logger.warn "table #{table_name} took too long"
