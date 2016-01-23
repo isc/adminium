@@ -61,7 +61,7 @@ nav.navbar.navbar-default
           - if user_can? 'create', params[:table]
             = icon_button_link import_resources_path(table: params[:table]), 'upload', 'Import rows'
       .navbar-right
-        = render 'next_previous_page', scope: @items
+        => render 'next_previous_page', scope: @items
         = settings_button 'Listing settings'
 
 - if params[:search].present? || params[:where]
