@@ -31,8 +31,6 @@ gem 'select2-rails'
 gem 'binary_search', require: 'binary_search/pure'
 gem 'protected_attributes'
 gem 'sass-rails'
-gem 'coffee-rails'
-gem 'uglifier', '>= 1.3.0'
 gem 'figaro'
 gem 'font-awesome-rails'
 
@@ -42,6 +40,11 @@ end
 
 group :mysql_support do
   gem 'mysql2'
+end
+
+group :assets do
+  gem 'coffee-rails'
+  gem 'uglifier', '>= 1.3.0'
 end
 
 group :development do

@@ -1,1 +1,1 @@
--j4 --without development mysql_support test
+-j4 --without development mysql_support assets test
