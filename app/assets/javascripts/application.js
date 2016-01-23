@@ -1,5 +1,5 @@
 //= require jquery-2.1.4.min
-//= bootstrap-3.3.5.min
+//= require bootstrap-3.3.5.min
 //= require modernizr-custom
 //= require jquery_ujs
 //= require jquery-ui-1.11.4.custom.min
