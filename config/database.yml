@@ -1,0 +1,29 @@
+defaults: &defaults
+  adapter: postgresql
+  pool: 5
+  timeout: 5000
+  min_messages: warning
+  host: localhost
+  username: <%= ENV['USER'] %>
+
+development:
+  <<: *defaults
+  database: adminium-development
+
+test:
+  <<: *defaults
+  database: adminium-test
+
+fixture-postgres:
+  <<: *defaults
+  database: adminium-fixture
+
+production:
+  adapter: postgresql
+  database: '<%= Figaro.env.database_production_database %>'
+  host: <%= Figaro.env.database_production_host %>
+  password: <%= Figaro.env.database_production_password %>
+  username: <%= Figaro.env.database_production_username %>
+  pool: <%= Figaro.env.database_production_pool || 5 %>
+  connections: <%= Figaro.env.database_production_connections || 5 %>
+  reaping_frequency: <%= Figaro.env.database_production_reaping_frequency || 10 %>

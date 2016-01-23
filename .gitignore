@@ -10,7 +10,6 @@
 # Ignore all logfiles and tempfiles.
 log/
 /tmp
-config/database.yml
 .DS_Store
 public/capybara_test_assets
 coverage
