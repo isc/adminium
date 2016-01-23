@@ -205,7 +205,6 @@ GEM
       slop (~> 3.4)
     pry-rails (0.3.4)
       pry (>= 0.9.10)
-    puma (2.15.3)
     quiet_assets (1.1.0)
       railties (>= 3.1, < 5.0)
     rack (1.5.5)
@@ -364,7 +363,6 @@ DEPENDENCIES
   premailer-rails
   protected_attributes
   pry-rails
-  puma
   quiet_assets
   rack-livereload
   rack-timeout

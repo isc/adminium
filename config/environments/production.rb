@@ -30,11 +30,11 @@ Adminium::Application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = !ENV['NO_SSL']
+  config.force_ssl = !!ENV['HEROKU_API_KEY']
 
   # See everything in the log (default is :info)
   # config.log_level = :debug
-  config.log_tags = [lambda {|req| req.env['HTTP_HEROKU_REQUEST_ID']}]
+  config.log_tags = [:request_id, lambda { |req| req.path === '/ping' ? '__hide__' : '' }]
 
   # Use a different logger for distributed setups
   # config.logger = SyslogLogger.new
@@ -60,15 +60,12 @@ Adminium::Application.configure do
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
   
-  config.action_mailer.asset_host = 'http://adminium.io'
+  config.action_mailer.asset_host = Figaro.env.mailer_asset_host
 end
 
-ActionMailer::Base.smtp_settings = {
-  :address        => 'smtp.sendgrid.net',
-  :port           => '587',
-  :authentication => :plain,
-  :user_name      => ENV['SENDGRID_USERNAME'],
-  :password       => ENV['SENDGRID_PASSWORD'],
-  :domain         => 'heroku.com'
-}
+ActionMailer::Base.smtp_settings = {}
+%i(user_name password address domain port authentication enable_starttls_auto).each do |x|
+  value = Figaro.env.send "smtp_#{x}"
+  ActionMailer::Base.smtp_settings[x.to_sym] = (value == 'true' ? true : (value == 'false' ? false : value)) if value.present?
+end
 ActionMailer::Base.delivery_method = :smtp

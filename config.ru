@@ -1,7 +1,7 @@
 # This file is used by Rack-based servers to start the application.
 
 require ::File.expand_path('../config/environment',  __FILE__)
-use Rack::Deflater
+use Rack::Deflater if Figaro.env.heroku_api_key
 run Adminium::Application
 
 if ENV['RACK_ENV'] == 'production'
