@@ -68,6 +68,8 @@ group :production do
   gem 'unicorn'
   gem 'unicorn-worker-killer'
   gem 'rails_12factor'
+  gem 'puma'
+  gem 'puma_worker_killer'
 end
 
 group :test do
