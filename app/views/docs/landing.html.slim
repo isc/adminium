@@ -105,7 +105,7 @@ html lang="en"
       footer
         p.text-center= render partial: 'twitter_widget'
         p.text-center= link_to "&copy; #{Date.today.year} Cluscrive".html_safe, "http://cluscrive.fr", target: '_blank'
-    = javascript_include_tag '//code.jquery.com/jquery-2.1.4.min.js', '//maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js', 'application'
+    = javascript_include_tag 'application'
     - unless Rails.env.development?
       = render 'layouts/ga'
       = render 'layouts/uservoice'

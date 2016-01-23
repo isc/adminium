@@ -38,7 +38,7 @@ html lang="en" ng-app=""
               = raw v
           = yield
     = yield :modal
-    = javascript_include_tag 'jquery-2.1.4.min.js', 'bootstrap-3.3.5.min.js', 'application'
+    = javascript_include_tag 'application'
     - unless Rails.env.development?
       = render '/layouts/ga'
       = render '/layouts/uservoice'
