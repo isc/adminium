@@ -166,6 +166,7 @@ class Generic
     opts[:logger] ||= Rails.logger
     @db = Sequel.connect uri.to_s, opts
     if uri.scheme == 'postgres'
+      @db.execute 'SET application_name to \'Adminium\''
       @db.extension :pg_array
       @db.extension :pg_loose_count
       @db.schema_parse_complete
