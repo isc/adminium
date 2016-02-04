@@ -13,7 +13,8 @@
  *= require in_place_editing
 */
 
-body { padding-top: 70px; }
+body:not(.landing) { padding-top: 70px; }
+body.landing { padding-top: 20px; }
 
 .navbar-left .select2-container {
   width: 270px;

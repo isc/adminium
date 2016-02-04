@@ -35,9 +35,8 @@ class InPlaceEditing
     if td.find('a i.fa-plus').length
       type = 'text'
       raw_value = td.find('a').attr('data-content')
-    td.attr("data-original-content", td.html())
-    td.html($("<form class='well form form-inline' action='/resources/#{table}/#{id}'><div class='control-group'><div class='controls'>&nbsp;<button class='btn btn-sm btn-primary'><i class='fa fa-check' /></button><a class='cancel btn btn-sm'><i class='fa fa-remove'></i></a></div</div></form>"))
-    td.attr("data-mode", "editing")
+    td.attr('data-original-content', td.html())
+    td.html($("<form class='well form form-inline' action='/resources/#{table}/#{id}'><div class='control-group'><div class='controls'>&nbsp;<button class='btn btn-sm btn-primary'><i class='fa fa-check' /></button><a class='cancel btn btn-sm'><i class='fa fa-remove'></i></a></div</div></form>")).attr('data-mode', 'editing')
     td.find('a.cancel').click @cancelEditionMode
     td.find('form').submit @submitColumnEdition
     input = if this["#{type}EditionMode"]
@@ -45,8 +44,8 @@ class InPlaceEditing
     else
       @defaultEditionMode td, name, raw_value
     input.prependTo(td.find('.controls'))
-    input.val(raw_value).focus()
-    input.attr('name', name).addClass('form-control')
+    input.val(raw_value) unless input.val()
+    input.attr('name', name).addClass('form-control').focus()
     input.data('null-value', true) if td.hasClass('nilclass')
     initDatepickers()
     new EnumerateInput(input, 'open') if type is 'enum'
@@ -71,23 +70,14 @@ class InPlaceEditing
     @datetimeEditionMode td, name, raw_value
 
   datetimeEditionMode: (td, name, raw_value, type) =>
-    d = $('<div>')
-    d.prependTo(td.find('.controls'))
-    i = $("<input type=\"#{type or 'datetime-local'}\">")
-    i.attr('name', name)
-    if raw_value && raw_value.length > 0
-      time = raw_value.split(" ")
-      time.shift()
-      time = time.join(" ")
-    else
-      time = ''
-    i
+    $("<input type=\"#{type or 'datetime-local'}\">")
+    .attr('name', name).val raw_value.replace(' ', 'T')
 
   defaultEditionMode: (td, name, raw_value) =>
     $('<input type=text>')
 
   enumEditionMode: (td, name, raw_value) =>
-    options = ""
+    options = ''
     column = td.attr('data-column-name')
     select = $('<select>')
     for value, info of adminium_column_options[column].values

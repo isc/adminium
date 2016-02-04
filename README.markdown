@@ -45,6 +45,6 @@
 - on peut pas mettre un espace comme thousand delimiter (or j'aurais bien voulu pouvoir le faire sur une colonne zipcode)
 
 ### Refacto
-- remplir une date / un timestamp ne fonctionne pas
+- remplir une date / un timestamp ne fonctionne pas sur firefox
 - clickable area des accordéons de settings popins
 - color polyfill for safari
