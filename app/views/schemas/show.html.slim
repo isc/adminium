@@ -42,7 +42,6 @@ table.table.table-striped.table-hover
       td= 'NOT NULL' if column[:allow_null] == false
       td class=column[:type] title=column[:default]
         = display_column_default column
-        = 'AUTO_INCREMENT' if column[:auto_increment]
       td
         - unless @readonly
           = link_to schema_path(params[:id], remove_column: name), data: {confirm: "Do you really want to permanently remove the column #{name} with all its data ?"}, method: :put, class: 'remove_column' do

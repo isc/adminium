@@ -276,7 +276,7 @@ module Resource
     end
     
     def searchable_column_names
-      find_all_columns_for_types(:string, :string_array, :text, :integer, :decimal).map(&:first)
+      find_all_columns_for_types(:string, :varchar_array, :text, :integer, :decimal).map(&:first)
     end
 
     def find_all_columns_for_types *types

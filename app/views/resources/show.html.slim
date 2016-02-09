@@ -21,7 +21,7 @@ nav.navbar.navbar-default
 
 .row.item-attributes data-table=params[:table] data-item-id=params[:id]
   .col-md-7
-    - [%i(string string_array), %i(integer float decimal)].each do |types|
+    - [%i(string varchar_array), %i(integer float decimal)].each do |types|
       - columns = item_attributes_type types, resource
       - if columns.present?
         table.table.table-condensed

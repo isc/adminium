@@ -38,6 +38,9 @@ module Sequel
           end
           row[:type] = schema_column_type(row[:db_type])
           row[:ruby_default] = column_schema_to_ruby_default(row[:default], row[:type])
+          if row[:primary_key]
+            row[:auto_increment] = !!(row[:default] =~ /\Anextval/io)
+          end
           [m.call(row.delete(:name)), row]
         end.group_by {|name, row| "\"#{row.delete(:relname)}\""} # addition
         # schema_utility_dataset.literal row.delete(:relname)

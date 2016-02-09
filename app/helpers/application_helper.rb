@@ -67,6 +67,7 @@ module ApplicationHelper
   end
   
   def display_column_default column
+    return 'AUTO INCREMENT' if column[:auto_increment]
     return unless column[:default]
     default = column[:ruby_default] || column[:default]
     default = default.respond_to?(:constant) ? default.constant : (default == '' ? 'Empty String' : default)

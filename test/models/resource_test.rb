@@ -30,7 +30,7 @@ class ResourceTest < ActiveSupport::TestCase
   
   test "pg_array extension" do
     resource = Resource::Base.new @generic, :users
-    assert_equal :string_array, resource.column_info(:nicknames)[:type]
+    assert_equal :varchar_array, resource.column_info(:nicknames)[:type]
   end
 
 end
