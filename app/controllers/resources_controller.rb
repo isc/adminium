@@ -522,9 +522,7 @@ class ResourcesController < ApplicationController
           item_params[key] = nil
         else
           res = ''
-          if value.has_key?('date')
-            res << value['date']
-          end
+          res << value['date'] if value.has_key?('date')
           item_params[key] = if value['4i']
             application_time_zone.parse "#{res} #{value['4i']}:#{value['5i']}"
           else
