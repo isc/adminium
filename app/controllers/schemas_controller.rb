@@ -35,8 +35,8 @@ class SchemasController < ApplicationController
       primary_key(primary_column_names, name: "#{table_name}_pk") if primary_column_names.length > 1
     end
     render json: {table_name: params[:table_name]}
-    rescue Sequel::Error => e
-      render json: {error: e.message}
+  rescue Sequel::Error => e
+    render json: {error: e.message}
   end
   
   def destroy

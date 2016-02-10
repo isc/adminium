@@ -1,6 +1,6 @@
 @SchemasCtrl = ['$scope', ($scope) ->
   
-  $scope.table_name = ""
+  $scope.table_name = ''
   
   $scope.columns = []
 
@@ -8,7 +8,7 @@
     $scope.columns.push({name: null, type: 'integer', index: null, null: true, default: null});
   
   $scope.remove = (index) ->
-    $scope.columns.splice(index,1)
+    $scope.columns.splice index, 1
   
   $scope.reset = ->
     $scope.table_name = ""
