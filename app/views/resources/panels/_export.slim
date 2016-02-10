@@ -5,7 +5,7 @@
         a.close data-dismiss="modal" ×
         h4.modal-title Export results
       form.form-horizontal
-        - request.query_string.to_s.split('&').each do |param|
+        - request.query_string.to_s.split('&').find_all(&:present?).each do |param|
           input type="hidden" name=CGI.unescape(param.split('=').first) value=CGI.unescape(param.split('=').last)
         input type="hidden" name="format" value="csv"
         .modal-body
@@ -19,7 +19,7 @@
                 label.control-label.col-sm-3 for="csv_options_encoding_to"= t('export.csv.encoding_to')
                 .col-sm-9
                   = select_tag 'csv_options[encoding_to]', options_for_select(["UTF-8", "UTF-16LE", "UTF-16BE", "UTF-32LE", "UTF-32BE", "UTF-7", "ISO-8859-1", "ISO-8859-15", "IBM-850", "MacRoman", "Windows-1252", "ISO-8859-3", "IBM-852", "ISO-8859-2", "MacCE", "Windows-1250", "IBM-855", "ISO-8859-5", "ISO-IR-111", "KOI8-R", "MacCyrillic", "Windows-1251", "CP-866", "KOI-U", "MacUkranian", "GB2312", "GBK", "GB18030", "HZ", "ISO-2022-CN", "Big5", "Big5-HKSCS", "EUC-TW", "EUC-JP", "ISO-2022-JP", "Shift_JIS", "EUC-KR", "UHC", "JOHAB", "ISO-2022-KR"]), class: 'form-control'
-                  p.help-block= t('export.csv.encoding_to_help', :name => guessed_encoding)
+                  p.help-block= t('export.csv.encoding_to_help', name: guessed_encoding)
 
               .form-group
                 label.control-label.col-sm-3 for="csv_options_skip_header"= t('export.csv.skip_header')

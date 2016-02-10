@@ -119,20 +119,8 @@ class ColumnSettings
       $(input).attr('name', $(input).attr('name').replace(previous_id, new_id))
     $('.template_line input').eq(1).focus()
 
-class UIListing
-  
-  constructor: ->
-    $('.search-and-where-params .alert button.close').click ->
-      if $(this).data('param-kind')
-        location.href = location.href.replace(new RegExp("([&?])#{$(this).data('param-kind')}=.*?(&|$)"), '$1')
-      else
-        escapeRegExp = (str) ->
-          str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&")
-        location.href = location.href.replace(new RegExp("#{escapeRegExp $(this).data('param')}&?"), '')
-
 $ ->
   new BulkActions()
   new CustomColumns('#displayed-columns_pane')
   new CustomColumns('#select-exported-fields_pane')
-  new UIListing()
   new ColumnSettings()

@@ -42,8 +42,10 @@ module ApplicationHelper
     end.join("<br/>")
   end
 
-  def format_param_for_removal k, v
-    "#{CGI.escape("where[#{k}]")}=#{CGI.escape(v)}"
+  def params_without_where_filter k
+    new_params = params.deep_dup
+    new_params['where'].delete k
+    new_params
   end
 
   def upgrade_to_enterprise_notice account

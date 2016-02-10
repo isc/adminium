@@ -41,7 +41,7 @@ nav.navbar.navbar-default
               a data-toggle="modal" href="#advanced_search" New filter
       - if resource.columns[:search].any?
         form.navbar-form.navbar-left
-          - request.query_string.to_s.split('&').each do |param|
+          - request.query_string.to_s.split('&').find_all(&:present?).each do |param|
             - name, value = unescape_name_value_pair param
             - next if name == 'search'
             input type="hidden" name=name value=value
@@ -65,12 +65,12 @@ nav.navbar.navbar-default
         = settings_button 'Listing settings'
 
 - if params[:search].present? || params[:where]
-  .row.search-and-where-params
+  .row
     - if params[:search].present?
       .col-md-3
         .alert.alert-info.alert-dismissible
           == "Search for <i>#{params[:search]}</i>"
-          button.close data-param-kind="search"
+          = link_to params.except(:search), class: 'close' do
             i.fa.fa-times
     - if params[:where]
       - params[:where].each do |k, v|
@@ -80,7 +80,7 @@ nav.navbar.navbar-default
               == "Where #{k} is in <i>#{format_date(v).first}</i>"
             - else
               == "Where #{k} is <i>#{v}</i>"
-            button.close data-param=format_param_for_removal(k, v)
+            = link_to params_without_where_filter(k), class: 'close' do
               i.fa.fa-times
 .content
   = render 'items', items: @fetched_items, actions_cell: true
