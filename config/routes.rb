@@ -55,9 +55,7 @@ Adminium::Application.routes.draw do
     get :upgrade
   end
   resources :roles
-  resource :dashboard do
-    get :tables_count, on: :collection
-  end
+  resource :dashboard, only: :show
   resources :collaborators
   resource :user do
     get :apps

@@ -48,7 +48,6 @@
       - index = 0
       - @table_sizes.each do |table, fulltblsize, tblsize|
         - index += 1
-    
         tr class=((current_account.try(:pet_project?) && index > 5) ? 'deactivated' : '')
           td
             = link_to schema_path(table), rel: 'tooltip', title: 'Schema' do
@@ -58,7 +57,7 @@
           td= link_to table, resources_path(table)
           td data-value=fulltblsize = number_to_human_size fulltblsize
           td data-value=tblsize = number_to_human_size tblsize
-          td data-table-name=table data-status='loading' data-value=0 = '-'
+          td data-value=@table_counts[table.to_s] = number_with_delimiter @table_counts[table.to_s]
 
   .pull-left
     - if admin?

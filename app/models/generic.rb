@@ -112,10 +112,6 @@ class Generic
     @tables
   end
   
-  def loose_count(table_name)
-    @db.loose_count(table_name)
-  end
-  
   def schema table
     raise TableNotFoundException.new(table) unless tables.include? table
     @schema ||= {}
@@ -156,6 +152,17 @@ class Generic
     end
   end
 
+  def table_counts table_list
+    table_list ||= tables
+    table_list = table_list.map(&:to_s)
+    query = if postgresql?
+      db.from(:pg_stat_user_tables).select(:relname, :n_live_tup).where(relname: table_list)
+    else
+      db.from(:INFORMATION_SCHEMA__TABLES).select(:table_name, :table_rows).where(table_schema: @db_name).where(table_name: table_list)
+    end
+    query.to_a.map(&:values).to_h
+  end
+
   def establish_connection db_url, opts = {}
     # TODO there is a read_timeout option for mysql
     uri = URI.parse db_url
@@ -168,7 +175,6 @@ class Generic
     if uri.scheme == 'postgres'
       @db.execute 'SET application_name to \'Adminium\''
       @db.extension :pg_array
-      @db.extension :pg_loose_count
       @db.schema_parse_complete
     end
     @db.extension :named_timezones
