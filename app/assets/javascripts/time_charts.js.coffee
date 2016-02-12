@@ -68,7 +68,7 @@ class TimeCharts
     
     dataTable.addColumn 'string', column_type
     dataTable.addColumn 'number', 'Count'
-    if data.chart_type == 'TimeChart'
+    if data.chart_type is 'TimeChart'
       column_type = 'none'
       legend = 'none'
       colors = ['#7d72bd']
@@ -80,30 +80,29 @@ class TimeCharts
     rows = ([String(row[0]), row[1]] for row in data.chart_data)
     dataTable.addRows rows
     wrapper = $(container)
-    width  = wrapper.parent().css('width')
-    if width == '0px'
-      setTimeout () =>
+    width = wrapper.parent().css('width')
+    if width is '0px'
+      setTimeout =>
         @graphData(data, container)
       , 125
     options = {width: width, height:300, colors: colors, legend: legend, chartArea:{top:15, left: '5%', height: '75%', width:'90%'}}
-    if data.chart_type == 'TimeChart'
+    if data.chart_type is 'TimeChart'
       chart = new google.visualization.ColumnChart(wrapper.get(0))
     else
       chart = new google.visualization.PieChart(wrapper.get(0))
     chart.draw(dataTable, options)
-    if data.id
-      google.visualization.events.addListener chart, 'select', () =>
-        index = chart.getSelection()[0].row
-        link = wrapper.parents(".widget").find("h4 a").attr('href')
-        sep = if (link.indexOf("?") isnt -1) then '&' else '?'
-        if data.chart_type == 'PieChart'
-          value = data.chart_data[index][2]
-        else
-          value = "#{data.chart_data[index][2]}&grouping=#{data.grouping}"
-        link += "#{sep}where[#{data.column}]=#{value}"
-        window.location.href = link
+    google.visualization.events.addListener chart, 'select', =>
+      index = chart.getSelection()[0].row
+      link = wrapper.parents(".widget").find("h4 a").attr('href') || location.href
+      sep = if (link.indexOf('?') isnt -1) then '&' else '?'
+      if data.chart_type is 'PieChart'
+        value = data.chart_data[index][2]
+      else
+        value = "#{data.chart_data[index][2]}&grouping=#{data.grouping}"
+      link += "#{sep}where[#{data.column}]=#{value}"
+      location.href = link
     $('#time-chart i[rel=tooltip]').tooltip()
-    
+
 $ ->
   window.time_charts = new TimeCharts()
 

@@ -21,6 +21,6 @@
       hr
       #chart_div
       javascript:
-        data_for_graph = #{{chart_data: @data, chart_type: params[:type]}.to_json.html_safe}
+        data_for_graph = #{{chart_data: @data, chart_type: params[:type], column: params[:column], grouping: grouping}.to_json.html_safe}
     .modal-footer
       .btn.btn-primary.pull-right data-dismiss="modal" Close

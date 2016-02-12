@@ -19,7 +19,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, created_at: (Time.now.beginning_of_week + 2.days))
     visit chart_resources_path(:users, column: 'created_at', grouping: 'dow', type: 'TimeChart')
     # FIXME because of timezones we end up with Sunday and Tuesday
-    json = "data_for_graph = {\"chart_data\":[[\"Sunday\",2,0.0],[\"Tuesday\",1,2.0]],\"chart_type\":\"TimeChart\"}"
+    json = "data_for_graph = {\"chart_data\":[[\"Sunday\",2,0.0],[\"Tuesday\",1,2.0]],\"chart_type\":\"TimeChart\",\"column\":\"created_at\",\"grouping\":\"dow\"}"
     assert_equal json, page.find('script', visible: false).text(:all)
   end
   
@@ -28,7 +28,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, admin: false)
     FixtureFactory.new(:user, admin: nil)
     visit chart_resources_path(:users, column: 'admin', type: 'PieChart')
-    json = "data_for_graph = {\"chart_data\":[[\"True\",2,true,\"#07be25\"],[\"not set\",1,null,\"#DDD\"],[\"False\",1,false,\"#777\"]],\"chart_type\":\"PieChart\"}"
+    json = "data_for_graph = {\"chart_data\":[[\"True\",2,true,\"#07be25\"],[\"not set\",1,null,\"#DDD\"],[\"False\",1,false,\"#777\"]],\"chart_type\":\"PieChart\",\"column\":\"admin\",\"grouping\":\"daily\"}"
     assert_equal json, page.find('script', visible: false).text(:all)
   end
   
@@ -42,7 +42,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, role: 'new_role_3')
     FixtureFactory.new(:user, role: nil)
     visit chart_resources_path(:users, column: 'role', type: 'PieChart')
-    json = "data_for_graph = {\"chart_data\":[[\"not set\",1,null,\"#DDD\"],[\"new_role_3\",1,\"new_role_3\",\"#AAA\"],[\"new_role_2\",1,\"new_role_2\",\"#CCC\"],[\"Débutant\",1,\"noob\",null],[\"new_role_1\",1,\"new_role_1\",\"#AAA\"],[\"Chef\",1,\"admin\",null]],\"chart_type\":\"PieChart\"}"
+    json = "data_for_graph = {\"chart_data\":[[\"not set\",1,null,\"#DDD\"],[\"new_role_3\",1,\"new_role_3\",\"#AAA\"],[\"new_role_2\",1,\"new_role_2\",\"#CCC\"],[\"Débutant\",1,\"noob\",null],[\"new_role_1\",1,\"new_role_1\",\"#AAA\"],[\"Chef\",1,\"admin\",null]],\"chart_type\":\"PieChart\",\"column\":\"role\",\"grouping\":\"daily\"}"
     assert_equal json, page.find('script', visible: false).text(:all)
   end
   
@@ -51,7 +51,8 @@ class ChartsTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, kind: 10)
     FixtureFactory.new(:user, kind: nil)
     visit chart_resources_path(:users, column: 'kind', type: 'StatChart')
-    json = "data_for_graph = {\"chart_data\":[[\"Maximum\",\"10\",10],[\"Average\",\"6.67\"],[\"Median\",\"5\"],[\"Minimum\",\"5\",5],[\"Sum\",\"20\"],[\"Count\",3],[\"Number of distinct values\",2]],\"chart_type\":\"StatChart\"}"
+    json = "data_for_graph = {\"chart_data\":[[\"Maximum\",\"10\",10],[\"Average\",\"6.67\"],[\"Median\",\"5\"],[\"Minimum\",\"5\",5],[\"Sum\",\"20\"],[\"Count\",3],[\"Number of distinct values\",2]],\"chart_type\":\"StatChart\",\"column\":\"kind\",\"grouping\":\"daily\"}"
+
     assert_equal json, page.find('script', visible: false).text(:all)
   end
   

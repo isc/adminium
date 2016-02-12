@@ -25,6 +25,8 @@
       border-right: 1px solid #F1F1F1;
       text-align: right;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
       .column_settings {
         display: none;
         position: absolute;
