@@ -24,7 +24,7 @@ nav.navbar.navbar-default
     - [%i(string varchar_array), %i(integer float decimal)].each do |types|
       - columns = item_attributes_type types, resource
       - if columns.present?
-        table.table.table-condensed
+        table.table.table-condensed.layout-fixed
           - columns.each do |name|
             tr
               th.col-md-3 title=name
