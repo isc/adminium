@@ -21,7 +21,7 @@ nav.navbar.navbar-default
               li.dropdown-header Filters
             - if params[:asearch].present?
               li= link_to 'All records', params.merge(asearch: nil)
-            - resource.filters.keys.each do |key|
+            - resource.filters.keys.sort_by(&:downcase).each do |key|
               - next if params[:asearch] == key
               li= link_to key, params.merge(asearch: key)
             - if resource.filters.any?
