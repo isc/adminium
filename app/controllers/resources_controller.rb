@@ -405,6 +405,10 @@ class ResourcesController < ApplicationController
       resource_with_column, table = resource, params[:table]
     end
     type = resource_with_column.column_info(filter['column'].to_sym)[:type]
+    if type != filter['type'].to_sym
+      flash.now[:error] = "Filter on the #{filter['column']} column is not valid anymore (defined on a #{filter['type']} column, not #{type})."
+      return
+    end
     operators.merge! datetime_operators if [:date, :datetime].index(type)
     operators.merge! string_operators if [:string, :text].index(type)
     column = qualify table, filter['column'].to_sym
