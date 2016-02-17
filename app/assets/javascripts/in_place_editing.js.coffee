@@ -8,16 +8,14 @@ class InPlaceEditing
 
   setupEditableColumn: (elt) =>
     td = $(elt.currentTarget)
-    if td.find('i.fa-pencil').length is 0 and td.attr('data-mode') isnt 'editing'
+    if not td.find('i.fa-pencil').length and td.attr('data-mode') isnt 'editing'
       $("<i class='fa fa-pencil'>").appendTo(td)
 
   switchToEditionModeByClickingIcon: (elt) =>
-    td = $(elt.currentTarget).parents('td')
-    @switchToEditionMode(td)
+    @switchToEditionMode $(elt.currentTarget).parents('td')
     
   switchToEditionModeByDblClicking: (elt) =>
-    td = $(elt.currentTarget)
-    @switchToEditionMode(td)
+    @switchToEditionMode $(elt.currentTarget)
   
   switchToEditionMode: (td) =>
     return if @submitInProgress
@@ -71,7 +69,7 @@ class InPlaceEditing
 
   datetimeEditionMode: (td, name, raw_value, type) =>
     $("<input type=\"#{type or 'datetime-local'}\">")
-    .attr('name', name).val raw_value.replace(' ', 'T')
+    .attr('name', name).val raw_value?.replace(' ', 'T')
 
   defaultEditionMode: (td, name, raw_value) =>
     $('<input type=text>')

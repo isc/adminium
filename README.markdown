@@ -47,3 +47,4 @@
 ### Refacto
 - clickable area des accordéons de settings popins
 - color polyfill for safari
+- null/empty string dans les forms autres que in place edit

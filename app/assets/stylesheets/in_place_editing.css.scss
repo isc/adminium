@@ -12,11 +12,7 @@ td[data-column-name] {
     opacity: 1;
   }
   form {
-    position: absolute;
     padding: 10px;
-    z-index: 1;
-    top: -8px;
-    left: 0;
     .ui-datepicker-calendar {
       td, th {
         padding: 0px;
@@ -31,8 +27,8 @@ td[data-column-name] {
       width: 235px;
     }
     textarea {
-      width:300px;
-      height:100px;
+      width: 300px;
+      height: 100px;
     }
   }
 }
@@ -48,7 +44,7 @@ td[data-column-name] {
 }
 .form-inline {
   .null_btn, .empty_string_btn {
-    bottom: 16px;
+    bottom: 24px;
   }
 }
 .null_btn, .empty_string_btn {
