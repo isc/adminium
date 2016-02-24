@@ -522,7 +522,7 @@ class ResourcesController < ApplicationController
     return unless item_params.present?
     item_params.each do |key, value|
       if value.is_a? Hash
-        if value.has_key?('date') && value['date'].blank? || value.has_key?('4i') && value['4i'].blank?
+        if value.has_key?('date') && value['date'].blank? || (!value.has_key?('date') && value.has_key?('4i') && value['4i'].blank?)
           item_params[key] = nil
         else
           res = ''
