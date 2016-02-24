@@ -15,6 +15,7 @@ class Generic
 
   def cleanup
     @db.disconnect
+    Sequel::DATABASES.delete @db
   end
   
   def associations
