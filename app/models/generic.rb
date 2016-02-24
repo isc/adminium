@@ -15,7 +15,6 @@ class Generic
 
   def cleanup
     @db.disconnect
-    Sequel::DATABASES.delete @db
   end
   
   def associations
@@ -164,7 +163,7 @@ class Generic
     query.to_a.map(&:values).to_h
   end
 
-  def establish_connection db_url, opts = {}
+  def establish_connection db_url, opts
     # TODO there is a read_timeout option for mysql
     uri = URI.parse db_url
     uri.scheme = 'postgres' if uri.scheme == 'postgresql'
@@ -172,7 +171,7 @@ class Generic
     @db_name = (uri.path || "").split("/")[1]
     @current_adapter = uri.scheme
     opts[:logger] ||= Rails.logger
-    @db = Sequel.connect uri.to_s, opts
+    @db = Sequel.connect uri.to_s, opts.merge(keep_reference: false)
     if uri.scheme == 'postgres'
       @db.execute 'SET application_name to \'Adminium\''
       @db.extension :pg_array
