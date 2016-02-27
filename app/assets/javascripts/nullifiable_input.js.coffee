@@ -6,7 +6,7 @@ class @NullifiableInput
   
   constructor: (input, bulkEdit, @type) ->
     @bulkEditMode = bulkEdit
-    @input = input 
+    @input = input
     match = input.get(0).name.match(/\[(.*)\](\[\d\])*/)
     return unless match
     @column_name = match[1]
@@ -16,7 +16,7 @@ class @NullifiableInput
     title_n = "Will save a NULL value if selected"
     title_e = "Will save an empty string if selected"
     @btns = $("<div class='null_btn btn btn-xs btn-default' title='#{title_n}'>null</div><div class='empty_string_btn btn-info btn btn-xs btn-default' title='#{title_e}'>empty string</div>")
-    @btns.tooltip()
+    @btns.tooltip(container: 'body')
     hidden_input_name = input.get(0).name.replace("[", "_nullify_settings[")
     @hidden_input = $("<input name='#{hidden_input_name}' value='empty_string' type='hidden'></input>")
     @controls.append(@btns).append(@hidden_input)

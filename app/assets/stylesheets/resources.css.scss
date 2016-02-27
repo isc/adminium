@@ -13,7 +13,7 @@
       form {
         width: 99%;
         margin: 0.5%;
-        input {
+        .controls:not(.datetime-in-place-edit) input {
           width: 80%;
         }
       }
