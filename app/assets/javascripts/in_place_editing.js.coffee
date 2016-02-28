@@ -43,7 +43,7 @@ class InPlaceEditing
     # TODO enum for associated column
     type = 'enum' if adminium_column_options[column]?.is_enum
     id = td.data('item-id') or td.parents('tr').data('item-id') or $('.item-attributes').data('item-id')
-    if td.find('a i.fa-plus').length
+    if td.find('a i.fa-plus-circle').length
       type = 'text'
       raw_value = td.find('a').attr('data-content')
     td.attr('data-original-content', td.html())
