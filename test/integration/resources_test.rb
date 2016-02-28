@@ -10,23 +10,23 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test "index on non existing table" do
     visit resources_path(:shablagoos)
     assert_equal dashboard_path, page.current_path
-    assert page.has_content?("The table shablagoos cannot be found.")
+    assert_text "The table shablagoos cannot be found."
   end
   
   test "index on resources for users table" do
     FixtureFactory.new :user
     visit resources_path(:users)
-    assert page.has_css?('table.items-list')
-    assert page.has_css?('th a', text: 'First name')
+    assert_selector 'table.items-list'
+    assert_selector 'th a', text: 'First name'
     within('#listing_columns_list') {uncheck 'First name'}
     click_button 'Save settings'
-    assert !page.has_css?('th a', text: 'First name')
+    assert_no_selector 'th a', text: 'First name'
   end
   
   test "index for users table asking for a page too far" do
     FixtureFactory.new :user
     visit resources_path(:users, page: 37)
-    assert page.has_content?("You are looking for results on page 37, but your query only has 1 result page")
+    assert_text "You are looking for results on page 37, but your query only has 1 result page"
   end
   
   test "sorted index by column asc and desc" do
@@ -46,15 +46,15 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit resources_path(:users)
     fill_in 'search_input', with: "Johnny"
     find('form.navbar-left button').click()
-    assert page.has_content? 'Haliday'
-    assert page.has_content? 'Deep'
-    assert page.has_no_content? 'Carey'
+    assert_text 'Haliday'
+    assert_text 'Deep'
+    assert_no_text 'Carey'
     
     fill_in 'search_input', with: "Johnny singer"
     find('form.navbar-left button').click()
-    assert page.has_content? 'Haliday'
-    assert page.has_no_content? 'Deep'
-    assert page.has_no_content? 'Carey'
+    assert_text 'Haliday'
+    assert_no_text 'Deep'
+    assert_no_text 'Carey'
   end
   
   test "search on integer columns" do
@@ -63,16 +63,16 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit resources_path(:users)
     fill_in 'search_input', with: "61"
     find('form.navbar-left button').click()
-    assert page.has_content? 'Haliday'
-    assert page.has_no_content? 'Carey'
+    assert_text 'Haliday'
+    assert_no_text 'Carey'
     
     visit resources_path(:users, where: {group_id: 5})
-    assert page.has_content? 'Carey'
-    assert page.has_no_content? 'Haliday'
+    assert_text 'Carey'
+    assert_no_text 'Haliday'
     fill_in 'search_input', with: '61'
     find('form.navbar-left button').click()
-    assert page.has_no_content? 'Carey'
-    assert page.has_no_content? 'Haliday'
+    assert_no_text 'Carey'
+    assert_no_text 'Haliday'
   end
   
   test "search with where on a range date weekly" do
@@ -81,9 +81,9 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, first_name: 'Mariah', activated_at: somedate + 1.week)
     FixtureFactory.new(:user, first_name: 'Gilles', activated_at: somedate - 1.week)
     visit resources_path(:users, where: {activated_at: somedate.beginning_of_week}, grouping: 'weekly')
-    assert page.has_content? "Where activated_at is in Week"
-    assert page.has_content? '1 record'
-    assert page.has_content? 'Johnny'
+    assert_text "Where activated_at is in Week"
+    assert_text '1 record'
+    assert_text 'Johnny'
   end
   
   test "links on index for polymorphic belongs to" do
@@ -109,19 +109,18 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   
   test "creating a comment (polymorphic belongs_to)" do
     visit resources_path(:comments)
-    link = find('a[title="Create a new row"]')
-    link.click()
+    find('a[title="Create a new row"]').click()
     # FIXME not ideal support for polymorphic belongs_to in the form at the moment
-    assert page.has_css?('input[type=number][name="comments[commentable_id]"]')
+    assert_selector 'input[type=number][name="comments[commentable_id]"]'
   end
 
   test "save new" do
     visit new_resource_path(:users)
     fill_in 'Pseudo', with: 'Bobulus'
-    assert page.has_css?('select[name="users[country]"]')
-    assert page.has_css?('select[name="users[time_zone]"]')
+    assert_selector 'select[name="users[country]"]'
+    assert_selector 'select[name="users[time_zone]"]'
     click_button 'Save'
-    assert page.has_content?('successfully created')
+    assert_text 'successfully created'
     assert_equal 'Bobulus', find('td[data-column-name=pseudo]').text
   end
   
@@ -130,8 +129,8 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit new_resource_path(:users)
     fill_in 'Age', with: '123123123183829384728832'
     click_button 'Save'
-    assert page.has_css?('.alert.alert-danger')
-    assert page.has_content?('New User')
+    assert_selector '.alert.alert-danger'
+    assert_text 'New User'
     assert_equal '123123123183829384728832', find('input[type=number][name="users[age]"]').value
   end
   
@@ -139,23 +138,23 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit new_resource_path(:users)
     fill_in 'Age', with: 'va bien te faire mettre'
     click_button 'Save'
-    assert page.has_css?('.alert.alert-danger')
-    assert page.has_content?('New User')
+    assert_selector '.alert.alert-danger'
+    assert_text 'New User'
     assert_equal 'va bien te faire mettre', find('input[type=number][name="users[age]"]').value
   end
   
   test "failed save due to nil value" do
     visit new_resource_path(:groups)
     click_button 'Save'
-    assert page.has_css?('.alert.alert-danger')
-    assert page.has_content?('New Group')
+    assert_selector '.alert.alert-danger'
+    assert_text 'New Group'
   end
 
   test "save new and create another" do
     visit new_resource_path(:users)
     fill_in 'Pseudo', with: 'Bobulus'
     click_button 'Save and create another'
-    assert page.has_content?("New User")
+    assert_text 'New User'
   end
   
   test "save new and continue editing" do
@@ -177,16 +176,16 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user)
     stub_resource_columns listing: [:'has_many/comments']
     visit resources_path(:users)
-    assert page.has_css?("tr[data-item-id=\"#{user.id}\"] td.hasmany a", text: '2')
+    assert_selector "tr[data-item-id=\"#{user.id}\"] td.hasmany a", text: '2'
     find('a[title="Sort by Comments count 9 → 0"]').click
-    assert page.has_css?("table.items-list tbody tr:first-child td.hasmany a", text: '2')
+    assert_selector "table.items-list tbody tr:first-child td.hasmany a", text: '2'
   end
 
   test "custom column belongs_to" do
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'bob').factory.id)
     stub_resource_columns listing: ['users.pseudo']
     visit resources_path(:comments)
-    assert page.has_css?('td', text: 'bob')
+    assert_selector 'td', text: 'bob'
   end
   
   test "filter by enum label from a custom column" do
@@ -199,13 +198,13 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     Resource::Base.any_instance.stubs(:enum_values_for).with(:role).returns 'admin' => {'label' => 'Chef'},
       'noob' => {'label' => 'Débutant'}
     visit resources_path(:comments)
-    assert page.has_content?('Funny joke')
-    assert page.has_content?('You are fired')
-    assert page.has_css?('a', text: 'Débutant')
-    assert page.has_css?('a', text: 'Chef')
+    assert_text 'Funny joke'
+    assert_text 'You are fired'
+    assert_selector 'a', text: 'Débutant'
+    assert_selector 'a', text: 'Chef'
     click_link 'Chef'
-    assert page.has_content?('You are fired')
-    assert page.has_no_content?('Funny joke')
+    assert_text 'You are fired'
+    assert_no_text 'Funny joke'
   end
   
   test "sort by custom column belongs_to" do
@@ -240,7 +239,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit Capybara.current_session.driver.response.location
     visit resource_path(:users, user)
     assert_equal resources_path(:users), page.current_path
-    assert page.has_content?("does not exist")
+    assert_text 'does not exist'
   end
   
   test "clone from show" do
@@ -283,8 +282,8 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit edit_resource_path(:users, user)
     fill_in 'Age', with: out_of_range_int
     click_button 'Save'
-    assert page.has_css?('.alert.alert-danger')
-    assert page.has_content?("Edit User ##{user.id}")
+    assert_selector '.alert.alert-danger'
+    assert_text "Edit User ##{user.id}"
     assert_equal out_of_range_int, find('input[type=number][name="users[age]"]').value
   end
   
@@ -298,14 +297,14 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_match "Rob has already been taken.", find('.alert.alert-danger').text
     fill_in 'Pseudo', with: 'Robert'
     click_button 'Save'
-    assert page.has_css?('.alert.alert-success')
+    assert_selector '.alert.alert-success'
   end
   
   test "export rows" do
     FixtureFactory.new(:user, pseudo: "bobleponge")
     visit resources_path(:users)
     click_button 'Export 1 users to csv'
-    assert page.has_content?('bobleponge')
+    assert_text 'bobleponge'
   end
   
   test "show with belongs_to association" do
@@ -344,7 +343,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit resource_path(:groups, group)
     click_link '2'
     assert_equal resources_path(:users), page.current_path
-    assert page.has_content?('2 records')
+    assert_text '2 records'
   end
   
   test "bulk edit" do
@@ -398,7 +397,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test "field with a database default" do
     stub_resource_columns form: [:kind]
     visit new_resource_path(:users)
-    assert page.has_css?('input[name="users[kind]"][value="37"]')
+    assert_selector 'input[name="users[kind]"][value="37"]'
   end
   
   test "display of datetime depending on time zone conf" do
@@ -429,10 +428,10 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit edit_resource_path(:users, user.id)
     fill_in 'Nicknames', with: '["Bob" "Bobby"]'
     click_button 'Save'
-    assert page.has_css?('.alert.alert-danger')
+    assert_selector '.alert.alert-danger'
     fill_in 'Nicknames', with: '["Bob", "Bobby"]'
     click_button 'Save'
-    assert !page.has_css?('.alert.alert-danger')
+    assert_no_selector '.alert.alert-danger'
     assert_equal '["Bob", "Bobby"]', find('td[data-column-name="nicknames"]')['data-raw-value']
   end
   
@@ -454,20 +453,20 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, nicknames: ['Bob', 'Bobby', 'Bobulus'], pseudo: 'Pierre')
     FixtureFactory.new(:user, nicknames: ['Bob', 'Rob'], pseudo: 'Jacques')
     visit resources_path(:users)
-    assert page.has_content?('Pierre')
-    assert page.has_content?('Jacques')
+    assert_text 'Pierre'
+    assert_text 'Jacques'
     fill_in 'search_input', with: 'Bobulus'
     find('form.navbar-left button').click()
-    assert page.has_content?('Pierre')
-    assert page.has_no_content?('Jacques')
+    assert_text 'Pierre'
+    assert_no_text 'Jacques'
     fill_in 'search_input', with: 'Bob Bobby'
     find('form.navbar-left button').click()
-    assert page.has_content?('Pierre')
-    assert page.has_no_content?('Jacques')
+    assert_text 'Pierre'
+    assert_no_text 'Jacques'
   end
   
   def stub_resource_columns value
-    [:serialized, :show, :form, :listing, :search].each do |key|
+    %i(serialized show form listing search).each do |key|
       value[key] = [] unless value.has_key? key
     end
     Resource::Base.any_instance.stubs(:columns).returns value

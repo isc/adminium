@@ -24,7 +24,7 @@ class ColumnSettingsTest < ActionDispatch::IntegrationTest
     check 'Hidden column'
     click_button 'Save settings'
     visit resources_path(:users)
-    assert !page.has_css?('th.column_header[data-column-name="pseudo"]')
+    assert_no_selector 'th.column_header[data-column-name="pseudo"]'
   end
   
   test "show on various types" do
