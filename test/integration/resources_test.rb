@@ -449,9 +449,9 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
   
   test "search on a string array column" do
-    stub_resource_columns listing: [:nicknames, :pseudo], search: [:nicknames]
-    FixtureFactory.new(:user, nicknames: ['Bob', 'Bobby', 'Bobulus'], pseudo: 'Pierre')
-    FixtureFactory.new(:user, nicknames: ['Bob', 'Rob'], pseudo: 'Jacques')
+    stub_resource_columns listing: %i(nicknames pseudo), search: %i(nicknames)
+    FixtureFactory.new(:user, nicknames: %w(Bob Bobby Bobulus), pseudo: 'Pierre')
+    FixtureFactory.new(:user, nicknames: %w(Bob Rob), pseudo: 'Jacques')
     visit resources_path(:users)
     assert_text 'Pierre'
     assert_text 'Jacques'
@@ -464,7 +464,21 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_text 'Pierre'
     assert_no_text 'Jacques'
   end
-  
+
+  test "hstore show, edit and update" do
+    document = FixtureFactory.new(:document, metadata: {size: 123, path: '/tmp/file.txt'}).factory
+    stub_resource_columns form: %i(metadata), show: %i(metadata)
+    visit resource_path(:documents, document)
+    assert_selector 'th', text: 'path'
+    assert_selector 'td', text: '/tmp/file.txt'
+    assert_selector 'th', text: 'size'
+    assert_selector 'td', text: '123'
+    find('a[title=Edit]').click
+    find('input[value="/tmp/file.txt"]').set '/tmp/file.mdown'
+    click_button 'Save'
+    assert_selector 'td', text: '/tmp/file.mdown'
+  end
+
   def stub_resource_columns value
     %i(serialized show form listing search).each do |key|
       value[key] = [] unless value.has_key? key

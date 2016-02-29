@@ -200,6 +200,8 @@ module ResourcesHelper
       display_boolean key, item, resource
     when Sequel::Postgres::PGArray
       display_array value
+    when Sequel::Postgres::HStore
+      display_hstore value
     when nil
       'null'
     else
@@ -269,7 +271,17 @@ module ResourcesHelper
   def display_array value
     content_tag(:pre, value, class: 'sh_ruby')
   end
-  
+
+  def display_hstore value
+    content_tag(:table, class: 'hstore table table-condensed table-striped') do
+      value.map do |key, value|
+        content_tag(:tr) do
+          content_tag(:th, key) + content_tag(:td, value)
+        end
+      end.join.html_safe
+    end
+  end
+
   def column_content_tag wrapper_tag, content, opts
     opts[:class] = "column #{opts[:class]}"
     content_tag wrapper_tag, content, opts

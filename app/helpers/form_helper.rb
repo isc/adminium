@@ -7,7 +7,7 @@ module FormHelper
     required = required_constraints && resource.required_column?(name)
     input_options = {id: input_id, required: required, class: 'form-control'}
     input_options[:'data-null-value'] = true if input_value.nil?
-    return "..." unless input_type
+    return '...' unless input_type
     case input_type
     when :select
       select_tag input_name, options_for_select(options, input_value), input_options.merge(include_blank: true)

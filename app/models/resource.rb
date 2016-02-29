@@ -452,8 +452,9 @@ module Resource
     
     def typecast_value column, value
       return value unless (col_schema = schema_hash[column])
-      value = nil if '' == value && ![:string, :blob].include?(col_schema[:type])
+      value = nil if '' == value && !%i(string blob).include?(col_schema[:type])
       raise(Sequel::InvalidValue, "nil/NULL is not allowed for the #{column} column") if value.nil? && !col_schema[:allow_null]
+      return Sequel.hstore Hash[*value] if col_schema[:type] == :hstore && !value.nil?
       if value && value.is_a?(String) && col_schema[:type].to_s['_array']
         begin
           value = JSON.parse value
@@ -462,12 +463,12 @@ module Resource
         end
       end
       value = value.find_all(&:presence) if value.is_a? Array
-      if value.is_a?(String) && [:datetime, :timestamp].include?(col_schema[:type])
+      if value.is_a?(String) && %i(datetime timestamp).include?(col_schema[:type])
         value = application_time_zone.parse value
       end
       @generic.db.typecast_value col_schema[:type], value
     end
-    
+
     def typecasted_values values, creation
       magic_timestamps values, creation
       values.each {|key, value| values[key] = typecast_value key.to_sym, value}

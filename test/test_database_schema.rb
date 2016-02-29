@@ -1,12 +1,13 @@
 conn_spec = ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
 ActiveRecord::Base.establish_connection conn_spec
 ActiveRecord::Schema.verbose = false
-version = 24
+version = 25
 # if ActiveRecord::Migrator.current_version != version
   ActiveRecord::Base.connection.tables.each do |table|
     ActiveRecord::Base.connection.drop_table table
   end
-  ActiveRecord::Schema.define(:version => version) do
+  ActiveRecord::Schema.define(version: version) do
+    enable_extension :hstore
     create_table :users do |t|
       t.string :pseudo, :first_name, :last_name
       t.integer :group_id, :age
@@ -40,6 +41,7 @@ version = 24
       t.string :alpha_2, :alpha_2, :file
       t.integer :range_1, :range_2
       t.boolean :digital
+      t.hstore :metadata
     end
     create_table :comments do |t|
       t.string :title, :default => ""
@@ -84,6 +86,9 @@ class RoleFromTest < ActiveRecord::Base
 end
 class RoleUserFromTest < ActiveRecord::Base
   self.table_name = 'roles_users'
+end
+class DocumentFromTest < ActiveRecord::Base
+  self.table_name = 'documents'
 end
 
 ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations[Rails.env]

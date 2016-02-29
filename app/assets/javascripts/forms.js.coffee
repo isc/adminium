@@ -8,6 +8,17 @@ newCollaboratorForm = ->
   $('#new_collaborator input.radio_buttons').on 'change', (e) ->
     $('#new_collaborator input.check_boxes').attr(disabled: @value is 'true', checked: @value is false)
 
+hstoreInput = ->
+  $(document).on 'click', '.hstore-row .btn', ->
+    row = $(@).closest('.hstore-row')
+    row.next().find('input, button').get(0).focus()
+    row.remove()
+  $(document).on 'click', '.hstore-new-row .btn', ->
+    $('.hstore-row').first().clone().insertBefore('.hstore-new-row')
+    .find('input').val('').get(0).focus()
+    false
+
 $ ->
   autofocusResourceForm()
   newCollaboratorForm()
+  hstoreInput()

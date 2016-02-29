@@ -48,4 +48,7 @@ FactoryGirl.define do
   factory :role_user_from_test do
   end
 
+  factory :document_from_test do
+  end
+
 end
