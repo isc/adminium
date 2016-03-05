@@ -82,7 +82,7 @@ module Resource
     def primary_keys
       primary_keys = schema.find_all {|c, info| info[:primary_key]}.map(&:first)
       return primary_keys if primary_keys.any?
-      [:id, :Id, :uuid].each do |name|
+      %i(id Id uuid).each do |name|
         return [name] if column_names.include? name
       end
       primary_keys = column_names.find_all {|c| c.to_s.ends_with? '_id'}
@@ -224,7 +224,7 @@ module Resource
     end
 
     def is_number_column? column_name
-      [:integer, :float, :decimal].include? column_type(column_name)
+      %i(integer float decimal).include? column_type(column_name)
     end
     
     def is_boolean_column? column_name
@@ -232,7 +232,7 @@ module Resource
     end
     
     def is_text_column? column_name
-      [:string, :text].include? column_type(column_name)
+      %i(string text).include? column_type(column_name)
     end
     
     def is_array_column? column_name
@@ -240,7 +240,7 @@ module Resource
     end
     
     def is_date_column? column_name
-      [:datetime, :date, :timestamp].include? column_type(column_name)
+      %i(datetime date timestamp).include? column_type(column_name)
     end
     
     def is_pie_chart_column? name
@@ -284,22 +284,28 @@ module Resource
     end
 
     def set_missing_columns_conf
-      [:listing, :show, :form, :search, :serialized, :export].each do |type|
+      %i(listing show form search serialized export).each do |type|
         if @columns[type]
           @columns[type].uniq!
           @columns[type].map!(&:to_sym)
           @columns[type].delete_if {|name| !valid_association_column?(name) && !(column_names.include? name) }
         else
           @columns[type] =
-          {listing: column_names, show: column_names,
-            form: default_form_columns_conf, export: column_names,
+          {listing: default_columns_conf, show: default_columns_conf,
+            form: default_form_columns_conf, export: default_columns_conf,
             search: searchable_column_names, serialized: []}[type]
         end
       end
     end
-    
+
+    def default_columns_conf
+      res = column_names
+      res.delete :datname if @table == :pg_stat_activity
+      res
+    end
+
     def default_form_columns_conf
-      res = column_names - [:created_at, :updated_at]
+      res = column_names - %i(created_at updated_at)
       primary_keys.each do |primary_key|
         res.delete primary_key if schema_hash[primary_key][:default] || schema_hash[primary_key][:auto_increment]
       end
@@ -345,11 +351,11 @@ module Resource
     end
 
     def possible_enum_column info
-      !info[:primary_key] && ![:date, :datetime, :text, :float, :time].include?(info[:type])
+      !info[:primary_key] && !%i(date datetime text float time).include?(info[:type])
     end
 
     def possible_serializable_column info
-      [:text, :string].include? info[:type]
+      %i(text string).include? info[:type]
     end
 
     def adminium_column_options
@@ -482,11 +488,11 @@ module Resource
     
     def magic_timestamps values, creation
       now = application_time_zone.now
-      columns = [:updated_at, :updated_on]
-      columns += [:created_at, :created_on] if creation
+      columns = %i(updated_at updated_on)
+      columns += %i(created_at created_on) if creation
       columns.each do |column|
         next if values.detect {|k,_|k.to_sym == column}
-        if schema_hash[column] && [:timestamp, :date, :datetime].include?(schema_hash[column][:type])
+        if schema_hash[column] && %i(timestamp date datetime).include?(schema_hash[column][:type])
           values[column] = now
         end
       end
