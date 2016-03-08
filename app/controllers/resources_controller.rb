@@ -299,9 +299,14 @@ class ResourcesController < ApplicationController
         else
           table = resource.table
         end
-        [qualify(table, k.to_sym), v]
+        if resource_for(table).column_names.include? k.to_sym
+          [qualify(table, k.to_sym), v]
+        else
+          params[:where].delete k
+          flash.now[:error] = "Column <i>#{k}</i> doesn't exist on table #{table}.<br>Existing columns are <i>#{resource_for(table).column_names.join(', ')}</i>.".html_safe
+        end
       end
-    end]
+    end.compact]
     @items = @items.where(where_hash)
   end
 
