@@ -23,7 +23,7 @@ class SettingsController < ApplicationController
     column_name = params[:column_name].to_sym
     @column = resource.column_info column_name
     render partial: '/settings/filter', locals:
-      {filter: {'column' => column_name, 'type' => @column[:type], 'assoc' => params[:assoc]}}
+      {filter: {'column' => column_name, 'type' => (@column[:type] || @column[:db_type]), 'assoc' => params[:assoc]}}
   end
 
   def values

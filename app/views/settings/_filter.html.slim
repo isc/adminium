@@ -10,8 +10,8 @@ td
 td.operators
   - filter_type = filter['type'].to_s
   - filter_type = 'integer' if %w(decimal float).include? filter_type
-  - filter_type = 'date' if %(date datetime).include? filter_type
-  - filter_type = 'string' if filter_type == 'text'
+  - filter_type = 'date' if %w(date datetime).include? filter_type
+  - filter_type = 'string' if %w(text uuid).include? filter_type
   = render "/settings/filters/#{filter_type}", g: g, operator: filter['operator']
 td
   - options = {class: 'operand form-control'}
