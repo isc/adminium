@@ -16,18 +16,18 @@
         - foreign_resource = resource_for referenced_table
         = render 'foreign_resource_input', value: item[name], name: name, foreign_resource: foreign_resource
       - elsif resource.column_type(name) == :hstore
-        - (item[name] || {}).each do |key, value|
-          .row.hstore-row
+        - (item[name] || {'' => ''}).each do |key, value|
+          .hstore-row
             .form-group
               .col-xs-5
                 input.form-control name="#{resource.table}[#{name}][]" value=key
-              .col-xs-5
+              .col-xs-6
                 input.form-control name="#{resource.table}[#{name}][]" value=value
-              .col-xs-2
-                button.btn.btn-xs.btn-danger title="Remove this key / value pair" &times;
-        .row.hstore-new-row
+              .col-xs-1
+                a.btn.btn-xs.btn-danger title="Remove this key / value pair" &times;
+        .hstore-new-row
           .form-group
-            .col-xs-2.col-xs-offset-10
-              button.btn.btn-xs.btn-info title="Add a new key / value pair" +
+            .col-xs-1.col-xs-offset-11
+              a.btn.btn-xs.btn-info title="Add a new key / value pair" +
       - else
         = input resource, item, name, required_constraints

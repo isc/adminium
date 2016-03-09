@@ -11,7 +11,7 @@ newCollaboratorForm = ->
 hstoreInput = ->
   $(document).on 'click', '.hstore-row .btn', ->
     row = $(@).closest('.hstore-row')
-    row.next().find('input, button').get(0).focus()
+    row.next().find('input, a.btn').get(0).focus()
     row.remove()
   $(document).on 'click', '.hstore-new-row .btn', ->
     $('.hstore-row').first().clone().insertBefore('.hstore-new-row')
