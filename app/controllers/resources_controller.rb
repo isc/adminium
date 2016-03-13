@@ -225,6 +225,8 @@ class ResourcesController < ApplicationController
     @item = resource.find params[:id]
   rescue Resource::RecordNotFound
     redirect_to resources_path(params[:table]), notice: "#{resource.human_name} ##{params[:id]} does not exist."
+  rescue Sequel::DatabaseError => e
+    redirect_to resources_path(params[:table]), flash: {error: "Couldn't fetch record with id <b>#{params[:id]}</b>.<br>#{e.message}".html_safe}
   end
 
   def check_per_page_setting
