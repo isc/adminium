@@ -55,7 +55,6 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'quiet_assets'
-  gem 'rack-webconsole-pry', require: 'rack-webconsole'
   gem 'xray-rails'
   gem 'guard', require: false
   gem 'rb-fsevent', require: false
@@ -82,7 +81,6 @@ group :test do
   gem 'factory_girl_rails'
   gem 'rack_session_access'
   gem 'simplecov', require: false
-  gem 'fakeweb'
 end
 
 group :development, :test do
