@@ -122,7 +122,7 @@ class Account < ActiveRecord::Base
   end
   
   def generate_api_key
-    Digest::SHA1.hexdigest(Time.now.to_s + heroku_id.to_s)[8..16]
+    SecureRandom.hex[0..8]
   end
 
   def db_url_validation

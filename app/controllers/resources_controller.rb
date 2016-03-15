@@ -183,7 +183,7 @@ class ResourcesController < ApplicationController
     when 'StatChart'
       stat_chart
     else
-      render text: 'cant render this page'
+      render plain: 'cant render this page'
     end
   end
 

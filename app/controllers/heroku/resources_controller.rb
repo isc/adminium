@@ -17,20 +17,20 @@ class Heroku::ResourcesController < ApplicationController
 
   def destroy
     Account.find_by_api_key!(params[:id]).flag_as_deleted!
-    render text: 'ok'
+    render plain: 'ok'
   end
 
   def update
     account = Account.find_by_api_key! params[:id]
     account.update_attribute :plan, params[:plan]
-    render text: 'ok'
+    render plain: 'ok'
   end
 
   def sso_login
     token = "#{params[:id]}:#{HEROKU_MANIFEST['api']['sso_salt']}:#{params[:timestamp]}"
     token = Digest::SHA1.hexdigest(token).to_s
     if token != params[:token] || (params[:timestamp].to_i < (Time.now - 2*60).to_i)
-      render text: 'bad token', status: 403 and return
+      render plain: 'bad token', status: 403 and return
     end
     app = Account.find_by_api_key! params[:id]
     app.update_column :name, params[:app] if app.name != params[:app]

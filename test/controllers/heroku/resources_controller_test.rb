@@ -14,9 +14,9 @@ class Heroku::ResourcesControllerTest < ActionController::TestCase
     assert_no_difference 'Account.count' do
       create_account(id)
     end
-    assert_equal account.api_key, JSON.parse(@response.body)['id']
+    assert_equal account.reload.api_key, JSON.parse(@response.body)['id']
     account = Account.where(heroku_id: id).last
-    assert_equal ['deleted', 'startup'], account.plan_migrations.map{|d|d[:plan]}
+    assert_equal %w(deleted startup), account.plan_migrations.map{|d|d[:plan]}
     assert_nil account.deleted_at
     
   end

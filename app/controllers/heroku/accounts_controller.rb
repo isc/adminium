@@ -7,9 +7,9 @@ class Heroku::AccountsController < ApplicationController
     params[:account][:db_url_setup_method] = 'cli'
     account.update_attributes params[:account]
     if account.valid_db_url?
-      render text: 'OK'
+      render plain: 'OK'
     else
-      render text: 'KO'
+      render plain: 'KO'
     end
   end
   
