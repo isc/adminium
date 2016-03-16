@@ -243,6 +243,10 @@ module Resource
       %i(datetime date timestamp).include? column_type(column_name)
     end
     
+    def is_uuid_column? column_name
+      column_info(column_name)[:db_type] == 'uuid'
+    end
+
     def is_pie_chart_column? name
       enum_values_for(name) || is_boolean_column?(name) || foreign_key?(name)
     end
@@ -276,11 +280,11 @@ module Resource
     end
     
     def searchable_column_names
-      find_all_columns_for_types(:string, :varchar_array, :text, :integer, :decimal).map(&:first)
+      find_all_columns_for_types(:string, :varchar_array, :text, :integer, :decimal, 'uuid').map(&:first)
     end
 
     def find_all_columns_for_types *types
-      schema.find_all{|_, info| types.include? info[:type]}
+      schema.find_all{|_, info| types.include?(info[:type] || info[:db_type])}
     end
 
     def set_missing_columns_conf

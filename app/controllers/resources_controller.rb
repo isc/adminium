@@ -283,7 +283,21 @@ class ResourcesController < ApplicationController
       search_array = @generic.db.literal Sequel.pg_array(params[:search].split(" "), :text)
       conds += array_columns.map {|column| Sequel.lit "\"#{column}\"::text[] @> #{search_array}"}
     end
-    @items = @items.filter(Sequel::SQL::BooleanExpression.new :OR, *conds) if conds.any?
+    uuid_columns = resource.columns[:search].select{|c| resource.is_uuid_column?(c)}
+    if uuid_columns.any? && params[:search].match(/\A[a-f\d\-]+\Z/)
+      no_hyphens = params[:search].delete('-')
+      cond = if no_hyphens =~ /\A.{32}\Z/
+        no_hyphens
+      elsif (padding = 32 - no_hyphens.size).positive?
+        (no_hyphens + '0' * padding)..(no_hyphens + 'f' * padding)
+      end
+      conds += uuid_columns.map {|column| {column => cond}} if cond
+    end
+    if conds.any?
+      @items = @items.filter(Sequel::SQL::BooleanExpression.new :OR, *conds)
+    else
+      flash.now[:error] = "The value <b>#{params[:search]}</b> cannot be searched for on the following column(s) : #{resource.columns[:search].join(', ')}."
+    end
   end
   
   def apply_where
