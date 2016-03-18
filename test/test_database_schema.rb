@@ -24,12 +24,12 @@ version = 25
       t.boolean :Awesome_Person__c
       t.time :daily_alarm
       t.column :nicknames, 'character varying[]'
-      t.timestamps
+      t.timestamps null: true
     end
     create_table :groups do |t|
       t.string :name
       t.integer :level, null: false
-      t.timestamps
+      t.timestamps null: true
     end
     create_table :documents do |t|
       t.datetime :created_at
@@ -48,7 +48,7 @@ version = 25
       t.text :comment
       t.references :commentable, polymorphic: true
       t.references :user
-      t.timestamps
+      t.timestamps null: true
     end
     create_table :user_profiles do |t|
       t.date :birthdate
@@ -60,7 +60,7 @@ version = 25
     end
     create_table :roles do |t|
       t.string :name
-      t.timestamps
+      t.timestamps null: true
     end
     create_table :roles_users, id: false do |t|
       t.references :role

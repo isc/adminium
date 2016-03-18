@@ -3,13 +3,13 @@ class ApplicationController < ActionController::Base
   rescue_from Exception, with: :disconnect_on_exception
   rescue_from Generic::TableNotFoundException, with: :table_not_found
   rescue_from Sequel::DatabaseConnectionError, with: :global_db_error
-  before_filter :ensure_proper_subdomain
-  before_filter :require_account
-  before_filter :connect_to_db
-  before_filter :set_source_cookie
-  after_filter :cleanup_generic
-  after_filter :track_account_action
-  around_filter :tag_current_account
+  before_action :ensure_proper_subdomain
+  before_action :require_account
+  before_action :connect_to_db
+  before_action :set_source_cookie
+  after_action :cleanup_generic
+  after_action :track_account_action
+  around_action :tag_current_account
 
   helper_method :global_settings, :current_account, :current_user, :admin?, :current_account?, :resource_for
 

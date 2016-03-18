@@ -1,6 +1,6 @@
 class SchemasController < ApplicationController
   
-  before_filter :require_admin
+  before_action :require_admin
 
   def show
     @title = 'Schema'

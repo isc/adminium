@@ -1,6 +1,6 @@
 class DashboardsController < ApplicationController
   
-  before_filter :fetch_permissions
+  before_action :fetch_permissions
 
   def show
     @db_size = @generic.db_size

@@ -1,21 +1,17 @@
 class ResourcesController < ApplicationController
-  
+
   include TimeChartBuilder
   include PieChartBuilder
   include StatChartBuilder
   include Import
 
-  before_filter :table_access_limitation, except: [:search]
-  before_filter :check_permissions
-  before_filter :dates_from_params
-  before_filter :fetch_item, only: [:show, :edit, :download]
-  before_filter :warn_if_no_primary_key, only: [:index, :new]
+  before_action :table_access_limitation, except: [:search]
+  before_action :check_permissions
+  before_action :dates_from_params
+  before_action :fetch_item, only: [:show, :edit, :download]
+  before_action :warn_if_no_primary_key, only: [:index, :new]
   helper_method :user_can?
   helper_method :grouping, :resource
-
-  respond_to :json, only: [:perform_import, :check_existence, :search]
-  respond_to :json, :html, only: [:index, :update]
-  respond_to :csv, only: :index
   helper_method :format_date
 
   def search
@@ -41,7 +37,7 @@ class ResourcesController < ApplicationController
     apply_has_many_counts
     apply_order
     page = (params[:page].presence || 1).to_i
-    respond_with @items do |format|
+    respond_to do |format|
       format.html do
         check_per_page_setting
         @items = @items.extension(:pagination).paginate page, [resource.per_page.to_i, 25].max

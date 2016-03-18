@@ -9,7 +9,7 @@ Adminium::Application.configure do
   config.eager_load = false
 
   # Configure static asset server for tests with Cache-Control for performance
-  config.serve_static_assets = true
+  config.serve_static_files = true
   config.static_cache_control = "public, max-age=3600"
   config.cache_store = :memory_store
 
@@ -39,4 +39,5 @@ Adminium::Application.configure do
   config.active_record.mass_assignment_sanitizer = :strict
   config.assets.prefix = "/capybara_test_assets"
   config.middleware.use RackSessionAccess::Middleware
+  config.active_support.test_order = :random
 end

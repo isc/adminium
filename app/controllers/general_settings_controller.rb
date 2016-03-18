@@ -1,6 +1,6 @@
 class GeneralSettingsController < ApplicationController
   
-  before_filter :require_admin
+  before_action :require_admin
 
   def update
     global_settings.update params[:settings]

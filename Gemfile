@@ -4,7 +4,7 @@ ruby '2.3.0'
 
 gem 'rbtrace'
 
-gem 'rails', '4.1.15'
+gem 'rails', '4.2.6'
 gem 'pg'
 gem 'sendgrid'
 gem 'nokogiri'

@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
 
-  skip_before_filter :require_account, only: [:show, :apps]
-  skip_filter :connect_to_db
+  skip_before_action :require_account, only: [:show, :apps]
+  skip_before_action :connect_to_db
 
   def show
     respond_to do |format|

@@ -2,9 +2,9 @@ class AccountsController < ApplicationController
   
   include AppInstall
 
-  before_filter :require_admin, except: :create
-  skip_filter :connect_to_db
-  skip_filter :require_account, only: :create
+  before_action :require_admin, except: :create
+  skip_before_action :connect_to_db
+  skip_before_action :require_account, only: :create
 
   def edit
     @active_pane = params[:pane] || 'database_connection'

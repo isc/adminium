@@ -1,6 +1,6 @@
 class InstallsController < ApplicationController
   
-  skip_filter :connect_to_db, unless: :valid_db_url?
+  skip_before_action :connect_to_db, unless: :valid_db_url?
   
   def setup_database_connection
     @db_urls = session[:db_urls] if session[:db_urls]
@@ -20,7 +20,7 @@ class InstallsController < ApplicationController
   def send_email_team
     redirect_opts = {}
     if params[:emails] && params[:emails].length > 0
-      CollaboratorMailer.welcome_heroku_collaborator(params[:emails], current_account, current_user).deliver
+      CollaboratorMailer.welcome_heroku_collaborator(params[:emails], current_account, current_user).deliver_later
     end
   rescue => ex
     notify_airbrake(ex)

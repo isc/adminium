@@ -1,6 +1,6 @@
 class CollaboratorsController < ApplicationController
 
-  skip_before_filter :connect_to_db
+  skip_before_action :connect_to_db
 
   def create
     collaborator = current_account.collaborators.create params[:collaborator]
