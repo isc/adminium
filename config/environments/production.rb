@@ -33,7 +33,7 @@ Adminium::Application.configure do
   config.force_ssl = !!ENV['HEROKU_API_KEY']
 
   # See everything in the log (default is :info)
-  # config.log_level = :debug
+  config.log_level = :debug
   config.log_tags = [:uuid, lambda { |req| req.path === '/ping' ? '__hide__' : '' }]
 
   # Use a different logger for distributed setups
