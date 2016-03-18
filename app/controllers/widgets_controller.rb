@@ -1,7 +1,5 @@
 class WidgetsController < ApplicationController
 
-  respond_to :json, :html, only: [:create]
-
   def create
     widget = current_account.widgets.create params[:widget]
     respond_to do |format|
