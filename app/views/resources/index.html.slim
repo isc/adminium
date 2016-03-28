@@ -46,7 +46,7 @@ nav.navbar.navbar-default
             - next if name == 'search'
             input type="hidden" name=name value=value
           .input-group
-            input.form-control#search_input> name="search" type='text' value=params[:search] placeholder="search on #{resource.columns[:search].map{|e|e.to_s.humanize}.join(', ').downcase}"
+            input.form-control#search_input> name="search" type='text' value=params[:search] placeholder="search on #{resource.columns[:search].map {|e|e.to_s.humanize}.join(', ').downcase}"
             .input-group-btn
               button.btn.btn-default>
                 i.fa.fa-search

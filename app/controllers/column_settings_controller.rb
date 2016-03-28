@@ -1,5 +1,4 @@
 class ColumnSettingsController < ApplicationController
-
   layout false
   helper_method :column, :belongs_to_column?, :has_many_count_column?, :resource
 
@@ -26,13 +25,12 @@ class ColumnSettingsController < ApplicationController
   def belongs_to_column?
     params[:column].include? '.'
   end
-  
+
   def has_many_count_column?
     params[:column].starts_with? 'has_many/'
   end
 
   def column
-    @column ||= resource.schema.detect{|name, _|name.to_s == params[:column]}.second
+    @column ||= resource.schema.detect {|name, _| name.to_s == params[:column]}.second
   end
-
 end

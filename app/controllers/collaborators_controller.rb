@@ -1,29 +1,24 @@
 class CollaboratorsController < ApplicationController
-
   skip_before_action :connect_to_db
 
   def create
-    collaborator = current_account.collaborators.create params[:collaborator]
+    current_account.collaborators.create! collaborator_params
     redirect_to edit_account_url(pane: 'collaborators'), flash: {success: 'Collaborator added'}
   end
-  
+
   def new
-    @collaborator = current_account.collaborators.build
-    @collaborator.email = params[:email]
-    user = User.where(email: params[:email], provider: 'heroku').first
-    @collaborator.user = user
-    @collaborator.is_administrator = true
-    @collaborator.kind = "heroku"
-    render action: "edit"
+    user = User.find_by email: params[:email], provider: 'heroku'
+    @collaborator = current_account.collaborators.build user: user, is_administrator: true, kind: 'heroku', email: params[:email]
+    render action: 'edit'
   end
 
   def edit
-    @collaborator = current_account.collaborators.find(params[:id])
+    @collaborator = current_account.collaborators.find params[:id]
   end
 
   def update
-    collaborator = current_account.collaborators.find(params[:id])
-    collaborator.update_attributes params[:collaborator]
+    collaborator = current_account.collaborators.find params[:id]
+    collaborator.update collaborator_params
     redirect_to edit_account_path(pane: 'collaborators'), notice: "Changes on #{collaborator.name} saved"
   end
 
@@ -32,4 +27,9 @@ class CollaboratorsController < ApplicationController
     render nothing: true
   end
 
+  private
+
+  def collaborator_params
+    params.require(:collaborator).permit :kind, :is_administrator, :email, role_ids: []
+  end
 end

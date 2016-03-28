@@ -1,5 +1,4 @@
 class SessionsController < ApplicationController
-  
   include AppInstall
 
   skip_before_action :connect_to_db
@@ -23,7 +22,7 @@ class SessionsController < ApplicationController
       redirect_to user_path
     end
   end
-  
+
   def create
     auth = request.env['omniauth.auth']
     user = User.find_by_provider_and_uid(auth['provider'], auth['uid']) || User.create_with_omniauth(auth)
@@ -38,11 +37,11 @@ class SessionsController < ApplicationController
       redirect_to root_url, notice: 'Your Google account is not associated to any Enterprise Adminium account.'
     end
   end
-  
+
   def login_heroku_app
     apps = heroku_api.get_apps.data[:body]
     app_id = params[:id].match(/\d+/).to_s
-    app = apps.detect{|app| app['id'].to_s == app_id}
+    app = apps.detect {|app| app['id'].to_s == app_id}
     if app
       @account = Account.find_by_heroku_id("app#{app_id}@heroku.com")
       session[:account] = @account.id
@@ -56,7 +55,7 @@ class SessionsController < ApplicationController
       track_sign_on current_account, SignOn::Kind::HEROKU_OAUTH
       redirect_to root_url, notice: "Signed in to #{current_account.name}."
     else
-      redirect_to user_path, error: "you are not unauthorized to access this app because it looks like you are not a collaborator of this app !"
+      redirect_to user_path, error: 'You are not unauthorized to access this app because it looks like you are not a collaborator of this app !'
     end
   end
 
@@ -74,11 +73,11 @@ class SessionsController < ApplicationController
     session.clear
     redirect_to root_url, notice: 'Signed out!'
   end
-  
+
   private
+
   def track_sign_on account, kind
     SignOn.create account_id: account.id, plan: account.plan,
-      remote_ip: request.remote_ip, kind: kind, user_id: session[:user]
+                  remote_ip: request.remote_ip, kind: kind, user_id: session[:user]
   end
-
 end

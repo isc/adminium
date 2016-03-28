@@ -1,5 +1,4 @@
 class ResourcesController < ApplicationController
-
   include TimeChartBuilder
   include PieChartBuilder
   include StatChartBuilder
@@ -28,8 +27,8 @@ class ResourcesController < ApplicationController
   def index
     @title = params[:table]
     @widget = current_account.table_widgets.where(table: params[:table], advanced_search: params[:asearch]).first
-    # FIXME we could be more specific than *
-    @items = resource.query.select(qualify params[:table], Sequel.lit('*'))
+    # FIXME: we could be more specific than *
+    @items = resource.query.select qualify(params[:table], Sequel.lit('*'))
     update_export_settings
     apply_where
     apply_filters
@@ -60,12 +59,12 @@ class ResourcesController < ApplicationController
       end
     end
   end
-  
+
   def download
     filename = find_an_extension || "#{params[:table]}-#{params[:key]}-#{params[:id]}.data"
     send_data @item[params[:key].to_sym], filename: filename
   end
-  
+
   def show
     @title = "Show #{resource.item_label @item}"
     @prevent_truncate = true
@@ -80,13 +79,13 @@ class ResourcesController < ApplicationController
   def new
     @title = "New #{params[:table].humanize.singularize}"
     @form_url = resources_path(params[:table])
-    @item = if params.has_key? :clone_id
-      attrs = resource.find(params[:clone_id])
-      attrs.delete_if {|key, _| resource.primary_keys.include? key} 
-      attrs
-    else
-      params[:attributes] || {}
-    end
+    @item = if params.key? :clone_id
+              attrs = resource.find(params[:clone_id])
+              attrs.delete_if {|key, _| resource.primary_keys.include? key}
+              attrs
+            else
+              params[:attributes] || {}
+            end
   end
 
   def create
@@ -116,7 +115,7 @@ class ResourcesController < ApplicationController
     respond_to do |format|
       format.html do
         flash.now[:error] = "Update failed: #{e.message}".html_safe
-        @item = item_params.merge(resource.primary_key_values_hash params[:id])
+        @item = item_params.merge resource.primary_key_values_hash(params[:id])
         @form_url = resource_path(params[:table], params[:id])
         @form_method = 'put'
         render :edit
@@ -147,7 +146,7 @@ class ResourcesController < ApplicationController
   def bulk_edit
     @record_ids = params[:record_ids]
     if resource.query.where(resource.primary_key => params[:record_ids]).count != @record_ids.length
-      raise "BulkEditCheckRecordsFailed"
+      fail 'BulkEditCheckRecordsFailed'
     end
     if @record_ids.length == 1
       @item = resource.find @record_ids.shift
@@ -169,7 +168,7 @@ class ResourcesController < ApplicationController
     Account.find_by_sql 'select pg_sleep(10)'
     render json: @generic.table('accounts').first.inspect
   end
-  
+
   def chart
     case params[:type]
     when 'TimeChart'
@@ -187,14 +186,14 @@ class ResourcesController < ApplicationController
 
   def find_an_extension
     resource.string_column_names.each do |key|
-      return @item[key] if @item[key].match(/.+(\.\w{1,6})$/)
+      return @item[key] if @item[key] =~ /.+(\.\w{1,6})$/
     end
     nil
   end
 
   def update_export_settings
     if params[:export_columns].present?
-      resource.columns[:export] = params[:export_columns].delete_if{|e|e.empty?}.map(&:to_sym)
+      resource.columns[:export] = params[:export_columns].delete_if(&:empty?).map(&:to_sym)
       resource.csv_options = params[:csv_options]
       resource.save
     end
@@ -237,7 +236,7 @@ class ResourcesController < ApplicationController
     nullify_params
     params[resource.table]
   end
-  
+
   def nullify_params
     return if @already_nullified
     (params[resource.table] || {}).each do |column_name, value|
@@ -252,7 +251,7 @@ class ResourcesController < ApplicationController
     end
     @already_nullified = true
   end
-  
+
   def nullify_setting_for(column_name)
     params["#{resource.table}_nullify_settings"] && params["#{resource.table}_nullify_settings"][column_name]
   end
@@ -264,38 +263,38 @@ class ResourcesController < ApplicationController
   def apply_search
     return unless params[:search].present?
     conds = []
-    number_columns = resource.columns[:search].select{|c| resource.is_number_column?(c)}
+    number_columns = resource.columns[:search].select {|c| resource.is_number_column?(c)}
     if number_columns.any? && params[:search].match(/\A\-?\d+\Z/)
       v = params[:search].to_i
       conds += number_columns.map {|column| {qualify(resource.table, column) => v}}
     end
-    text_columns = resource.columns[:search].select{|c| resource.is_text_column?(c)}
+    text_columns = resource.columns[:search].select {|c| resource.is_text_column?(c)}
     if text_columns.any?
-      string_patterns = params[:search].split(" ").map {|pattern| pattern.include?("%") ? pattern : "%#{pattern}%" }
-      conds << resource.query.grep(text_columns.map{|c| qualify(resource.table, c)}, string_patterns, case_insensitive: true, all_patterns: true).opts[:where]
+      string_patterns = params[:search].split(' ').map {|pattern| pattern.include?('%') ? pattern : "%#{pattern}%" }
+      conds << resource.query.grep(text_columns.map {|c| qualify(resource.table, c)}, string_patterns, case_insensitive: true, all_patterns: true).opts[:where]
     end
-    array_columns = resource.columns[:search].select{|c| resource.is_array_column?(c)}
+    array_columns = resource.columns[:search].select {|c| resource.is_array_column?(c)}
     if array_columns.any?
-      search_array = @generic.db.literal Sequel.pg_array(params[:search].split(" "), :text)
+      search_array = @generic.db.literal Sequel.pg_array(params[:search].split(' '), :text)
       conds += array_columns.map {|column| Sequel.lit "\"#{column}\"::text[] @> #{search_array}"}
     end
-    uuid_columns = resource.columns[:search].select{|c| resource.is_uuid_column?(c)}
+    uuid_columns = resource.columns[:search].select {|c| resource.is_uuid_column?(c)}
     if uuid_columns.any? && params[:search].match(/\A[a-f\d\-]+\Z/)
       no_hyphens = params[:search].delete('-')
       cond = if no_hyphens =~ /\A.{32}\Z/
-        no_hyphens
-      elsif (padding = 32 - no_hyphens.size).positive?
-        (no_hyphens + '0' * padding)..(no_hyphens + 'f' * padding)
-      end
+               no_hyphens
+             elsif (padding = 32 - no_hyphens.size).positive?
+               (no_hyphens + '0' * padding)..(no_hyphens + 'f' * padding)
+             end
       conds += uuid_columns.map {|column| {column => cond}} if cond
     end
     if conds.any?
-      @items = @items.filter(Sequel::SQL::BooleanExpression.new :OR, *conds)
+      @items = @items.filter(Sequel::SQL::BooleanExpression.new(:OR, *conds))
     else
       flash.now[:error] = "The value <b>#{params[:search]}</b> cannot be searched for on the following column(s) : #{resource.columns[:search].join(', ')}."
     end
   end
-  
+
   def apply_where
     @items = @items.where(datname: @generic.db_name) if pg_stat_activity?
     return unless params[:where].present?
@@ -303,7 +302,7 @@ class ResourcesController < ApplicationController
       v = nil if v == 'null'
       if resource.is_date_column? k.to_sym
         datetime = application_time_zone.parse(v)
-        [time_chart_aggregate(qualify params[:table], k), v]
+        [time_chart_aggregate(qualify(params[:table], k)), v]
       else
         if k['.']
           table, k = k.split('.')
@@ -325,7 +324,7 @@ class ResourcesController < ApplicationController
   def fetch_associated_items
     @fetched_items = @items.to_a
     @associated_items = {}
-    # FIXME polymorphic belongs_to generate N+1 queries (since no referenced_table in assoc_info) 
+    # FIXME: polymorphic belongs_to generate N+1 queries (since no referenced_table in assoc_info)
     referenced_tables = resource.columns[settings_type].map do |c|
       if c.to_s.include?('.')
         c.to_s.split('.').first.to_sym
@@ -344,7 +343,7 @@ class ResourcesController < ApplicationController
       fetch_items_for_assoc @associated_items[table], assoc if assoc && resource_for(assoc[:referenced_table]).label_column
     end
   end
-  
+
   def fetch_items_for_assoc items, assoc_info
     ids = items.map {|i| i[assoc_info[:foreign_key]]}.uniq
     resource = resource_for assoc_info[:referenced_table]
@@ -354,35 +353,35 @@ class ResourcesController < ApplicationController
   def apply_has_many_counts
     resource.columns[settings_type].find_all {|c| c.to_s.starts_with? 'has_many/'}.each do |column|
       assoc = column.to_s.gsub 'has_many/', ''
-      assoc_info = resource.associations[:has_many].detect {|name, info| name.to_s == assoc}.second
+      assoc_info = resource.associations[:has_many].detect {|name, _| name.to_s == assoc}.second
       next if assoc_info.nil?
       count_on = qualify_primary_keys resource_for(assoc)
       @items = @items
-        .left_outer_join(assoc.to_sym, qualify(assoc_info[:table], assoc_info[:foreign_key]) => qualify(assoc_info[:referenced_table], assoc_info[:primary_key]))
-        .group(qualify_primary_keys resource)
-        .select_append(Sequel.function(:count, Sequel.function(:distinct, *count_on)).as(column))
+               .left_outer_join(assoc.to_sym, qualify(assoc_info[:table], assoc_info[:foreign_key]) => qualify(assoc_info[:referenced_table], assoc_info[:primary_key]))
+               .group(qualify_primary_keys(resource))
+               .select_append(Sequel.function(:count, Sequel.function(:distinct, *count_on)).as(column))
     end
   end
 
   def apply_order
-    order  = params[:order] || resource.default_order
+    order = params[:order] || resource.default_order
     return unless order
-    column, descending = order.split(" ")
+    column, descending = order.split ' '
     if column['.']
       join_belongs_to column.split('.').first
       @items = @items.select_append Sequel.lit(column)
     end
     column = case order
-      when /\./
-        Sequel.lit(column)
-      when /\//
-        column.to_sym
-      else
-        (qualify params[:table], column)
-      end
+             when /\./
+               Sequel.lit(column)
+             when /\//
+               column.to_sym
+             else
+               (qualify params[:table], column)
+             end
     opts = @generic.mysql? ? {} : {nulls: :last}
     @items = @items.order(Sequel::SQL::OrderedExpression.new(column, !!descending, opts))
-    @items = @items.order_prepend(Sequel.case([[{column=>nil}, 1]], 0)) if @generic.mysql?
+    @items = @items.order_prepend(Sequel.case([[{column => nil}, 1]], 0)) if @generic.mysql?
   end
 
   def apply_filters
@@ -390,10 +389,10 @@ class ResourcesController < ApplicationController
     @current_filter.each_with_index do |filter, index|
       clause = apply_filter filter
       @items = if index.nonzero? && filter['grouping'] == 'or'
-        @items.or(clause)
-      else
-        @items.where(clause)
-      end
+                 @items.or(clause)
+               else
+                 @items.where(clause)
+               end
     end
   end
 
@@ -415,7 +414,7 @@ class ResourcesController < ApplicationController
       'present' => {specific: 'present'}
     }
     if filter['assoc'].present?
-      assoc = resource.associations[:belongs_to].detect{|k,_|k.to_s == filter['assoc']}
+      assoc = resource.associations[:belongs_to].detect {|k, _| k.to_s == filter['assoc']}
       resource_with_column = resource_for assoc.second[:referenced_table]
       join_belongs_to assoc.first
       table = assoc.second[:referenced_table]
@@ -433,38 +432,39 @@ class ResourcesController < ApplicationController
     operation = operators[filter['operator']]
     column = Sequel.function operation[:named_function], column if operation[:named_function]
     return send("apply_filter_#{operation[:specific]}", column) if operation[:specific]
-    return Sequel::SQL::BooleanExpression.from_value_pairs({column => operation[:right]}) if operation[:boolean_operator]
+    return Sequel::SQL::BooleanExpression.from_value_pairs column => operation[:right] if operation[:boolean_operator]
     return Sequel::SQL::ComplexExpression.new operation[:operator], column, right_value(operation, filter['operand']) if operation[:operator]
   end
 
   def string_operators
     {
-      'like' => {:operator => :ILIKE, :replace_right => "%_%"},
-      'not_like' => {:operator => :'NOT ILIKE', :replace_right => '%_%'},
-      'starts_with' => {:operator => :ILIKE, :replace_right => "_%"},
-      'ends_with' => {:operator => :ILIKE, :replace_right => "%_"},
-      'not' => {:operator => :'!='}
+      'like' => {operator: :ILIKE, replace_right: '%_%'},
+      'not_like' => {operator: :'NOT ILIKE', replace_right: '%_%'},
+      'starts_with' => {operator: :ILIKE, replace_right: '_%'},
+      'ends_with' => {operator: :ILIKE, replace_right: '%_'},
+      'not' => {operator: :'!='}
     }
   end
 
+  # FIXME: not taking into account the time zone settings of the account
   def datetime_operators
-    today = Date.today
+    today = Date.current
     {
-      'today' => {:operator => :'=', :right => today, :named_function => "DATE"},
-      'yesterday' => {:operator => :'=', :right => 1.day.ago.to_date, :named_function => "DATE"},
+      'today' => {operator: :'=', right: today, named_function: 'DATE'},
+      'yesterday' => {operator: :'=', right: 1.day.ago.to_date, named_function: 'DATE'},
       'this_week' =>
         {boolean_operator: true, right: (today.beginning_of_week)..(today.end_of_week), named_function: 'DATE'},
       'last_week' =>
         {boolean_operator: true, right: (1.week.ago.to_date.beginning_of_week)..(1.week.ago.to_date.end_of_week), named_function: 'DATE'},
-      'on' => {:operator => :'=', :named_function => "DATE", :right_function => 'to_date'},
-      'not' => {:operator => :'!=', :named_function => "DATE", :right_function => 'to_date'},
-      'after' => {:operator => :'>', :named_function => "DATE", :right_function => 'to_date'},
-      'before' => {:operator => :'<', :named_function => "DATE", :right_function => 'to_date'}
+      'on' => {operator: :'=', named_function: 'DATE', right_function: 'to_date'},
+      'not' => {operator: :'!=', named_function: 'DATE', right_function: 'to_date'},
+      'after' => {operator: :'>', named_function: 'DATE', right_function: 'to_date'},
+      'before' => {operator: :'<', named_function: 'DATE', right_function: 'to_date'}
     }
   end
 
   def apply_filter_blank column
-    is_null = Sequel::SQL::ComplexExpression.new(:'IS', column, nil)
+    is_null = Sequel::SQL::ComplexExpression.new(:IS, column, nil)
     is_blank = Sequel::SQL::ComplexExpression.new(:'=', column, '')
     Sequel::SQL::ComplexExpression.new(:OR, is_null, is_blank)
   end
@@ -476,10 +476,10 @@ class ResourcesController < ApplicationController
   end
 
   def right_value operation, value
-    return operation[:right] if operation.has_key?(:right)
-    return operation[:replace_right].gsub('_', value.gsub('_', "\\_")) if operation.has_key?(:replace_right)
+    return operation[:right] if operation.key?(:right)
+    return operation[:replace_right].gsub('_', value.gsub('_', '\\_')) if operation.key?(:replace_right)
     return Date.strptime(value, '%m/%d/%Y') if operation[:right_function] == 'to_date'
-    return value
+    value
   end
 
   def table_access_limitation
@@ -494,7 +494,7 @@ class ResourcesController < ApplicationController
       end
     end
   end
-  
+
   def join_belongs_to assoc_name
     @joined_belongs_to ||= []
     return if @joined_belongs_to.include? assoc_name.to_sym
@@ -506,7 +506,7 @@ class ResourcesController < ApplicationController
   def qualify table, column
     Sequel.identifier(column).qualify table
   end
-  
+
   def qualify_primary_keys resource
     resource.primary_keys.map {|key| qualify(resource.table, key)}
   end
@@ -539,26 +539,25 @@ class ResourcesController < ApplicationController
   def dates_from_params
     return unless item_params.present?
     item_params.each do |key, value|
-      if value.is_a? Hash
-        if value.has_key?('date') && value['date'].blank? || (!value.has_key?('date') && value.has_key?('4i') && value['4i'].blank?)
-          item_params[key] = nil
-        else
-          res = ''
-          res << value['date'] if value.has_key?('date')
-          item_params[key] = if value['4i']
-            application_time_zone.parse "#{res} #{value['4i']}:#{value['5i']}"
-          else
-            Date.parse res
-          end
-        end
+      next unless value.is_a? Hash
+      if value.key?('date') && value['date'].blank? || (!value.key?('date') && value.key?('4i') && value['4i'].blank?)
+        item_params[key] = nil
+      else
+        res = ''
+        res << value['date'] if value.key?('date')
+        item_params[key] = if value['4i']
+                             application_time_zone.parse "#{res} #{value['4i']}:#{value['5i']}"
+                           else
+                             Date.parse res
+                           end
       end
     end
   end
-  
+
   def warn_if_no_primary_key
     flash.now[:warning] = "Warning : this table doesn't declare a primary key. Support for tables without primary keys is incomplete at the moment." if resource.primary_keys.empty? && !resource.system_table?
   end
-  
+
   def application_time_zone
     @application_time_zone ||= ActiveSupport::TimeZone.new current_account.application_time_zone
   end
@@ -566,5 +565,4 @@ class ResourcesController < ApplicationController
   def pg_stat_activity?
     params[:table] == 'pg_stat_activity'
   end
-
 end

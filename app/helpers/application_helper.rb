@@ -1,5 +1,4 @@
 module ApplicationHelper
-
   def flash_class(level)
     case level.to_sym
     when :notice then 'info'
@@ -10,25 +9,23 @@ module ApplicationHelper
   end
 
   def foreign_resource resource, key
-    assoc_info = resource.associations[:belongs_to].values.find {|assoc_info| assoc_info[:foreign_key] == key.to_sym}
-    resource_for(assoc_info[:referenced_table])
+    assoc_info = resource.associations[:belongs_to].values.find {|info| info[:foreign_key] == key.to_sym}
+    resource_for assoc_info[:referenced_table]
   end
 
-  def display_datetime_control_group opts={}
-    opts[:label] ||= "DateTime format"
-    d = Time.now
+  def display_datetime_control_group opts = {}
+    opts[:label] ||= 'DateTime format'
+    d = Time.zone.now
     formats = %i(long default short time_ago_in_words)
-    datas = formats.map{|f|[display_datetime(d, format: f),f.to_s]}
-    if opts[:allow_blank]
-      datas = [[opts[:allow_blank], '']] + datas
-    end
+    datas = formats.map {|f| [display_datetime(d, format: f), f.to_s]}
+    datas.unshift [[opts[:allow_blank], '']] if opts[:allow_blank]
     content_tag :div, class: 'form-group' do
-      l = content_tag(:label, opts[:label], class: 'control-label col-sm-3')
-      l + content_tag(:div, class: 'col-sm-9') do
-        content_tag(:select, name: opts[:input_name], class: 'form-control') do
-          options_for_select(datas, opts[:selected])
+      content_tag(:label, opts[:label], class: 'control-label col-sm-3') +
+        content_tag(:div, class: 'col-sm-9') do
+          content_tag(:select, name: opts[:input_name], class: 'form-control') do
+            options_for_select(datas, opts[:selected])
+          end
         end
-      end
     end
   end
 
@@ -38,8 +35,8 @@ module ApplicationHelper
 
   def display_filter filter
     filter.map do |f|
-      "<strong>#{f["column"]}</strong> #{f["operator"]} <i>#{f["operand"]}</i>"
-    end.join("<br/>")
+      "<strong>#{f['column']}</strong> #{f['operator']} <i>#{f['operand']}</i>"
+    end.join('<br/>')
   end
 
   def params_without_where_filter k
@@ -48,16 +45,16 @@ module ApplicationHelper
     new_params
   end
 
-  def upgrade_to_enterprise_notice account
+  def upgrade_to_enterprise_notice
     content_tag :div, class: 'alert alert-warning' do
-      "<a class=\"btn btn-warning\" href=\"#{upgrade_account_path(plan:'enterprise')}\">Upgrade</a> to the enterprise plan ($25 per month) and add as many external collaborators as you need to access your data. Moreover, you can assign roles to your collaborators to limit what tables they may access, or prevent them from editing or deleting rows.".html_safe
+      "<a class=\"btn btn-warning\" href=\"#{upgrade_account_path plan: 'enterprise'}\">Upgrade</a> to the enterprise plan ($25 per month) and add as many external collaborators as you need to access your data. Moreover, you can assign roles to your collaborators to limit what tables they may access, or prevent them from editing or deleting rows.".html_safe
     end
   end
 
   def setup_mailto_href account
     res = 'mailto:?'
-    res << "subject=#{URI::encode("Need your help setting up Adminium for #{account.name}")}"
-    res << "&body=#{URI::encode "Hi there,\n\nCan you please help me setup the Adminium add-on for #{account.name} ? You need to login to Heroku, select the app and click on Adminium in the resources to get to the instructions.\n\nThanks a lot,"}"
+    res << "subject=#{URI.encode("Need your help setting up Adminium for #{account.name}")}"
+    res << "&body=#{URI.encode "Hi there,\n\nCan you please help me setup the Adminium add-on for #{account.name} ? You need to login to Heroku, select the app and click on Adminium in the resources to get to the instructions.\n\nThanks a lot,"}"
   end
 
   def head_title
@@ -67,36 +64,40 @@ module ApplicationHelper
       content_tag :title, [@title, current_account.try(:name), 'Adminium'].compact.join(' · ')
     end
   end
-  
+
   def display_column_default column
     return 'AUTO INCREMENT' if column[:auto_increment]
     return unless column[:default]
     default = column[:ruby_default] || column[:default]
-    default = default.respond_to?(:constant) ? default.constant : (default == '' ? 'Empty String' : default)
+    if default.respond_to?(:constant)
+      default.constant
+    else
+      default == '' ? 'Empty String' : default
+    end
   end
-  
+
   def support_link msg
-    '<a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="155803">'+msg+'</a>'
+    '<a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="155803">' + msg + '</a>'
   end
-  
+
   def table_list
-   if current_account? && current_account.db_url.present?
-    return @permissions.map {|key, value| key if value['read']}.compact if @permissions
-    return @tables if @tables.present?
-   end
-   []
+    if current_account? && current_account.db_url?
+      return @permissions.map {|key, value| key if value['read']}.compact if @permissions
+      return @tables if @tables.present?
+    end
+    []
   end
 
   def navbar_toggle navbar_id
     content_tag :button, class: 'navbar-toggle collapsed', type: 'button', data: {toggle: 'collapse', target: "##{navbar_id}"}, 'aria-expanded': 'false' do
       content_tag(:span, 'Toggle navigation', class: 'sr-only') +
-      (content_tag(:span, nil, class: 'icon-bar') * 3).html_safe
+        (content_tag(:span, nil, class: 'icon-bar') * 3).html_safe
     end
   end
 
   def icon_button_link path, icon, title, options = {}
     options[:data] ||= {}
-    options[:data].merge! placement: 'bottom'
+    options[:data][:placement] = 'bottom'
     options.merge! rel: 'tooltip', title: title, class: "btn navbar-btn btn-default #{options[:class]}"
     link_to path, options do
       content_tag :i, nil, class: "fa fa-#{icon}"
@@ -108,5 +109,4 @@ module ApplicationHelper
       content_tag :i, nil, class: 'fa fa-cog'
     end
   end
-
 end

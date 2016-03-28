@@ -1,13 +1,9 @@
 class User < ActiveRecord::Base
-
   has_many :collaborators
   has_many :accounts, through: :collaborators
-  has_many :enterprise_accounts, ->{where(plan: [Account::Plan::ENTERPRISE, Account::Plan::COMPLIMENTARY]).order('name')},
+  has_many :enterprise_accounts, -> {where(plan: [Account::Plan::ENTERPRISE, Account::Plan::COMPLIMENTARY]).order('name')},
     through: :collaborators, source: :account
-
   after_create :match_collaborators
-  
-  attr_accessible :total_heroku_apps
 
   def self.create_with_omniauth auth
     create! do |user|
@@ -17,7 +13,7 @@ class User < ActiveRecord::Base
       user.email = auth['info']['email']
     end
   end
-  
+
   def self.create_with_heroku infos
     create! do |user|
       user.provider = 'heroku'
@@ -25,13 +21,12 @@ class User < ActiveRecord::Base
       user.email = infos['email']
     end
   end
-  
+
   def heroku_provider?
-    self.provider == 'heroku'
+    provider == 'heroku'
   end
 
   def match_collaborators
     Collaborator.where('kind = ? and email ilike ?', provider, email).update_all user_id: id
   end
-
 end

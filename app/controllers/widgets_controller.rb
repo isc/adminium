@@ -1,7 +1,6 @@
 class WidgetsController < ApplicationController
-
   def create
-    widget = current_account.widgets.create params[:widget]
+    current_account.widgets.create! widget_params
     respond_to do |format|
       format.html do
         redirect_to :back
@@ -25,8 +24,13 @@ class WidgetsController < ApplicationController
   end
 
   def update
-    current_account.widgets.find(params[:id]).update_attributes params[:widget]
+    current_account.widgets.find(params[:id]).update! widget_params
     render nothing: true
   end
 
+  private
+
+  def widget_params
+    params.require(:widget).permit(:table, :advanced_search, :order, :type, :columns, :grouping)
+  end
 end

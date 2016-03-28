@@ -1,16 +1,15 @@
 class DocsController < ApplicationController
-
   skip_before_action :require_account
   skip_before_action :connect_to_db, unless: :valid_db_url?
 
   def index
     @full_title = 'Documentation | Adminium'
   end
-  
+
   def install
     redirect_to '/auth/heroku'
   end
-  
+
   def landing
     if session[:account]
       redirect_to dashboard_url
@@ -39,5 +38,4 @@ class DocsController < ApplicationController
     session[:account] = session[:account_before_demo]
     redirect_to dashboard_url
   end
-
 end

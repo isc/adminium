@@ -3,7 +3,6 @@ source 'http://rubygems.org'
 ruby '2.3.0'
 
 gem 'rbtrace'
-
 gem 'rails', '4.2.6'
 gem 'pg'
 gem 'sendgrid'
@@ -12,7 +11,7 @@ gem 'premailer-rails'
 gem 'sequel'
 gem 'sequel_pg', require: 'sequel'
 gem 'hiredis'
-gem 'redis', require: ["redis", "redis/connection/hiredis"]
+gem 'redis', require: ['redis', 'redis/connection/hiredis']
 gem 'jquery-rails', '2.0.1'
 gem 'slim-rails'
 gem 'kaminari'
@@ -31,7 +30,6 @@ gem 'bootstrap-wysihtml5-rails'
 gem 'newrelic_rpm'
 gem 'select2-rails'
 gem 'binary_search', require: 'binary_search/pure'
-gem 'protected_attributes'
 gem 'sass-rails'
 gem 'figaro'
 gem 'font-awesome-rails'
@@ -43,12 +41,10 @@ end
 group :mysql_support do
   gem 'mysql2'
 end
-
 group :assets do
   gem 'coffee-rails'
   gem 'uglifier', '>= 1.3.0'
 end
-
 group :development do
   gem 'kensa'
   gem 'populator'
@@ -63,7 +59,6 @@ group :development do
   gem 'rack-livereload'
   gem 'spring'
 end
-
 group :production do
   gem 'rack-timeout'
   gem 'unicorn'
@@ -72,7 +67,6 @@ group :production do
   gem 'puma'
   gem 'puma_worker_killer'
 end
-
 group :test do
   gem 'capybara'
   gem 'launchy'
@@ -82,7 +76,7 @@ group :test do
   gem 'rack_session_access'
   gem 'simplecov', require: false
 end
-
 group :development, :test do
   gem 'pry-rails'
+  gem 'pry-byebug'
 end

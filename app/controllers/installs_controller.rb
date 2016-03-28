@@ -1,11 +1,10 @@
 class InstallsController < ApplicationController
-  
   skip_before_action :connect_to_db, unless: :valid_db_url?
-  
+
   def setup_database_connection
     @db_urls = session[:db_urls] if session[:db_urls]
   end
-  
+
   def invite_team
     if current_user.try :heroku_provider?
       @heroku_collaborators = heroku_api.get_collaborators(current_account.name).data[:body]
@@ -16,7 +15,7 @@ class InstallsController < ApplicationController
   rescue Heroku::API::Errors::ErrorWithResponse
     redirect_to dashboard_path
   end
-  
+
   def send_email_team
     redirect_opts = {}
     if params[:emails] && params[:emails].length > 0
@@ -28,5 +27,4 @@ class InstallsController < ApplicationController
   ensure
     redirect_to dashboard_path, redirect_opts
   end
-  
 end

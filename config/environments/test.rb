@@ -10,7 +10,7 @@ Adminium::Application.configure do
 
   # Configure static asset server for tests with Cache-Control for performance
   config.serve_static_files = true
-  config.static_cache_control = "public, max-age=3600"
+  config.static_cache_control = 'public, max-age=3600'
   config.cache_store = :memory_store
 
   # Show full error reports and disable caching
@@ -21,7 +21,7 @@ Adminium::Application.configure do
   config.action_dispatch.show_exceptions = false
 
   # Disable request forgery protection in test environment
-  config.action_controller.allow_forgery_protection    = false
+  config.action_controller.allow_forgery_protection = false
 
   # Tell Action Mailer not to deliver emails to the real world.
   # The :test delivery method accumulates sent emails in the
@@ -35,9 +35,7 @@ Adminium::Application.configure do
 
   # Print deprecation notices to the stderr
   config.active_support.deprecation = :stderr
-  # Raise exception on mass assignment protection for Active Record models
-  config.active_record.mass_assignment_sanitizer = :strict
-  config.assets.prefix = "/capybara_test_assets"
+  config.assets.prefix = '/capybara_test_assets'
   config.middleware.use RackSessionAccess::Middleware
   config.active_support.test_order = :random
 end

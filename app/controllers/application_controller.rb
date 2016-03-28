@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
     session[:account] ||= 2 if Rails.env.development?
     redirect_to docs_url unless session[:account]
   end
-  
+
   def require_user
     redirect_to root_path unless session[:user]
   end
@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
   def current_account?
     session[:account] ||= 2 if Rails.env.development?
     return !!current_account if session[:account]
-    return false
+    false
   end
 
   def current_account
@@ -70,69 +70,68 @@ class ApplicationController < ActionController::Base
   def cleanup_generic
     @generic.try :cleanup
   end
-  
+
   def global_db_error exception
     msg = "There was a database error, it might be a problem with your database url. The error was : <pre>#{exception.message}</pre>".html_safe
     redirect_to edit_account_url, flash: {error: msg}
   end
-  
+
   def disconnect_on_exception exception
     @generic.try :cleanup
-    raise exception
+    fail exception
   end
-  
+
   def resource
     resource_for params[:id]
   end
-  
+
   def resource_for table
-    @resources ||= {} 
+    @resources ||= {}
     @resources[table.to_sym] ||= Resource::Base.new @generic, table
   end
-  
+
   def set_source_cookie
     cookies[:source] = params[:utm_source] if params[:utm_source].present?
   end
-  
+
   def ensure_proper_subdomain
     return if !Rails.env.production? || request.host_with_port['doctolib'] || request.host_with_port['adminium-staging.herokuapp']
     redirect_to host: 'www.adminium.io' if request.host_with_port != 'www.adminium.io'
   end
-  
+
   def heroku_api
     @api ||= Heroku::API.new(api_key: session[:heroku_access_token], mock: Rails.env.test?) if session[:heroku_access_token]
   end
-  
+
   def heroku_api_v3 method, path
     if session[:heroku_access_token]
       headers = {}
-      headers["Accept"] = "application/vnd.heroku+json; version=3"
-      headers["Authorization"] = Base64.encode64(":#{session[:heroku_access_token]}\n").chomp
-      headers["User-Agent"] = "adminium-addon-client"
+      headers['Accept'] = 'application/vnd.heroku+json; version=3'
+      headers['Authorization'] = Base64.encode64(":#{session[:heroku_access_token]}\n").chomp
+      headers['User-Agent'] = 'adminium-addon-client'
       resource = Excon.new 'https://api.heroku.com/'
       JSON.parse resource.request(method: method, path: path, headers: headers).data[:body]
     end
   end
-  
+
   def track_account_action
-    format = ".#{request.format.to_s.split("/").last}" if request.format != 'text/html'
+    format = ".#{request.format.to_s.split('/').last}" if request.format != 'text/html'
     if session[:account]
       attrs = {account_id: session[:account], action: "#{params[:controller]}##{params[:action]}#{format}"}
       begin
-        rows = Statistic.where(attrs).update_all ["value = value + 1, updated_at = ?", Time.current]
-        Statistic.create attrs.merge(value: 1) if rows == 0
+        rows = Statistic.where(attrs).update_all ['value = value + 1, updated_at = ?', Time.current]
+        Statistic.create attrs.merge(value: 1) if rows.zero?
       rescue PG::UniqueViolation
         retry
       end
     end
   end
-  
+
   def valid_db_url?
     session[:account] && current_account.valid_db_url?
   end
-  
+
   def tag_current_account
     logger.tagged("Account: #{session[:account] || 'No account'}") {yield}
   end
-  
 end

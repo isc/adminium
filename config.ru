@@ -1,6 +1,6 @@
 # This file is used by Rack-based servers to start the application.
 
-require ::File.expand_path('../config/environment',  __FILE__)
+require ::File.expand_path('../config/environment', __FILE__)
 use Rack::Deflater if Figaro.env.heroku_api_key
 run Adminium::Application
 
@@ -12,5 +12,5 @@ if ENV['RACK_ENV'] == 'production'
   # use Unicorn::WorkerKiller::MaxRequests, 3072, 4096
 
   # Max memory size (RSS) per worker
-  use Unicorn::WorkerKiller::Oom, (192*(1024**2)), (256*(1024**2))
+  use Unicorn::WorkerKiller::Oom, (192 * (1024**2)), (256 * (1024**2))
 end

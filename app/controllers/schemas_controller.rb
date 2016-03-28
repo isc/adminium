@@ -1,5 +1,4 @@
 class SchemasController < ApplicationController
-  
   before_action :require_admin
 
   def show
@@ -11,14 +10,14 @@ class SchemasController < ApplicationController
 
   def new
   end
-  
+
   def update
-    rename_table and return if params[:table_name]
-    remove_column and return if params[:remove_column]
-    rename_column and return if params[:new_column_name]
-    add_column and return if params[:add_column]
-    change_column_type and return if params[:new_column_type]
-    truncate and return if params[:truncate]
+    return rename_table if params[:table_name]
+    return remove_column if params[:remove_column]
+    return rename_column if params[:new_column_name]
+    return add_column if params[:add_column]
+    return change_column_type if params[:new_column_type]
+    truncate if params[:truncate]
   end
 
   def create
@@ -38,12 +37,12 @@ class SchemasController < ApplicationController
   rescue Sequel::Error => e
     render json: {error: e.message}
   end
-  
+
   def destroy
     if params[:id] == params[:table_name_confirmation]
       @generic.db.drop_table params[:id]
     else
-      flash[:error] = "Destroying the table failed: the table name confirmation mismatched."
+      flash[:error] = 'Destroying the table failed: the table name confirmation mismatched.'
     end
   rescue Sequel::Error => e
     flash[:error] = "Destroying the table failed: #{e.message}"
@@ -52,7 +51,7 @@ class SchemasController < ApplicationController
   end
 
   private
-  
+
   def rename_table
     @generic.db.rename_table params[:id].to_sym, params[:table_name].to_sym
     redirect_to schema_path(params[:table_name])
@@ -60,26 +59,26 @@ class SchemasController < ApplicationController
     flash[:error] = "Renaming the table failed: #{e.message}"
     redirect_to schema_path(params[:id])
   end
-  
+
   def remove_column
     column_name = params[:remove_column]
-    @generic.db.alter_table(params[:id].to_sym){drop_column column_name}
+    @generic.db.alter_table(params[:id].to_sym) {drop_column column_name}
   rescue Sequel::Error => e
     flash[:error] = "Dropping column #{column_name} failed: #{e.message}"
   ensure
     redirect_to schema_path(params[:id])
   end
-  
+
   def rename_column
     original_column_name = params[:column_name].to_sym
     new_column_name = params[:new_column_name].to_sym
-    @generic.db.alter_table(params[:id].to_sym){rename_column original_column_name, new_column_name}
+    @generic.db.alter_table(params[:id].to_sym) {rename_column original_column_name, new_column_name}
   rescue Sequel::Error => e
     flash[:error] = "Renaming column #{original_column_name} failed: #{e.message}"
   ensure
     redirect_to schema_path(params[:id])
   end
-  
+
   def add_column
     table_name = params[:id]
     columns, _ = reformat_columns_params
@@ -93,38 +92,37 @@ class SchemasController < ApplicationController
   ensure
     redirect_to schema_path(params[:id])
   end
-  
+
   def truncate
     if params[:id] == params[:table_name_confirmation]
       @generic.db[params[:id].to_sym].truncate
     else
-      flash[:error] = "Truncating the table failed: the table name confirmation mismatched."
+      flash[:error] = 'Truncating the table failed: the table name confirmation mismatched.'
     end
   rescue Sequel::Error => e
     flash[:error] = "Truncating the table failed: #{e.message}"
   ensure
     redirect_to dashboard_path
   end
-  
+
   def reformat_columns_params
     primary_column_names = []
     columns = params[:columns].map do |column|
-      if column[:name].present?
-        c = {}
-        type, options = type_converted column[:type]
-        c[:ruby_type] = type
-        c[:name] = column[:name].to_sym
-        primary_column_names.push c[:name] if column[:primary]
-        column[:default] = nil if column[:default].blank? || column[:default] == 'NULL'
-        c[:options] = {null: column[:null].present?, unique: column[:unique].present?}
-        c[:options][:default] = column[:default] if column[:default].present?
-        c[:options].merge! options if options
-        c
-      end
+      next unless column[:name].present?
+      c = {}
+      type, options = type_converted column[:type]
+      c[:ruby_type] = type
+      c[:name] = column[:name].to_sym
+      primary_column_names.push c[:name] if column[:primary]
+      column[:default] = nil if column[:default].blank? || column[:default] == 'NULL'
+      c[:options] = {null: column[:null].present?, unique: column[:unique].present?}
+      c[:options][:default] = column[:default] if column[:default].present?
+      c[:options].merge! options if options
+      c
     end.compact
     [columns, primary_column_names]
   end
-  
+
   def change_column_type
     table = params[:id].to_sym
     column = params[:column_name].to_sym
@@ -136,7 +134,7 @@ class SchemasController < ApplicationController
   ensure
     redirect_to schema_path(params[:id])
   end
-  
+
   def type_converted type
     case type.to_sym
     when :integer
@@ -144,9 +142,9 @@ class SchemasController < ApplicationController
     when :boolean
       TrueClass
     when :string
-      [String, {:size=>255}]
+      [String, size: 255]
     when :text
-      [String, {:text => true}]
+      [String, text: true]
     when :float
       Float
     when :decimal
@@ -158,7 +156,7 @@ class SchemasController < ApplicationController
     when :blob
       File
     when :time
-      [Time, :only_time => true]
+      [Time, only_time: true]
     end
   end
 end

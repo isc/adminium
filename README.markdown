@@ -33,7 +33,6 @@
 - fail on forms ameliorables (highlight des champs en erreur)
 
 ### TODOS:
-- attr_accessible avec role pour proteger plan sur account
 - données stockées dans redis pour les comptes deprovisionnés ?
 
 ### BUGS:

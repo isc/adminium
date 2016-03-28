@@ -1,7 +1,6 @@
 module ClippyHelper
-  
-  def clippy(text, bgcolor='#FFFFFF')
-    html = <<-EOF
+  def clippy text, bgcolor = '#FFFFFF'
+    <<-EOF
       <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000"
               width="110"
               height="14"
@@ -26,5 +25,4 @@ module ClippyHelper
       </object>
     EOF
   end
-  
 end

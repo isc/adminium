@@ -2,13 +2,13 @@ require 'uri'
 require 'sequel'
 Sequel.extension :pg_array # So that Sequel::Postgres::PGArray used in ResourcesHelper is loaded even though we didn't connect to a Postgres database yet.
 Sequel.extension :named_timezones
-Sequel.tzinfo_disambiguator = proc{|datetime, periods| periods.first}
+Sequel.tzinfo_disambiguator = proc {|_datetime, periods| periods.first}
 
 class Generic
   attr_accessor :db_name, :account_id, :db, :account
   attr_reader :current_adapter
 
-  def initialize account, opts={}
+  def initialize account, opts = {}
     @account_id, @account = account.id, account
     establish_connection account.db_url, opts
   end
@@ -16,11 +16,11 @@ class Generic
   def cleanup
     @db.disconnect
   end
-  
+
   def associations
     return @associations if @associations
-    ActiveSupport::Notifications.instrument :associations_discovery  do
-      @associations = Rails.cache.fetch "account:#@account_id:associations", expires_in: 10.minutes do
+    ActiveSupport::Notifications.instrument :associations_discovery do
+      @associations = Rails.cache.fetch "account:#{@account_id}:associations", expires_in: 10.minutes do
         @associations = Hash[tables.map {|t| [t, {belongs_to: {}, has_many: {}}]}]
         tables.each do |table|
           begin
@@ -41,7 +41,7 @@ class Generic
     foreign_keys[table].each do |foreign_key|
       @associations[table][:belongs_to][foreign_key[:to_table]] =
         @associations[foreign_key[:to_table]][:has_many][table] =
-        {foreign_key: foreign_key[:column], primary_key: foreign_key[:primary_key], referenced_table: foreign_key[:to_table], table: table}
+          {foreign_key: foreign_key[:column], primary_key: foreign_key[:primary_key], referenced_table: foreign_key[:to_table], table: table}
     end
   end
 
@@ -53,7 +53,7 @@ class Generic
       if tables.include?(owner_table) && @associations[table][:belongs_to][owner_table].nil?
         @associations[table][:belongs_to][owner_table] =
           @associations[owner_table][:has_many][table] =
-          {foreign_key: name, primary_key: :id, referenced_table: owner_table, table: table}
+            {foreign_key: name, primary_key: :id, referenced_table: owner_table, table: table}
       elsif schema(table).map(&:first).include? "#{owner}_type".to_sym
         @associations[table][:belongs_to][owner.pluralize.to_sym] =
           {foreign_key: name, primary_key: :id, referenced_table: nil, table: table, polymorphic: true}
@@ -62,9 +62,9 @@ class Generic
   rescue Sequel::DatabaseError
     # don't fuck up everything when there is a freaky table which doesn't exist
   end
-  
+
   def foreign_keys
-    @foreign_keys ||= Rails.cache.fetch "foreign_keys:#@account_id", expires_in: 2.minutes do
+    @foreign_keys ||= Rails.cache.fetch "foreign_keys:#{@account_id}", expires_in: 2.minutes do
       query = postgresql? ? postgresql_foreign_keys_query : mysql_foreign_keys_query
       fk_info = @db[query]
       foreign_keys = {}
@@ -77,7 +77,7 @@ class Generic
   end
 
   def mysql_foreign_keys_query
-    %{
+    %(
       SELECT fk.referenced_table_name as 'to_table'
             ,fk.referenced_column_name as 'primary_key'
             ,fk.column_name as 'column'
@@ -86,11 +86,11 @@ class Generic
       FROM information_schema.key_column_usage fk
       WHERE fk.referenced_column_name is not null
         AND fk.table_schema = '#{db_name}'
-    }
+    )
   end
 
   def postgresql_foreign_keys_query
-    %{
+    %(
       SELECT t2.relname AS to_table, a1.attname AS column, a2.attname AS primary_key, t1.relname as table_name
       FROM pg_constraint c
       JOIN pg_class t1 ON c.conrelid = t1.oid
@@ -101,7 +101,7 @@ class Generic
       WHERE c.contype = 'f'
         AND t3.nspname = ANY (current_schemas(false))
       ORDER BY c.conname
-    }
+    )
   end
 
   def tables
@@ -111,28 +111,25 @@ class Generic
     @tables << :pg_stat_activity if postgresql?
     @tables
   end
-  
+
   def schema table
-    raise TableNotFoundException.new(table) unless tables.include? table
+    fail TableNotFoundException, table unless tables.include? table
     @schema ||= {}
-    @schema[table] || (@schema[table] = @db.schema(Sequel.identifier table))
+    @schema[table] || (@schema[table] = @db.schema(Sequel.identifier(table)))
   end
 
   def table table_name
     table_name = table_name.to_sym
-    if tables.include? table_name
-      @db[Sequel.identifier table_name]
-    else
-      raise TableNotFoundException.new(table_name)
-    end
+    fail TableNotFoundException, table_name unless tables.include? table_name
+    @db[Sequel.identifier table_name]
   end
 
   def db_size
     sql = if mysql?
-      "select sum(data_length + index_length) as fulldbsize FROM information_schema.TABLES WHERE table_schema = '#{db_name}'"
-    else
-      "select pg_database_size('#{db_name}') as fulldbsize"
-    end
+            "select sum(data_length + index_length) as fulldbsize FROM information_schema.TABLES WHERE table_schema = '#{db_name}'"
+          else
+            "select pg_database_size('#{db_name}') as fulldbsize"
+          end
     @db[sql].first[:fulldbsize].to_i
   end
 
@@ -140,14 +137,16 @@ class Generic
     table_list ||= tables
     if mysql?
       return [] if table_list.try(:empty?)
-      cond = "AND table_name in (#{table_list.map{|t|"'#{t}'"}.join(', ')})" if table_list.present?
-      list = @db["select table_name, data_length + index_length, data_length from information_schema.TABLES WHERE table_schema = '#{db_name}' #{cond}"].map do |row|
-        v = row.values ; v[0] = v[0].to_sym; v
+      cond = "AND table_name in (#{table_list.map {|t| "'#{t}'"}.join(', ')})" if table_list.present?
+      @db["select table_name, data_length + index_length, data_length from information_schema.TABLES WHERE table_schema = '#{db_name}' #{cond}"].map do |row|
+        v = row.values
+        v[0] = v[0].to_sym
+        v
       end
     else
       table_list.map do |table|
         res = [table]
-        res += @db["select pg_total_relation_size('\"#{table}\"') as fulltblsize, pg_relation_size('\"#{table}\"') as tblsize"].first.values rescue ['?']
+        res + @db["select pg_total_relation_size('\"#{table}\"') as fulltblsize, pg_relation_size('\"#{table}\"') as tblsize"].first.values rescue ['?']
       end.compact
     end
   end
@@ -156,19 +155,19 @@ class Generic
     table_list ||= tables
     table_list = table_list.map(&:to_s)
     query = if postgresql?
-      db.from(:pg_stat_user_tables).select(:relname, :n_live_tup).where(relname: table_list)
-    else
-      db.from(:INFORMATION_SCHEMA__TABLES).select(:table_name, :table_rows).where(table_schema: @db_name).where(table_name: table_list)
-    end
+              db.from(:pg_stat_user_tables).select(:relname, :n_live_tup).where(relname: table_list)
+            else
+              db.from(:INFORMATION_SCHEMA__TABLES).select(:table_name, :table_rows).where(table_schema: @db_name).where(table_name: table_list)
+            end
     query.to_a.map(&:values).to_h
   end
 
   def establish_connection db_url, opts
-    # TODO there is a read_timeout option for mysql
+    # TODO: there is a read_timeout option for mysql
     uri = URI.parse db_url
     uri.scheme = 'postgres' if uri.scheme == 'postgresql'
     uri.scheme = 'mysql2' if uri.scheme == 'mysql'
-    @db_name = (uri.path || "").split("/")[1]
+    @db_name = (uri.path || '').split('/')[1]
     @current_adapter = uri.scheme
     opts[:logger] ||= Rails.logger
     @db = Sequel.connect uri.to_s, opts.merge(keep_reference: false)
@@ -196,5 +195,4 @@ class Generic
       @table_name = table_name
     end
   end
-
 end

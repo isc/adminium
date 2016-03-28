@@ -1,8 +1,7 @@
 module StatChartBuilder
-  
   include ResourcesHelper
   include ActionView::Helpers::NumberHelper
-  
+
   def stat_chart
     column = qualify params[:table], params[:column]
     @items = resource.query
@@ -48,5 +47,4 @@ module StatChartBuilder
       end
     end
   end
-  
 end

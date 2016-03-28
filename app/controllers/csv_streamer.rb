@@ -1,5 +1,4 @@
 class CsvStreamer
-
   attr_reader :resource, :other_resources
 
   def initialize items, associated_items, resource, other_resources
@@ -12,7 +11,7 @@ class CsvStreamer
 
   def each
     keys = resource.columns[:export]
-    yield keys.map{|k|resource.column_display_name k}.to_csv(col_sep: resource.export_col_sep) unless resource.export_skip_header
+    yield keys.map {|k| resource.column_display_name k}.to_csv(col_sep: resource.export_col_sep) unless resource.export_skip_header
     @items.each {|item| yield csv_row(item, keys)}
   end
 
@@ -28,5 +27,4 @@ class CsvStreamer
       end
     end.to_csv(col_sep: resource.export_col_sep)
   end
-
 end

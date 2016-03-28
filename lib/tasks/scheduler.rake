@@ -9,7 +9,7 @@ task statistical_computing: :environment do
     puts account.name
     done_ids.push(account.id)
     begin
-      g=Generic.new account, timeout: 20, connect_timeout: 3, read_timeout: 5, max_connections: 10
+      g = Generic.new account, timeout: 20, connect_timeout: 3, read_timeout: 5, max_connections: 10
       g.tables.each do |table|
         g.schema(table).each do |column|
           name = column.first
@@ -23,5 +23,5 @@ task statistical_computing: :environment do
     ensure
       g.try :cleanup
     end
-  end ; nil
+  end
 end

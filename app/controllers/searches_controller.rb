@@ -1,5 +1,4 @@
 class SearchesController < ApplicationController
-
   def update
     if params[:name] && params[:filters]
       resource.filters[params[:name]] = params[:filters].values
@@ -17,5 +16,4 @@ class SearchesController < ApplicationController
   def show
     render json: resource.filters.keys
   end
-
 end

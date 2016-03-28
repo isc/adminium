@@ -1,7 +1,6 @@
 require 'test_helper'
 
 class SearchesControllerTest < ActionController::TestCase
-
   def setup
     @account = create :account, plan: 'startup'
     session[:account] = @account.id
@@ -10,13 +9,13 @@ class SearchesControllerTest < ActionController::TestCase
   end
 
   def test_create_a_search
-    put :update, {"filters"=>{"410"=>{"grouping"=>"and", "column"=>"pseudo", "type"=>"string", "operator"=>"null", "operand"=>""}}, "name"=>"last search", "id"=>"users"}
-    assert_redirected_to resources_path(:users, asearch: "last search")
+    put :update, 'filters' => {'410' => {'grouping' => 'and', 'column' => 'pseudo', 'type' => 'string', 'operator' => 'null', 'operand' => ''}}, 'name' => 'last search', 'id' => 'users'
+    assert_redirected_to resources_path(:users, asearch: 'last search')
     get :show, id: 'users'
     assert_response :success
     assert_equal ['last search'], JSON.parse(response.body)
   end
-  
+
   def test_destroy_a_search
     generic = Generic.new(@account)
     resource = Resource::Base.new generic, :users
@@ -26,6 +25,4 @@ class SearchesControllerTest < ActionController::TestCase
     assert_redirected_to resources_path(:users)
     generic.cleanup
   end
-
 end
-

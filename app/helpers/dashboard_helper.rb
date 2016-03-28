@@ -1,5 +1,4 @@
 module DashboardHelper
-
   def display_a_tip
     tip = current_account.displayed_next_tip
     return unless tip
@@ -12,5 +11,4 @@ module DashboardHelper
   def tip_title title
     @tip_title = title
   end
-
 end

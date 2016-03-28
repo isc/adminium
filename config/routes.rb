@@ -1,12 +1,12 @@
 Adminium::Application.routes.draw do
   get '/ping' => 'ping#ping'
   get '/auth/heroku/callback' => 'sessions#create_from_heroku'
-  get '/install' => "docs#install"
+  get '/install' => 'docs#install'
   post '/auth/:provider/callback' => 'sessions#create'
   get '/auth/:provider/callback' => 'sessions#create'
   get '/signout' => 'sessions#destroy', as: :signout
 
-  resources :resources, path: "/resources/:table", constraints: {id: /.*/} do
+  resources :resources, path: '/resources/:table', constraints: {id: /.*/} do
     collection do
       get 'page/:page', action: :index
       post :bulk_destroy
@@ -36,7 +36,6 @@ Adminium::Application.routes.draw do
     collection do
       get :start_demo
       get :stop_demo
-      
     end
   end
   resource :install do
@@ -68,5 +67,4 @@ Adminium::Application.routes.draw do
   get 'test/threads' => 'resources#test_threads'
   get 'landing' => 'docs#landing'
   root to: 'docs#landing'
-
 end

@@ -1,0 +1,26 @@
+AllCops:
+  TargetRubyVersion: 2.3
+  Exclude:
+    - db/schema.rb
+    - db/migrate/*
+    - config/initializers/sequel_schema_parser.rb
+Rails:
+  Enabled: true
+Metrics/LineLength:
+  Enabled: false
+Style/Documentation:
+  Enabled: false
+Style/SpaceInsideHashLiteralBraces:
+  Enabled: false
+Style/SpaceInsideBlockBraces:
+  Enabled: false
+Style/MethodDefParentheses:
+  Enabled: false
+Style/AlignParameters:
+  Enabled: false
+Style/ClassAndModuleChildren:
+  Enabled: false
+Metrics/AbcSize:
+  Enabled: false
+Style/ParallelAssignment:
+  Enabled: false

@@ -1,4 +1,4 @@
-ENV["RAILS_ENV"] = "test"
+ENV['RAILS_ENV'] = 'test'
 if ENV['COVER']
   require 'simplecov'
   SimpleCov.start do
@@ -23,7 +23,7 @@ class ActiveSupport::TestCase
   teardown do
     REDIS.flushdb
     Rails.cache.clear
-    ObjectSpace.each_object(Generic){|g|g.cleanup}
+    ObjectSpace.each_object(Generic, &:cleanup)
   end
 end
 
@@ -35,22 +35,20 @@ class ActionDispatch::IntegrationTest
     page.set_rack_session account: account.id
     account
   end
-  
+
   def logout
     page.set_rack_session account: nil
     page.set_rack_session user: nil
   end
-  
+
   teardown do
     logout
   end
-
 end
 
 class FixtureFactory
-  
   attr_reader :factory
-  
+
   def initialize(name, options = {})
     self.class.with_fixture_connection { @factory = FactoryGirl.create "#{name}_from_test", options }
   end
@@ -67,16 +65,14 @@ class FixtureFactory
       end
     end
   end
-  
+
   def reload!
     self.class.with_fixture_connection { factory.reload }
   end
-  
+
   def self.with_fixture_connection
-    adapter = ENV['adapter'] || 'mysql'
     ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
     yield
     ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
   end
-
 end

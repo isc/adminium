@@ -1,9 +1,5 @@
 class Account < ActiveRecord::Base
-
-  attr_accessible :db_url, :plan, :heroku_id, :callback_url, :name, :owner_email,
-    :database_time_zone, :application_time_zone, :db_url_setup_method
   serialize :plan_migrations
-
   before_create :setup_api_key
   before_save :fill_adapter, :track_plan_migration
   has_many :collaborators
@@ -17,17 +13,17 @@ class Account < ActiveRecord::Base
   has_many :sign_ons
   has_one :app_profile
 
-  validates_format_of :db_url, with: /((mysql2?)|(postgres(ql)?)):\/\/.*/, allow_blank: true
+  validates :db_url, format: %r{((mysql2?)|(postgres(ql)?)):\/\/.*}, allow_blank: true
   # fucked up "unless" below, but otherwise the tests are fucked up
   # likely because of the transactions being used in tests
   # and the fact that this validation causes a new connection to be established
   validate :db_url_validation unless Rails.env.test?
 
   attr_encrypted :db_url, key: (ENV['ENCRYPTION_KEY'] || 'shablagoo')
-  
+
   scope :deleted, -> {where plan: Plan::DELETED}
-  scope :not_deleted,  -> {where.not plan: Plan::DELETED}
-  
+  scope :not_deleted, -> {where.not plan: Plan::DELETED}
+
   TIPS = %w(basic_search editing enumerable export_import displayed_record advanced_search serialized relationships time_charts keyboard_shortcuts time_zones)
 
   class Plan
@@ -66,7 +62,7 @@ class Account < ActiveRecord::Base
   def startup?
     plan == Plan::STARTUP
   end
-  
+
   def free_plan?
     pet_project? || complimentary?
   end
@@ -85,11 +81,7 @@ class Account < ActiveRecord::Base
   end
 
   def flag_as_deleted!
-    self.db_url = nil
-    self.api_key = nil
-    self.plan = Plan::DELETED
-    self.deleted_at = Time.now
-    save!
+    update! db_url: nil, api_key: nil, plan: Plan::DELETED, deleted_at: Time.current
   end
 
   def displayed_next_tip
@@ -99,28 +91,24 @@ class Account < ActiveRecord::Base
     if last_tip_at.nil? || last_tip_at < 1.day.ago
       tip = tips[(tips.index(last_tip_identifier) || -1) + 1]
     end
-    if tip
-      self.last_tip_at = Time.current
-      self.last_tip_identifier = tip
-      save!
-    end
+    update! last_tip_at: Time.current, last_tip_identifier: tip if tip
     tip
   end
-  
+
   def heroku_id_only
     heroku_id.match(/\d+/).to_s
   end
 
   def reactivate attributes
-    update_attributes attributes.merge(deleted_at: nil, api_key: generate_api_key), without_protection: true
+    update attributes.merge(deleted_at: nil, api_key: generate_api_key)
   end
-  
+
   private
-  
+
   def setup_api_key
     self.api_key = generate_api_key
   end
-  
+
   def generate_api_key
     SecureRandom.hex[0..8]
   end
@@ -135,18 +123,14 @@ class Account < ActiveRecord::Base
   end
 
   def fill_adapter
-    self.adapter = db_url.split(':').first if db_url.present? && encrypted_db_url_changed?
+    self.adapter = db_url.split(':').first if db_url? && encrypted_db_url_changed?
   end
 
   def track_plan_migration
     self.plan_migrations ||= []
-    last_plan = nil
-    if self.plan_migrations.last
-      last_plan = self.plan_migrations.last[:plan]
-    end
-    if last_plan.nil? || last_plan != self.plan
-      self.plan_migrations.push({migrated_at:Time.now, plan: self.plan})
+    last_plan = plan_migrations.last[:plan] if plan_migrations.last
+    if last_plan.nil? || last_plan != plan
+      plan_migrations.push migrated_at: Time.current, plan: plan
     end
   end
-
 end

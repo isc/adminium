@@ -5,7 +5,7 @@ nav.navbar.navbar-default
       = link_to params[:table].humanize, resources_path(params[:table]), class: 'navbar-brand'
       .navbar-text
         ' New #{resource.human_name}
-        - if params.has_key? :clone_id
+        - if params.key? :clone_id
           small
             == "| cloning #{link_to "#{resource.human_name} ##{params[:clone_id]}", resource_path(params[:table], params[:clone_id])}"
     #subnavbar.collapse.navbar-collapse

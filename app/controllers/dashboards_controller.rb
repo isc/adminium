@@ -1,5 +1,4 @@
 class DashboardsController < ApplicationController
-  
   before_action :fetch_permissions
 
   def show
@@ -16,5 +15,4 @@ class DashboardsController < ApplicationController
   def fetch_permissions
     @permissions = current_collaborator.permissions unless admin?
   end
-
 end

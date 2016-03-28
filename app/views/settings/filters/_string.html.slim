@@ -1,3 +1,3 @@
 select.form-control(name="filters[#{g}][operator]")
   - options = [["is present", "present"], ["is blank", "blank"], ["contains", 'like'], ["does not contain", 'not_like'], ["is exactly", "is"], ["is not", "not"], ["starts with", "starts_with"], ["ends with", "ends_with"], ["is in", "IN"]]
-  = options_for_select(UNARY_OPERATORS.map{|o| ["is #{o.humanize.downcase}", o]} + options, operator)
+  = options_for_select(UNARY_OPERATORS.map {|o| ["is #{o.humanize.downcase}", o]} + options, operator)

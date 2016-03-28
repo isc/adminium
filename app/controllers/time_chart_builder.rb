@@ -1,13 +1,12 @@
 module TimeChartBuilder
-  
-  DEFAULT_GROUPING = %w(Monthly Daily Weekly Yearly Hourly Minutely).map{|g|[g, g.downcase]}
+  DEFAULT_GROUPING = %w(Monthly Daily Weekly Yearly Hourly Minutely).map {|g|[g, g.downcase]}
   DEFAULT_GROUPING_PERIODIC = [['Hour of day', 'hour'], ['Day of week', 'dow'], ['Month of year', 'month']]
   GROUPING_OPTIONS = DEFAULT_GROUPING + DEFAULT_GROUPING_PERIODIC
   DEFAULT_DATE_FORMATS = {'monthly' => '%b', 'weekly' => 'Week %W', 'daily' => '%b %d',
     'yearly' => '%Y', 'hourly' => '%l%P', 'minutely' => '%H:%M'}
-    
+
   private
-  
+
   def time_chart
     column = qualify params[:table], params[:column]
     @items = resource.query
@@ -15,13 +14,13 @@ module TimeChartBuilder
     apply_filters
     apply_search
     aggregate = time_chart_aggregate column
-    @items = @items.group(aggregate).
-      select(aggregate.as('chart_date'), Sequel.function(:count, Sequel.lit('*'))).
-      order(aggregate)
+    @items = @items.group(aggregate)
+                   .select(aggregate.as('chart_date'), Sequel.function(:count, Sequel.lit('*')))
+                   .order(aggregate)
     @items = @items.where(qualify(params[:table], params[:column]) => date_range) unless periodic_grouping?
-    aggregation @items.all
+    @data = @items.all.map {|row| format_date(row.delete(:chart_date)) + row.values}
     add_missing_zeroes if grouping == 'daily' && @data.present?
-    @data = @data.map{|e|[e[0], e[2].to_i, e[1]]} if @data
+    @data = @data.map {|e| [e[0], e[2].to_i, e[1]]} if @data
     respond_to do |format|
       format.html do
         @widget = current_account.time_chart_widgets.where(table: params[:table], columns: params[:column], grouping: grouping).first
@@ -29,16 +28,12 @@ module TimeChartBuilder
       end
       format.json do
         render json: {
-          chart_data: @data,
-          chart_type: 'TimeChart',
-          grouping: grouping,
-          column: params[:column],
-          id: params[:widget_id]
-        }
+          chart_data: @data, chart_type: 'TimeChart',
+          grouping: grouping, column: params[:column], id: params[:widget_id]}
       end
     end
   end
-  
+
   def time_chart_aggregate column
     if @generic.postgresql?
       if periodic_grouping?
@@ -47,36 +42,34 @@ module TimeChartBuilder
         aggregate = {'daily' => 'day'}[grouping] || grouping.gsub('ly', '')
         Sequel.function(:date_trunc, aggregate, column)
       end
-    else
-      if periodic_grouping?
-        if grouping == 'dow'
-          Sequel.function :dayofweek, column
-        else
-          column.extract grouping
-        end
+    elsif periodic_grouping?
+      if grouping == 'dow'
+        Sequel.function :dayofweek, column
       else
-        case grouping
-        when 'yearly'
-          Sequel.function :year, column
-        when 'monthly'
-          column.extract 'year_month'
-        when 'weekly'
-          Sequel.function :yearweek, column, 1
-        when 'daily'
-          Sequel.function :date, column
-        when 'hourly'
-          Sequel.function :date_format, column, '%Y-%m-%d %H'
-        when 'minutely'
-          Sequel.function :date_format, column, '%Y-%m-%d %H:%i'
-        end
+        column.extract grouping
+      end
+    else
+      case grouping
+      when 'yearly'
+        Sequel.function :year, column
+      when 'monthly'
+        column.extract 'year_month'
+      when 'weekly'
+        Sequel.function :yearweek, column, 1
+      when 'daily'
+        Sequel.function :date, column
+      when 'hourly'
+        Sequel.function :date_format, column, '%Y-%m-%d %H'
+      when 'minutely'
+        Sequel.function :date_format, column, '%Y-%m-%d %H:%i'
       end
     end
   end
-  
+
   def periodic_grouping?
     DEFAULT_GROUPING_PERIODIC.map(&:second).include? grouping
   end
-  
+
   def date_range
     case grouping
     when 'daily'
@@ -98,22 +91,11 @@ module TimeChartBuilder
     when 'minutely'
       start = start_date_offset.minutes.ago.beginning_of_minute
       incomplete_periods? ? start..Time.now : start...Time.now.beginning_of_minute
-      #start = (application_time_zone.now - start_date_offset.minutes).beginning_of_minute
-      #incomplete_periods? ? start..application_time_zone.now : start...application_time_zone.now.beginning_of_minute
+      # start = (application_time_zone.now - start_date_offset.minutes).beginning_of_minute
+      # incomplete_periods? ? start..application_time_zone.now : start...application_time_zone.now.beginning_of_minute
     end
   end
-  
-  def aggregation records
-    res = records.map do |attributes|
-      res = format_date(attributes.delete(:chart_date))
-      attributes.each do |key, value|
-        res << value
-      end
-      res
-    end
-    @data = res#.unshift [:chart_date, records.first.keys].flatten.uniq unless res.empty?
-  end
-  
+
   def format_date date
     return [periodic_format(date), date] if periodic_grouping?
     if @generic.mysql?
@@ -131,14 +113,14 @@ module TimeChartBuilder
       end
     else
       date = if %w(hourly minutely).include? grouping
-        Time.parse date.to_s
-      else
-        Date.parse date.to_s
-      end
+               Time.parse date.to_s
+             else
+               Date.parse date.to_s
+             end
     end
     [date.strftime(DEFAULT_DATE_FORMATS[grouping]), date.to_formatted_s(:db)]
   end
-  
+
   def periodic_format date
     return date if grouping == 'hour'
     date = date.to_i
@@ -148,7 +130,7 @@ module TimeChartBuilder
       'month' => I18n.t('date.month_names')
     }[grouping][date]
   end
-  
+
   def add_missing_zeroes
     num_values = @data.first.size - 1
     date_range.each_with_index do |date, index|
@@ -159,17 +141,16 @@ module TimeChartBuilder
       end
     end
   end
-  
+
   def grouping
     params[:grouping].presence || 'daily'
   end
-  
+
   def incomplete_periods?
     true
   end
-  
+
   def start_date_offset
     30
   end
-  
 end
