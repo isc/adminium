@@ -478,7 +478,7 @@ class ResourcesController < ApplicationController
   def right_value operation, value
     return operation[:right] if operation.key?(:right)
     return operation[:replace_right].gsub('_', value.gsub('_', '\\_')) if operation.key?(:replace_right)
-    return Date.strptime(value, '%m/%d/%Y') if operation[:right_function] == 'to_date'
+    return Date.parse value if operation[:right_function] == 'to_date'
     value
   end
 

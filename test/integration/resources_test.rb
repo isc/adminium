@@ -442,7 +442,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
       set_column_default :delete_on, Sequel::CURRENT_DATE
     end
     visit new_resource_path(:documents)
-    v = Time.zone.today.strftime '%Y-%m-%d'
+    v = Date.today.to_s
     assert_equal v, find('input#documents_delete_on').value
     assert_equal v, find('input#documents_some_datetime').value
     generic.cleanup

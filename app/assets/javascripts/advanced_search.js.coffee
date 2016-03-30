@@ -31,6 +31,8 @@ class AdvancedSearch
     type = if operand.data('type') is 'integer' and operator isnt 'IN'
       operand.get(0).step = 'any' if operand.data('original-type') isnt 'integer'
       'number'
+    else if operand.data('type') is 'date'
+      'date'
     else
       'text'
     operand.get(0).type = type

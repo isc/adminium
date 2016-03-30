@@ -55,11 +55,11 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_advanced_search_date_operators
     setup_resource
-    assert_asearch 'date_before', [nil], [{'column' => 'activated_at', 'type' => 'datetime', 'operator' => 'before', 'operand' => Date.current.strftime('%m/%d/%Y')}]
-    assert_asearch 'date_after', %w(Michel), [{'column' => 'activated_at', 'type' => 'datetime', 'operator' => 'after', 'operand' => Date.current.strftime('%m/%d/%Y')}]
+    assert_asearch 'date_before', [nil], [{'column' => 'activated_at', 'type' => 'datetime', 'operator' => 'before', 'operand' => Date.current.to_s}]
+    assert_asearch 'date_after', %w(Michel), [{'column' => 'activated_at', 'type' => 'datetime', 'operator' => 'after', 'operand' => Date.current.to_s}]
     assert_asearch 'date_today', %w(Loulou Martin), [{'column' => 'activated_at', 'type' => 'datetime', 'operator' => 'today', 'operand' => ''}]
     assert_asearch 'date_yesterday', [], [{'column' => 'activated_at', 'type' => 'datetime', 'operator' => 'yesterday', 'operand' => ''}]
-    assert_asearch 'date_on', %w(Loulou Martin), [{'column' => 'activated_at', 'type' => 'datetime', 'operator' => 'on', 'operand' => Date.current.strftime('%m/%d/%Y')}]
+    assert_asearch 'date_on', %w(Loulou Martin), [{'column' => 'activated_at', 'type' => 'datetime', 'operator' => 'on', 'operand' => Date.current.to_s}]
     assert_asearch 'date_this_week', %w(Loulou Martin), [{'column' => 'activated_at', 'type' => 'datetime', 'operator' => 'this_week', 'operand' => ''}]
     assert_asearch 'date_last_week', [], [{'column' => 'activated_at', 'type' => 'datetime', 'operator' => 'last_week', 'operand' => ''}]
   end

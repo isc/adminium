@@ -15,7 +15,6 @@ td.operators
   = render "/settings/filters/#{filter_type}", g: g, operator: filter['operator']
 td
   - options = {class: 'operand form-control'}
-  - options[:class] += ' datepicker' if %w(datetime date).include? filter_type
   - options['data-type'] = filter_type
   - options['data-original-type'] = filter['type'].to_s
   = text_field_tag "filters[#{g}][operand]", filter['operand'], options
