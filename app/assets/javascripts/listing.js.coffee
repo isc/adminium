@@ -65,10 +65,11 @@ class CustomColumns
         text = "#{optgroup.attr('label')} count"
       else
         value = text = column
-    label = $('<label>').text(text)
+    label = $('<label>').text(" #{text}")
     input = $('<input>').attr('type': 'checkbox', 'checked': 'checked', 'name':"#{ul.data('type')}_columns[]", 'value':value)
-    icon = $('<i class="fa fa-arrows-v">')
-    $('<li>').append(input).append(label).append(icon).appendTo ul
+    label.prepend(input)
+    icon = $('<i class="fa fa-arrows-v pull-right">')
+    $('<li class="list-group-item">').append(label).append(icon).appendTo ul
 
 class ColumnSettings
 
