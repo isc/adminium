@@ -10,7 +10,7 @@ class Collaborator < ActiveRecord::Base
 
   # FIXME: check table existence
   def permissions
-    roles.each_with_object({}) do |res, role|
+    roles.each_with_object({}) do |role, res|
       role.permissions.each do |table, rights|
         res[table] ||= {}
         res[table].merge! rights
