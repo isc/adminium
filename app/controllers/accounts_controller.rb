@@ -62,7 +62,7 @@ class AccountsController < ApplicationController
     else
       params[:account][:db_url_setup_method] = 'web'
     end
-    if (current_account.id.to_s == ENV['DEMO_ACCOUNT_ID']) || current_account.update(params[:account])
+    if (current_account.id.to_s == ENV['DEMO_ACCOUNT_ID']) || current_account.update(account_params)
       if params[:install]
         redirect_to_invite_collaborators_or_dashbord
       else
@@ -92,5 +92,11 @@ class AccountsController < ApplicationController
     redirect_to path
   rescue Heroku::API::Errors::ErrorWithResponse
     redirect_to dashboard_path
+  end
+
+  private
+
+  def account_params
+    params.require(:account).permit(:db_url, :db_url_setup_method, :application_time_zone, :database_time_zone)
   end
 end
