@@ -1,6 +1,6 @@
 class window.ImportManager
 
-  limit: 1500
+  limit: 10000
 
   constructor: ->
     return unless $('#import_file').length
