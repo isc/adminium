@@ -421,8 +421,9 @@ class ResourcesController < ApplicationController
     else
       resource_with_column, table = resource, params[:table]
     end
-    type = resource_with_column.column_info(filter['column'].to_sym)[:type]
-    if type != filter['type'].to_sym
+    column_info = resource_with_column.column_info(filter['column'].to_sym)
+    type = column_info[:type] || column_info[:db_type]
+    if type.to_sym != filter['type'].to_sym
       flash.now[:error] = "Filter on the #{filter['column']} column is not valid anymore (defined on a #{filter['type']} column, not #{type})."
       return
     end
