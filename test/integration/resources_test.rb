@@ -22,6 +22,18 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_no_selector 'th a', text: 'First name'
   end
 
+  test 'index with limited permissions' do
+    user = create :user
+    role = create :role
+    collaborator = create :collaborator, user: user, account: @account, is_administrator: false, roles: [role]
+    page.set_rack_session user: user.id, collaborator: collaborator.id
+    visit resources_path(:users)
+    assert_text "You haven't the permission to perform index on users"
+    role.update permissions: {'users' => {'read' => '1'}}
+    visit resources_path(:users)
+    assert_text 'No records were found.'
+  end
+
   test 'index for users table asking for a page too far' do
     FixtureFactory.new :user
     visit resources_path(:users, page: 37)

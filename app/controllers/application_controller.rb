@@ -56,7 +56,7 @@ class ApplicationController < ActionController::Base
   end
 
   def admin?
-    (session[:account] && current_user.nil?) || current_collaborator.try(:is_administrator) || (current_user.try(:heroku_provider?) && current_collaborator.nil?)
+    (session[:account] && current_user.nil?) || current_collaborator&.is_administrator || (current_user&.heroku_provider? && current_collaborator.nil?)
   end
 
   def require_admin

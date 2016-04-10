@@ -18,6 +18,10 @@ FactoryGirl.define do
     email 'blabla@adasd.com'
   end
 
+  factory :role do
+    name 'Read only'
+  end
+
   factory :time_chart_widget do
     account
     table :users

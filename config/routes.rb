@@ -31,7 +31,7 @@ Adminium::Application.routes.draw do
   resources :schemas
   resources :searches
   resources :column_settings
-  resource :general_settings, only: [:edit, :update]
+  resource :general_settings, only: %i(edit update)
   resources :docs, only: [:index, :show] do
     collection do
       get :start_demo
@@ -47,7 +47,7 @@ Adminium::Application.routes.draw do
     get :switch_account
     get :login_heroku_app
   end
-  resource :account, only: [:create, :edit, :update] do
+  resource :account, only: %i(create edit update) do
     get :db_url_presence, on: :member
     get :update_db_url_from_heroku_api, on: :collection
     post :cancel_tips, on: :member
@@ -60,11 +60,10 @@ Adminium::Application.routes.draw do
     get :apps
   end
   namespace :heroku do
-    resources :resources, only: [:create, :destroy, :update, :show]
-    resources :accounts, only: [:update]
+    resources :resources, only: %i(create destroy update show)
+    resources :accounts, only: :update
   end
   post 'sso/login' => 'heroku/resources#sso_login'
   get 'test/threads' => 'resources#test_threads'
-  get 'landing' => 'docs#landing'
   root to: 'docs#landing'
 end

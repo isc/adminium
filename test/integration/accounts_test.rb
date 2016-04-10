@@ -14,8 +14,7 @@ class AccountsTest < ActionDispatch::IntegrationTest
   end
 
   test 'update account settings' do
-    account = create(:account, plan: Account::Plan::PET_PROJECT)
-    login account
+    account = login
     visit edit_account_path
     new_db_url = "#{account.db_url}?plop=plip"
     fill_in 'Database URL', with: new_db_url
