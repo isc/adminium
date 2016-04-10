@@ -148,7 +148,7 @@ class ResourcesController < ApplicationController
     if resource.query.where(resource.primary_key => params[:record_ids]).count != @record_ids.length
       fail 'BulkEditCheckRecordsFailed'
     end
-    if @record_ids.length == 1
+    if @record_ids.one?
       @item = resource.find @record_ids.shift
       @form_url = resource_path(params[:table], resource.primary_key_value(@item), return_to: :back)
       @form_method = 'put'
@@ -240,20 +240,16 @@ class ResourcesController < ApplicationController
   def nullify_params
     return if @already_nullified
     (params[resource.table] || {}).each do |column_name, value|
-      if value.blank? && resource.schema_hash[column_name.to_sym] && resource.schema_hash[column_name.to_sym][:type] == :string
-        if nullify_setting_for(column_name) == 'null'
-          params[resource.table][column_name] = nil
-        end
-        if nullify_setting_for(column_name).blank?
-          params[resource.table].delete column_name
-        end
-      end
+      next if value.present? || resource.schema_hash[column_name.to_sym].try(:[], :type) != :string
+      nullify_setting = nullify_setting_for column_name
+      params[resource.table][column_name] = nil if nullify_setting == 'null'
+      params[resource.table].delete column_name if nullify_setting.blank?
     end
     @already_nullified = true
   end
 
-  def nullify_setting_for(column_name)
-    params["#{resource.table}_nullify_settings"] && params["#{resource.table}_nullify_settings"][column_name]
+  def nullify_setting_for column_name
+    params["#{resource.table}_nullify_settings"].try :[], column_name
   end
 
   def object_name
@@ -427,8 +423,8 @@ class ResourcesController < ApplicationController
       flash.now[:error] = "Filter on the #{filter['column']} column is not valid anymore (defined on a #{filter['type']} column, not #{type})."
       return
     end
-    operators.merge! datetime_operators if [:date, :datetime].index(type)
-    operators.merge! string_operators if [:string, :text].index(type)
+    operators.merge! datetime_operators if %i(date datetime).index(type)
+    operators.merge! string_operators if %i(string text).index(type)
     column = qualify table, filter['column'].to_sym
     operation = operators[filter['operator']]
     column = Sequel.function operation[:named_function], column if operation[:named_function]
