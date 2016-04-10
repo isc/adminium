@@ -334,7 +334,7 @@ module ResourcesHelper
   end
 
   def generate_chart_path
-    chart_resources_path(params.slice(:table, :where, :search, :asearch).merge(column: '{column}', type: '{type}'))
+    chart_resources_path(params.slice(:table, :where, :search, :asearch, :grouping).merge(column: '{column}', type: '{type}'))
   end
 
   def column_header_with_metadata resource, name

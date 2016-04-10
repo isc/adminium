@@ -60,7 +60,7 @@ class TimeCharts
       $(container).text "No data to chart for this grouping value."
       return
     
-    if data.chart_type == 'StatChart'
+    if data.chart_type is 'StatChart'
       @statChart(data, container)
       return
     
