@@ -2,15 +2,14 @@ require 'test_helper'
 
 class DashboardTest < ActionDispatch::IntegrationTest
   test 'view dashboard' do
-    Timecop.travel Time.current do
-      login
-      visit dashboard_path
-      assert_text 'Database size'
-      assert_text 'Welcome On Board'
-      visit dashboard_path
-      assert_no_text 'Welcome On Board'
-      assert_no_text 'Basic Search'
-      Timecop.travel 2.days.from_now
+    login
+    visit dashboard_path
+    assert_text 'Database size'
+    assert_text 'Welcome On Board'
+    visit dashboard_path
+    assert_no_text 'Welcome On Board'
+    assert_no_text 'Basic Search'
+    Timecop.travel 2.days.from_now do
       visit dashboard_path
       assert_text 'Basic Search'
     end
