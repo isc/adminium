@@ -81,7 +81,7 @@ class Navigation
       else if e.which is 88 # x
         checkBox = row.find('td:eq(0) input[type=checkbox]').get(0).click()
       else if e.which is 84 # t
-        row.find('td:first-child a:last-child').trigger('click')
+        row.find('td:first-child a[data-method="delete"]').trigger('click')
       else if e.which is 69 # e
         location.href = row.find('td:first-child a:eq(1)').attr('href')
       else

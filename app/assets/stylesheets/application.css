@@ -37,3 +37,6 @@ i.fa.discrete:hover {
 .tab-pane {
   padding-top: 30px;
 }
+.popover {
+  overflow: hidden;
+}
