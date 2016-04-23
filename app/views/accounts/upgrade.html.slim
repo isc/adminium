@@ -1,4 +1,4 @@
 .hero-unit
   h1= "Failed to upgrade #{current_account.name} to plan #{params[:petproject]}"
-  .alert.alert-error
-    = JSON.parse(@error.response.data[:body])["error"]
+  .alert.alert-danger
+    = JSON.parse(@error.response.data[:body])['error']

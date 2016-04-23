@@ -16,7 +16,7 @@
         = simple_form_for @account, html: {class: 'form-horizontal'} do |f|
           - if @account.errors.any?
             .row
-              .alert.alert-error
+              .alert.alert-danger
                 h4
                   = pluralize @account.errors.count, 'error'
                   = " prohibited this #{@account.class.name.humanize} from being saved:"
@@ -51,7 +51,7 @@
                 'or has the following roles
                 = link_to '(create a new role)', new_role_path
             - if current_account.roles.present?
-              = f.association :roles, as: :check_boxes, collection: current_account.roles.map {|role|[role.name, role.id]}, html: {class: "span1"}
+              = f.association :roles, as: :check_boxes, collection: current_account.roles.pluck(:name, :id)
             .form-group
               .col-sm-offset-3.col-sm-9
                 = f.submit 'Add a collaborator', class: 'btn btn-primary', data: {disable_with: 'Sending...'}

@@ -6,7 +6,7 @@ ul.nav.navbar-nav.navbar-right
       a.apps-list.dropdown-toggle data-toggle="dropdown" href="#"
         ' Signed in as
         b = current_user&.name || current_user&.email || 'heroku admin'
-        b.caret
+        b.caret<
       ul.dropdown-menu.accounts-menu
         li
           a Loading...

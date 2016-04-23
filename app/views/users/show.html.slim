@@ -1,43 +1,33 @@
 script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"
 
-div.row-fluid ng-controller="AppsCtrl"
-  table.table.table-bordered.apps
-    thead
-      tr
-        th Apps
-        th
-          input ng-model="search.name" placeholder="Filter"
-    tbody
-      tr.unauthorized.hide
-        td colspan=2
-          p.alert.alert-error
-            'Your session must have expired, please reconnect to list your apps.
-          = link_to "Reconnect to Heroku", "/auth/heroku", class: 'btn btn-large btn-primary', style: "width: 30%; margin: auto"
-      tr.loading
-        td colspan=2
-          = spinner_tag
-      tr ng-repeat="app in apps | filter:search" ng-cloak="true"
-        td colspan=2 ng-click='appSelection()'
-          i.icon-circle-blank ng-hide="installed()" title="add-on not installed on this application yet"
-          i.icon-circle ng-show="installed()" title="add-on already installed (plan: {{app.plan}})"
-          '  {{app.name}}
+.col-md-6.col-md-offset-3 ng-controller="AppsCtrl"
+  .alert.alert-danger.unauthorized.text-center.hidden
+    'Your session must have expired, please reconnect to list your apps.
+    br
+    = link_to "Reconnect to Heroku", "/auth/heroku", class: 'btn btn-large btn-primary', style: "width: 30%; margin: auto"
+  .list-group
+    .list-group-item.list-group-item-info
+      form.form-inline.pull-right
+        input.form-control ng-model="search.name" placeholder="Filter"
+      h4 Apps
+    a.list-group-item.loading ng-hide="apps"
+      .text-center
+        i.fa.fa-spin.fa-5x.fa-spinner
+    a.list-group-item ng-repeat="app in apps | filter:search" ng-cloak="true" ng-click='appSelection()' href="#"
+      i.fa.fa-circle-o ng-hide="installed()" title="add-on not installed on this application yet"
+      i.fa.fa-circle ng-show="installed()" title="add-on already installed (plan: {{app.plan}})"
+      '  {{app.name}}
 
-  .modal.fade.hide#create-addon-modal
-      .modal-body.text-center
-        .step1
-          h1 ng-model="selectedApp" Install Adminium on {{selectedApp.name}}
-          p Adminium Heroku add-on has not yet been provisioned for this app. Choose your plan!
-          .row-fluid.pricing
-            = render '/docs/pricing', install_button: true
-        .step2
-          h2
-          h3
-          p Please wait  ...
-          = spinner_tag
-        .error
-          h2 Failed to install Adminium on your app
-          p.aert.alert-error Something went wrong
-      .modal-footer.step1
-        a.btn.btn-large data-dismiss="modal" Later
-      .modal-footer.error
-        a.btn.btn-large data-dismiss="modal" Close
+  = modal 'Install Adminium add-on', id: 'create-addon-modal', class: 'modal-lg' do |modal|
+    - modal.body do
+      .step1
+        p ng-model="selectedApp" Adminium Heroku add-on has not yet been provisioned for {{selectedApp.name}}. Choose your plan!
+        = render '/docs/pricing', install_button: true
+        .clearfix
+      .step2
+        h4
+        .text-center
+          i.fa.fa-spin.fa-5x.fa-spinner
+      .error
+        h4 Failed to install Adminium on your app
+        p.alert.alert-danger Something went wrong

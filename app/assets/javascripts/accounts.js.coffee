@@ -2,9 +2,8 @@
   $scope.apps = []
   $scope.addonProvisioning = new AddonProvisioning()
   $http.get(window.location.href).success (data) ->
-    $("tr.loading").remove()
     if data.error
-      $("tr.unauthorized").show()
+      $('.unauthorized').removeClass('hidden')
     else
       $scope.apps = data.apps
   $scope.installed = ->
@@ -21,31 +20,29 @@
 class AddonProvisioning
   
   constructor: ->
-    @modal = $("#create-addon-modal")
-    @modalBody = @modal.find(".modal-body")
-    return if @modal.length == 0
-    $("a[data-name][data-app-id]").click @showModal
-    $("a[data-plan]").click @provision
+    @modal = $('#create-addon-modal')
+    @modalBody = @modal.find('.modal-body')
+    return if @modal.length is 0
+    $('a[data-name][data-app-id]').click @showModal
+    $('a[data-plan]').click @provision
 
   showModal: (app) =>
-    @modal.modal("show")
-    @modal.find('.modal-body > div, .modal-footer').hide()
-    @modal.find(".step1").show()
-    $("a[data-plan]").data('name', app.name)
-    $("a[data-plan]").data('app-id', app.id)
+    @modal.modal 'show'
+    @modal.find('.modal-body > div').hide()
+    @modal.find('.step1').show()
+    $('a[data-plan]').data(name: app.name, app-id: app.id)
 
   provision: (evt) =>
     elt = $(evt.currentTarget)
     name = elt.data('name')
     app_id = elt.data('app-id')
     plan = elt.data('plan')
-    @modal.find('.modal-body > div, .modal-footer').hide()
+    @modal.find('.modal-body > div').hide()
     @modalBody.find('.step2').show()
-    @modalBody.find('.step2 h2').text("Installing Adminium on: #{name}")
-    @modalBody.find('.step2 h3').text("selected plan: #{plan}")
+    @modalBody.find('.step2 h4').text("Installing Adminium on #{name} with plan #{plan}")
     $.ajax
       type: 'POST'
-      url: "/account"
+      url: '/account'
       data:
         app_id: app_id
         name: name
@@ -55,11 +52,11 @@ class AddonProvisioning
   
   submitCallback: (data) =>
     if data.success
-      window.location.href = "/dashboard"
+      window.location.href = '/dashboard'
     else
-      @errorCallback(data.error)
+      @errorCallback data.error
   
   errorCallback: (msg) =>
-    msg ||= "Something went wrong"
-    @modal.find('.modal-body > div, .modal-footer').hide()
-    @modal.find(".error").show().find("p").text(msg)
+    msg ||= 'Something went wrong'
+    @modal.find('.modal-body > div').hide()
+    @modal.find('.error').show().find('p').text(msg)

@@ -51,8 +51,6 @@ class AccountsController < ApplicationController
   end
 
   def update
-    # attr_accessible :db_url, :plan, :heroku_id, :callback_url, :name, :owner_email,
-    #   :database_time_zone, :application_time_zone, :db_url_setup_method
     if params[:db_key] && session[:db_urls].present?
       db_url = session[:db_urls].detect {|url| url[:key] == params[:db_key]}
       params[:account] ||= {}

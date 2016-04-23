@@ -1,60 +1,25 @@
 .postgresql-logo, .mysql-logo {
-  margin:0 15px;
+  margin: 0 15px;
 }
 .postgresql-logo {
-  margin-top:15px;
+  margin-top: 15px;
 }
 .mysql-logo {
-  margin-top:5px;
+  margin-top: 5px;
 }
 .heroku-connection-instructions {
-  margin-top:10px;
+  margin-top: 10px;
   img {
-    border-radius:5px;
-    box-shadow:3px 3px 3px rgba(0,0,0,0.5);
+    border-radius: 5px;
+    box-shadow: 3px 3px 3px rgba(0,0,0,0.5);
   }
-}
-
-.apps {
-  margin: 20px auto 0;
-  width: 50%;
-  font-size: 1.3em;
-  td {
-    cursor: pointer;
-    color: #413877;
-    i {
-      color: lighten(#413877, 50%);
-      margin: 0px 10px;
-    }
-    &:hover i {
-      color: #413877;
-    }
-    background: white;
-  }
-  th {
-    input {
-      margin-bottom: 0px;
-    }
-    color: white;
-    border: none;
-    background: #413877;
-    &:last-child {
-      text-align: right;
-    }
-  }
-}
-#create-addon-modal {
-  width: 730px;
-  margin-left: -365px;
 }
 .landing {
-  
   #login .modal-body {
     img {
       height: 41px;
     }
   }
-  
   .intro {
     .big-screenshot {
       position: relative;
@@ -79,7 +44,6 @@
       }
     }
   }
-  
   .technos {
     padding: 20px 0px 30px;
     img {
@@ -87,7 +51,6 @@
       margin: 0 20px 15px 0;
     }
   }
-  
   @media (min-width: 979px) {
     .big-screenshot img {
       min-height: 392px;
