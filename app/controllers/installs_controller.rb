@@ -6,7 +6,7 @@ class InstallsController < ApplicationController
   end
 
   def invite_team
-    if current_user.try :heroku_provider?
+    if current_user&.heroku_provider?
       @heroku_collaborators = heroku_api.get_collaborators(current_account.name).data[:body]
       @heroku_collaborators.delete_if {|c| c['email'] == current_user.email}
     else
@@ -18,7 +18,7 @@ class InstallsController < ApplicationController
 
   def send_email_team
     redirect_opts = {}
-    if params[:emails] && params[:emails].length > 0
+    if params[:emails]&.any?
       CollaboratorMailer.welcome_heroku_collaborator(params[:emails], current_account, current_user).deliver_later
     end
   rescue => ex

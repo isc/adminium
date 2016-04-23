@@ -2,26 +2,34 @@ task fetch_owner_emails: :environment do
   Account.fetch_missing_owner_emails
 end
 
-task statistical_computing: :environment do
-  done_ids = [2379, 2378, 2377, 2376, 2375, 2374, 2370, 2368, 2367, 2366]
-  results = []
-  Account.where('encrypted_db_url is not null').where(deleted_at: nil).where('plan is not "petproject"').order('id desc').limit(30).all.each do |account|
-    puts account.name
-    done_ids.push(account.id)
-    begin
-      g = Generic.new account, timeout: 20, connect_timeout: 3, read_timeout: 5, max_connections: 10
-      g.tables.each do |table|
-        g.schema(table).each do |column|
-          name = column.first
-          type = column.last[:type]
-          results.push [account.name, table, name, type]
-        end
-      end
-    rescue Sequel::DatabaseConnectionError, Sequel::DatabaseError => e
-      puts account.name
-      puts e.inspect
-    ensure
-      g.try :cleanup
-    end
-  end
+task reset_adminium_demo_settings: :environment do
+  account_id = ENV['DEMO_ACCOUNT_ID']
+  return if account_id.nil?
+  account = Account.find(account_id)
+  account.widgets.delete_all
+
+  REDIS.del "account:#{account_id}:settings:payments", "account:#{account_id}:settings:users", "account:#{account_id}:settings:partners"
+
+  account.time_chart_widgets.create! table: 'payments', columns: 'created_at', grouping: 'dow'
+  account.table_widgets.create! table: 'payments', order: 'amount desc'
+  account.table_widgets.create! table: 'users', order: 'created_at desc'
+  account.table_widgets.create! table: 'partners'
+  generic = Generic.new(account)
+  payments_settings = Resource::Base.new generic, :payments
+  payments_settings.enum_values = [{'column_name' => 'status', 'values' => {'4' => {'color' => '#999999', 'label' => 'refunded'}, '1' => {'color' => '#33CC66', 'label' => 'completed'}, '0' => {'color' => '#3366FF', 'label' => 'in progress'}, '3' => {'color' => '#CC3300', 'label' => 'failed'}, '2' => {'color' => '#FF9900', 'label' => 'verified'}}}]
+  payments_settings.columns[:listing] = %w(id users.email user_id amount status created_at updated_at)
+  payments_settings.save
+  payments_settings.update_column_options 'amount', 'rename' => '', 'number_separator' => '', 'number_delimiter' => '', 'number_unit' => '$', 'number_precision' => ''
+  payments_settings.update_column_options 'created_at', 'rename' => '', 'format' => 'time_ago_in_words'
+
+  users_settings = Resource::Base.new generic, :users
+  users_settings.label_column = 'pseudo'
+  users_settings.columns[:listing] = %w(id pseudo email partner_id has_many/payments)
+  users_settings.save
+
+  partners_settings = Resource::Base.new generic, :partners
+  partners_settings.columns[:listing] = %w(id name has_many/users created_at)
+  partners_settings.label_column = 'name'
+  partners_settings.save
+  generic.cleanup
 end

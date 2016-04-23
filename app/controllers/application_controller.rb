@@ -39,7 +39,7 @@ class ApplicationController < ActionController::Base
 
   def current_account?
     session[:account] ||= 2 if Rails.env.development?
-    return !!current_account if session[:account]
+    return current_account.present? if session[:account]
     false
   end
 
@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
   end
 
   def cleanup_generic
-    @generic.try :cleanup
+    @generic&.cleanup
   end
 
   def global_db_error exception
@@ -77,7 +77,7 @@ class ApplicationController < ActionController::Base
   end
 
   def disconnect_on_exception exception
-    @generic.try :cleanup
+    @generic&.cleanup
     fail exception
   end
 

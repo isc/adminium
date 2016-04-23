@@ -48,7 +48,7 @@
       - index = 0
       - @table_sizes.each do |table, fulltblsize, tblsize|
         - index += 1
-        tr class=((current_account.try(:pet_project?) && index > 5) ? 'deactivated' : '')
+        tr class=((current_account&.pet_project? && index > 5) ? 'deactivated' : '')
           td
             = link_to schema_path(table), rel: 'tooltip', title: 'Schema' do
               i.fa.fa-table>

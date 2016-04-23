@@ -5,11 +5,7 @@ ul.nav.navbar-nav.navbar-right
     li.dropdown
       a.apps-list.dropdown-toggle data-toggle="dropdown" href="#"
         ' Signed in as
-        b = current_user.try(:name) || current_user.try(:email) || 'heroku admin'
-        - if current_account
-          '  to
-          b = current_account.name
-        '
+        b = current_user&.name || current_user&.email || 'heroku admin'
         b.caret
       ul.dropdown-menu.accounts-menu
         li

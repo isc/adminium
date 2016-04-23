@@ -20,12 +20,11 @@ class Collaborator < ActiveRecord::Base
   end
 
   def name
-    user.try(:name) || email
+    user&.name || email
   end
 
   def match_with_existing_user
-    user = User.find_by email: email, provider: kind
-    self.user_id = user.id if user
+    self.user = User.find_by email: email, provider: kind unless user
   end
 
   def mail_collaborator

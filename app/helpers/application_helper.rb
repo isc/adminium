@@ -61,7 +61,7 @@ module ApplicationHelper
     if @full_title
       content_tag :title, @full_title
     else
-      content_tag :title, [@title, current_account.try(:name), 'Adminium'].compact.join(' · ')
+      content_tag :title, [@title, current_account&.name, 'Adminium'].compact.join(' · ')
     end
   end
 
