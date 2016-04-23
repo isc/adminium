@@ -73,26 +73,20 @@ module TimeChartBuilder
   def date_range
     case grouping
     when 'daily'
-      start = Date.today - start_date_offset.days
-      incomplete_periods? ? start...Date.tomorrow : start...Date.today
+      (Date.today - 30.days)...Date.tomorrow
     when 'weekly'
       monday = Date.today.beginning_of_week
-      start = (monday - start_date_offset.weeks)
-      incomplete_periods? ? start...Date.tomorrow : start...monday
+      (monday - 52.weeks)...Date.tomorrow
     when 'monthly'
-      start = (Date.today - start_date_offset.months).beginning_of_month
-      incomplete_periods? ? start...Date.tomorrow : start...Date.today.beginning_of_month
+      (Date.today - 12.months).beginning_of_month...Date.tomorrow
     when 'yearly'
-      start = start_date_offset.years.ago.beginning_of_year
-      incomplete_periods? ? start..Date.tomorrow : start...Date.today.beginning_of_year
+      10.years.ago.beginning_of_year..Date.tomorrow
     when 'hourly'
-      start = start_date_offset.hours.ago.beginning_of_hour
-      incomplete_periods? ? start..Time.now : start...Time.now.beginning_of_hour
+      48.hours.ago.beginning_of_hour..Time.now
     when 'minutely'
-      start = start_date_offset.minutes.ago.beginning_of_minute
-      incomplete_periods? ? start..Time.now : start...Time.now.beginning_of_minute
+      60.minutes.ago.beginning_of_minute..Time.now
       # start = (application_time_zone.now - start_date_offset.minutes).beginning_of_minute
-      # incomplete_periods? ? start..application_time_zone.now : start...application_time_zone.now.beginning_of_minute
+      # start..application_time_zone.now
     end
   end
 
@@ -144,13 +138,5 @@ module TimeChartBuilder
 
   def grouping
     params[:grouping].presence || 'daily'
-  end
-
-  def incomplete_periods?
-    true
-  end
-
-  def start_date_offset
-    30
   end
 end
