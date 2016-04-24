@@ -46,8 +46,9 @@ class AccountsController < ApplicationController
     else
       redirect_to 'https://addons.heroku.com/adminium'
     end
-  rescue Heroku::API::Errors::ErrorWithResponse => e
-    @error = e
+  rescue Heroku::API::Errors::ErrorWithResponse => error
+    body = error.response.data[:body]
+    @error = JSON.parse(body)['error'] rescue body
   end
 
   def update
@@ -55,7 +56,6 @@ class AccountsController < ApplicationController
       db_url = session[:db_urls].detect {|url| url[:key] == params[:db_key]}
       params[:account] ||= {}
       params[:account][:db_url] = db_url[:value]
-      session[:db_urls]
       params[:account][:db_url_setup_method] = current_account.db_url_setup_method.presence || 'oauth'
     else
       params[:account][:db_url_setup_method] = 'web'

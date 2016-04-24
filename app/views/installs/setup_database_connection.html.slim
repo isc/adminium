@@ -1,44 +1,34 @@
-.hero-unit
-  
-  h1.text-center
-    i.fa.fa-flag.fa-4x
-    br
-    'Great, Adminium has just been provisioned for your app!
-  .row
-    .col-md-4.col-md-offset-2.text-center
-      h3 Finally, to get started
-      = link_to "Connect to your database", "/auth/heroku", class: "btn btn-info btn-large"
-    .col-md-4
-      div(style="margin-top: 10px")
-        'It will securely authenticate you with Heroku and allow Adminium to connect to your database. You can also do it
-        = link_to("manually", "#modal-install-manually", data: {toggle: 'modal'}) + "."
+h3.text-center
+  i.fa.fa-flag.fa-4x
+  br
+  'Great, Adminium has been successfully provisioned for your app!
+.row
+  .col-md-12.text-center
+    p
+      'To get started :
+      =< link_to 'Connect to your database', '/auth/heroku', class: 'btn btn-info btn-large'
+    p
+      'It will securely authenticate you with Heroku and allow Adminium to connect to your database. You can also do it
+      = link_to("manually", "#modal-install-manually", data: {toggle: 'modal'}) + "."
 - if @db_urls
   - if @db_urls.empty?
-    .modal.hide.fade#error-no-urls data-open-on-load="true"
-      .modal-header
-        a.close data-dismiss="modal" ×
-        h3 No connection url found
-      .modal-body
-        p= "We didn't find any database url in your configuration settings."
-        p= "We support PostgreSQL and MySQL for the moment, If you are using another engine, #{support_link "please let us know"}.".html_safe
+    = modal 'No connection URL found', id: 'db-url-modal' do |modal|
+      - modal.body do
+        p We didn't find any database URL in your configuration settings.
+        p== "We support PostgreSQL and MySQL for the moment, If you are using another engine, #{support_link "please let us know"}."
         p If you are using one of those two, you can manually enter the connection url.
         = render "db_url_form"
   - if @db_urls.many?
-    .modal.hide.fade data-open-on-load="true"
-      .modal-header
-        a.close data-dismiss="modal" x
-        h3 Which database do you want to access ?
-      .modal-body
-        h4= "We detected #{@db_urls.length} different url, which one do you want to go with ?"
-        table.table
+    = modal 'Which database do you want to access ?', id: 'db-url-modal' do |modal|
+      - modal.body do
+        p= "We detected #{@db_urls.size} different URLs, which one do you want to go with ?"
+        .list-group
           - @db_urls.each do |db|
-            tr
-              td
-                = form_for current_account do |f|
-                  = hidden_field_tag "db_key", db[:key]
-                  = hidden_field_tag :install, 1
-                  = f.submit db[:key]
-              td= db[:value][0..15] + "******************"
+            = form_for current_account, html: {class: 'list-group-item'} do |f|
+              = hidden_field_tag 'db_key', db[:key]
+              = hidden_field_tag :install, 1
+              = f.submit db[:key], class: 'btn btn-info'
+              =< db[:value][0..15] + "******************"
 
 .modal.fade#modal-install-manually
   .modal-dialog.modal-lg
