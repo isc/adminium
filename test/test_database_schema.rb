@@ -4,7 +4,7 @@ ActiveRecord::Schema.verbose = false
 ActiveRecord::Base.connection.tables.each do |table|
   ActiveRecord::Base.connection.drop_table table
 end
-ActiveRecord::Schema.define(version: 25) do
+ActiveRecord::Schema.define(version: 26) do
   enable_extension :hstore
   create_table :users do |t|
     t.string :pseudo, :first_name, :last_name
@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 25) do
     t.integer :kind, default: 37
     t.integer :user_profile_id
     t.date :birthdate
-    t.string :time_zone, :country
+    t.string :time_zone
     t.binary :file
     t.decimal :Average_Price_Online__c
     t.boolean :Awesome_Person__c

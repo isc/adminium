@@ -36,7 +36,6 @@ module FormHelper
       case name.to_s
       when /password/  then :password_field
       when /time_zone/ then [:select, time_zone_options_for_select(value)]
-      when /country/   then [:select, country_options_for_select(value)]
       when /email/     then :email_field
       when /phone/     then :telephone_field
       else

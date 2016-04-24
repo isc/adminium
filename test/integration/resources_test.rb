@@ -128,7 +128,6 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test 'save new' do
     visit new_resource_path(:users)
     fill_in 'Pseudo', with: 'Bobulus'
-    assert_selector 'select[name="users[country]"]'
     assert_selector 'select[name="users[time_zone]"]'
     click_button 'Save'
     assert_text 'successfully created'
