@@ -1,10 +1,3 @@
-GIT
-  remote: git://github.com/airbrake/airbrake.git
-  revision: 6c74d0a2c3b406297f49080af943566ae7ca7c87
-  specs:
-    airbrake (5.2.3)
-      airbrake-ruby (~> 1.2)
-
 GEM
   remote: http://rubygems.org/
   remote: https://rails-assets.org/
@@ -45,7 +38,9 @@ GEM
       thread_safe (~> 0.3, >= 0.3.4)
       tzinfo (~> 1.1)
     addressable (2.4.0)
-    airbrake-ruby (1.2.3)
+    airbrake (5.2.3)
+      airbrake-ruby (~> 1.2)
+    airbrake-ruby (1.2.2)
     arel (6.0.3)
     attr_encryptor (2.0.0)
       encryptor2 (>= 1.0.0)
@@ -361,7 +356,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  airbrake!
+  airbrake
   attr_encryptor
   better_errors
   binary_search
