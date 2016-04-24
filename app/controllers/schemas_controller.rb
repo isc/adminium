@@ -31,7 +31,7 @@ class SchemasController < ApplicationController
           column data[:name], data[:ruby_type], data[:options]
         end
       end
-      primary_key(primary_column_names, name: "#{table_name}_pk") if primary_column_names.length > 1
+      primary_key(primary_column_names, name: "#{table_name}_pk") if primary_column_names.many?
     end
     render json: {table_name: params[:table_name]}
   rescue Sequel::Error => e

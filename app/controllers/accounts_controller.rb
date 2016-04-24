@@ -82,7 +82,7 @@ class AccountsController < ApplicationController
   end
 
   def redirect_to_invite_collaborators_or_dashbord
-    path = if current_user&.heroku_provider? && heroku_api.get_collaborators(current_account.name).data[:body].length > 1
+    path = if current_user&.heroku_provider? && heroku_api.get_collaborators(current_account.name).data[:body].many?
              invite_team_install_path
            else
              dashboard_path

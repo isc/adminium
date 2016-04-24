@@ -23,7 +23,7 @@
         p= "We support PostgreSQL and MySQL for the moment, If you are using another engine, #{support_link "please let us know"}.".html_safe
         p If you are using one of those two, you can manually enter the connection url.
         = render "db_url_form"
-  - if @db_urls.length > 1
+  - if @db_urls.many?
     .modal.hide.fade data-open-on-load="true"
       .modal-header
         a.close data-dismiss="modal" x

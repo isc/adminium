@@ -259,22 +259,22 @@ class ResourcesController < ApplicationController
   def apply_search
     return unless params[:search].present?
     conds = []
-    number_columns = resource.columns[:search].select {|c| resource.is_number_column?(c)}
+    number_columns = resource.columns[:search].select {|c| resource.number_column?(c)}
     if number_columns.any? && params[:search].match(/\A\-?\d+\Z/)
       v = params[:search].to_i
       conds += number_columns.map {|column| {qualify(resource.table, column) => v}}
     end
-    text_columns = resource.columns[:search].select {|c| resource.is_text_column?(c)}
+    text_columns = resource.columns[:search].select {|c| resource.text_column?(c)}
     if text_columns.any?
       string_patterns = params[:search].split(' ').map {|pattern| pattern.include?('%') ? pattern : "%#{pattern}%" }
       conds << resource.query.grep(text_columns.map {|c| qualify(resource.table, c)}, string_patterns, case_insensitive: true, all_patterns: true).opts[:where]
     end
-    array_columns = resource.columns[:search].select {|c| resource.is_array_column?(c)}
+    array_columns = resource.columns[:search].select {|c| resource.array_column?(c)}
     if array_columns.any?
       search_array = @generic.db.literal Sequel.pg_array(params[:search].split(' '), :text)
       conds += array_columns.map {|column| Sequel.lit "\"#{column}\"::text[] @> #{search_array}"}
     end
-    uuid_columns = resource.columns[:search].select {|c| resource.is_uuid_column?(c)}
+    uuid_columns = resource.columns[:search].select {|c| resource.uuid_column?(c)}
     if uuid_columns.any? && params[:search].match(/\A[a-f\d\-]+\Z/)
       no_hyphens = params[:search].delete('-')
       cond = if no_hyphens =~ /\A.{32}\Z/
@@ -296,7 +296,7 @@ class ResourcesController < ApplicationController
     return unless params[:where].present?
     where_hash = Hash[params[:where].map do |k, v|
       v = nil if v == 'null'
-      if resource.is_date_column? k.to_sym
+      if resource.date_column? k.to_sym
         datetime = application_time_zone.parse(v)
         [time_chart_aggregate(qualify(params[:table], k)), v]
       else

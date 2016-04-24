@@ -11,8 +11,8 @@ Adminium::Application.configure do
 
   # Disable Rails's static asset server (Apache or nginx will already do this)
   config.serve_static_files = false
-  config.static_cache_control = "public, max-age=31536000"
-  
+  config.static_cache_control = 'public, max-age=31536000'
+
   # Compress JavaScripts and CSS
   config.assets.js_compressor = :uglifier
 
@@ -34,7 +34,7 @@ Adminium::Application.configure do
 
   # See everything in the log (default is :info)
   config.log_level = :debug
-  config.log_tags = [:uuid, lambda { |req| req.path === '/ping' ? '__hide__' : '' }]
+  config.log_tags = [:uuid, lambda {|req| req.path == '/ping' ? '__hide__' : ''}]
 
   # Use a different logger for distributed setups
   # config.logger = SyslogLogger.new
@@ -59,7 +59,7 @@ Adminium::Application.configure do
 
   # Send deprecation notices to registered listeners
   config.active_support.deprecation = :notify
-  
+
   config.action_mailer.asset_host = Figaro.env.mailer_asset_host
 end
 

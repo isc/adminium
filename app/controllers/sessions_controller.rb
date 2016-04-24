@@ -51,7 +51,7 @@ class SessionsController < ApplicationController
         current_account.save!
       end
       collaborator = current_user.collaborators.where(account_id: current_account.id).first
-      session[:collaborator] = collaborator.id if collaborator
+      session[:collaborator] = collaborator&.id
       track_sign_on current_account, SignOn::Kind::HEROKU_OAUTH
       redirect_to root_url, notice: "Signed in to #{current_account.name}."
     else

@@ -76,7 +76,7 @@ nav.navbar.navbar-default
       - params[:where].each do |k, v|
         .col-md-3
           .alert.alert-warning.alert-dismissible
-            - if resource.is_date_column? k.to_sym
+            - if resource.date_column? k.to_sym
               == "Where #{k} is in <i>#{format_date(v).first}</i>"
             - else
               == "Where #{k} is <i>#{v}</i>"

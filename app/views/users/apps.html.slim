@@ -1,6 +1,6 @@
 - if current_account
   li= link_to "Dashboard for <b>#{current_account.name}</b>".html_safe, dashboard_path
-- if current_account && @installed_apps.length > 1
+- if current_account && @installed_apps.many?
   li.divider
 - @installed_apps.each do |account|
   - if account != current_account

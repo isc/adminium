@@ -84,12 +84,12 @@ module Resource
       end
       primary_keys = column_names.find_all {|c| c.to_s.ends_with? '_id'}
       primary_keys = column_names.find_all {|c| c.to_s =~ /\wId$/} if primary_keys.empty?
-      return primary_keys if primary_keys.size > 1
+      return primary_keys if primary_keys.many?
       []
     end
 
     def primary_key
-      raise "Asking for a single primary_key on a composite primary key table" if primary_keys.size > 1
+      fail 'Asking for a single primary_key on a composite primary key table' if composite_primary_key?
       primary_keys.first
     end
 
@@ -106,7 +106,7 @@ module Resource
     end
 
     def composite_primary_key?
-      primary_keys.size > 1
+      primary_keys.many?
     end
 
     def schema
@@ -217,44 +217,44 @@ module Resource
       @column_info[column_name] ||= schema.detect {|c, _| c == column_name}&.second
     end
 
-    def is_number_column? column_name
+    def number_column? column_name
       %i(integer float decimal).include? column_type(column_name)
     end
 
-    def is_boolean_column? column_name
+    def boolean_column? column_name
       column_type(column_name) == :boolean
     end
 
-    def is_text_column? column_name
+    def text_column? column_name
       %i(string text).include? column_type(column_name)
     end
 
-    def is_array_column? column_name
+    def array_column? column_name
       column_type(column_name).to_s['_array']
     end
 
-    def is_date_column? column_name
+    def date_column? column_name
       %i(datetime date timestamp).include? column_type(column_name)
     end
 
-    def is_uuid_column? column_name
+    def uuid_column? column_name
       column_info(column_name)[:db_type] == 'uuid'
     end
 
-    def is_pie_chart_column? name
-      enum_values_for(name) || is_boolean_column?(name) || foreign_key?(name)
+    def pie_chart_column? name
+      enum_values_for(name) || boolean_column?(name) || foreign_key?(name)
     end
 
-    def is_stat_chart_column? name
-      is_number_column?(name) && !name.to_s.ends_with?('_id') && enum_values_for(name).nil? && !primary_keys.include?(name)
+    def stat_chart_column? name
+      number_column?(name) && !name.to_s.ends_with?('_id') && enum_values_for(name).nil? && !primary_keys.include?(name)
     end
 
     def stat_chart_column_names
-      column_names.find_all {|n| is_stat_chart_column? n}
+      column_names.find_all {|n| stat_chart_column? n}
     end
 
     def pie_chart_column_names
-      column_names.find_all {|n| is_pie_chart_column? n}
+      column_names.find_all {|n| pie_chart_column? n}
     end
 
     def binary_column_names
@@ -322,7 +322,7 @@ module Resource
     end
 
     def foreign_key_array? name
-      if name.to_s.ends_with?('_ids') && is_array_column?(name)
+      if name.to_s.ends_with?('_ids') && array_column?(name)
         table = name.to_s.gsub(/_ids$/, '').pluralize.to_sym
         table if @generic.tables.include? table
       end

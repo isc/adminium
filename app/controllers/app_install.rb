@@ -2,7 +2,7 @@ module AppInstall
   def configure_db_url setup_method
     config_vars = heroku_api.get_config_vars(current_account.name).data[:body]
     @db_urls = db_urls config_vars
-    if @db_urls.length == 1
+    if @db_urls.one?
       current_account.db_url = @db_urls.first[:value]
       current_account.db_url_setup_method = setup_method
       current_account.save!
@@ -17,8 +17,7 @@ module AppInstall
     apps = heroku_api.get_apps.data[:body]
     app_id = current_account.heroku_id.match(/\d+/).to_s
     app = apps.detect {|a| a['id'].to_s == app_id}
-    app_name = app['name']
-    current_account.name = app_name
+    current_account.name = app['name']
   end
 
   def set_profile

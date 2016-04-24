@@ -1,9 +1,9 @@
 module TimeChartBuilder
-  DEFAULT_GROUPING = %w(Monthly Daily Weekly Yearly Hourly Minutely).map {|g|[g, g.downcase]}
+  DEFAULT_GROUPING = %w(Monthly Daily Weekly Yearly Hourly Minutely).map {|g| [g, g.downcase]}
   DEFAULT_GROUPING_PERIODIC = [['Hour of day', 'hour'], ['Day of week', 'dow'], ['Month of year', 'month']]
   GROUPING_OPTIONS = DEFAULT_GROUPING + DEFAULT_GROUPING_PERIODIC
   DEFAULT_DATE_FORMATS = {'monthly' => '%b', 'weekly' => 'Week %W', 'daily' => '%b %d',
-    'yearly' => '%Y', 'hourly' => '%l%P', 'minutely' => '%H:%M'}
+                          'yearly' => '%Y', 'hourly' => '%l%P', 'minutely' => '%H:%M'}
 
   private
 

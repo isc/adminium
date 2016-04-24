@@ -8,7 +8,7 @@ module PieChartBuilder
     apply_where
     apply_filters
     apply_search
-    enum = if resource.is_boolean_column? name
+    enum = if resource.boolean_column? name
              options = resource.column_options(name)
              {
                true => {'color' => '#07be25', 'label' => options['boolean_true'] || 'True'},

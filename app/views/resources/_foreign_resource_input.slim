@@ -1,6 +1,6 @@
 - record = foreign_resource.find_by_primary_key value unless value.nil?
 .adminium-association
-  - if resource.is_array_column? name
+  - if resource.array_column? name
     = hidden_field_tag "#{resource.table}[#{name}][]" if value
     .multiple-records.sortable data-input-name="#{resource.table}[#{name}][]"
       - if record

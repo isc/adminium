@@ -26,7 +26,7 @@ module ResourcesHelper
   end
 
   def sort_title display_name, ascend, original_key
-    a, z = if resource.is_number_column?(original_key) || original_key.to_s.starts_with?('has_many/')
+    a, z = if resource.number_column?(original_key) || original_key.to_s.starts_with?('has_many/')
              [0, 9]
            else
              %w(A Z)
@@ -269,9 +269,9 @@ module ResourcesHelper
     content_tag(:pre, value, class: 'sh_ruby')
   end
 
-  def display_hstore value
+  def display_hstore hash
     content_tag(:table, class: 'hstore table table-condensed table-striped') do
-      value.map do |key, value|
+      hash.map do |key, value|
         content_tag(:tr) do
           content_tag(:th, key) + content_tag(:td, value)
         end
@@ -312,7 +312,7 @@ module ResourcesHelper
     [CGI.unescape(param.split('=').first), CGI.unescape(param.split('=').last)]
   end
 
-  def columns_options_for_resource resource, options={}
+  def columns_options_for_resource resource, options = {}
     res = content_tag :optgroup, label: resource.table.to_s.humanize do
       resource.column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe
     end
