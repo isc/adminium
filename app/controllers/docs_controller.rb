@@ -11,21 +11,13 @@ class DocsController < ApplicationController
   end
 
   def landing
-    if session[:account]
-      redirect_to dashboard_url
-      return
-    end
-    if session[:user]
-      redirect_to user_path
-      return
-    end
+    return redirect_to dashboard_url if session[:account]
+    return redirect_to user_path if session[:user]
     render layout: false
   end
 
-  def show
-    options = {}
-    options[:layout] = false if params[:no_layout]
-    render params[:id], options
+  def keyboard_shortcuts
+    render layout: false
   end
 
   def start_demo

@@ -32,10 +32,11 @@ Adminium::Application.routes.draw do
   resources :searches
   resources :column_settings
   resource :general_settings, only: %i(edit update)
-  resources :docs, only: [:index, :show] do
+  resources :docs, only: :index do
     collection do
       get :start_demo
       get :stop_demo
+      get :keyboard_shortcuts
     end
   end
   resource :install do

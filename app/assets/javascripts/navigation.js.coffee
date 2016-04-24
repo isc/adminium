@@ -48,7 +48,7 @@ class Navigation
       if $(selector).length
         $(selector).modal('show')
       else
-        docs_url = '/docs/keyboard_shortcuts?no_layout=true'
+        docs_url = '/docs/keyboard_shortcuts'
         $('<div>').attr('id', selector.replace('#', '')).addClass('modal fade')
           .appendTo('body').html($(".loading_modal").html()).modal('show')
         $.get docs_url, (data) => $(selector).html(data)

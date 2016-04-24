@@ -10,6 +10,6 @@ class DocsTest < ActionDispatch::IntegrationTest
   end
 
   test 'show doc page' do
-    visit doc_path(:keyboard_shortcuts)
+    visit keyboard_shortcuts_docs_path
   end
 end
