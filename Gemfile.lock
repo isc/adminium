@@ -147,7 +147,7 @@ GEM
     kgio (2.10.0)
     launchy (2.2.0)
       addressable (~> 2.3)
-    listen (3.0.6)
+    listen (3.1.1)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9.7)
     loofah (2.0.3)
