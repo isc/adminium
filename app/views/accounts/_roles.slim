@@ -1,10 +1,10 @@
 .row
   - if @account.enterprise?
-    - if @account.roles.present?
+    - if @roles.present?
       .col-md-6
         table.table.table-striped.table-condensed
           tbody
-            - @account.roles.each do |role|
+            - @roles.each do |role|
               tr
                 td= link_to role.name, edit_role_path(role)
                 td

@@ -57,6 +57,7 @@ group :development do
   gem 'guard-livereload', require: false
   gem 'rack-livereload'
   gem 'spring'
+  gem 'rack-mini-profiler'
 end
 group :production do
   gem 'rack-timeout'

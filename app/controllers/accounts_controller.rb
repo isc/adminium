@@ -9,6 +9,8 @@ class AccountsController < ApplicationController
     @active_pane = params[:pane] || 'database_connection'
     @account = current_account
     @heroku_collaborators = []
+    @roles = @account.roles.order(:name).to_a if @account.enterprise?
+    @account_collaborators = @account.collaborators.includes(:roles)
     if current_user&.heroku_provider?
       @heroku_collaborators = heroku_api.get_collaborators(current_account.name).data[:body]
       real_heroku_collaborators = @account.collaborators.where(kind: 'heroku').map(&:email)

@@ -50,13 +50,13 @@
               .col-sm-offset-3.col-sm-9
                 'or has the following roles
                 = link_to '(create a new role)', new_role_path
-            - if current_account.roles.present?
-              = f.association :roles, as: :check_boxes, collection: current_account.roles.pluck(:name, :id)
+            - if @roles.present?
+              = f.association :roles, as: :check_boxes, collection: @roles.map {|r| [r.name, r.id]}
             .form-group
               .col-sm-offset-3.col-sm-9
                 = f.submit 'Add a collaborator', class: 'btn btn-primary', data: {disable_with: 'Sending...'}
         .col-md-6
-          - if @account.collaborators.present? || @collaborators.present?
+          - if @account_collaborators.present? || @heroku_collaborators.present?
             .row
               table.table.col-md-6#collaborators data-delete-url="#{collaborator_path(':id')}"
                 thead
@@ -74,7 +74,7 @@
                       = "(#{collaborator["role"]})" if collaborator['role']
                     td
                       = link_to content_tag(:i, nil, class: 'fa fa-pencil'), new_collaborator_path(email: collaborator['email']), remote: true,  data: {toggle: 'modal', target: "#modal-window", backdrop: true, keyboard: true}, title: 'Edit this collaborator roles', rel: 'tooltip' if collaborator['role'] != 'owner'
-                - @account.collaborators.each do |collaborator|
+                - @account_collaborators.each do |collaborator|
                   - next if collaborator.new_record?
                   tr
                     td= image_tag "logos/#{collaborator.kind}-icon.png", alt: "#{collaborator.kind.capitalize} Collaborator"
