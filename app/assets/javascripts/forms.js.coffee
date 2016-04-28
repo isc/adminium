@@ -14,7 +14,7 @@ hstoreInput = ->
     row.next().find('input, a.btn').get(0).focus()
     row.remove()
   $(document).on 'click', '.hstore-new-row .btn', ->
-    $('.hstore-row').first().clone().insertBefore('.hstore-new-row')
+    $('.hstore-row.hidden').first().clone().insertBefore('.hstore-new-row').removeClass('hidden')
     .find('input').val('').get(0).focus()
     false
 

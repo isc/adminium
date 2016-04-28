@@ -16,15 +16,9 @@
         - foreign_resource = resource_for referenced_table
         = render 'foreign_resource_input', value: item[name], name: name, foreign_resource: foreign_resource
       - elsif resource.column_type(name) == :hstore
+        = render 'hstore_row', table: resource.table, name: name, key: '_', value: nil, hidden: true
         - (item[name] || {'' => ''}).each do |key, value|
-          .hstore-row
-            .form-group
-              .col-xs-5
-                input.form-control name="#{resource.table}[#{name}][]" value=key
-              .col-xs-6
-                input.form-control name="#{resource.table}[#{name}][]" value=value
-              .col-xs-1
-                a.btn.btn-xs.btn-danger title="Remove this key / value pair" &times;
+          = render 'hstore_row', table: resource.table, name: name, key: key, value: value, hidden: false
         .hstore-new-row
           .form-group
             .col-xs-1.col-xs-offset-11

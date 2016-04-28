@@ -1,0 +1,8 @@
+.hstore-row class=('hidden' if hidden)
+  .form-group
+    .col-xs-5
+      input.form-control name="#{table}[#{name}][]" value=key
+    .col-xs-6
+      input.form-control name="#{table}[#{name}][]" value=value
+    .col-xs-1
+      a.btn.btn-xs.btn-danger title="Remove this key / value pair" &times;
