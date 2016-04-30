@@ -325,7 +325,7 @@ module ResourcesHelper
     if options[:has_many]
       resource.associations[:has_many].each do |name, assoc|
         res << content_tag(:optgroup, label: name.to_s.humanize, data: {name: name, kind: 'has_many'}) do
-          #resource_for(assoc[:table]).column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe
+          # resource_for(assoc[:table]).column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe
           content_tag(:option, 'count', value: "#{assoc} count")
         end
       end

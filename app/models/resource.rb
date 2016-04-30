@@ -461,7 +461,7 @@ module Resource
       fail Sequel::InvalidValue, "nil/NULL is not allowed for the #{column} column" if value.nil? && !col_schema[:allow_null]
       if col_schema[:type] == :hstore && !value.nil?
         2.times {value.shift} # remove dummy entry needed to be able to empty the hash
-        return Sequel.hstore Hash[*value.delete_if{|k, v| k == '_'}]
+        return Sequel.hstore Hash[*value.delete_if {|k, _| k == '_'}]
       end
       if value && value.is_a?(String) && col_schema[:type].to_s['_array']
         begin
