@@ -1,14 +1,14 @@
 module AppInstall
   def configure_db_url setup_method
     config_vars = heroku_api.get_config_vars(current_account.name).data[:body]
-    @db_urls = db_urls config_vars
-    if @db_urls.one?
-      current_account.db_url = @db_urls.first[:value]
+    db_urls = db_urls config_vars
+    if db_urls.one?
+      current_account.db_url = db_urls.first[:value]
       current_account.db_url_setup_method = setup_method
       current_account.save!
       true
     else
-      session[:db_urls] = @db_urls
+      session[:db_urls] = db_urls
       false
     end
   end
