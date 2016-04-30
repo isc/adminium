@@ -64,7 +64,7 @@ class AccountsController < ApplicationController
     end
     if (current_account.id.to_s == ENV['DEMO_ACCOUNT_ID']) || current_account.update(account_params)
       if params[:install]
-        redirect_to_invite_collaborators_or_dashbord
+        redirect_to_invite_collaborators_or_dashboard
       else
         redirect_to edit_account_path, notice: 'Changes saved.'
       end
@@ -83,7 +83,7 @@ class AccountsController < ApplicationController
     render json: current_account.db_url?
   end
 
-  def redirect_to_invite_collaborators_or_dashbord
+  def redirect_to_invite_collaborators_or_dashboard
     path = if current_user&.heroku_provider? && heroku_api.get_collaborators(current_account.name).data[:body].many?
              invite_team_install_path
            else
