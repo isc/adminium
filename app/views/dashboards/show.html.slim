@@ -64,7 +64,7 @@
       = link_to "Add a new table", new_schema_path, class: "btn btn-info"
   .pull-right= "Database size #{number_to_human_size @db_size}"
 
-#upgrade_from_pet_project.modal.fade
+#upgrade_from_pet_project.modal.fade tabindex="-1"
   .modal-dialog
     .modal-content
       .modal-header
@@ -84,7 +84,7 @@
       .modal-footer
         a.btn.btn-default data-dismiss="modal" Maybe later…
   
-#new_widget.modal.fade
+#new_widget.modal.fade tabindex="-1"
   .modal-dialog
     .modal-content
       .modal-header

@@ -42,7 +42,7 @@ html lang="en" ng-app=""
     - unless Rails.env.development?
       = render '/layouts/ga'
       = render '/layouts/uservoice'
-    .modal#modal-window
+    .modal#modal-window tabindex="-1"
       .modal-dialog
         .modal-content
           .modal-header

@@ -114,7 +114,7 @@ h4
         input.form-control> type="text" name="table_name_confirmation" required="true" placeholder="Type the name of the table to confirm"
         = submit_tag "Truncate the table", class: "btn btn-danger"
 
-  .modal.fade#add-column
+  .modal.fade#add-column tabindex="-1"
     .modal-dialog
       .modal-content
         = form_tag schema_path(params[:table]), method: :put, class: 'form-horizontal' do

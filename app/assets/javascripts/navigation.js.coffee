@@ -49,7 +49,7 @@ class Navigation
         $(selector).modal('show')
       else
         docs_url = '/docs/keyboard_shortcuts'
-        $('<div>').attr('id', selector.replace('#', '')).addClass('modal fade')
+        $('<div>').attr(id: selector.replace('#', ''), tabindex: '-1').addClass('modal fade')
           .appendTo('body').html($(".loading_modal").html()).modal('show')
         $.get docs_url, (data) => $(selector).html(data)
         $(selector).on 'hidden', => @helpShown = false
