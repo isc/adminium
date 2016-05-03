@@ -18,7 +18,7 @@ module ApplicationHelper
     d = Time.zone.now
     formats = %i(long default short time_ago_in_words)
     datas = formats.map {|f| [display_datetime(d, format: f), f.to_s]}
-    datas.unshift [[opts[:allow_blank], '']] if opts[:allow_blank]
+    datas.unshift [opts[:allow_blank], ''] if opts[:allow_blank]
     content_tag :div, class: 'form-group' do
       content_tag(:label, opts[:label], class: 'control-label col-sm-3') +
         content_tag(:div, class: 'col-sm-9') do
