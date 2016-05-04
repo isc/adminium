@@ -92,7 +92,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, first_name: 'Mariah', activated_at: somedate + 1.week)
     FixtureFactory.new(:user, first_name: 'Gilles', activated_at: somedate - 1.week)
     visit resources_path(:users, where: {activated_at: somedate.beginning_of_week}, grouping: 'weekly')
-    assert_text 'Where activated_at is in Week'
+    assert_text 'Where weekly activated_at is'
     assert_text '1 record'
     assert_text 'Johnny'
   end

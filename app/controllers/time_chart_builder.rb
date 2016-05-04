@@ -36,13 +36,23 @@ module TimeChartBuilder
 
   def time_chart_aggregate column
     if @generic.postgresql?
-      if periodic_grouping?
-        column.extract grouping
-      else
-        aggregate = {'daily' => 'day'}[grouping] || grouping.gsub('ly', '')
-        Sequel.function(:date_trunc, aggregate, column)
-      end
-    elsif periodic_grouping?
+      postgresql_time_chart_aggregate column
+    else
+      mysql_time_chart_aggregate column
+    end
+  end
+
+  def postgresql_time_chart_aggregate column
+    if periodic_grouping?
+      column.extract grouping
+    else
+      aggregate = {'daily' => 'day'}[grouping] || grouping.gsub('ly', '')
+      Sequel.function(:date_trunc, aggregate, column)
+    end
+  end
+
+  def mysql_time_chart_aggregate column
+    if periodic_grouping?
       if grouping == 'dow'
         Sequel.function :dayofweek, column
       else

@@ -77,9 +77,9 @@ nav.navbar.navbar-default
         .col-md-3
           .alert.alert-warning.alert-dismissible
             - if resource.date_column? k.to_sym
-              == "Where #{k} is in <i>#{format_date(v).first}</i>"
+              == "Where <i>#{grouping} #{k}</i> is <b>#{format_date(v).first}</b>"
             - else
-              == "Where #{k} is <i>#{v}</i>"
+              == "Where <i>#{k}</i> is <b>#{v}</b>"
             = link_to params_without_where_filter(k), class: 'close' do
               i.fa.fa-times
 .content

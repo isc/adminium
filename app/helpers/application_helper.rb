@@ -42,6 +42,7 @@ module ApplicationHelper
   def params_without_where_filter k
     new_params = params.deep_dup
     new_params['where'].delete k
+    new_params.delete 'grouping' if resource.date_column? k.to_sym
     new_params
   end
 

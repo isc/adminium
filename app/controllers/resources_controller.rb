@@ -4,14 +4,12 @@ class ResourcesController < ApplicationController
   include StatChartBuilder
   include Import
 
-  before_action :table_access_limitation, except: [:search]
+  before_action :table_access_limitation, except: :search
   before_action :check_permissions
   before_action :dates_from_params
-  before_action :fetch_item, only: [:show, :edit, :download]
-  before_action :warn_if_no_primary_key, only: [:index, :new]
-  helper_method :user_can?
-  helper_method :grouping, :resource
-  helper_method :format_date
+  before_action :fetch_item, only: %i(show edit download)
+  before_action :warn_if_no_primary_key, only: %i(index new)
+  helper_method :user_can?, :grouping, :resource, :format_date
 
   def search
     @items = resource.query
@@ -296,8 +294,13 @@ class ResourcesController < ApplicationController
     return unless params[:where].present?
     where_hash = Hash[params[:where].map do |k, v|
       v = nil if v == 'null'
+      if v.is_a? Hash
+        flash.now[:error] = 'Invalid <i>where</i> parameter value.'
+        params[:where].delete k
+        next
+      end
       if resource.date_column? k.to_sym
-        datetime = application_time_zone.parse(v)
+        # FIXME: application time zone is not factored in
         [time_chart_aggregate(qualify(params[:table], k)), v]
       else
         if k['.']
