@@ -14,9 +14,10 @@ hstoreInput = ->
     row.next().find('input, a.btn').get(0).focus()
     row.remove()
   $(document).on 'click', '.hstore-new-row .btn', ->
-    $('.hstore-row.hidden').first().clone().insertBefore('.hstore-new-row').removeClass('hidden')
+    parent = $(this).closest('.hstore-edition')
+    parent.find('.hstore-row.hidden').first().clone()
+    .insertBefore(parent.find('.hstore-new-row')).removeClass('hidden')
     .find('input').val('').get(0).focus()
-    false
 
 $ ->
   autofocusResourceForm()
