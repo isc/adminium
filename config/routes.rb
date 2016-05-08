@@ -27,7 +27,7 @@ Adminium::Application.routes.draw do
     get :columns, on: :collection
     post :update_advanced_search, on: :member
   end
-  resources :widgets
+  resources :widgets, only: %i(create update destroy)
   resources :schemas
   resources :searches
   resources :column_settings
