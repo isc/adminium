@@ -44,12 +44,7 @@ module Resource
       else
         datas = JSON.parse(value).symbolize_keys!
         @columns = datas[:columns].symbolize_keys!
-        @filters = if datas[:filters].is_a?(Array)
-                     # to be removed in a few weeks, just in case
-                     {'last search' => datas[:filters]}
-                   else
-                     datas[:filters]
-                   end
+        @filters = datas[:filters]
         @column = datas[:column] || {}
         @default_order = datas[:default_order] if datas[:default_order].present? && column_names.include?(datas[:default_order].to_s.split(' ').first.to_sym)
         @per_page = datas[:per_page] || @globals.per_page
@@ -341,8 +336,8 @@ module Resource
     end
 
     def enum_values_for column_name
-      return unless enum_value = @enum_values.detect {|enum_value| enum_value['column_name'] == column_name.to_s}
-      enum_value['values']
+      enum_value = @enum_values.detect {|value| value['column_name'] == column_name.to_s}
+      enum_value && enum_value['values']
     end
 
     def possible_enum_columns
@@ -410,7 +405,8 @@ module Resource
 
     def validations_check primary_key_value, updated_values
       validations.each do |validation|
-        next unless value = updated_values.detect {|k, _| k.value == validation['column_name']}.try(:second)
+        value = updated_values.detect {|k, _| k.value == validation['column_name']}.try(:second)
+        next unless value
         case validation['validator']
         when VALIDATES_PRESENCE_OF
           if value.blank?
