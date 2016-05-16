@@ -54,7 +54,7 @@ Adminium::Application.routes.draw do
     post :cancel_tips, on: :member
     get :upgrade
   end
-  resources :roles
+  resources :roles, except: %i(index show)
   resource :dashboard, only: :show
   resources :collaborators
   resource :user do
