@@ -121,6 +121,6 @@ class ApplicationController < ActionController::Base
   end
 
   def tag_current_account
-    logger.tagged("Account: #{session[:account] || 'No account'}") {yield}
+    logger.tagged("Account: #{session[:account] || 'No account'}|User: #{session[:user] || 'No user'}") {yield}
   end
 end
