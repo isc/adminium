@@ -490,6 +490,16 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_selector 'td', text: '/tmp/file.mdown'
   end
 
+  test 'link to download for binary column' do
+    uploaded_file = FixtureFactory.new(:uploaded_file, filename: 'test.txt', data: 'A' * 37).factory
+    visit resources_path(:uploaded_files)
+    click_link 'Download (37 Bytes)'
+    assert_equal uploaded_file.data, page.body
+    visit resource_path(:uploaded_files, uploaded_file)
+    click_link 'Download (37 Bytes)'
+    assert_equal uploaded_file.data, page.body
+  end
+
   def stub_resource_columns value
     %i(serialized show form listing search).each do |key|
       value[key] = [] unless value.key? key

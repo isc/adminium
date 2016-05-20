@@ -54,4 +54,7 @@ FactoryGirl.define do
 
   factory :document_from_test do
   end
+
+  factory :uploaded_file_from_test do
+  end
 end

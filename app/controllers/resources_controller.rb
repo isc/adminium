@@ -215,7 +215,7 @@ class ResourcesController < ApplicationController
   end
 
   def fetch_item
-    @item = resource.find params[:id]
+    @item = resource.find params[:id], fetch_binary_values: (params[:action] == 'download')
   rescue Resource::RecordNotFound
     redirect_to resources_path(params[:table]), notice: "#{resource.human_name} ##{params[:id]} does not exist."
   rescue Sequel::DatabaseError => e
@@ -298,8 +298,16 @@ class ResourcesController < ApplicationController
         column
       end
     end
+    columns.uniq!
     columns |= resource.primary_keys
-    columns.map! {|column| qualify params[:table], column}
+    columns.map! do |column|
+      qualified = qualify params[:table], column
+      if resource.binary_column? column
+        Sequel.function(:octet_length, qualified).as(column)
+      else
+        qualified
+      end
+    end
     @items = @items.select(*columns)
   end
 

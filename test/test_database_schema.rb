@@ -4,7 +4,7 @@ ActiveRecord::Schema.verbose = false
 ActiveRecord::Base.connection.tables.each do |table|
   ActiveRecord::Base.connection.drop_table table
 end
-ActiveRecord::Schema.define(version: 26) do
+ActiveRecord::Schema.define(version: 27) do
   enable_extension :hstore
   create_table :users do |t|
     t.string :pseudo, :first_name, :last_name
@@ -64,6 +64,10 @@ ActiveRecord::Schema.define(version: 26) do
     t.references :role
     t.references :user
   end
+  create_table :uploaded_files do |t|
+    t.string :filename
+    t.binary :data
+  end
 end
 
 # load some models
@@ -85,5 +89,9 @@ end
 class DocumentFromTest < ActiveRecord::Base
   self.table_name = 'documents'
 end
+class UploadedFileFromTest < ActiveRecord::Base
+  self.table_name = 'uploaded_files'
+end
+
 
 ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations[Rails.env]

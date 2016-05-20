@@ -90,7 +90,7 @@ class ResourcesControllerTest < ActionController::TestCase
     get :index, table: 'users'
     items = assigns[:items]
     assert_equal 4, items.count
-    assert_equal 9, @account.reload.tables_count
+    assert_equal 10, @account.reload.tables_count
   end
 
   def test_json_response

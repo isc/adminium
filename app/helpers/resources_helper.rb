@@ -50,9 +50,8 @@ module ResourcesHelper
   end
 
   def display_file wrapper_tag, item, key, resource
-    size = item[key].try(:bytesize)
     item_pk = resource.primary_key_value item
-    column_content_tag wrapper_tag, link_to("Download (#{number_to_human_size(size)})", download_resource_path(params[:table], item_pk, key: key)), {}
+    column_content_tag wrapper_tag, link_to("Download (#{number_to_human_size(item[key])})", download_resource_path(params[:table], item_pk, key: key)), {}
   end
 
   def display_attribute wrapper_tag, item, key, resource, original_key = nil
@@ -60,7 +59,7 @@ module ResourcesHelper
     return display_associated_column item, key, wrapper_tag, resource if key.to_s.include? '.'
     return display_associated_count item, key, wrapper_tag, resource if key.to_s.starts_with? 'has_many/'
     return display_associated_calculation item, key, wrapper_tag, resource if key.to_s.starts_with? 'calculations/'
-    return display_file(wrapper_tag, item, key, resource) if resource.binary_column_names.include?(key) && !item[key].nil?
+    return display_file(wrapper_tag, item, key, resource) if resource.binary_column?(key) && !item[key].nil?
     value = item[key]
     if value && resource.foreign_key?(key)
       content = display_belongs_to item, key, value, resource

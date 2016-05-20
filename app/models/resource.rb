@@ -244,6 +244,10 @@ module Resource
       number_column?(name) && !name.to_s.ends_with?('_id') && enum_values_for(name).nil? && !primary_keys.include?(name)
     end
 
+    def binary_column? name
+      binary_column_names.include? name
+    end
+
     def stat_chart_column_names
       column_names.find_all {|n| stat_chart_column? n}
     end
@@ -432,17 +436,18 @@ module Resource
       query.where(primary_key => ids).update(updated_values) if updated_values.size > 0
     end
 
-    def find primary_key_value
-      find_by_primary_key(primary_key_value) || (fail RecordNotFound)
+    def find primary_key_value, fetch_binary_values: false
+      find_by_primary_key(primary_key_value, fetch_binary_values) || (fail RecordNotFound)
     end
 
-    def find_by_primary_key primary_key_value
+    def find_by_primary_key primary_key_value, fetch_binary_values = false
       if primary_key_value.is_a? Sequel::Postgres::PGArray
         keys = primary_key_value.to_a
         keys.map!(&:to_i) if column_type(primary_keys.first) == :integer
-        query.where("#{primary_keys.first} in ?", keys).to_a.sort_by {|r| primary_key_value.index(r[primary_keys.first])}
+        query.where("#{primary_keys.first} in ?", keys)
+             .select(*columns_to_select(fetch_binary_values)).to_a.sort_by {|r| primary_key_value.index(r[primary_keys.first])}
       else
-        pk_filter(primary_key_value).first
+        pk_filter(primary_key_value).select(*columns_to_select(fetch_binary_values)).first
       end
     end
 
@@ -533,6 +538,16 @@ module Resource
 
     def system_table?
       %i(pg_stat_activity pg_stat_statements).include? table
+    end
+
+    def columns_to_select fetch_binary_values
+      column_names.map do |column|
+        if binary_column?(column) && !fetch_binary_values
+          Sequel.function(:octet_length, column).as(column)
+        else
+          Sequel.identifier(column)
+        end
+      end
     end
   end
 
