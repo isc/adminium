@@ -312,8 +312,7 @@ module Resource
 
     def db_foreign_key? name
       table_fks = @generic.foreign_keys[@table]
-      return if table_fks.nil?
-      table_fks.detect {|h| h[:column] == name}
+      table_fks&.detect {|h| h[:column] == name}
     end
 
     def foreign_key_array? name

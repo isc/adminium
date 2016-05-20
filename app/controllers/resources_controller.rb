@@ -25,9 +25,9 @@ class ResourcesController < ApplicationController
   def index
     @title = params[:table]
     @widget = current_account.table_widgets.where(table: params[:table], advanced_search: params[:asearch]).first
-    # FIXME: we could be more specific than *
-    @items = resource.query.select qualify(params[:table], Sequel.lit('*'))
+    @items = resource.query
     update_export_settings
+    apply_select
     apply_where
     apply_filters
     apply_search
@@ -289,6 +289,20 @@ class ResourcesController < ApplicationController
     end
   end
 
+  def apply_select
+    columns = resource.columns[settings_type].select {|c| !c.to_s.starts_with?('has_many/')}
+    columns.map! do |column|
+      if column['.']
+        resource.associations[:belongs_to][column.to_s.split('.').first.to_sym][:foreign_key]
+      else
+        column
+      end
+    end
+    columns |= resource.primary_keys
+    columns.map! {|column| qualify params[:table], column}
+    @items = @items.select(*columns)
+  end
+
   def apply_where
     @items = @items.where(datname: @generic.db_name) if pg_stat_activity?
     return unless params[:where].present?
@@ -346,6 +360,7 @@ class ResourcesController < ApplicationController
   def fetch_items_for_assoc items, assoc_info
     ids = items.map {|i| i[assoc_info[:foreign_key]]}.uniq
     resource = resource_for assoc_info[:referenced_table]
+    # FIXME: fine tune select clause
     @associated_items[resource.table] = resource.query.where(resource.primary_keys.first => ids).all
   end
 
