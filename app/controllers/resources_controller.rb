@@ -312,7 +312,8 @@ class ResourcesController < ApplicationController
   end
 
   def apply_where
-    @items = @items.where(datname: @generic.db_name) if pg_stat_activity?
+    @items = @items.where(datname: @generic.db_name) if resource.system_table?
+    @items = @items.join(:pg_database, oid: :dbid) if pg_stat_statements?
     return unless params[:where].present?
     where_hash = Hash[params[:where].map do |k, v|
       v = nil if v == 'null'
@@ -585,7 +586,7 @@ class ResourcesController < ApplicationController
     @application_time_zone ||= ActiveSupport::TimeZone.new current_account.application_time_zone
   end
 
-  def pg_stat_activity?
-    params[:table] == 'pg_stat_activity'
+  def pg_stat_statements?
+    params[:table] == 'pg_stat_statements'
   end
 end
