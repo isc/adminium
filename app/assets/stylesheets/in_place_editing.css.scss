@@ -1,16 +1,27 @@
-td[data-column-name] {
-  padding-right: 20px;
+td[data-raw-value], td.nilclass, td[data-editable] {
+  padding-right: 20px !important;
   position: relative;
-  i.fa-pencil {
+  i.cell-action {
     opacity: 0;
     cursor: pointer;
     position: absolute;
     right: 5px;
     color: #333;
+    &.fa-pencil {
+      top: 3px;
+    }
+    &.fa-indent {
+      top: 20px;
+    }
+    &.fa-outdent {
+      top: 37px;
+    }
   }
-  &:hover i.fa-pencil {
+  &:hover i.cell-action {
     opacity: 1;
   }
+}
+td[data-editable] {
   form {
     padding: 10px;
     .ui-datepicker-calendar {

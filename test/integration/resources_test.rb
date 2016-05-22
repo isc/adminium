@@ -97,6 +97,15 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_text 'Johnny'
   end
 
+  test 'exclude clause' do
+    FixtureFactory.new(:user, first_name: 'Johnny', last_name: 'Haliday', age: 61, group_id: 3)
+    FixtureFactory.new(:user, first_name: 'Mariah', last_name: 'Carey', age: 661, group_id: 5)
+    visit resources_path(:users, exclude: {group_id: 3})
+    assert_text 'Mariah'
+    assert_no_text 'Johnny'
+    assert_text 'Where group_id is not 3'
+  end
+
   test 'links on index for polymorphic belongs to' do
     user = FixtureFactory.new(:user).factory
     group = FixtureFactory.new(:group).factory

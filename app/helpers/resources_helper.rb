@@ -89,12 +89,13 @@ module ResourcesHelper
     end
     opts = {class: css_class}
     is_editable = false if resource.primary_keys.include?(key) || key == 'updated_at' || resource.primary_keys.empty?
-    if is_editable && user_can?('edit', resource.table)
-      opts['data-column-name'] = key
-      opts['data-raw-value'] = resource.raw_column_output(item, key) unless value.is_a?(String) && css_class != 'enum'
-      opts['data-item-id'] = resource.primary_key_value(item) if resource.table.to_s != params[:table]
-      opts['data-column-type'] = resource.column_type(key) if action_name == 'show'
+    opts['data-editable'] = true if is_editable && user_can?('edit', resource.table)
+    opts['data-column-name'] = key
+    unless (value.is_a?(String) && css_class != 'enum') || resource.primary_keys.include?(key)
+      opts['data-raw-value'] = resource.raw_column_output(item, key)
     end
+    opts['data-item-id'] = resource.primary_key_value(item) if resource.table.to_s != params[:table]
+    opts['data-column-type'] = resource.column_type(key) if action_name == 'show'
     column_content_tag wrapper_tag, content, opts
   end
 

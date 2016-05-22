@@ -29,6 +29,7 @@ class ResourcesController < ApplicationController
     update_export_settings
     apply_select
     apply_where
+    apply_exclude
     apply_filters
     apply_search
     apply_has_many_counts
@@ -314,12 +315,22 @@ class ResourcesController < ApplicationController
   def apply_where
     @items = @items.where(datname: @generic.db_name) if resource.system_table?
     @items = @items.join(:pg_database, oid: :dbid) if pg_stat_statements?
-    return unless params[:where].present?
-    where_hash = Hash[params[:where].map do |k, v|
+    conditions = process_conditions(:where)
+    @items = @items.where(Hash[conditions]) if conditions
+  end
+
+  def apply_exclude
+    conditions = process_conditions(:exclude)
+    @items = @items.exclude(Hash[conditions]) if conditions
+  end
+
+  def process_conditions params_key
+    return unless params[params_key].present?
+    conditions = params[params_key].map do |k, v|
       v = nil if v == 'null'
       if v.is_a? Hash
-        flash.now[:error] = 'Invalid <i>where</i> parameter value.'
-        params[:where].delete k
+        flash.now[:error] = "Invalid <i>#{params_key}</i> parameter value."
+        params[params_key].delete k
         next
       end
       if resource.date_column? k.to_sym
@@ -335,12 +346,11 @@ class ResourcesController < ApplicationController
         if resource_for(table).column_names.include? k.to_sym
           [qualify(table, k.to_sym), v]
         else
-          params[:where].delete k
+          params[params_key].delete k
           flash.now[:error] = "Column <i>#{k}</i> doesn't exist on table #{table}.<br>Existing columns are <i>#{resource_for(table).column_names.join(', ')}</i>.".html_safe
         end
       end
-    end.compact]
-    @items = @items.where(where_hash)
+    end.compact
   end
 
   def fetch_associated_items

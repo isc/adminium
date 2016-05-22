@@ -64,7 +64,7 @@ nav.navbar.navbar-default
         => render 'next_previous_page', scope: @items
         = settings_button 'Listing settings'
 
-- if params[:search].present? || params[:where]
+- if params[:search].present? || params[:where] || params[:exclude]
   .row
     - if params[:search].present?
       .col-md-3
@@ -72,16 +72,18 @@ nav.navbar.navbar-default
           == "Search for <i>#{params[:search]}</i>"
           = link_to params.except(:search), class: 'close' do
             i.fa.fa-times
-    - if params[:where]
-      - params[:where].each do |k, v|
-        .col-md-3
-          .alert.alert-warning.alert-dismissible
-            - if resource.date_column? k.to_sym
-              == "Where <i>#{grouping} #{k}</i> is <b>#{format_date(v).first}</b>"
-            - else
-              == "Where <i>#{k}</i> is <b>#{v}</b>"
-            = link_to params_without_where_filter(k), class: 'close' do
-              i.fa.fa-times
+    - %i(where exclude).each do |filter|
+      - if params[filter]
+        - params[filter].each do |k, v|
+          .col-md-3
+            .alert.alert-warning.alert-dismissible
+              - excluded = '<u>not</u>' if filter == :exclude
+              - if resource.date_column? k.to_sym
+                == "Where <i>#{grouping} #{k}</i> is #{excluded} <b>#{format_date(v).first}</b>"
+              - else
+                == "Where <i>#{k}</i> is #{excluded} <b>#{v}</b>"
+              = link_to params_without_filter(k, filter), class: 'close' do
+                i.fa.fa-times
 .content
   = render 'items', items: @fetched_items, actions_cell: true
 = render '/resources/panels/listing_settings'

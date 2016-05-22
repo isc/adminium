@@ -2,14 +2,14 @@ class InPlaceEditing
 
   constructor: ->
     $('.items-list, .resources.show table')
-      .on('mouseover', 'td[data-column-name]', @setupEditableColumn)
-      .on('click', 'td[data-column-name] i.fa-pencil', @switchToEditionModeByClickingIcon)
-      .on('dblclick', 'td[data-column-name]', @switchToEditionModeByDblClicking)
+      .on('mouseover', 'td[data-editable]', @setupEditableColumn)
+      .on('click', 'td[data-editable] i.fa-pencil', @switchToEditionModeByClickingIcon)
+      .on('dblclick', 'td[data-editable]', @switchToEditionModeByDblClicking)
 
   setupEditableColumn: (elt) =>
     td = $(elt.currentTarget)
     if not td.find('i.fa-pencil').length and td.attr('data-mode') isnt 'editing'
-      $("<i class='fa fa-pencil'>").appendTo(td)
+      $("<i class='fa fa-pencil cell-action' title='Edit this value' >").appendTo(td)
 
   textEditionMode: -> $('<textarea>')
   integerEditionMode: -> $('<input type="number">')
