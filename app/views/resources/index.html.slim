@@ -17,6 +17,10 @@ nav.navbar.navbar-default
             span.text-more data-content=display_filter(@current_filter) = params[:asearch].presence || 'All records'
             span.caret<
           ul.dropdown-menu
+            - if params[:asearch].blank?
+              li
+                a data-toggle="modal" href="#advanced_search" New filter
+              li.divider role="separator"
             - if params[:asearch].present? || resource.filters.any?
               li.dropdown-header Filters
             - if params[:asearch].present?
@@ -36,9 +40,6 @@ nav.navbar.navbar-default
                 a data-toggle="modal" href="#advanced_search" Edit
               li
                 = link_to 'Delete', search_path(params[:table], name: params[:asearch]), method: 'delete'
-            li.divider role="separator"
-            li
-              a data-toggle="modal" href="#advanced_search" New filter
       - if resource.columns[:search].any?
         form.navbar-form.navbar-left
           - request.query_string.to_s.split('&').find_all(&:present?).each do |param|
