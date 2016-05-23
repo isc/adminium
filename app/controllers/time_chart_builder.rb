@@ -101,6 +101,7 @@ module TimeChartBuilder
   end
 
   def format_date date
+    return [date] if date == 'null'
     return [periodic_format(date), date] if periodic_grouping?
     if @generic.mysql?
       case grouping
