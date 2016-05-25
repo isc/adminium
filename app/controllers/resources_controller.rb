@@ -321,7 +321,10 @@ class ResourcesController < ApplicationController
 
   def apply_exclude
     conditions = process_conditions(:exclude)
-    @items = @items.exclude(Hash[conditions]) if conditions
+    return unless conditions
+    Hash[conditions].each do |key, value|
+      @items = @items.exclude(key => value)
+    end
   end
 
   def process_conditions params_key
