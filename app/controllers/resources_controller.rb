@@ -7,7 +7,7 @@ class ResourcesController < ApplicationController
   before_action :table_access_limitation, except: :search
   before_action :check_permissions
   before_action :dates_from_params
-  before_action :fetch_item, only: %i(show edit download)
+  before_action :fetch_item, only: %i(show edit download update)
   before_action :warn_if_no_primary_key, only: %i(index new)
   helper_method :user_can?, :grouping, :resource, :format_date
 
@@ -218,7 +218,11 @@ class ResourcesController < ApplicationController
   def fetch_item
     @item = resource.find params[:id], fetch_binary_values: (params[:action] == 'download')
   rescue Resource::RecordNotFound
-    redirect_to resources_path(params[:table]), notice: "#{resource.human_name} ##{params[:id]} does not exist."
+    message = "#{resource.human_name} ##{params[:id]} does not exist."
+    respond_to do |format|
+      format.html {redirect_to resources_path(params[:table]), notice: message}
+      format.js {render json: {message: message}}
+    end
   rescue Sequel::DatabaseError => e
     redirect_to resources_path(params[:table]), flash: {error: "Couldn't fetch record with id <b>#{params[:id]}</b>.<br>#{e.message}".html_safe}
   end
