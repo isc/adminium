@@ -46,7 +46,6 @@ class ApplicationController < ActionController::Base
     @account ||= Account.not_deleted.find session[:account] if session[:account]
   rescue ActiveRecord::RecordNotFound
     session.delete :account
-    redirect_to root_path
     nil
   end
 
