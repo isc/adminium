@@ -21,7 +21,7 @@ class ApplicationController < ActionController::Base
 
   def require_account
     session[:account] ||= 2 if Rails.env.development?
-    redirect_to docs_url unless session[:account]
+    redirect_to docs_url unless current_account
   end
 
   def require_user
@@ -39,12 +39,15 @@ class ApplicationController < ActionController::Base
 
   def current_account?
     session[:account] ||= 2 if Rails.env.development?
-    return current_account.present? if session[:account]
-    false
+    current_account.present?
   end
 
   def current_account
     @account ||= Account.not_deleted.find session[:account] if session[:account]
+  rescue ActiveRecord::RecordNotFound
+    session.delete :account
+    redirect_to root_path
+    nil
   end
 
   def current_user
@@ -117,7 +120,7 @@ class ApplicationController < ActionController::Base
   end
 
   def valid_db_url?
-    session[:account] && current_account.valid_db_url?
+    current_account&.valid_db_url?
   end
 
   def tag_current_account

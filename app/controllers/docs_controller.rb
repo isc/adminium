@@ -1,6 +1,6 @@
 class DocsController < ApplicationController
   skip_before_action :require_account
-  skip_before_action :connect_to_db, unless: :valid_db_url?
+  skip_before_action :connect_to_db
 
   def index
     @full_title = 'Documentation | Adminium'
