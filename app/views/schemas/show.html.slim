@@ -3,7 +3,7 @@
     a.btn.btn-primary> href="#add-column" data-toggle="modal" Add a column
     a.btn.btn-warning> href="#rename-table" data-toggle="modal" Rename this table
     a.btn.btn-danger> href="#truncate-table" data-toggle="modal" Truncate this table
-    a.btn.btn-danger href="#drop-table" data-toggle="modal" Delete this table
+    a.btn.btn-danger href="#drop-table" data-toggle="modal" Drop this table
 
 h3= "Table #{params[:table]}"
 h4
@@ -89,17 +89,17 @@ h4
             option= type
         = submit_tag "Change type", class: 'btn btn-primary'
 
-  = modal 'Are you serious about deleting?', id: 'drop-table' do |modal|
+  = modal 'Are you serious about dropping?', id: 'drop-table' do |modal|
     - modal.body do
       p.alert.alert-danger
-        = "You are about to destroy the <u>#{params[:table]}</u> table with all its data.".html_safe
+        = "You are about to drop the <u>#{params[:table]}</u> table with all its data.".html_safe
         br
         'You won't be able to rollback this action!
       p
         'To proceed, confirm by entering the table name: 
       = form_tag schema_path(params[:table]), method: :delete, class: 'form-inline' do
         input.form-control> type="text" name="table_name_confirmation" required="true" placeholder="Type the name of the table to confirm"
-        = submit_tag "Destroy the table", class: "btn btn-danger"
+        = submit_tag "Drop the table", class: "btn btn-danger"
 
   = modal 'Are you serious about truncating?', id: 'truncate-table' do |modal|
     - modal.body do

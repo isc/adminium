@@ -113,7 +113,7 @@ module Resource
     end
 
     def query
-      @generic.db[@table]
+      @generic.db[Sequel.identifier @table]
     end
 
     def index_exists? name
@@ -121,7 +121,7 @@ module Resource
     end
 
     def indexes
-      @indexes ||= @generic.db.indexes(@table)
+      @indexes ||= @generic.db.indexes(Sequel.identifier @table)
     end
 
     def column_names
