@@ -97,6 +97,12 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_text 'Johnny'
   end
 
+  test 'where on a full date' do
+    FixtureFactory.new(:user, first_name: 'Johnny', activated_at: '2016-06-17 13:47:01')
+    visit resources_path(:users, where: {activated_at: '2016-06-17 13:47:01'})
+    assert_text '1 record'
+  end
+
   test 'exclude clause' do
     FixtureFactory.new(:user, first_name: 'Johnny', last_name: 'Haliday', age: 61, group_id: 3)
     FixtureFactory.new(:user, first_name: 'Mariah', last_name: 'Carey', age: 661, group_id: 5)

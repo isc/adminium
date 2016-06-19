@@ -342,6 +342,7 @@ class ResourcesController < ApplicationController
       end
       if resource.date_column? k.to_sym
         # FIXME: application time zone is not factored in
+        v = v.split(' ').first if grouping == 'daily'
         [time_chart_aggregate(qualify(params[:table], k)), v]
       else
         if k['.']
