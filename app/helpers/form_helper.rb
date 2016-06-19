@@ -29,7 +29,7 @@ module FormHelper
     when :timestamp, :datetime then :datetime
     when :date then :date
     when :time then :time
-    when :varchar_array then :text_area
+    when :varchar_array, :string_array then :text_area
     when :boolean then [:select, boolean_input_options(resource, name)]
     when :string, nil
       return :text_area if info[:db_type] == 'text'
