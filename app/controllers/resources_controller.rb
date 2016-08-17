@@ -317,7 +317,10 @@ class ResourcesController < ApplicationController
   end
 
   def apply_where
-    @items = @items.where(datname: @generic.db_name) if resource.system_table?
+    if resource.system_table? && resource.column_names.include?(:datname)
+      @items = @items.where(datname: @generic.db_name)
+    end
+    @items = @items.where(schemaname: @generic.search_path) if pg_stat_all_indexes?
     @items = @items.join(:pg_database, oid: :dbid) if pg_stat_statements?
     conditions = process_conditions(:where)
     @items = @items.where(Hash[conditions]) if conditions
@@ -606,5 +609,9 @@ class ResourcesController < ApplicationController
 
   def pg_stat_statements?
     params[:table] == 'pg_stat_statements'
+  end
+
+  def pg_stat_all_indexes?
+    params[:table] == 'pg_stat_all_indexes'
   end
 end

@@ -537,7 +537,7 @@ module Resource
     end
 
     def system_table?
-      %i(pg_stat_activity pg_stat_statements).include? table
+      %i(pg_stat_activity pg_stat_statements pg_stat_all_indexes).include? table
     end
 
     def columns_to_select fetch_binary_values

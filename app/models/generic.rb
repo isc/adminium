@@ -108,7 +108,7 @@ class Generic
     return @tables if @tables
     @tables = (@db.tables + @db.views).sort
     @account.update_attribute :tables_count, @tables.size if @account.tables_count != @tables.size
-    @tables << :pg_stat_activity if postgresql?
+    @tables.concat %i(pg_stat_activity pg_stat_all_indexes) if postgresql?
     @tables
   end
 
@@ -187,6 +187,10 @@ class Generic
 
   def mysql?
     current_adapter == 'mysql2'
+  end
+
+  def search_path
+    @db.opts[:search_path]&.split(',') || %w(public)
   end
 
   class TableNotFoundException < Exception
