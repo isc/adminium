@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 20141126133312) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "accounts", force: true do |t|
+  create_table "accounts", force: :cascade do |t|
     t.string   "plan"
     t.string   "api_key"
     t.string   "heroku_id"
@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(version: 20141126133312) do
     t.string   "decrypted_db_url"
   end
 
-  create_table "app_profiles", force: true do |t|
+  create_table "app_profiles", force: :cascade do |t|
     t.text     "app_infos"
     t.text     "addons_infos"
     t.integer  "account_id"
@@ -51,7 +51,7 @@ ActiveRecord::Schema.define(version: 20141126133312) do
     t.datetime "updated_at"
   end
 
-  create_table "collaborators", force: true do |t|
+  create_table "collaborators", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "account_id"
     t.string   "email",                            null: false
@@ -64,14 +64,14 @@ ActiveRecord::Schema.define(version: 20141126133312) do
   add_index "collaborators", ["account_id"], name: "index_collaborators_on_account_id", using: :btree
   add_index "collaborators", ["user_id"], name: "index_collaborators_on_user_id", using: :btree
 
-  create_table "collaborators_roles", id: false, force: true do |t|
+  create_table "collaborators_roles", id: false, force: :cascade do |t|
     t.integer "role_id"
     t.integer "collaborator_id"
   end
 
   add_index "collaborators_roles", ["role_id", "collaborator_id"], name: "index_collaborators_roles_on_role_id_and_collaborator_id", using: :btree
 
-  create_table "roles", force: true do |t|
+  create_table "roles", force: :cascade do |t|
     t.string   "name"
     t.integer  "account_id"
     t.text     "permissions"
@@ -79,7 +79,7 @@ ActiveRecord::Schema.define(version: 20141126133312) do
     t.datetime "updated_at"
   end
 
-  create_table "sign_ons", force: true do |t|
+  create_table "sign_ons", force: :cascade do |t|
     t.integer  "account_id"
     t.string   "plan"
     t.string   "remote_ip"
@@ -89,7 +89,7 @@ ActiveRecord::Schema.define(version: 20141126133312) do
     t.integer  "user_id"
   end
 
-  create_table "statistics", id: false, force: true do |t|
+  create_table "statistics", id: false, force: :cascade do |t|
     t.integer  "account_id",             null: false
     t.string   "action",                 null: false
     t.integer  "value",      default: 0, null: false
@@ -97,7 +97,7 @@ ActiveRecord::Schema.define(version: 20141126133312) do
     t.datetime "updated_at"
   end
 
-  create_table "users", force: true do |t|
+  create_table "users", force: :cascade do |t|
     t.string   "provider"
     t.string   "uid"
     t.string   "name"
@@ -107,7 +107,7 @@ ActiveRecord::Schema.define(version: 20141126133312) do
     t.integer  "total_heroku_apps"
   end
 
-  create_table "widgets", force: true do |t|
+  create_table "widgets", force: :cascade do |t|
     t.string   "table"
     t.string   "advanced_search"
     t.string   "order"

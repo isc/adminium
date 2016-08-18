@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 ruby '2.3.0'
 
 gem 'rbtrace'
-gem 'rails', '4.2.6'
+gem 'rails', '4.2.7.1'
 gem 'pg'
 gem 'sendgrid'
 gem 'nokogiri'
