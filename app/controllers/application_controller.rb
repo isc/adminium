@@ -20,7 +20,7 @@ class ApplicationController < ActionController::Base
   end
 
   def require_account
-    session[:account] ||= 2 if Rails.env.development?
+    session[:account] ||= 1 if Rails.env.development?
     redirect_to docs_url unless current_account
   end
 

@@ -112,6 +112,8 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_text 'Where group_id is not 3'
     visit resources_path(:users, exclude: {group_id: 3, first_name: 'Mariah'})
     assert_text 'No records were found.'
+    visit resources_path(:users, exclude: {created_at: 'null'})
+    assert_text 'Mariah'
   end
 
   test 'links on index for polymorphic belongs to' do
