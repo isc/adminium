@@ -204,7 +204,7 @@ module Resource
 
     def column_type column_name
       info = column_info column_name
-      info[:type] if info
+      info[:type] || info[:db_type] if info
     end
 
     def column_info column_name
@@ -221,7 +221,7 @@ module Resource
     end
 
     def text_column? column_name
-      %i(string text).include? column_type(column_name)
+      [:string, :text, 'name'].include? column_type(column_name)
     end
 
     def array_column? column_name
@@ -273,7 +273,7 @@ module Resource
     end
 
     def searchable_column_names
-      find_all_columns_for_types(:string, :varchar_array, :text, :integer, :decimal, 'uuid').map(&:first)
+      find_all_columns_for_types(:string, :varchar_array, :text, :integer, :decimal, 'uuid', 'name').map(&:first)
     end
 
     def find_all_columns_for_types *types
