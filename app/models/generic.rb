@@ -173,7 +173,8 @@ class Generic
     @db = Sequel.connect uri.to_s, opts.merge(keep_reference: false)
     if uri.scheme == 'postgres'
       @db.execute 'SET application_name to \'Adminium\''
-      @db.extension :pg_array, :pg_hstore
+      @db.execute 'SET statement_timeout to 20000'
+      @db.extension :pg_array, :pg_hstore, :error_sql
       @db.schema_parse_complete
     end
     @db.extension :named_timezones

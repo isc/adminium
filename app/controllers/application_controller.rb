@@ -3,6 +3,7 @@ class ApplicationController < ActionController::Base
   rescue_from Exception, with: :disconnect_on_exception
   rescue_from Generic::TableNotFoundException, with: :table_not_found
   rescue_from Sequel::DatabaseConnectionError, with: :global_db_error
+  rescue_from Sequel::DatabaseError, with: :statement_timeouts
   before_action :ensure_proper_subdomain
   before_action :require_account
   before_action :connect_to_db
@@ -76,6 +77,16 @@ class ApplicationController < ActionController::Base
   def global_db_error exception
     msg = "There was a database error, it might be a problem with your database url. The error was : <pre>#{exception.message}</pre>".html_safe
     redirect_to edit_account_url, flash: {error: msg}
+  end
+
+  def statement_timeouts exception
+    if exception.wrapped_exception.is_a?(PG::QueryCanceled) &&
+       exception.wrapped_exception.message['statement timeout']
+       @exception = exception
+       render 'dashboards/statement_timeout'
+    else
+      raise exception
+    end
   end
 
   def disconnect_on_exception exception
