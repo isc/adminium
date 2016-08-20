@@ -1,10 +1,14 @@
 .container
-  h3.text-danger.text-center Database statement timeout
-  p Sorry but Adminium cannot display right now the page you asked for.
+  h3.text-danger.text-center
+    i.fa.fa-hourglass-end>
+    'Database statement timeout
+  p Sorry but Adminium cannot display the page you asked for right now.
   p The following SQL statement took more than 20 seconds to execute on your database and was thus canceled:
   .alert.alert-info= @exception.sql
   p This could have happened for various reasons:
   ul
+    li Your database caches are cold and a simple refresh in a few instants might do the trick.
     li Your database server could be under a temporary heavy load and you might have better luck displaying this page later.
     li The page you requested triggered a SQL request that is unoptimized and could be executed faster with the necessary database indexes.
-    li If the request timing out cannot be optimized for this particular table (a count for instance), you're out of luck.
+    li Your database server is constantly overloaded, maybe it's time to add more RAM or CPUs or switch to a more expensive Heroku Postgres plan.
+    li The request timing out cannot be optimized for this particularly large table, unfortunately you're out of luck.
