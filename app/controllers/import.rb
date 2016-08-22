@@ -81,14 +81,14 @@ module Import
 
   def magic_timestamps insert_rows, update_rows, columns
     now, insert_columns, update_columns = application_time_zone.now.to_datetime, columns.clone, columns.clone
-    [:updated_at, :updated_on, :created_at, :created_on].each do |column|
+    %i(updated_at updated_on created_at created_on inserted_at).each do |column|
       next if columns.include? column.to_s
       next unless resource.column_names.include? column
       unless insert_rows.nil?
         insert_rows.each {|row| row << now}
         insert_columns << column
       end
-      unless update_rows.nil? || (column.to_s.match 'created')
+      unless update_rows.nil? || (column.to_s[/(created)|(inserted)/])
         update_rows.each {|row| row << now}
         update_columns << column
       end

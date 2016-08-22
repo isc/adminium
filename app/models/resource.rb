@@ -303,7 +303,7 @@ module Resource
     end
 
     def default_form_columns_conf
-      res = column_names - %i(created_at updated_at)
+      res = column_names - %i(created_at inserted_at updated_at)
       primary_keys.each do |primary_key|
         res.delete primary_key if schema_hash[primary_key][:default] || schema_hash[primary_key][:auto_increment]
       end
@@ -491,7 +491,7 @@ module Resource
     def magic_timestamps values, creation
       now = application_time_zone.now
       columns = %i(updated_at updated_on)
-      columns += %i(created_at created_on) if creation
+      columns += %i(created_at inserted_at created_on) if creation
       columns.each do |column|
         next if values.detect {|k, _| k.to_sym == column}
         if schema_hash[column] && %i(timestamp date datetime).include?(schema_hash[column][:type])
