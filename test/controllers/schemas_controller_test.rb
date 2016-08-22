@@ -141,6 +141,18 @@ class SchemasControllerTest < ActionController::TestCase
     assert_match 'table "unknown_table" does not exist', flash[:error]
   end
 
+  def test_truncate_table
+    create_table_for_test
+    assert_equal 1, @generic.db[@table_name].insert(mais_lol: 'o')
+    assert_equal 1, @generic.db[@table_name].count
+    put :update, id: @table_name, truncate: true, table_name_confirmation: @table_name
+    assert_equal 0, @generic.db[@table_name].count
+    assert_equal 2, @generic.db[@table_name].insert(mais_lol: 'o')
+    put :update, id: @table_name, truncate: true, table_name_confirmation: @table_name, restart: true
+    assert_equal 0, @generic.db[@table_name].count
+    assert_equal 1, @generic.db[@table_name].insert(mais_lol: 'o')
+  end
+
   def test_add_column
     create_table_for_test
     put :update, id: @table_name, add_column: 'true', columns: [{name: 'body', type: 'string'}]

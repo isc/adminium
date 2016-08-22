@@ -95,7 +95,7 @@ class SchemasController < ApplicationController
 
   def truncate
     if params[:id] == params[:table_name_confirmation]
-      @generic.db[Sequel.identifier params[:id]].truncate
+      @generic.db[Sequel.identifier params[:id]].truncate restart: params[:restart].present?
     else
       flash[:error] = 'Truncating the table failed: the table name confirmation mismatched.'
     end
