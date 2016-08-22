@@ -600,7 +600,9 @@ class ResourcesController < ApplicationController
   end
 
   def warn_if_no_primary_key
-    flash.now[:warning] = "Warning : this table doesn't declare a primary key. Support for tables without primary keys is incomplete at the moment." if resource.primary_keys.empty? && !resource.system_table?
+    if resource.primary_keys.empty? && !resource.system_table?
+      flash.now[:alert] = "Warning : this table doesn't declare a primary key. Support for tables without primary keys is incomplete."
+    end
   end
 
   def application_time_zone
