@@ -5,6 +5,7 @@ Sequel.extension :named_timezones
 Sequel.tzinfo_disambiguator = proc {|_datetime, periods| periods.first}
 
 class Generic
+  PG_SYSTEM_TABLES = %i(pg_stat_activity pg_stat_statements pg_stat_all_indexes)
   attr_accessor :db_name, :account_id, :db, :account
   attr_reader :current_adapter
 

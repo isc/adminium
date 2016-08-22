@@ -47,6 +47,7 @@
     tbody
       - index = 0
       - @table_sizes.each do |table, fulltblsize, tblsize|
+        - next if table.in? Generic::PG_SYSTEM_TABLES
         - index += 1
         tr class=((current_account&.pet_project? && index > 5) ? 'deactivated' : '')
           td
@@ -59,10 +60,14 @@
           td data-value=tblsize = number_to_human_size tblsize
           td data-value=@table_counts[table.to_s] = number_with_delimiter @table_counts[table.to_s]
 
-  .pull-left
-    - if admin?
-      = link_to "Add a new table", new_schema_path, class: "btn btn-info"
+  - if admin?
+    = link_to "Add a new table", new_schema_path, class: "btn btn-info"
   .pull-right= "Database size #{number_to_human_size @db_size}"
+  - if (@table_sizes.map(&:first) & Generic::PG_SYSTEM_TABLES).any?
+    hr
+    p
+      ' System tables:
+      == Generic::PG_SYSTEM_TABLES.map {|table| link_to table, resources_path(table)}.join(' - ')
 
 #upgrade_from_pet_project.modal.fade tabindex="-1"
   .modal-dialog
