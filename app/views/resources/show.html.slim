@@ -21,8 +21,7 @@ nav.navbar.navbar-default
 
 .row.item-attributes data-table=params[:table] data-item-id=params[:id]
   .col-md-7
-    - [%i(string varchar_array string_array hstore), %i(integer float decimal)].each do |types|
-      - columns = item_attributes_type types, resource
+    - [@strings_and_hstore_cols, @numbers_cols, @leftover_cols].each do |columns|
       - if columns.present?
         table.table.table-condensed.layout-fixed
           - columns.each do |name|
@@ -33,16 +32,15 @@ nav.navbar.navbar-default
               == display_attribute :td, @item, name, resource
   .col-md-5
     table.table.table-condensed
-      - primary_keys_and_time_fields_for_show(resource).each do |name|
+      - @pks_dates_and_times_cols.each do |name|
         tr
           th.col-md-3 title=name
             i.column_settings.fa.fa-cog
             = resource.column_display_name name
           == display_attribute :td, @item, name, resource
-    - columns = item_attributes_type([:boolean, :blob], resource)
-    - if columns.present?
+    - if @boolean_and_blob_cols.present?
       table.table.table-condensed
-        - columns.each do |name|
+        - @boolean_and_blob_cols.each do |name|
           tr
             th.col-md-3 title=name
               i.column_settings.fa.fa-cog
@@ -52,6 +50,7 @@ nav.navbar.navbar-default
     - if resource.associations[:belongs_to].any?
       table.table.table-condensed
         - resource.associations[:belongs_to].each do |name, assoc|
+          - next unless user_can? :show, name
           tr
             th title="Belongs to" = assoc[:foreign_key].to_s.humanize
             - foreign_key_value = @item[assoc[:foreign_key]]
@@ -76,7 +75,7 @@ nav.navbar.navbar-default
                 '  
                 = link_to "...", resources_path(name, where: assoc_params)
             td
-              = link_to new_resource_path(name, attributes: assoc_params), class: 'btn btn-mini', rel: "tooltip", data: {placement: :left}, title: "Create a new associated #{name.to_s.singularize.humanize}" do
+              = link_to new_resource_path(name, attributes: assoc_params), class: 'btn btn-mini', rel: 'tooltip', data: {placement: :left}, title: "Create a new associated #{name.to_s.singularize.humanize}" do
                 i.fa.fa-plus
 
 = render 'resources/panels/show_settings'

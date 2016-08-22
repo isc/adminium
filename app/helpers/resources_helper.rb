@@ -38,17 +38,6 @@ module ResourcesHelper
     end
   end
 
-  def item_attributes_type types, resource
-    columns = resource.columns[:show]
-    columns &= resource.find_all_columns_for_types(*types).map(&:first)
-    columns - resource.primary_keys - (resource.associations[:belongs_to].values.map {|assoc| assoc[:foreign_key]})
-  end
-
-  def primary_keys_and_time_fields_for_show resource
-    columns = item_attributes_type([:date, :datetime, :time, :timestamp], resource)
-    (resource.columns[:show] & resource.primary_keys) + columns
-  end
-
   def display_file wrapper_tag, item, key, resource
     item_pk = resource.primary_key_value item
     column_content_tag wrapper_tag, link_to("Download (#{number_to_human_size(item[key])})", download_resource_path(params[:table], item_pk, key: key)), {}

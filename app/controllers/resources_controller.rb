@@ -67,6 +67,14 @@ class ResourcesController < ApplicationController
   def show
     @title = "Show #{resource.item_label @item}"
     @prevent_truncate = true
+    @strings_and_hstore_cols = item_attributes_type %i(string varchar_array string_array hstore)
+    @numbers_cols = item_attributes_type %i(integer float decimal)
+    dates_and_times_cols = item_attributes_type %i(date datetime time timestamp)
+    @pks_dates_and_times_cols = (resource.columns[:show] & resource.primary_keys) + dates_and_times_cols
+    @boolean_and_blob_cols = item_attributes_type %i(boolean blob)
+    @leftover_cols = resource.columns[:show] -
+                     @strings_and_hstore_cols - @numbers_cols - @pks_dates_and_times_cols - @boolean_and_blob_cols -
+                     resource.associations[:belongs_to].values.map {|assoc| assoc[:foreign_key]}
   end
 
   def edit
@@ -615,5 +623,11 @@ class ResourcesController < ApplicationController
 
   def pg_stat_all_indexes?
     params[:table] == 'pg_stat_all_indexes'
+  end
+
+  def item_attributes_type types
+    columns = resource.columns[:show]
+    columns &= resource.find_all_columns_for_types(*types).map(&:first)
+    columns - resource.primary_keys - (resource.associations[:belongs_to].values.map {|assoc| assoc[:foreign_key]})
   end
 end
