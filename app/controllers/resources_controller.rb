@@ -440,6 +440,7 @@ class ResourcesController < ApplicationController
     @current_filter = resource.filters[params[:asearch]] || []
     @current_filter.each_with_index do |filter, index|
       clause = apply_filter filter
+      next unless clause
       @items = if index.nonzero? && filter['grouping'] == 'or'
                  @items.or(clause)
                else
@@ -474,6 +475,10 @@ class ResourcesController < ApplicationController
       resource_with_column, table = resource, params[:table]
     end
     column_info = resource_with_column.column_info(filter['column'].to_sym)
+    if column_info.nil?
+      flash.now[:error] = "Filter on the #{filter['column']} column is not valid anymore (#{filter['column']} cannot be found on the #{table} table anymore)."
+      return
+    end
     type = column_info[:type] || column_info[:db_type]
     if type.to_sym != filter['type'].to_sym
       flash.now[:error] = "Filter on the #{filter['column']} column is not valid anymore (defined on a #{filter['type']} column, not #{type})."
