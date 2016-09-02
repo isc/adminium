@@ -28,10 +28,7 @@ class ResourcesController < ApplicationController
     @items = resource.query
     update_export_settings
     apply_select
-    apply_where
-    apply_exclude
-    apply_filters
-    apply_search
+    dataset_filtering
     apply_has_many_counts
     apply_order
     page = (params[:page].presence || 1).to_i
@@ -190,6 +187,13 @@ class ResourcesController < ApplicationController
   end
 
   private
+
+  def dataset_filtering
+    apply_where
+    apply_exclude
+    apply_filters
+    apply_search
+  end
 
   def find_an_extension
     resource.string_column_names.each do |key|

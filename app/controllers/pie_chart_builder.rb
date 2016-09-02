@@ -5,9 +5,7 @@ module PieChartBuilder
     column = qualify params[:table], params[:column]
     name = params[:column].to_sym
     @items = resource.query
-    apply_where
-    apply_filters
-    apply_search
+    dataset_filtering
     enum = if resource.boolean_column? name
              options = resource.column_options(name)
              {

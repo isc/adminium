@@ -10,9 +10,7 @@ module TimeChartBuilder
   def time_chart
     column = qualify params[:table], params[:column]
     @items = resource.query
-    apply_where
-    apply_filters
-    apply_search
+    dataset_filtering
     aggregate = time_chart_aggregate column
     @items = @items.group(aggregate)
                    .select(aggregate.as('chart_date'), Sequel.function(:count, Sequel.lit('*')))

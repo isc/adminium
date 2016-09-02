@@ -5,9 +5,7 @@ module StatChartBuilder
   def stat_chart
     column = qualify params[:table], params[:column]
     @items = resource.query
-    apply_where
-    apply_filters
-    apply_search
+    dataset_filtering
     @items_for_stats = @items
     %i(max min avg sum count).each_with_index do |calculation, i|
       clause = Sequel.function(calculation, column)
