@@ -20,7 +20,7 @@ module PieChartBuilder
     enum[nil] = {'color' => '#DDD', 'label' => 'not set'}
     @data = @items.group_and_count(column).reverse_order(:count).limit(100).map do |row|
       key, count = row.values
-      v = enum[key] || {'label' => key, 'color' => new_color}
+      v = enum[key.to_s] || {'label' => key, 'color' => new_color}
       [v['label'], count, key, v['color']]
     end
 
