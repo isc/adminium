@@ -42,7 +42,7 @@ group :mysql_support do
 end
 group :assets do
   gem 'coffee-rails'
-  gem 'uglifier', '>= 1.3.0'
+  gem 'uglifier'
 end
 group :development do
   gem 'kensa'
@@ -53,7 +53,6 @@ group :development do
   gem 'xray-rails'
   gem 'guard', require: false
   gem 'rb-fsevent', require: false
-  gem 'terminal-notifier-guard', require: false
   gem 'guard-livereload', require: false
   gem 'rack-livereload'
   gem 'spring'
