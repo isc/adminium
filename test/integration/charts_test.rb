@@ -26,7 +26,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, admin: false)
     FixtureFactory.new(:user, admin: nil)
     visit chart_resources_path(:users, column: 'admin', type: 'PieChart')
-    json = 'data_for_graph = {"chart_data":[["True",2,true,"#07be25"],["not set",1,null,"#DDD"],["False",1,false,"#777"]],"chart_type":"PieChart","column":"admin","grouping":"daily"}'
+    json = 'data_for_graph = {"chart_data":[["True",2,true,"#07be25"],["Not set",1,null,"#DDD"],["False",1,false,"#777"]],"chart_type":"PieChart","column":"admin","grouping":"daily"}'
     assert_equal json, page.find('script', visible: false).text(:all)
   end
 
@@ -40,7 +40,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, role: 'new_role_3')
     FixtureFactory.new(:user, role: nil)
     visit chart_resources_path(:users, column: 'role', type: 'PieChart')
-    json = "data_for_graph = {\"chart_data\":[[\"not set\",1,null,\"#DDD\"],[\"new_role_3\",1,\"new_role_3\",\"#AAA\"],[\"new_role_2\",1,\"new_role_2\",\"#CCC\"],[\"Débutant\",1,\"noob\",null],[\"Chef\",1,\"admin\",null],[\"new_role_1\",1,\"new_role_1\",\"#AAA\"]],\"chart_type\":\"PieChart\",\"column\":\"role\",\"grouping\":\"daily\"}"
+    json = 'data_for_graph = {"chart_data":[["Not set",1,null,"#DDD"],["new_role_3",1,"new_role_3","#AAA"],["new_role_2",1,"new_role_2","#CCC"],["Débutant",1,"noob",null],["Chef",1,"admin",null],["new_role_1",1,"new_role_1","#AAA"]],"chart_type":"PieChart","column":"role","grouping":"daily"}'
     assert_equal json, page.find('script', visible: false).text(:all)
   end
 

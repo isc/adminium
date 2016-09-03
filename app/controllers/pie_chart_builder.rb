@@ -3,40 +3,23 @@ module PieChartBuilder
 
   def pie_chart
     column = qualify params[:table], params[:column]
-    name = params[:column].to_sym
     @items = resource.query
     dataset_filtering
-    enum = if resource.boolean_column? name
-             options = resource.column_options(name)
-             {
-               true => {'color' => '#07be25', 'label' => options['boolean_true'] || 'True'},
-               false => {'color' => '#777', 'label' => options['boolean_false'] || 'False'}
-             }
-           elsif resource.foreign_key? name
-             {}
-           else
-             resource.enum_values_for(params[:column]) || {}
-           end
-    enum[nil] = {'color' => '#DDD', 'label' => 'not set'}
+    enum = determine_enum
     @data = @items.group_and_count(column).reverse_order(:count).limit(100).map do |row|
       key, count = row.values
-      v = enum[key.to_s] || {'label' => key, 'color' => new_color}
+      v = enum[key] || enum[key.to_s] || {'label' => key, 'color' => new_color}
       [v['label'], count, key, v['color']]
     end
 
     respond_to do |format|
       format.html do
-        @widget = current_account.pie_chart_widgets.where(table: params[:table], columns: params[:column]).first
+        @widget = current_account.pie_chart_widgets.find_by table: params[:table], columns: params[:column]
         render layout: false
       end
       format.json do
-        render json: {
-          chart_data: @data,
-          chart_type: 'PieChart',
-          grouping: 'none',
-          column: params[:column],
-          id: params[:widget_id]
-        }
+        render json: {chart_data: @data, chart_type: 'PieChart', grouping: 'none',
+                      column: params[:column], id: params[:widget_id]}
       end
     end
   end
@@ -44,7 +27,7 @@ module PieChartBuilder
   def new_color
     @i ||= 0
     @i += 1
-    ['#CCC', '#AAA'][@i % 2]
+    %w(#CCC #AAA)[@i % 2]
   end
 
   def sum_case_when c, x
@@ -60,5 +43,21 @@ module PieChartBuilder
         @select_values.push [name, value]
       end
     end
+  end
+
+  def determine_enum
+    name = params[:column].to_sym
+    enum =
+      if resource.boolean_column? name
+        options = resource.column_options(name)
+        {true => {'color' => '#07be25', 'label' => options['boolean_true'] || 'True'},
+         false => {'color' => '#777', 'label' => options['boolean_false'] || 'False'}}
+      elsif resource.foreign_key? name
+        {}
+      else
+        resource.enum_values_for(params[:column]) || {}
+      end
+    enum[nil] = {'color' => '#DDD', 'label' => 'Not set'}
+    enum
   end
 end
