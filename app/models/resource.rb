@@ -311,7 +311,7 @@ module Resource
     end
 
     def foreign_key? name
-      associations[:belongs_to].values.find {|assoc| assoc[:foreign_key] == name }
+      belongs_to_associations.find {|assoc| assoc[:foreign_key] == name}
     end
 
     def db_foreign_key? name
@@ -332,9 +332,9 @@ module Resource
 
     def valid_association_column? name
       if name.to_s.starts_with?('has_many/')
-        associations[:has_many].keys.include? name.to_s.gsub('has_many/', '').to_sym
-      elsif name.to_s.include?('.')
-        associations[:belongs_to].keys.include? name.to_s.split('.').first.to_sym
+        has_many_associations.any? {|assoc| assoc[:table] == name.to_s.gsub('has_many/', '').to_sym}
+      elsif name['.']
+        belongs_to_associations.any? {|assoc| assoc[:foreign_key] == name.to_s.split('.').first.to_sym}
       end
     end
 
@@ -376,7 +376,7 @@ module Resource
           key = key.gsub 'has_many/', ''
           "#{key.humanize} count"
         else
-          key.humanize
+          key.split('.').map(&:humanize).join(' > ')
         end
       end
     end
@@ -504,21 +504,28 @@ module Resource
       @application_time_zone ||= ActiveSupport::TimeZone.new @generic.account.application_time_zone
     end
 
-    def associations
-      @generic.associations[@table] || {belongs_to: {}, has_many: {}}
+    def belongs_to_association column
+      @generic.associations.detect {|assoc| assoc[:table] == @table && assoc[:foreign_key] == column}
     end
 
-    def assoc_query item, name
-      assoc = associations[:has_many][name]
-      @generic.db[name].where(assoc[:foreign_key] => item[assoc[:primary_key]])
+    def belongs_to_associations
+      @generic.associations.select {|assoc| assoc[:table] == @table}
     end
 
-    def has_many_count item, assoc_name
-      assoc_query(item, assoc_name).count
+    def has_many_associations
+      @generic.associations.select {|assoc| assoc[:referenced_table] == @table}
     end
 
-    def fetch_associated_items item, assoc_name, limit
-      assoc_query(item, assoc_name).limit(limit)
+    def assoc_query item, assoc
+      @generic.db[assoc[:table]].where assoc[:foreign_key] => item[assoc[:primary_key]]
+    end
+
+    def has_many_count item, assoc
+      assoc_query(item, assoc).count
+    end
+
+    def fetch_associated_items item, assoc, limit
+      assoc_query(item, assoc).limit(limit)
     end
 
     def last_primary_key_value

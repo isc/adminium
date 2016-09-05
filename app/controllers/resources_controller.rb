@@ -71,7 +71,7 @@ class ResourcesController < ApplicationController
     @boolean_and_blob_cols = item_attributes_type %i(boolean blob)
     @leftover_cols = resource.columns[:show] -
                      @strings_and_hstore_cols - @numbers_cols - @pks_dates_and_times_cols - @boolean_and_blob_cols -
-                     resource.associations[:belongs_to].values.map {|assoc| assoc[:foreign_key]}
+                     resource.belongs_to_associations.map {|assoc| assoc[:foreign_key]}
   end
 
   def edit
@@ -308,13 +308,7 @@ class ResourcesController < ApplicationController
 
   def apply_select
     columns = resource.columns[settings_type].select {|c| !c.to_s.starts_with?('has_many/')}
-    columns.map! do |column|
-      if column['.']
-        resource.associations[:belongs_to][column.to_s.split('.').first.to_sym][:foreign_key]
-      else
-        column
-      end
-    end
+    columns.map! {|column| column['.'] ? column.to_s.split('.').first.to_sym : column}
     columns.uniq!
     columns |= resource.primary_keys
     columns.map! do |column|
@@ -361,8 +355,9 @@ class ResourcesController < ApplicationController
         [time_chart_aggregate(qualify(params[:table], k)), v]
       else
         if k['.']
-          table, k = k.split('.')
-          join_belongs_to table
+          foreign_key, k = k.split('.')
+          table = resource.belongs_to_association(foreign_key.to_sym)[:referenced_table]
+          join_belongs_to foreign_key
         else
           table = resource.table
         end
@@ -379,23 +374,25 @@ class ResourcesController < ApplicationController
   def fetch_associated_items
     @fetched_items = @items.to_a
     @associated_items = {}
-    # FIXME: polymorphic belongs_to generate N+1 queries (since no referenced_table in assoc_info)
-    referenced_tables = resource.columns[settings_type].map do |c|
-      if c.to_s.include?('.')
+    foreign_keys = resource.columns[settings_type].map do |c|
+      if c.to_s['.']
         c.to_s.split('.').first.to_sym
-      else
-        table = resource.foreign_key?(c).try(:[], :referenced_table)
-        table if table && resource_for(table).label_column
+      elsif resource.foreign_key? c
+        # FIXME: polymorphic belongs_to generate N+1 queries (since no referenced_table in assoc_info)
+        table = resource.belongs_to_association(c)[:referenced_table]
+        c if table && resource_for(table).label_column
       end
     end
-    referenced_tables.compact.uniq.map do |referenced_table|
-      fetch_items_for_assoc @fetched_items, resource.associations[:belongs_to][referenced_table]
+    foreign_keys.compact.uniq.map do |foreign_key|
+      fetch_items_for_assoc @fetched_items, resource.belongs_to_association(foreign_key)
     end
     resource.columns[settings_type].each do |c|
-      next unless c.to_s.include?('.')
-      table, column = c.to_s.split('.').map(&:to_sym)
-      assoc = resource_for(table).foreign_key? column
-      fetch_items_for_assoc @associated_items[table], assoc if assoc && resource_for(assoc[:referenced_table]).label_column
+      next unless c.to_s['.']
+      foreign_key, column = c.to_s.split('.').map(&:to_sym)
+      assoc = resource.belongs_to_association foreign_key
+      assoc = resource_for(assoc[:referenced_table]).foreign_key? column
+      next unless assoc && resource_for(assoc[:referenced_table]).label_column
+      fetch_items_for_assoc @associated_items[assoc[:table]], assoc
     end
   end
 
@@ -409,7 +406,7 @@ class ResourcesController < ApplicationController
   def apply_has_many_counts
     resource.columns[settings_type].find_all {|c| c.to_s.starts_with? 'has_many/'}.each do |column|
       assoc = column.to_s.gsub 'has_many/', ''
-      assoc_info = resource.associations[:has_many].detect {|name, _| name.to_s == assoc}.second
+      assoc_info = resource.has_many_associations.detect {|info| info[:table] == assoc.to_sym}
       next if assoc_info.nil?
       count_on = qualify_primary_keys resource_for(assoc)
       @items = @items
@@ -424,17 +421,15 @@ class ResourcesController < ApplicationController
     return unless order
     column, descending = order.split ' '
     if column['.']
-      join_belongs_to column.split('.').first
-      @items = @items.select_append Sequel.lit(column)
+      foreign_key, column = column.split '.'
+      assoc_info = resource.belongs_to_association foreign_key.to_sym
+      join_belongs_to assoc_info[:foreign_key]
+      column = qualify assoc_info[:referenced_table], column
+    elsif order['/']
+      column = column.to_sym
+    else
+      column = qualify params[:table], column
     end
-    column = case order
-             when /\./
-               Sequel.lit(column)
-             when /\//
-               column.to_sym
-             else
-               (qualify params[:table], column)
-             end
     opts = @generic.mysql? ? {} : {nulls: :last}
     @items = @items.order(Sequel::SQL::OrderedExpression.new(column, !!descending, opts))
     @items = @items.order_prepend(Sequel.case([[{column => nil}, 1]], 0)) if @generic.mysql?
@@ -471,10 +466,10 @@ class ResourcesController < ApplicationController
       'present' => {specific: 'present'}
     }
     if filter['assoc'].present?
-      assoc = resource.associations[:belongs_to].detect {|k, _| k.to_s == filter['assoc']}
-      resource_with_column = resource_for assoc.second[:referenced_table]
-      join_belongs_to assoc.first
-      table = assoc.second[:referenced_table]
+      assoc = resource.belongs_to_association filter['assoc'].to_sym
+      resource_with_column = resource_for assoc[:referenced_table]
+      join_belongs_to assoc[:foreign_key]
+      table = assoc[:referenced_table]
     else
       resource_with_column, table = resource, params[:table]
     end
@@ -557,12 +552,14 @@ class ResourcesController < ApplicationController
     end
   end
 
-  def join_belongs_to assoc_name
+  def join_belongs_to foreign_key
+    foreign_key = foreign_key.to_sym
     @joined_belongs_to ||= []
-    return if @joined_belongs_to.include? assoc_name.to_sym
-    @joined_belongs_to << assoc_name.to_sym
-    assoc_info = resource.associations[:belongs_to][assoc_name.to_sym]
-    @items = @items.left_outer_join(assoc_info[:referenced_table], assoc_info[:primary_key] => qualify(params[:table], assoc_info[:foreign_key]))
+    return if @joined_belongs_to.include? foreign_key
+    @joined_belongs_to << foreign_key
+    assoc_info = resource.belongs_to_association foreign_key
+    @items = @items.left_outer_join assoc_info[:referenced_table],
+      assoc_info[:primary_key] => qualify(params[:table], assoc_info[:foreign_key])
   end
 
   def qualify table, column
@@ -637,6 +634,6 @@ class ResourcesController < ApplicationController
   def item_attributes_type types
     columns = resource.columns[:show]
     columns &= resource.find_all_columns_for_types(*types).map(&:first)
-    columns - resource.primary_keys - (resource.associations[:belongs_to].values.map {|assoc| assoc[:foreign_key]})
+    columns - resource.primary_keys - (resource.belongs_to_associations.map {|assoc| assoc[:foreign_key]})
   end
 end

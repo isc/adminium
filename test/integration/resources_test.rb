@@ -203,7 +203,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     user = FixtureFactory.new(:user).factory
     2.times { FixtureFactory.new :comment, user_id: user.id }
     FixtureFactory.new(:user)
-    stub_resource_columns listing: [:'has_many/comments']
+    stub_resource_columns listing: %i(has_many/comments)
     visit resources_path(:users)
     assert_selector "tr[data-item-id=\"#{user.id}\"] td.hasmany a", text: '2'
     find('a[title="Sort by Comments count 9 → 0"]').click
@@ -212,7 +212,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
 
   test 'custom column belongs_to' do
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'bob').factory.id)
-    stub_resource_columns listing: ['users.pseudo']
+    stub_resource_columns listing: %w(user_id.pseudo)
     visit resources_path(:comments)
     assert_selector 'td', text: 'bob'
   end
@@ -222,7 +222,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
       FixtureFactory.new(:user, pseudo: 'InternGuy', role: 'noob').factory.id)
     FixtureFactory.new(:comment, title: 'You are fired', user_id:
       FixtureFactory.new(:user, pseudo: 'BossMan', role: 'admin').factory.id)
-    stub_resource_columns listing: ['title', 'users.role']
+    stub_resource_columns listing: %w(title user_id.role)
     Resource::Base.any_instance.stubs(:enum_values_for).returns nil
     Resource::Base.any_instance.stubs(:enum_values_for).with(:role)
                   .returns 'admin' => {'label' => 'Chef'}, 'noob' => {'label' => 'Débutant'}
@@ -239,18 +239,18 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test 'sort by custom column belongs_to' do
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'bob').factory.id)
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'zob').factory.id)
-    stub_resource_columns listing: ['users.pseudo']
-    Resource::Base.any_instance.stubs(:default_order).returns 'users.pseudo'
+    stub_resource_columns listing: %w(user_id.pseudo)
+    Resource::Base.any_instance.stubs(:default_order).returns 'user_id.pseudo'
     visit resources_path(:comments)
     assert_equal %w(bob zob), page.all('table.items-list tr td:last-child').map(&:text)
-    first('a[title="Sort by Users.pseudo Z → A"]').click
+    first('a[title="Sort by User > Pseudo Z → A"]').click
     assert_equal %w(zob bob), page.all('table.items-list tr td:last-child').map(&:text)
   end
 
   test 'custom column belongs_to which is a foreign_key to another belongs_to' do
     group = FixtureFactory.new(:group, name: 'Adminators').factory
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, group_id: group.id).factory.id)
-    stub_resource_columns listing: ['users.group_id']
+    stub_resource_columns listing: %w(user_id.group_id)
     generic = Generic.new @account
     resource = Resource::Base.new generic, :groups
     resource.label_column = 'name'
@@ -400,9 +400,8 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
 
   test 'edit and display time and date column' do
-    stub_resource_columns form: [:daily_alarm, :birthdate],
-                          listing: [:daily_alarm, :birthdate],
-                          show: [:daily_alarm, :birthdate]
+    stub_resource_columns form: %i(daily_alarm birthdate), listing: %i(daily_alarm birthdate),
+                          show: %i(daily_alarm birthdate)
     visit new_resource_path(:users)
     find('#users_daily_alarm_4i').select '08'
     select '37'
@@ -431,7 +430,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
 
   test 'display of datetime depending on time zone conf' do
-    stub_resource_columns listing: [:column_with_time_zone, :activated_at]
+    stub_resource_columns listing: %i(column_with_time_zone activated_at)
     user = FixtureFactory.new(:user).factory
     ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
     ActiveRecord::Base.connection.execute "update users set activated_at = '2012-10-09 05:00:00' where id = #{user.id}"

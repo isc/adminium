@@ -1,11 +1,11 @@
 class CsvStreamer
-  attr_reader :resource, :other_resources
+  attr_reader :resource
 
   def initialize items, associated_items, resource, other_resources
     @items, @associated_items = items, associated_items
     @resource, @other_resources = resource, other_resources
     @associated_items.each do |k, v| # sort items for binary search
-      v.sort_by! {|e| -e[other_resources[k].primary_key]}
+      v.sort_by! {|e| -e[@other_resources[k].primary_key]}
     end
   end
 
@@ -17,11 +17,14 @@ class CsvStreamer
 
   def csv_row item, keys
     keys.map do |key|
-      if key.to_s.include? '.'
-        referenced_table, column = key.to_s.split('.').map(&:to_sym)
-        assoc = resource.associations[:belongs_to][referenced_table]
-        pitem = @associated_items[referenced_table].binary_search {|i| i[assoc[:primary_key]] <=> item[assoc[:foreign_key]]} if item[assoc[:foreign_key]]
-        other_resources[referenced_table].raw_column_output pitem, column if pitem
+      if key.to_s['.']
+        assoc_column, column = key.to_s.split('.').map(&:to_sym)
+        if item[assoc_column]
+          assoc = resource.belongs_to_association assoc_column
+          pitem = @associated_items[assoc[:referenced_table]]
+                  .binary_search {|i| i[assoc[:primary_key]] <=> item[assoc_column]}
+          @other_resources[assoc[:referenced_table]].raw_column_output pitem, column if pitem
+        end
       else
         resource.raw_column_output item, key
       end

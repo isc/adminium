@@ -1,12 +1,7 @@
 module ResourcesHelper
   def header_link original_key
     key = original_key.to_s
-    display_name = resource.column_display_name(original_key)
-    if key.include? '.'
-      parts = key.split('.')
-      parts[0] = parts.first.tableize
-      key = parts.join('.')
-    end
+    display_name = resource.column_display_name original_key
     params[:order] = params[:order] || resource.default_order
     if params[:order] == key
       order = "#{key} desc"
@@ -47,7 +42,6 @@ module ResourcesHelper
     is_editable, key = nil, key.to_sym
     return display_associated_column item, key, wrapper_tag, resource if key.to_s.include? '.'
     return display_associated_count item, key, wrapper_tag, resource if key.to_s.starts_with? 'has_many/'
-    return display_associated_calculation item, key, wrapper_tag, resource if key.to_s.starts_with? 'calculations/'
     return display_file(wrapper_tag, item, key, resource) if resource.binary_column?(key) && !item[key].nil?
     value = item[key]
     if value && resource.foreign_key?(key)
@@ -90,34 +84,25 @@ module ResourcesHelper
 
   def display_associated_column item, key, wrapper_tag, resource
     parts = key.to_s.split('.')
-    assoc_info = resource.associations[:belongs_to][parts.first.to_sym]
-    item = @associated_items[parts.first.to_sym].find {|i| i[assoc_info[:primary_key]] == item[assoc_info[:foreign_key]]}
+    assoc_info = resource.belongs_to_association parts.first.to_sym
+    item = @associated_items[assoc_info[:referenced_table]]
+           .find {|i| i[assoc_info[:primary_key]] == item[assoc_info[:foreign_key]]}
     return column_content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
     display_attribute wrapper_tag, item, parts.second, resource_for(assoc_info[:referenced_table]), key
-  end
-
-  def display_associated_calculation item, key, wrapper_tag, resource
-    value = item[key]
-    return column_content_tag wrapper_tag, '', class: 'hasmany' if value.nil?
-    _, key = key.to_s.split('/')
-    foreign_key_name = resource.associations[:has_many].find {|name, _| name.to_s == key}.second[:foreign_key]
-    foreign_key_value = resource.primary_key_value item
-    content = link_to value, resources_path(key, where: {foreign_key_name => foreign_key_value}), class: 'badge badge-warning'
-    column_content_tag wrapper_tag, content, class: 'hasmany'
   end
 
   def display_associated_count item, key, wrapper_tag, resource
     value = item[key]
     return column_content_tag wrapper_tag, '', class: 'hasmany' if value.nil?
     key = key.to_s.gsub 'has_many/', ''
-    foreign_key_name = resource.associations[:has_many].find {|name, _| name.to_s == key}.second[:foreign_key]
+    foreign_key_name = resource.has_many_associations.find {|info| info[:table] == key.to_sym}[:foreign_key]
     foreign_key_value = resource.primary_key_value item
     content = link_to value, resources_path(key, where: {foreign_key_name => foreign_key_value}), class: 'badge badge-warning'
     column_content_tag wrapper_tag, content, class: 'hasmany'
   end
 
   def display_belongs_to item, key, value, resource
-    _, assoc = resource.associations[:belongs_to].find {|_, info| info[:foreign_key] == key}
+    assoc = resource.belongs_to_association key
     if assoc[:polymorphic]
       assoc_type = item[key.to_s.gsub(/_id/, '_type').to_sym]
       return value if assoc_type.blank?
@@ -146,9 +131,9 @@ module ResourcesHelper
     link_to label, resource_path(referenced_table, value)
   end
 
-  def display_associated_items resource, source_item, assoc_name
-    items = resource.fetch_associated_items source_item, assoc_name, 5
-    resource = resource_for assoc_name
+  def display_associated_items resource, source_item, assoc
+    items = resource.fetch_associated_items source_item, assoc, 5
+    resource = resource_for assoc[:table]
     display_items items, resource
   end
 
@@ -305,17 +290,18 @@ module ResourcesHelper
     res = content_tag :optgroup, label: resource.table.to_s.humanize do
       resource.column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe
     end
-    resource.associations[:belongs_to].each do |name, assoc|
+    resource.belongs_to_associations.each do |assoc|
       next if assoc[:polymorphic]
-      res << content_tag(:optgroup, label: name.to_s.humanize, data: {name: name, kind: 'belongs_to'}) do
+      name = assoc[:referenced_table].to_s
+      res << content_tag(:optgroup, label: name.humanize, data: {name: assoc[:foreign_key], kind: 'belongs_to'}) do
         resource_for(assoc[:referenced_table]).column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe
       end
     end
     if options[:has_many]
-      resource.associations[:has_many].each do |name, assoc|
-        res << content_tag(:optgroup, label: name.to_s.humanize, data: {name: name, kind: 'has_many'}) do
-          # resource_for(assoc[:table]).column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe
-          content_tag(:option, 'count', value: "#{assoc} count")
+      resource.has_many_associations.each do |assoc|
+        name = assoc[:table].to_s
+        res << content_tag(:optgroup, label: name.humanize, data: {name: name, kind: 'has_many'}) do
+          content_tag :option, 'count'
         end
       end
     end
@@ -329,7 +315,9 @@ module ResourcesHelper
 
   def column_header_with_metadata resource, name
     if name.to_s['.']
-      table, column = name.to_s.split('.')
+      foreign_key, column = name.to_s.split('.')
+      assoc = resource.belongs_to_association foreign_key.to_sym
+      table = assoc[:referenced_table]
       type = resource_for(table).column_type column.to_sym
     else
       type = resource.column_type name
@@ -337,6 +325,7 @@ module ResourcesHelper
       column = name
     end
     data = {'column-name' => column, 'column-type' => type, 'table-name' => table}
+    data['foreign-key'] = foreign_key if foreign_key
     content_tag(:th, class: 'column_header', data: data) do
       yield
     end

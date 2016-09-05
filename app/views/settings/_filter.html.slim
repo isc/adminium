@@ -6,7 +6,7 @@ td
   input type="hidden" name="filters[#{g}][column]" value=filter['column']
   input type="hidden" name="filters[#{g}][type]" value=filter['type']
   input type="hidden" name="filters[#{g}][assoc]" value=filter['assoc']
-  label.control-label= "#{filter['assoc']} #{filter['column']}".strip
+  label.control-label= "#{[filter['assoc'], filter['column']].compact.map(&:to_s).map(&:humanize).join(' > ')}".strip
 td.operators
   - filter_type = filter['type'].to_s
   - filter_type = 'integer' if %w(decimal float).include? filter_type

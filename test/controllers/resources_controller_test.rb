@@ -72,15 +72,16 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_advanced_search_on_column_from_assoc
     setup_resource
-    assert_asearch 'with group like admin', %w(Loulou), [{'column' => 'name', 'assoc' => 'groups', 'type' => 'string', 'operator' => 'like', 'operand' => 'admin'}]
+    assert_asearch 'with group like admin', %w(Loulou),
+      [{'column' => 'name', 'assoc' => 'group_id', 'type' => 'string', 'operator' => 'like', 'operand' => 'admin'}]
   end
 
   def test_advanced_search_on_columns_from_two_assocs
     setup_resource :roles_users
     description =
       [
-        {'column' => 'pseudo', 'assoc' => 'users', 'type' => 'string', 'operator' => 'like', 'operand' => 'john'},
-        {'column' => 'name', 'assoc' => 'roles', 'type' => 'string', 'operator' => 'like', 'operand' => 'admin'}
+        {'column' => 'pseudo', 'assoc' => 'user_id', 'type' => 'string', 'operator' => 'like', 'operand' => 'john'},
+        {'column' => 'name', 'assoc' => 'role_id', 'type' => 'string', 'operator' => 'like', 'operand' => 'admin'}
       ]
     assert_asearch 'admin johns', [], description, 'roles_users', 'role_id'
   end
@@ -117,7 +118,7 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   def test_csv_response_with_belongs_to_column
-    Resource::Base.any_instance.stubs(:columns).returns(export: [:'groups.name'])
+    Resource::Base.any_instance.stubs(:columns).returns(export: %i(group_id.name))
     get :index, table: 'users', format: 'csv', order: 'id'
     lines = @response.body.split("\n")
     assert_equal 'Admins', lines.last

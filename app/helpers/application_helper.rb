@@ -9,8 +9,7 @@ module ApplicationHelper
   end
 
   def foreign_resource resource, key
-    assoc_info = resource.associations[:belongs_to].values.find {|info| info[:foreign_key] == key.to_sym}
-    resource_for assoc_info[:referenced_table]
+    resource_for resource.belongs_to_association(key.to_sym)[:referenced_table]
   end
 
   def display_datetime_control_group opts = {}

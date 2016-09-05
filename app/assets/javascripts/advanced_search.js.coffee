@@ -12,7 +12,7 @@ class AdvancedSearch
       column_name = object.val
       optgroup = $(object.added.element).closest('optgroup')
       assoc = optgroup.data('name')
-      table = assoc or $('#new_filter').attr('data-table')
+      table = $('#new_filter').attr('data-table')
       $('#new_filter').select2("val", "")
       $.get "/settings/#{table}", {column_name: column_name, assoc: assoc}, (resp) =>
         filterDiv = $("<tr>").append(resp).appendTo($(".filters"))

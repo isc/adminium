@@ -30,15 +30,11 @@ class GenericTest < ActiveSupport::TestCase
   end
 
   test 'associations' do
-    assert_equal({foreign_key: :user_profile_id, referenced_table: :user_profiles, primary_key: :id, table: :users},
-      @generic.associations[:users][:belongs_to][:user_profiles])
-    assert_equal({foreign_key: :user_profile_id, referenced_table: :user_profiles, primary_key: :id, table: :users},
-      @generic.associations[:user_profiles][:has_many][:users])
+    assert @generic.associations.include?(foreign_key: :user_profile_id, referenced_table: :user_profiles, primary_key: :id, table: :users)
   end
 
   test 'polymorphic associations' do
-    assert_equal({foreign_key: :commentable_id, referenced_table: nil, primary_key: :id, table: :comments, polymorphic: true},
-    @generic.associations[:comments][:belongs_to][:commentables])
+    assert @generic.associations.include?(foreign_key: :commentable_id, referenced_table: nil, primary_key: :id, table: :comments, polymorphic: true)
   end
 
   def expected_tables

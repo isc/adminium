@@ -21,11 +21,11 @@ class Generic
   def associations
     return @associations if @associations
     ActiveSupport::Notifications.instrument :associations_discovery do
-      @associations = Rails.cache.fetch "account:#{@account_id}:associations", expires_in: 10.minutes do
-        @associations = Hash[tables.map {|t| [t, {belongs_to: {}, has_many: {}}]}]
+      @associations = Rails.cache.fetch "account:#{@account_id}:associations", expires_in: 0.minutes do
+        @associations = []
         tables.each do |table|
           begin
-            discover_associations_through_foreign_keys table if foreign_keys[table].present?
+            discover_associations_through_foreign_keys table
             discover_associations_through_conventions table
           rescue Sequel::Error => e
             # A table with no columns generates a Sequel::Error for instance
@@ -39,10 +39,9 @@ class Generic
   end
 
   def discover_associations_through_foreign_keys table
-    foreign_keys[table].each do |foreign_key|
-      @associations[table][:belongs_to][foreign_key[:to_table]] =
-        @associations[foreign_key[:to_table]][:has_many][table] =
-          {foreign_key: foreign_key[:column], primary_key: foreign_key[:primary_key], referenced_table: foreign_key[:to_table], table: table}
+    foreign_keys[table]&.each do |foreign_key|
+      @associations |= [{foreign_key: foreign_key[:column], primary_key: foreign_key[:primary_key],
+                         referenced_table: foreign_key[:to_table], table: table}]
     end
   end
 
@@ -51,13 +50,10 @@ class Generic
       next unless (name.to_s.ends_with? '_id') && (info[:type] == :integer)
       owner = name.to_s.gsub(/_id$/, '')
       owner_table = owner.tableize.to_sym
-      if tables.include?(owner_table) && @associations[table][:belongs_to][owner_table].nil?
-        @associations[table][:belongs_to][owner_table] =
-          @associations[owner_table][:has_many][table] =
-            {foreign_key: name, primary_key: :id, referenced_table: owner_table, table: table}
+      if tables.include? owner_table
+        @associations |= [{foreign_key: name, primary_key: :id, referenced_table: owner_table, table: table}]
       elsif schema(table).map(&:first).include? "#{owner}_type".to_sym
-        @associations[table][:belongs_to][owner.pluralize.to_sym] =
-          {foreign_key: name, primary_key: :id, referenced_table: nil, table: table, polymorphic: true}
+        @associations |= [{foreign_key: name, primary_key: :id, referenced_table: nil, table: table, polymorphic: true}]
       end
     end
   rescue Sequel::DatabaseError

@@ -20,7 +20,12 @@ class SettingsController < ApplicationController
 
   def show
     column_name = params[:column_name].to_sym
-    @column = resource.column_info column_name
+    if params[:assoc]
+      assoc_resource = resource_for(resource.belongs_to_association(params[:assoc].to_sym)[:referenced_table])
+      @column = assoc_resource.column_info column_name
+    else
+      @column = resource.column_info column_name
+    end
     render partial: '/settings/filter', locals:
       {filter: {'column' => column_name, 'type' => (@column[:type] || @column[:db_type]), 'assoc' => params[:assoc]}}
   end

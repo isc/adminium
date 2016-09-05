@@ -1,6 +1,5 @@
 class CellFilters
   constructor: ->
-    @currentTableName = $('.items-list').data('table')
     $('.items-list')
       .on('mouseover', 'td[data-raw-value], td.nilclass', @setupCellFilter)
       .on('click', 'td i.fa-indent', @addWhereClause)
@@ -25,8 +24,8 @@ class CellFilters
     value = td.data('raw-value')
     value = 'null' if value is undefined
     column = td.data('column-name')
-    tableName = td.closest('table').find('th').eq(td.index()).data('table-name')
-    column = "#{tableName}.#{column}" if @currentTableName isnt tableName
+    foreignKey = td.closest('table').find('th').eq(td.index()).data('foreign-key')
+    column = "#{foreignKey}.#{column}" if foreignKey
     updatedHref += "#{clauseType}[#{column}]=#{value}"
     location.href = updatedHref
 

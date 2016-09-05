@@ -47,10 +47,10 @@ nav.navbar.navbar-default
               = resource.column_display_name name
             == display_attribute :td, @item, name, resource
 
-    - if resource.associations[:belongs_to].any?
+    - if resource.belongs_to_associations.any?
       table.table.table-condensed
-        - resource.associations[:belongs_to].each do |name, assoc|
-          - next unless user_can? :show, name
+        - resource.belongs_to_associations.each do |assoc|
+          - next unless user_can? :show, assoc[:referenced_table]
           tr
             th title="Belongs to" = assoc[:foreign_key].to_s.humanize
             - foreign_key_value = @item[assoc[:foreign_key]]
@@ -59,23 +59,23 @@ nav.navbar.navbar-default
             - else
               td.nilclass null
 
-    - if resource.associations[:has_many].any?
+    - if resource.has_many_associations.any?
       table.table.table-condensed
-        - resource.associations[:has_many].each do |name, assoc|
-          - next unless user_can? :show, name
+        - resource.has_many_associations.each do |assoc|
+          - next unless user_can? :show, assoc[:table]
           tr
-            - count, assoc_params = (resource.has_many_count @item, name), {assoc[:foreign_key] => @item[assoc[:primary_key]]}
-            th.col-md-2= name.to_s.humanize
+            - count, assoc_params = (resource.has_many_count @item, assoc), {assoc[:foreign_key] => @item[assoc[:primary_key]]}
+            th.col-md-2= assoc[:table].to_s.humanize
             td
-              = link_to resources_path(name, where: assoc_params) do
+              = link_to resources_path(assoc[:table], where: assoc_params) do
                 span.badge.badge-warning = count
             td
-              = display_associated_items resource, @item, name
+              = display_associated_items resource, @item, assoc
               - if count > 5
                 '  
-                = link_to "...", resources_path(name, where: assoc_params)
+                = link_to "...", resources_path(assoc[:table], where: assoc_params)
             td
-              = link_to new_resource_path(name, attributes: assoc_params), class: 'btn btn-mini', rel: 'tooltip', data: {placement: :left}, title: "Create a new associated #{name.to_s.singularize.humanize}" do
+              = link_to new_resource_path(assoc[:table], attributes: assoc_params), class: 'btn btn-mini', rel: 'tooltip', data: {placement: :left}, title: "Create a new associated #{assoc[:table].to_s.singularize.humanize}" do
                 i.fa.fa-plus
 
 = render 'resources/panels/show_settings'

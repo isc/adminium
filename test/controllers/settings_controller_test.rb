@@ -17,10 +17,15 @@ class SettingsControllerTest < ActionController::TestCase
   end
 
   test 'partials' do
-    [:id, :created_at, :pseudo].each do |column|
+    %i(id created_at pseudo).each do |column|
       get :show, id: 'users', column_name: column
       assert_response :success
     end
+  end
+
+  test 'show with assoc parameter' do
+    get :show, id: :users, column_name: :name, assoc: :group_id
+    assert_response :success
   end
 
   test 'columns' do
