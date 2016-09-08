@@ -357,12 +357,12 @@ class ResourcesController < ApplicationController
         if k['.']
           foreign_key, k = k.split('.')
           table = resource.belongs_to_association(foreign_key.to_sym)[:referenced_table]
-          join_belongs_to foreign_key
+          joined_table_alias = join_belongs_to foreign_key
         else
           table = resource.table
         end
         if resource_for(table).column_names.include? k.to_sym
-          [qualify(table, k.to_sym), v]
+          [qualify(joined_table_alias || table, k.to_sym), v]
         else
           params[params_key].delete k
           flash.now[:error] = "Column <i>#{k}</i> doesn't exist on table #{table}.<br>Existing columns are <i>#{resource_for(table).column_names.join(', ')}</i>.".html_safe
@@ -423,8 +423,8 @@ class ResourcesController < ApplicationController
     if column['.']
       foreign_key, column = column.split '.'
       assoc_info = resource.belongs_to_association foreign_key.to_sym
-      join_belongs_to assoc_info[:foreign_key]
-      column = qualify assoc_info[:referenced_table], column
+      joined_table_alias = join_belongs_to assoc_info[:foreign_key]
+      column = qualify joined_table_alias, column
     elsif order['/']
       column = column.to_sym
     else
@@ -468,7 +468,7 @@ class ResourcesController < ApplicationController
     if filter['assoc'].present?
       assoc = resource.belongs_to_association filter['assoc'].to_sym
       resource_with_column = resource_for assoc[:referenced_table]
-      join_belongs_to assoc[:foreign_key]
+      joined_table_alias = join_belongs_to assoc[:foreign_key]
       table = assoc[:referenced_table]
     else
       resource_with_column, table = resource, params[:table]
@@ -485,7 +485,7 @@ class ResourcesController < ApplicationController
     end
     operators.merge! datetime_operators if %i(date datetime).index(type)
     operators.merge! string_operators if %i(string text).index(type)
-    column = qualify table, filter['column'].to_sym
+    column = qualify(joined_table_alias || table, filter['column'].to_sym)
     operation = operators[filter['operator']]
     column = Sequel.function operation[:named_function], column if operation[:named_function]
     return send("apply_filter_#{operation[:specific]}", column) if operation[:specific]
@@ -558,8 +558,11 @@ class ResourcesController < ApplicationController
     return if @joined_belongs_to.include? foreign_key
     @joined_belongs_to << foreign_key
     assoc_info = resource.belongs_to_association foreign_key
-    @items = @items.left_outer_join assoc_info[:referenced_table],
+    join_alias = "#{foreign_key}_join"
+    aliased_join_table = Sequel::SQL::AliasedExpression.new(assoc_info[:referenced_table], join_alias)
+    @items = @items.left_outer_join aliased_join_table,
       assoc_info[:primary_key] => qualify(params[:table], assoc_info[:foreign_key])
+    join_alias
   end
 
   def qualify table, column

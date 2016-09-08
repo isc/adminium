@@ -292,8 +292,8 @@ module ResourcesHelper
     end
     resource.belongs_to_associations.each do |assoc|
       next if assoc[:polymorphic]
-      name = assoc[:referenced_table].to_s
-      res << content_tag(:optgroup, label: name.humanize, data: {name: assoc[:foreign_key], kind: 'belongs_to'}) do
+      name = assoc[:foreign_key].to_s
+      res << content_tag(:optgroup, label: name.humanize, data: {name: name, kind: 'belongs_to'}) do
         resource_for(assoc[:referenced_table]).column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe
       end
     end
