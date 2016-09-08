@@ -34,7 +34,8 @@ module ApplicationHelper
 
   def display_filter filter
     filter.map do |f|
-      "<strong>#{f['column']}</strong> #{f['operator']} <i>#{f['operand']}</i>"
+      column = [f['assoc'].presence, f['column']].compact.map(&:humanize).join(' > ')
+      "<strong style=\"white-space: nowrap\">#{column}</strong> #{f['operator']} <i>#{f['operand']}</i>"
     end.join('<br/>')
   end
 
