@@ -67,7 +67,7 @@ nav.navbar.navbar-default
             - count, assoc_params = (resource.has_many_count @item, assoc), {assoc[:foreign_key] => @item[assoc[:primary_key]]}
             th.col-md-2
               = assoc[:table].to_s.humanize
-              - if assoc[:foreign_key].to_s.humanize != resource.human_name
+              - if resource.has_many_associations.many? {|other_assoc| other_assoc[:table] == assoc[:table]}
                 br
                 small as #{assoc[:foreign_key].to_s.humanize}
             td

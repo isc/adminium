@@ -332,7 +332,7 @@ module Resource
 
     def valid_association_column? name
       if name.to_s.starts_with?('has_many/')
-        has_many_associations.any? {|assoc| assoc[:table] == name.to_s.gsub('has_many/', '').to_sym}
+        find_has_many_association_for_key name
       elsif name['.']
         belongs_to_associations.any? {|assoc| assoc[:foreign_key] == name.to_s.split('.').first.to_sym}
       end
@@ -373,8 +373,12 @@ module Resource
       else
         key = key.to_s
         if key.starts_with? 'has_many/'
-          key = key.gsub 'has_many/', ''
-          "#{key.humanize} count"
+          assoc = find_has_many_association_for_key key
+          res = "#{assoc[:table].to_s.humanize} count"
+          if has_many_associations.many? {|other_assoc| other_assoc[:table] == assoc[:table]}
+            res << " as #{assoc[:foreign_key].to_s.humanize}"
+          end
+          res
         else
           key.split('.').map(&:humanize).join(' > ')
         end
@@ -514,6 +518,11 @@ module Resource
 
     def has_many_associations
       @generic.associations.select {|assoc| assoc[:referenced_table] == @table}
+    end
+
+    def find_has_many_association_for_key key
+      _, table, foreign_key = key.to_s.split('/')
+      has_many_associations.detect {|assoc| assoc[:foreign_key] == foreign_key&.to_sym && assoc[:table] == table.to_sym}
     end
 
     def assoc_query item, assoc

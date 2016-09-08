@@ -95,9 +95,8 @@ module ResourcesHelper
     value = item[key]
     return column_content_tag wrapper_tag, '', class: 'hasmany' if value.nil?
     key = key.to_s.gsub 'has_many/', ''
-    foreign_key_name = resource.has_many_associations.find {|info| info[:table] == key.to_sym}[:foreign_key]
     foreign_key_value = resource.primary_key_value item
-    content = link_to value, resources_path(key, where: {foreign_key_name => foreign_key_value}), class: 'badge badge-warning'
+    content = link_to value, resources_path(key, where: {key => foreign_key_value}), class: 'badge badge-warning'
     column_content_tag wrapper_tag, content, class: 'hasmany'
   end
 
@@ -299,8 +298,11 @@ module ResourcesHelper
     end
     if options[:has_many]
       resource.has_many_associations.each do |assoc|
-        name = assoc[:table].to_s
-        res << content_tag(:optgroup, label: name.humanize, data: {name: name, kind: 'has_many'}) do
+        name = assoc[:table].to_s.humanize
+        if resource.has_many_associations.many? {|other_assoc| other_assoc[:table] == assoc[:table]}
+          name << " as #{assoc[:foreign_key].to_s.humanize}"
+        end
+        res << content_tag(:optgroup, label: name, data: {name: "#{assoc[:table]}/#{assoc[:foreign_key]}", kind: 'has_many'}) do
           content_tag :option, 'count'
         end
       end

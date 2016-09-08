@@ -59,8 +59,23 @@ class Account < ActiveRecord::Base
         generic = Generic.new account
         generic.tables.each do |table|
           resource = Resource::Base.new generic, table
-          p 'filters', resource.filters if resource.filters.any?
-          p resource.columns
+          resource.filters.values.each do |filter|
+            filter.each do |condition|
+              # condition['assoc'] = FIXME if condition['assoc'].present?
+              # replace practices by practice_id for instance
+            end
+          end
+          resource.columns.each do |key, list|
+            resource[key] = list.map do |column|
+              if column.to_s['.']
+                # replace practices.formal_name by practice_id.formal_name for instance
+              elsif column.to_s.starts_with? 'has_many/'
+                # replace has_many/appointments by has_many/appointments/agenda_id for instance
+              else
+                column
+              end
+            end
+          end
         end
       rescue Sequel::DatabaseConnectionError
         puts "Failed to connect"

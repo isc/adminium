@@ -405,12 +405,14 @@ class ResourcesController < ApplicationController
 
   def apply_has_many_counts
     resource.columns[settings_type].find_all {|c| c.to_s.starts_with? 'has_many/'}.each do |column|
-      assoc = column.to_s.gsub 'has_many/', ''
-      assoc_info = resource.has_many_associations.detect {|info| info[:table] == assoc.to_sym}
+      assoc_info = resource.find_has_many_association_for_key column
       next if assoc_info.nil?
-      count_on = qualify_primary_keys resource_for(assoc)
+      table_alias = "#{column}_join"
+      aliased_table = Sequel::SQL::AliasedExpression.new(assoc_info[:table], table_alias)
+      count_on = qualify_primary_keys resource_for(assoc_info[:table]), table_alias
       @items = @items
-               .left_outer_join(assoc.to_sym, qualify(assoc_info[:table], assoc_info[:foreign_key]) => qualify(assoc_info[:referenced_table], assoc_info[:primary_key]))
+               .left_outer_join(aliased_table, assoc_info[:foreign_key] => qualify(assoc_info[:referenced_table],
+                 assoc_info[:primary_key]))
                .group(qualify_primary_keys(resource))
                .select_append(Sequel.function(:count, Sequel.function(:distinct, *count_on)).as(column))
     end
@@ -569,8 +571,8 @@ class ResourcesController < ApplicationController
     Sequel.identifier(column).qualify table
   end
 
-  def qualify_primary_keys resource
-    resource.primary_keys.map {|key| qualify(resource.table, key)}
+  def qualify_primary_keys resource, table_alias = nil
+    resource.primary_keys.map {|key| qualify(table_alias || resource.table, key)}
   end
 
   def settings_type

@@ -126,7 +126,7 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_csv_response_with_has_many_count
     FixtureFactory.new(:group)
-    Resource::Base.any_instance.stubs(:columns).returns(export: [:'has_many/users'])
+    Resource::Base.any_instance.stubs(:columns).returns(export: [:'has_many/users/group_id'])
     get :index, table: 'groups', format: 'csv', order: 'id'
     lines = @response.body.split("\n")
     assert_equal '1', lines[-2]

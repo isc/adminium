@@ -203,7 +203,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     user = FixtureFactory.new(:user).factory
     2.times { FixtureFactory.new :comment, user_id: user.id }
     FixtureFactory.new(:user)
-    stub_resource_columns listing: %i(has_many/comments)
+    stub_resource_columns listing: %i(has_many/comments/user_id)
     visit resources_path(:users)
     assert_selector "tr[data-item-id=\"#{user.id}\"] td.hasmany a", text: '2'
     find('a[title="Sort by Comments count 9 → 0"]').click
