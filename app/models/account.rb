@@ -39,14 +39,31 @@ class Account < ActiveRecord::Base
   end
 
   def self.fetch_missing_owner_emails
-    where(owner_email: nil).where('callback_url is not null').find_each do |account|
+    where(owner_email: nil).where.not(callback_url: nil).find_each do |account|
       begin
-        res = RestClient.get "https://#{HEROKU_MANIFEST['id']}:#{HEROKU_MANIFEST['api']['password']}@api.heroku.com/vendor/apps/#{account.callback_url.split('/').last}"
+        auth = [HEROKU_MANIFEST['id'], HEROKU_MANIFEST['api']['password']].join(':')
+        res = RestClient.get "https://#{auth}@api.heroku.com/vendor/apps/#{account.callback_url.split('/').last}"
         res = JSON.parse res
-        account.update_attribute :owner_email, res['owner_email']
-        account.update_attribute :name, res['name'] if account.name.blank?
+        account.update owner_email: res['owner_email']
+        account.update name: res['name'] unless account.name?
       rescue RestClient::ResourceNotFound
         # not sure what to do with those accounts
+      end
+    end
+  end
+
+  def self.settings_migration
+    Account.where.not(adapter: nil).where(deleted_at: nil).order(id: :desc).limit(100).each do |account|
+      begin
+        puts "Account: #{account.id}"
+        generic = Generic.new account
+        generic.tables.each do |table|
+          resource = Resource::Base.new generic, table
+          p 'filters', resource.filters if resource.filters.any?
+          p resource.columns
+        end
+      rescue Sequel::DatabaseConnectionError
+        puts "Failed to connect"
       end
     end
   end
