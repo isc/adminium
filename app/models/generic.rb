@@ -21,7 +21,7 @@ class Generic
   def associations
     return @associations if @associations
     ActiveSupport::Notifications.instrument :associations_discovery do
-      @associations = Rails.cache.fetch "account:#{@account_id}:associations", expires_in: 0.minutes do
+      @associations = Rails.cache.fetch "account:#{@account_id}:associations", expires_in: 10.minutes do
         @associations = []
         tables.each do |table|
           begin

@@ -31,7 +31,8 @@ module Resource
     attr_accessor :filters, :default_order, :enum_values, :validations, :label_column, :export_col_sep, :export_skip_header, :table
     attr_reader :export_col_sep
 
-    def initialize generic, table
+    def initialize generic, table, no_columns_check: false
+      @no_columns_check = no_columns_check
       @generic, @table = generic, table.to_sym
       load
     end
@@ -55,7 +56,7 @@ module Resource
         @export_col_sep = datas[:export_col_sep]
       end
       @default_order ||= default_primary_keys_order
-      set_missing_columns_conf
+      set_missing_columns_conf unless @no_columns_check
       @filters ||= {}
     end
 
