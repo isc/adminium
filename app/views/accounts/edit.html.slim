@@ -15,14 +15,13 @@
       .col-lg-8
         = simple_form_for @account, html: {class: 'form-horizontal'} do |f|
           - if @account.errors.any?
-            .row
-              .alert.alert-danger
-                h4
-                  = pluralize @account.errors.count, 'error'
-                  = " prohibited this #{@account.class.name.humanize} from being saved:"
-                ul
-                  - @account.errors.full_messages.each do |msg|
-                    li= msg
+            .alert.alert-danger
+              h4
+                = pluralize @account.errors.count, 'error'
+                = " prohibited your account from being saved:"
+              ul
+                - @account.errors.full_messages.each do |msg|
+                  li= msg
           - if @account.id == ENV['DEMO_ACCOUNT_ID']
             .form-group
               label.control-label.optional.col-sm-3 Database url

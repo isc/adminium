@@ -23,4 +23,13 @@ class DashboardTest < ActionDispatch::IntegrationTest
     visit dashboard_path
     assert_selector '.widget', count: 2
   end
+
+  test 'catching database url errors' do
+    account = create :account
+    login account
+    account.db_url += 'plop'
+    account.save validate: false
+    visit dashboard_path
+    assert_text 'There was a database error'
+  end
 end
