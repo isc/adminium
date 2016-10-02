@@ -15,7 +15,7 @@ class Generic
   end
 
   def cleanup
-    @db.disconnect
+    @db&.disconnect
   end
 
   def associations

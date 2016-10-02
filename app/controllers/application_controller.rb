@@ -2,8 +2,8 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   rescue_from Exception, with: :disconnect_on_exception
   rescue_from Generic::TableNotFoundException, with: :table_not_found
-  rescue_from Sequel::DatabaseConnectionError, with: :global_db_error
   rescue_from Sequel::DatabaseError, with: :statement_timeouts
+  rescue_from Sequel::DatabaseConnectionError, with: :global_db_error
   before_action :ensure_proper_subdomain
   before_action :require_account
   before_action :connect_to_db
@@ -82,8 +82,8 @@ class ApplicationController < ActionController::Base
   def statement_timeouts exception
     if exception.wrapped_exception.is_a?(PG::QueryCanceled) &&
        exception.wrapped_exception.message['statement timeout']
-       @exception = exception
-       render 'dashboards/statement_timeout'
+      @exception = exception
+      render 'dashboards/statement_timeout'
     else
       raise exception
     end
