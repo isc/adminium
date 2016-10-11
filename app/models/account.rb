@@ -56,6 +56,7 @@ class Account < ActiveRecord::Base
     Account.where.not(adapter: nil).where(deleted_at: nil).find_each do |account|
       begin
         puts "Account: #{account.id}"
+        Rails.cache.delete "account:#{account.id}:associations"
         generic = Generic.new account
         generic.tables.each do |table|
           puts "Table: #{table}"
