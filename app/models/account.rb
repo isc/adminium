@@ -53,7 +53,7 @@ class Account < ActiveRecord::Base
   end
 
   def self.settings_migration
-    Account.where.not(adapter: nil).where(deleted_at: nil).find_each do |account|
+    Account.where.not(adapter: nil).where(deleted_at: nil).where('id > 328').find_each do |account|
       begin
         puts "Account: #{account.id}"
         Rails.cache.delete "account:#{account.id}:associations"
@@ -93,7 +93,7 @@ class Account < ActiveRecord::Base
           end
           resource.save
         end
-      rescue Sequel::DatabaseConnectionError
+      rescue Sequel::DatabaseConnectionError, URI::InvalidURIError
         puts "Failed to connect"
       end
     end
