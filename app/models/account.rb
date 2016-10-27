@@ -52,53 +52,6 @@ class Account < ActiveRecord::Base
     end
   end
 
-  def self.settings_migration
-    Account.where.not(adapter: nil).where(deleted_at: nil).where('id > 5325').find_each do |account|
-      begin
-        puts "Account: #{account.id}"
-        Rails.cache.delete "account:#{account.id}:associations"
-        generic = Generic.new account
-        generic.tables.each do |table|
-          puts "Table: #{table}"
-          resource = Resource::Base.new generic, table, no_columns_check: true
-          resource.filters.values.each do |filter|
-            filter.each do |condition|
-              next unless condition['assoc'].present?
-              info = resource.belongs_to_associations.detect {|info| info[:referenced_table] == condition['assoc'].to_sym}
-              puts "replace #{condition['assoc']} by #{info[:foreign_key] if info}"
-              next unless info
-              condition['assoc'] = info[:foreign_key]
-            end
-          end
-          resource.columns.each do |key, list|
-            resource.columns[key] = list.map do |column|
-              if column.to_s['.']
-                # replace practices.formal_name by practice_id.formal_name for instance
-                table, col = column.split('.')
-                info = resource.belongs_to_associations.detect {|info| info[:referenced_table] == table.to_sym}
-                res = "#{info[:foreign_key]}.#{col}" if info
-                puts "column belongs_to: #{column} => #{res}"
-                res || column
-              elsif column.to_s.starts_with? 'has_many/'
-                # replace has_many/appointments by has_many/appointments/agenda_id for instance
-                _, table = column.to_s.split('/')
-                info = resource.has_many_associations.detect {|info| info[:table] == table.to_sym}
-                res = [column, info[:foreign_key]].join('/') if info
-                puts "column has_many: #{column} => #{res}"
-                res || column
-              else
-                column
-              end
-            end
-          end
-          resource.save
-        end
-      rescue Sequel::DatabaseConnectionError, URI::InvalidURIError, Sequel::DatabaseError, Sequel::Error
-        puts "Failed to connect"
-      end
-    end
-  end
-
   def valid_db_url?
     db_url.present?
   end
