@@ -93,7 +93,7 @@ class Account < ActiveRecord::Base
           end
           resource.save
         end
-      rescue Sequel::DatabaseConnectionError, URI::InvalidURIError, Sequel::DatabaseError
+      rescue Sequel::DatabaseConnectionError, URI::InvalidURIError, Sequel::DatabaseError, Sequel::Error
         puts "Failed to connect"
       end
     end
