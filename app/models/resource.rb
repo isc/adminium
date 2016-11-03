@@ -529,8 +529,13 @@ module Resource
       @generic.db[assoc[:table]].where assoc[:foreign_key] => item[assoc[:primary_key]]
     end
 
-    def has_many_count item, assoc
+    def assoc_count item, assoc
+      @generic.set_statement_timeout 200
       assoc_query(item, assoc).count
+    rescue Sequel::DatabaseError
+      nil
+    ensure
+      @generic.set_statement_timeout
     end
 
     def fetch_associated_items item, assoc, limit

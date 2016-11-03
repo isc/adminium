@@ -6,6 +6,7 @@ Sequel.tzinfo_disambiguator = proc {|_datetime, periods| periods.first}
 
 class Generic
   PG_SYSTEM_TABLES = %i(pg_stat_activity pg_stat_statements pg_stat_all_indexes)
+  STATEMENT_TIMEOUT = 20_000
   attr_accessor :db_name, :account_id, :db, :account
   attr_reader :current_adapter
 
@@ -170,7 +171,7 @@ class Generic
     @db = Sequel.connect uri.to_s, opts.merge(keep_reference: false)
     if uri.scheme == 'postgres'
       @db.execute 'SET application_name to \'Adminium\''
-      @db.execute 'SET statement_timeout to 20000'
+      set_statement_timeout
       @db.extension :pg_array, :pg_hstore, :error_sql
       @db.schema_parse_complete
     end
@@ -185,6 +186,10 @@ class Generic
 
   def mysql?
     current_adapter == 'mysql2'
+  end
+
+  def set_statement_timeout value = STATEMENT_TIMEOUT
+    @db.execute "SET statement_timeout to #{value}"
   end
 
   def search_path
