@@ -49,7 +49,7 @@ class ResourcesController < ApplicationController
       end
       format.csv do
         fetch_associated_items
-        response.headers['Content-Disposition'] = 'attachment'
+        response.headers['Content-Disposition'] = "attachment; filename=#{params[:table]}.csv"
         response.headers['Cache-Control'] = 'no-cache'
         self.response_body = CsvStreamer.new @fetched_items, @associated_items, resource, @resources
       end
