@@ -75,7 +75,7 @@ nav.navbar.navbar-default
                 span.badge.badge-warning = count || '...'
             td
               = display_associated_items resource, @item, assoc
-              - if count > 5
+              - if count.to_i > 5
                 '  
                 = link_to "...", resources_path(assoc[:table], where: assoc_params)
             td
