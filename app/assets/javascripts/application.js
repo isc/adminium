@@ -10,4 +10,5 @@
 //= require select2
 //= require md5.min
 //= require bootstrap-datepicker
+//= require clipboard.min
 //= require_tree .

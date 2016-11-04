@@ -3,7 +3,9 @@ td.fixnum, td.bigdecimal, td.integer, td.float, td.decimal {
   font-weight: bold;
   text-align: right;
 }
-
+td.fixnum:not([data-editable]) {
+  cursor: pointer;
+}
 td.fixnum, td.bigdecimal, td.integer, td.float, td.decimal, td.decimalType, td.floatType, td.integerType {
   color: green;
 }

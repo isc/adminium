@@ -195,7 +195,7 @@ module ResourcesHelper
     value ||= item[key]
     options = resource.column_options key
     number_options = {unit: '', significant: false}
-    opts = [:unit, :delimiter, :separator, :precision]
+    opts = %i(unit delimiter separator precision)
     if value.is_a? Fixnum
       number_options[:precision] = 0
     else

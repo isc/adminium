@@ -120,8 +120,19 @@ class ColumnSettings
       $(input).attr('name', $(input).attr('name').replace(previous_id, new_id))
     $('.template_line input').eq(1).focus()
 
+class ClickToCopyFixnums
+  constructor: ->
+    selector = 'td.column.fixnum:not([data-editable])'
+    $(selector).each ->
+      $(@).attr('data-clipboard-text': @innerText.replace(/,/g, ''), title: 'Click to copy')
+    new Clipboard(selector).on 'success', (e) ->
+      $(e.trigger).attr(title: 'Copied!').tooltip(trigger: 'manual', container: 'body')
+        .on('shown.bs.tooltip', -> setTimeout (=> $(@).attr(title: 'Click to copy').tooltip('destroy')), 1000)
+        .tooltip('show')
+
 $ ->
   new BulkActions()
   new CustomColumns('#displayed-columns_pane')
   new CustomColumns('#select-exported-fields_pane')
   new ColumnSettings()
+  new ClickToCopyFixnums()
