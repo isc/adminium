@@ -530,12 +530,12 @@ module Resource
     end
 
     def assoc_count item, assoc
-      @generic.set_statement_timeout 200
+      @generic.statement_timeout 200
       assoc_query(item, assoc).count
     rescue Sequel::DatabaseError
       nil
     ensure
-      @generic.set_statement_timeout
+      @generic.statement_timeout
     end
 
     def fetch_associated_items item, assoc, limit

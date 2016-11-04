@@ -169,9 +169,9 @@ class Generic
     @current_adapter = uri.scheme
     opts[:logger] ||= Rails.logger
     @db = Sequel.connect uri.to_s, opts.merge(keep_reference: false)
-    if uri.scheme == 'postgres'
+    if postgresql?
       @db.execute 'SET application_name to \'Adminium\''
-      set_statement_timeout
+      statement_timeout
       @db.extension :pg_array, :pg_hstore, :error_sql
       @db.schema_parse_complete
     end
@@ -188,8 +188,8 @@ class Generic
     current_adapter == 'mysql2'
   end
 
-  def set_statement_timeout value = STATEMENT_TIMEOUT
-    @db.execute "SET statement_timeout to #{value}"
+  def statement_timeout value = STATEMENT_TIMEOUT
+    @db.execute "SET statement_timeout to #{value}" if postgresql?
   end
 
   def search_path
