@@ -205,7 +205,8 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user)
     stub_resource_columns listing: %i(has_many/comments/user_id)
     visit resources_path(:users)
-    assert_selector "tr[data-item-id=\"#{user.id}\"] td.hasmany a", text: '2'
+    has_many_comments_path = resources_path(:comments, where: {user_id: user.id})
+    assert_selector "tr[data-item-id=\"#{user.id}\"] td.hasmany a[href=\"#{has_many_comments_path}\"]", text: '2'
     find('a[title="Sort by Comments count 9 → 0"]').click
     assert_selector 'table.items-list tbody tr:first-child td.hasmany a', text: '2'
   end

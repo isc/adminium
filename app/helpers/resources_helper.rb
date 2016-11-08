@@ -94,9 +94,10 @@ module ResourcesHelper
   def display_associated_count item, key, wrapper_tag, resource
     value = item[key]
     return column_content_tag wrapper_tag, '', class: 'hasmany' if value.nil?
-    key = key.to_s.gsub 'has_many/', ''
+    _, table, column = key.to_s.split '/'
     foreign_key_value = resource.primary_key_value item
-    content = link_to value, resources_path(key, where: {key => foreign_key_value}), class: 'badge badge-warning'
+    path = resources_path(table, where: {column => foreign_key_value})
+    content = link_to value, path, class: 'badge badge-warning'
     column_content_tag wrapper_tag, content, class: 'hasmany'
   end
 
