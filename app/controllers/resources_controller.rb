@@ -400,7 +400,8 @@ class ResourcesController < ApplicationController
     ids = items.map {|i| i[assoc_info[:foreign_key]]}.uniq
     resource = resource_for assoc_info[:referenced_table]
     # FIXME: fine tune select clause
-    @associated_items[resource.table] = resource.query.where(resource.primary_keys.first => ids).all
+    @associated_items[resource.table] ||= []
+    @associated_items[resource.table] |= resource.query.where(resource.primary_keys.first => ids).all
   end
 
   def apply_has_many_counts
