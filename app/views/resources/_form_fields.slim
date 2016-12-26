@@ -2,19 +2,18 @@
   .form-group
     label.control-label.col-sm-4 for="#{resource.table}_#{name}"
       - if required_constraints && resource.required_column?(name)
-        abbr title="required" *
-        ' 
+        abbr> title="required" *
       = resource.column_display_name name
     .col-sm-8
       - if (assoc_info = resource.foreign_key?(name)) && !assoc_info[:polymorphic]
         - foreign_resource = resource_for assoc_info[:referenced_table]
         - if foreign_resource.query.count <= 25
-          = belongs_to_select_tag resource, item, foreign_resource, name
+          = belongs_to_select_tag item, foreign_resource, assoc_info
         - else
-          = render 'foreign_resource_input', value: item[name], name: name, foreign_resource: foreign_resource
-      - elsif referenced_table = (resource.foreign_key_array? name)
-        - foreign_resource = resource_for referenced_table
-        = render 'foreign_resource_input', value: item[name], name: name, foreign_resource: foreign_resource
+          = render 'foreign_resource_input', value: item[name], foreign_resource: foreign_resource, assoc: assoc_info
+      - elsif assoc_info = resource.foreign_key_array?(name)
+        - foreign_resource = resource_for assoc_info[:referenced_table]
+        = render 'foreign_resource_input', value: item[name], foreign_resource: foreign_resource, assoc: assoc_info
       - elsif resource.column_type(name) == :hstore
         .hstore-edition
           = render 'hstore_row', table: resource.table, name: name, key: '_', value: nil, hidden: true

@@ -320,10 +320,10 @@ module Resource
     end
 
     def foreign_key_array? name
-      if name.to_s.ends_with?('_ids') && array_column?(name)
-        table = name.to_s.gsub(/_ids$/, '').pluralize.to_sym
-        table if @generic.tables.include? table
-      end
+      return unless name.to_s.ends_with?('_ids') && array_column?(name)
+      referenced_table = name.to_s.gsub(/_ids$/, '').pluralize.to_sym
+      return unless @generic.tables.include? referenced_table
+      {referenced_table: referenced_table, table: table, primary_key: :id, foreign_key: name}
     end
 
     def human_name
@@ -448,7 +448,7 @@ module Resource
       if primary_key_value.is_a? Sequel::Postgres::PGArray
         keys = primary_key_value.to_a
         keys.map!(&:to_i) if column_type(primary_keys.first) == :integer
-        query.where("#{primary_keys.first} in ?", keys)
+        query.where(primary_keys.first => keys)
              .select(*columns_to_select(fetch_binary_values)).to_a.sort_by {|r| primary_key_value.index(r[primary_keys.first])}
       else
         pk_filter(primary_key_value).select(*columns_to_select(fetch_binary_values)).first

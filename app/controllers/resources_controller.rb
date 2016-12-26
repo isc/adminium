@@ -14,12 +14,12 @@ class ResourcesController < ApplicationController
   def search
     @items = resource.query
     params[:order] = resource.label_column if resource.label_column.present?
-    resource.columns[:search] = [resource.primary_keys, resource.label_column.try(:to_sym)].flatten.compact | resource.columns[:search]
+    resource.columns[:search] |= [resource.primary_keys, resource.label_column&.to_sym, params[:primary_key].to_sym].flatten.compact
     apply_search
     apply_order
     @items = @items.select(*(resource.columns[:search].map {|c| Sequel.identifier(c)}))
     records = @items.limit(37).map {|h| h.slice(*resource.columns[:search]).merge(adminium_label: resource.item_label(h))}
-    render json: {results: records, primary_key: resource.primary_key}
+    render json: {results: records, primary_key: params[:primary_key]}
   end
 
   def index

@@ -38,7 +38,7 @@ class window.AutocompleteAssociationsForm
     return @list.html('') unless query.length
     @spinner.removeClass('invisible')
     $.ajax
-      url: "#{@url}?search=#{query}"
+      url: "#{@url}&search=#{query}"
       complete: =>
         @current_requests -= 1
         @current_requests = 0 if @current_requests < 0

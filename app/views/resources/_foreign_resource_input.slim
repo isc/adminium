@@ -1,23 +1,25 @@
-- record = foreign_resource.find_by_primary_key value unless value.nil?
+- value = value.is_a?(Sequel::Postgres::PGArray) ? value.to_a : value
+- record = foreign_resource.query.where(assoc[:primary_key] => value) unless value.nil?
+- input_name = "#{assoc[:table]}[#{assoc[:foreign_key]}]"
 .adminium-association
-  - if resource.array_column? name
-    = hidden_field_tag "#{resource.table}[#{name}][]" if value
-    .multiple-records.sortable data-input-name="#{resource.table}[#{name}][]"
+  - if resource.array_column? assoc[:foreign_key]
+    = hidden_field_tag "#{input_name}[]" if value
+    .multiple-records.sortable data-input-name="#{input_name}[]"
       - if record
         - record.each do |r|
-          label
-            input> type="checkbox" checked="checked" name="#{resource.table}[#{name}][]" value=r[foreign_resource.primary_keys.first]
-            = foreign_resource.item_label(r)
+          label>
+            input> type="checkbox" checked="checked" name="#{input_name}[]" value=r[assoc[:primary_key]]
+            = foreign_resource.item_label r
   - else
     .input-group.single-record
-      input.form-control readonly=true value=(foreign_resource.item_label(record) || value)
+      input.form-control readonly=true value=(foreign_resource.item_label(record.first) || value)
       .input-group-addon
         a.clear-selection href="#"
           i.fa.fa-times-circle class=('invisible' if value.nil?)
-    = hidden_field_tag "#{resource.table}[#{name}]", value
+    = hidden_field_tag input_name, value
   .input-group
     .input-group-addon Search
-    input.form-control(type='search' data-autocomplete-url=search_resources_path(foreign_resource.table) autocomplete='off' placeholder="#{foreign_resource.columns[:search].map(&:to_s).map(&:humanize).join(', ').downcase}")
+    input.form-control(type='search' data-autocomplete-url=search_resources_path(foreign_resource.table, primary_key: assoc[:primary_key]) autocomplete='off' placeholder="#{foreign_resource.columns[:search].map(&:to_s).map(&:humanize).join(', ').downcase}")
     .input-group-addon
       i.fa.fa-refresh.fa-spin.invisible
   ul.list-unstyled

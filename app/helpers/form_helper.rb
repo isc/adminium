@@ -62,9 +62,13 @@ module FormHelper
     content_tag :div, res, class: 'form-inline'
   end
 
-  def belongs_to_select_tag resource, item, foreign_resource, name
-    options = foreign_resource.query.select(foreign_resource.primary_keys).order(foreign_resource.label_column.try(:to_sym) || foreign_resource.primary_keys.first)
+  def belongs_to_select_tag item, foreign_resource, assoc
+    options = foreign_resource.query.select(*foreign_resource.primary_keys)
+      .order(foreign_resource.label_column&.to_sym || foreign_resource.primary_keys.first)
     options = options.select_append(foreign_resource.label_column.to_sym) if foreign_resource.label_column
-    select_tag "#{resource.table}[#{name}]", options_for_select(options.all.map {|i| [foreign_resource.item_label(i), foreign_resource.primary_key_value(i)]}, item[name]), include_blank: true, class: 'form-control'
+    options = options.select_append(assoc[:primary_key]) unless foreign_resource.primary_keys.include? assoc[:primary_key]
+    options = options.all.map {|row| [foreign_resource.item_label(row), row[assoc[:primary_key]]]}
+    select_tag "#{assoc[:table]}[#{assoc[:foreign_key]}]", options_for_select(options, item[assoc[:foreign_key]]),
+      include_blank: true, class: 'form-control'
   end
 end
