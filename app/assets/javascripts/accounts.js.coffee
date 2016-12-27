@@ -30,12 +30,12 @@ class AddonProvisioning
     @modal.modal 'show'
     @modal.find('.modal-body > div').hide()
     @modal.find('.step1').show()
-    $('a[data-plan]').data(name: app.name, app-id: app.id)
+    $('a[data-plan]').data(name: app.name, app_id: app.id)
 
   provision: (evt) =>
     elt = $(evt.currentTarget)
     name = elt.data('name')
-    app_id = elt.data('app-id')
+    app_id = elt.data('app_id')
     plan = elt.data('plan')
     @modal.find('.modal-body > div').hide()
     @modalBody.find('.step2').show()
