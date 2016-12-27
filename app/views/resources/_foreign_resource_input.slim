@@ -12,7 +12,7 @@
             = foreign_resource.item_label r
   - else
     .input-group.single-record
-      input.form-control readonly=true value=(foreign_resource.item_label(record.first) || value)
+      input.form-control readonly=true value=(foreign_resource.item_label(record&.first) || value)
       .input-group-addon
         a.clear-selection href="#"
           i.fa.fa-times-circle class=('invisible' if value.nil?)
