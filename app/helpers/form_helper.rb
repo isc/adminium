@@ -31,12 +31,12 @@ module FormHelper
     when :time then :time
     when :varchar_array, :string_array then :text_area
     when :boolean then [:select, boolean_input_options(resource, name)]
-    when :string, nil
+    when :string, :interval, nil
       return :text_area if info[:db_type] == 'text'
       case name.to_s
       when /password/  then :password_field
       when /time_zone/ then [:select, time_zone_options_for_select(value)]
-      when /email/     then :email_field
+      when /email$/    then :email_field
       when /phone/     then :telephone_field
       else
         :text_field
