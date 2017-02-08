@@ -16,7 +16,7 @@ class SessionsController < ApplicationController
       detect_app_name
       set_profile
       set_collaborators
-      current_account.save!
+      current_account.save
       redirect_to configure_db_url('oauth') ? dashboard_path : setup_database_connection_install_path
     else
       redirect_to user_path
