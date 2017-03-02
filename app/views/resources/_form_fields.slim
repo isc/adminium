@@ -7,7 +7,8 @@
     .col-sm-8
       - if (assoc_info = resource.foreign_key?(name)) && !assoc_info[:polymorphic]
         - foreign_resource = resource_for assoc_info[:referenced_table]
-        - if foreign_resource.query.count <= 25
+        - count = foreign_resource.count_with_timeout
+        - if count && count <= 25
           = belongs_to_select_tag item, foreign_resource, assoc_info
         - else
           = render 'foreign_resource_input', value: item[name], foreign_resource: foreign_resource, assoc: assoc_info
