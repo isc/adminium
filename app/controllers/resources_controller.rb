@@ -427,15 +427,18 @@ class ResourcesController < ApplicationController
       foreign_key, column = column.split '.'
       assoc_info = resource.belongs_to_association foreign_key.to_sym
       joined_table_alias = join_belongs_to assoc_info[:foreign_key]
+      nullable = resource_for(assoc_info[:referenced_table]).schema_hash[column.to_sym][:allow_null]
       column = qualify joined_table_alias, column
     elsif order['/']
+      nullable = false
       column = column.to_sym
     else
+      nullable = resource.schema_hash[column.to_sym][:allow_null]
       column = qualify params[:table], column
     end
-    opts = @generic.mysql? ? {} : {nulls: :last}
-    @items = @items.order(Sequel::SQL::OrderedExpression.new(column, !!descending, opts))
-    @items = @items.order_prepend(Sequel.case([[{column => nil}, 1]], 0)) if @generic.mysql?
+    opts = @generic.postgresql? && nullable ? {nulls: :last} : {}
+    @items = @items.order(Sequel::SQL::OrderedExpression.new(column, descending.present?, opts))
+    @items = @items.order_prepend(Sequel.case([[{column => nil}, 1]], 0)) if @generic.mysql? && nullable
   end
 
   def apply_filters
