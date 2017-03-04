@@ -333,4 +333,13 @@ module ResourcesHelper
       yield
     end
   end
+
+  def page_entries_info_no_record_count items, current_page, page_size
+    start = (current_page - 1) * page_size
+    if current_page == 1 && items.size < page_size
+      [content_tag(:b, items.size), ' record'.pluralize(items.size)].join
+    else
+      [content_tag(:b, start + 1), ' - ', content_tag(:b, start + items.size)].join
+    end
+  end
 end

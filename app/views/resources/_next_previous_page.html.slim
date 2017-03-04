@@ -13,9 +13,9 @@
   .btn-group<
     = link_to "#", class: "btn btn-default dropdown-toggle #{warning_class}", data: {toggle: 'dropdown'} do
       - if page_count
-        = page_entries_info(scope, entry_name: 'record').html_safe
+        == page_entries_info(scope, entry_name: 'record')
       - else
-        == "<b>#{(@current_page - 1) * @page_size}</b> - <b>#{@current_page * @page_size}</b>"
+        == page_entries_info_no_record_count @fetched_items, @current_page, @page_size
       span.caret<
     ul.dropdown-menu
       - if @current_page > 1
