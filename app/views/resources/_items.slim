@@ -1,9 +1,9 @@
 - if items.empty?
-  - if @items.current_page > @items.page_count && @items.page_count > 0
-    .alert
+  - if @items.try(:page_count) && @current_page > @items.page_count && @items.page_count.nonzero?
+    .alert.alert-warning
       h4 Warning!
       p
-        == "You are looking for results on page #{@items.current_page}, but your query only has #{pluralize @items.page_count, 'result page'}, so there are no results on this page, but still #{pluralize @items.pagination_record_count, 'record'}."
+        == "You are looking for results on page #{@current_page}, but your query only has #{pluralize @items.page_count, 'result page'}, so there are no results on this page, but still #{pluralize @items.pagination_record_count, 'record'}."
         br
         'Try to go to the
         = link_to "first page", params.merge(page: 1)

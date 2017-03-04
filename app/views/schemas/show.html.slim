@@ -8,7 +8,7 @@
 h3= "Table #{params[:table]}"
 h4
   = "#{@resource.column_names.length} columns, "
-  = link_to "#{@resource.query.count} records", resources_path(params[:table])
+  = link_to pluralize(number_to_human(@resource.count_with_timeout || @resource.count_from_stats), 'records'), resources_path(params[:table])
 br
 
 table.table.table-striped.table-hover

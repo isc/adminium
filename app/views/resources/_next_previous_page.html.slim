@@ -1,31 +1,35 @@
+- page_count = scope.try(:page_count)
 .btn-group
-  - unless scope.current_page == 1
-    = link_to url_for(params.merge(page: (scope.current_page - 1))), rel: 'tooltip', title: 'Previous page', data: {placement: 'bottom'}, class: 'btn btn-default' do
+  - if @current_page > 1
+    = link_to url_for(params.merge(page: (@current_page - 1))), rel: 'tooltip', title: 'Previous page', data: {placement: 'bottom'}, class: 'btn btn-default'
       i.fa.fa-arrow-left
 
-  - unless (scope.current_page == scope.page_count) || scope.page_count.zero?
-    = link_to url_for(params.merge(page: (scope.current_page + 1))), rel: 'tooltip', title: 'Next page', data: {placement: 'bottom'}, class: 'btn btn-default' do
+  - if (!page_count && @fetched_items.any?) || (page_count&.nonzero? && (@current_page < scope.page_count))
+    = link_to url_for(params.merge(page: (@current_page + 1))), rel: 'tooltip', title: 'Next page', data: {placement: 'bottom'}, class: 'btn btn-default'
       i.fa.fa-arrow-right
 
-- if scope.page_count.nonzero?
-  - warning_class = scope.current_page > scope.page_count ? 'btn-danger' : ''
+- if page_count.nil? || page_count.nonzero?
+  - warning_class = 'btn-danger' if page_count && @current_page > page_count
   .btn-group<
     = link_to "#", class: "btn btn-default dropdown-toggle #{warning_class}", data: {toggle: 'dropdown'} do
-      = page_entries_info(scope, entry_name: 'record').html_safe
-      '
-      span.caret
+      - if page_count
+        = page_entries_info(scope, entry_name: 'record').html_safe
+      - else
+        == "<b>#{(@current_page - 1) * @page_size}</b> - <b>#{@current_page * @page_size}</b>"
+      span.caret<
     ul.dropdown-menu
-      - if scope.current_page != 1
+      - if @current_page > 1
         li
           = link_to "Go to first page", params.merge(page: 1)
-      - ((scope.current_page - 3)..(scope.current_page + 3)).each do |page|
-        - if page > 1 && page <= scope.page_count && page != scope.current_page && (page + 1) != scope.current_page && (page - 1) != scope.current_page
+      - if page_count
+        - ((@current_page - 3)..(@current_page + 3)).each do |page|
+          - if page > 1 && page <= page_count && page != @current_page && (page + 1) != @current_page && (page - 1) != @current_page
+            li
+              = link_to "Go to page #{page}", params.merge(page: page)
+        - if @current_page != page_count
           li
-            = link_to "Go to page #{page}", params.merge(page: page)
-      - if scope.current_page != scope.page_count
-        li
-          = link_to "Go to last page (page #{scope.page_count})", params.merge(page: (scope.page_count))
-        li.divider
+            = link_to "Go to last page (page #{page_count})", params.merge(page: (page_count))
+          li.divider
       li.dropdown-header Rows per page
       - ([25, 50, 100, 200] + [resource.per_page.to_i]).uniq.sort.each do |per_page|
         li(class="#{'active' if resource.per_page == per_page}")

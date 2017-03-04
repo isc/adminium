@@ -530,20 +530,15 @@ module Resource
     end
 
     def assoc_count item, assoc
-      with_timeout { assoc_query(item, assoc).count }
+      @generic.with_timeout { assoc_query(item, assoc).count }
     end
 
     def count_with_timeout
-      with_timeout { query.count }
+      @generic.with_timeout { query.count }
     end
 
-    def with_timeout
-      @generic.statement_timeout 200
-      yield
-    rescue Sequel::DatabaseError
-      nil
-    ensure
-      @generic.statement_timeout
+    def count_from_stats
+      @generic.table_counts([@table])[@table.to_s]
     end
 
     def fetch_associated_items item, assoc, limit

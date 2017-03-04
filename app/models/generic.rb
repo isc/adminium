@@ -192,6 +192,15 @@ class Generic
     @db.execute "SET statement_timeout to #{value}" if postgresql?
   end
 
+  def with_timeout
+    statement_timeout 200
+    yield
+  rescue Sequel::DatabaseError
+    nil
+  ensure
+    statement_timeout
+  end
+
   def search_path
     @db.opts[:search_path]&.split(',') || %w(public)
   end

@@ -31,24 +31,18 @@ class ResourcesController < ApplicationController
     dataset_filtering
     apply_has_many_counts
     apply_order
-    page = (params[:page].presence || 1).to_i
+    handle_pagination
+    fetch_associated_items
     respond_to do |format|
-      format.html do
-        check_per_page_setting
-        @items = @items.extension(:pagination).paginate page, [resource.per_page.to_i, 25].max
-        fetch_associated_items
-      end
+      format.html
       format.json do
-        @items = @items.extension(:pagination).paginate page, 10
-        fetch_associated_items
         render json: {
           widget: render_to_string(partial: 'items', locals: {items: @fetched_items, actions_cell: false}),
           id: params[:widget_id],
-          total_count: @items.pagination_record_count
+          total_count: @total_count
         }
       end
       format.csv do
-        fetch_associated_items
         response.headers['Content-Disposition'] = "attachment; filename=#{params[:table]}.csv"
         response.headers['Cache-Control'] = 'no-cache'
         self.response_body = CsvStreamer.new @fetched_items, @associated_items, resource, @resources
@@ -150,7 +144,7 @@ class ResourcesController < ApplicationController
   def bulk_edit
     @record_ids = params[:record_ids]
     if resource.query.where(resource.primary_key => params[:record_ids]).count != @record_ids.length
-      fail 'BulkEditCheckRecordsFailed'
+      raise 'BulkEditCheckRecordsFailed'
     end
     if @record_ids.one?
       @item = resource.find @record_ids.shift
@@ -203,21 +197,19 @@ class ResourcesController < ApplicationController
   end
 
   def update_export_settings
-    if params[:export_columns].present?
-      resource.columns[:export] = params[:export_columns].delete_if(&:empty?).map(&:to_sym)
-      resource.csv_options = params[:csv_options]
-      resource.save
-    end
+    return if params[:export_columns].blank?
+    resource.columns[:export] = params[:export_columns].delete_if(&:empty?).map(&:to_sym)
+    resource.csv_options = params[:csv_options]
+    resource.save
   end
 
   def check_permissions
     return if admin?
     @permissions = current_collaborator.permissions
-    unless user_can? action_name, params[:table]
-      respond_to do |format|
-        format.html {redirect_to dashboard_url, flash: {error: "You haven't the permission to perform #{action_name} on #{params[:table]}"}}
-        format.js {head :forbidden}
-      end
+    return if user_can? action_name, params[:table]
+    respond_to do |format|
+      format.html {redirect_to dashboard_url, flash: {error: "You haven't the permission to perform #{action_name} on #{params[:table]}"}}
+      format.js {head :forbidden}
     end
   end
 
@@ -241,10 +233,9 @@ class ResourcesController < ApplicationController
 
   def check_per_page_setting
     per_page = params.delete(:per_page).to_i
-    if per_page > 0 && resource.per_page != per_page
-      resource.per_page = per_page
-      resource.save
-    end
+    return if per_page <= 0 || resource.per_page == per_page
+    resource.per_page = per_page
+    resource.save
   end
 
   def item_params
@@ -342,7 +333,7 @@ class ResourcesController < ApplicationController
 
   def process_conditions params_key
     return unless params[params_key].present?
-    conditions = params[params_key].map do |k, v|
+    params[params_key].map do |k, v|
       v = nil if v == 'null'
       if v.is_a? Hash
         flash.now[:error] = "Invalid <i>#{params_key}</i> parameter value."
@@ -397,11 +388,11 @@ class ResourcesController < ApplicationController
   end
 
   def fetch_items_for_assoc items, assoc_info
-    ids = items.map {|i| i[assoc_info[:foreign_key]]}.uniq
+    ids = items.map {|i| i[assoc_info[:foreign_key]]}.uniq.compact
     resource = resource_for assoc_info[:referenced_table]
     # FIXME: fine tune select clause
     @associated_items[resource.table] ||= []
-    @associated_items[resource.table] |= resource.query.where(resource.primary_keys.first => ids).all
+    @associated_items[resource.table] |= resource.query.where(resource.primary_keys.first => ids).all if ids.any?
   end
 
   def apply_has_many_counts
@@ -545,16 +536,32 @@ class ResourcesController < ApplicationController
     value
   end
 
+  def handle_pagination
+    return if request.format.csv?
+    if request.format.html?
+      @current_page = (params[:page].presence || 1).to_i
+      check_per_page_setting
+      @page_size = [resource.per_page.to_i, 25].max
+    else
+      @current_page, @page_size = 1, 10
+    end
+    @total_count = @generic.with_timeout { @items.count }
+    @items = if @total_count
+               @items.extension(:pagination).paginate @current_page, @page_size, @total_count
+             else
+               @items.limit(@page_size, (@current_page - 1) * @page_size)
+             end
+  end
+
   def table_access_limitation
     return unless current_account.pet_project?
     @generic.table params[:table] # possibly triggers the table not found exception
-    if (@generic.tables.index params[:table].to_sym) >= 5
-      notice = "You are currently on the free plan meant for pet projects which is limited to five tables of your schema.<br/><a href=\"#{current_account.upgrade_link}\" class=\"btn btn-warning\">Upgrade</a> to the startup plan ($10 per month) to access your full schema with Adminium.".html_safe
-      if request.xhr?
-        render json: {widget: view_context.content_tag(:div, notice, class: 'alert alert-warning'), id: params[:widget_id]}
-      else
-        redirect_to dashboard_url, flash: {warning: notice}
-      end
+    return if @generic.tables.index(params[:table].to_sym) < 5
+    notice = "You are currently on the free plan meant for pet projects which is limited to five tables of your schema.<br/><a href=\"#{current_account.upgrade_link}\" class=\"btn btn-warning\">Upgrade</a> to the startup plan ($10 per month) to access your full schema with Adminium.".html_safe
+    if request.xhr?
+      render json: {widget: view_context.content_tag(:div, notice, class: 'alert alert-warning'), id: params[:widget_id]}
+    else
+      redirect_to dashboard_url, flash: {warning: notice}
     end
   end
 
@@ -580,7 +587,7 @@ class ResourcesController < ApplicationController
   end
 
   def settings_type
-    request.format.to_s == 'text/csv' ? :export : :listing
+    request.format.csv? ? :export : :listing
   end
 
   def after_save_redirection
@@ -623,9 +630,8 @@ class ResourcesController < ApplicationController
   end
 
   def warn_if_no_primary_key
-    if resource.primary_keys.empty? && !resource.system_table?
-      flash.now[:alert] = "Warning : this table doesn't declare a primary key. Support for tables without primary keys is incomplete."
-    end
+    return if resource.primary_keys.any? || resource.system_table?
+    flash.now[:alert] = "Warning : this table doesn't declare a primary key. Support for tables without primary keys is incomplete."
   end
 
   def application_time_zone
