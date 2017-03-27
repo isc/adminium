@@ -32,6 +32,6 @@ class DocsController < ApplicationController
   end
 
   def letsencrypt
-    render text: 'OURMkg6u4YIwv0lHBJIQGyPRaUDhKTET5b_ZQwD70do.yKKMdNQFLakFntj87ohHtFUO8u4tojwzKXkzEjD8RpE'
+    render text: 'fnq-Kc7y8c_OqxtwqpZvfngihGJ5a8wD0gaqxvXfQRo.yKKMdNQFLakFntj87ohHtFUO8u4tojwzKXkzEjD8RpE'
   end
 end
