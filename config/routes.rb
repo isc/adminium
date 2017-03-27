@@ -66,5 +66,6 @@ Adminium::Application.routes.draw do
   end
   post 'sso/login' => 'heroku/resources#sso_login'
   get 'test/threads' => 'resources#test_threads'
+  get '/.well-known/acme-challenge/:id' => 'docs#letsencrypt'
   root to: 'docs#landing'
 end

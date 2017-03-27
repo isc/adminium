@@ -30,4 +30,8 @@ class DocsController < ApplicationController
     session[:account] = session[:account_before_demo]
     redirect_to dashboard_url
   end
+
+  def letsencrypt
+    render text: 'OURMkg6u4YIwv0lHBJIQGyPRaUDhKTET5b_ZQwD70do.yKKMdNQFLakFntj87ohHtFUO8u4tojwzKXkzEjD8RpE'
+  end
 end

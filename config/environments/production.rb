@@ -30,7 +30,7 @@ Adminium::Application.configure do
   # config.action_dispatch.x_sendfile_header = 'X-Accel-Redirect' # for nginx
 
   # Force all access to the app over SSL, use Strict-Transport-Security, and use secure cookies.
-  config.force_ssl = !!ENV['HEROKU_API_KEY']
+  # config.force_ssl = !!ENV['HEROKU_API_KEY']
 
   # See everything in the log (default is :info)
   config.log_level = :debug
