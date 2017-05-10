@@ -104,7 +104,7 @@ class Generic
 
   def tables
     return @tables if @tables
-    @tables = (@db.tables + @db.views).sort
+    @tables = (@db.tables + @db.views).sort - %i(ar_internal_metadata)
     @account.update_attribute :tables_count, @tables.size if @account.tables_count != @tables.size
     @tables.concat %i(pg_stat_activity pg_stat_all_indexes) if postgresql?
     @tables

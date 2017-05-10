@@ -242,7 +242,7 @@ class ResourcesController < ApplicationController
 
   def item_params
     nullify_params
-    params[resource.table]
+    params[resource.table]&.permit!.to_h
   end
 
   def nullify_params
