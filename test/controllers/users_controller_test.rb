@@ -10,7 +10,7 @@ class UsersControllerTest < ActionController::TestCase
     user = create :user, name: nil, email: 'jessy@cluscrive.fr', provider: 'heroku'
     session[:user] = user.id
     session[:heroku_access_token] = '123'
-    get :show, format: :json
+    get :show, params: {format: :json}
     assert_response :success
     assert_equal ['app-with-addon-installed'], assigns[:installed_apps].map(&:name)
     assert assigns[:apps].map {|app| app['name']}.include?('app-with-addon-not-installed')

@@ -23,7 +23,7 @@ class Heroku::ResourcesControllerTest < ActionController::TestCase
 
   def create_account id
     @request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Basic.encode_credentials(HEROKU_MANIFEST['id'], HEROKU_MANIFEST['api']['password'])
-    post :create, resource: {heroku_id: id, plan: 'startup', callback_url: 'blablal', bad_key: 'lol'}
+    post :create, params: {resource: {heroku_id: id, plan: 'startup', callback_url: 'blablal', bad_key: 'lol'}}
     assert_response :success
   end
 end

@@ -88,21 +88,21 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_index_without_statements
     @account.update tables_count: 37
-    get :index, table: 'users'
+    get :index, params: {table: 'users'}
     items = assigns[:items]
     assert_equal 4, items.count
     assert_equal 10, @account.reload.tables_count
   end
 
   def test_json_response
-    get :index, table: 'users', order: 'pseudo', format: 'json'
+    get :index, params: {table: 'users', order: 'pseudo', format: 'json'}
     data = JSON.parse(@response.body)
     assert_equal ['Loulou', 'Martin', 'Michel', nil], assigns[:items].map {|i| i[:pseudo]}
     assert_equal 4, data['total_count']
   end
 
   def test_csv_response
-    get :index, table: 'users', order: 'pseudo', format: 'csv'
+    get :index, params: {table: 'users', order: 'pseudo', format: 'csv'}
     lines = @response.body.split("\n")
     assert_equal 5, lines.length
   end
@@ -111,7 +111,7 @@ class ResourcesControllerTest < ActionController::TestCase
     FixtureFactory.new :user, daily_alarm: '08:37'
     Resource::Base.any_instance.stubs(:columns).returns(export: [:daily_alarm])
     Resource::Base.any_instance.stubs(:export_skip_header).returns true
-    get :index, table: 'users', order: 'id', format: 'csv'
+    get :index, params: {table: 'users', order: 'id', format: 'csv'}
     lines = @response.body.split "\n"
     assert_equal 5, lines.length
     assert_equal '08:37', lines.last
@@ -119,7 +119,7 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_csv_response_with_belongs_to_column
     Resource::Base.any_instance.stubs(:columns).returns(export: %i(group_id.name))
-    get :index, table: 'users', format: 'csv', order: 'id'
+    get :index, params: {table: 'users', format: 'csv', order: 'id'}
     lines = @response.body.split("\n")
     assert_equal 'Admins', lines.last
   end
@@ -127,26 +127,26 @@ class ResourcesControllerTest < ActionController::TestCase
   def test_csv_response_with_has_many_count
     FixtureFactory.new(:group)
     Resource::Base.any_instance.stubs(:columns).returns(export: [:'has_many/users/group_id'])
-    get :index, table: 'groups', format: 'csv', order: 'id'
+    get :index, params: {table: 'groups', format: 'csv', order: 'id'}
     lines = @response.body.split("\n")
     assert_equal '1', lines[-2]
     assert_equal '0', lines[-1]
   end
 
   def test_search_found
-    get :index, table: 'users', search: 'Michel'
+    get :index, params: {table: 'users', search: 'Michel'}
     assert_equal ['Michel'], assigns[:items].map {|i| i[:pseudo]}
   end
 
   def test_search_not_found
     FixtureFactory.new :user, pseudo: 'Johnny'
-    get :index, table: 'users', search: 'Halliday'
+    get :index, params: {table: 'users', search: 'Halliday'}
     assert_equal 0, assigns[:items].count
   end
 
   def test_bulk_edit
     @records = @fixtures.map(&:save!)
-    get :bulk_edit, table: 'users', record_ids: @records.map(&:id)
+    get :bulk_edit, params: {table: 'users', record_ids: @records.map(&:id)}
     assert_equal @records.map(&:id), assigns[:record_ids].map(&:to_i)
   end
 
@@ -158,8 +158,8 @@ class ResourcesControllerTest < ActionController::TestCase
     params = {table: 'users', record_ids: users.map(&:id)}
     params[:users] = {role: '', last_name: '', first_name: '', age: 55}
     params[:users_nullify_settings] = {role: 'null', last_name: 'empty_string', first_name: ''}
-    post :bulk_update, params
-    get :index, table: 'users'
+    post :bulk_update, params: params
+    get :index, params: {table: 'users'}
     assigns[:items].each do |user|
       assert_nil user[:role]
       assert_equal '', user[:last_name]
@@ -168,7 +168,7 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   def test_search_for_association_input
-    get :search, table: 'users', search: 'Loulou', primary_key: 'id'
+    get :search, params: {table: 'users', search: 'Loulou', primary_key: 'id'}
     data = JSON.parse @response.body
     assert_equal 1, data['results'].length
     assert_equal 'Loulou', data['results'].first['pseudo']
@@ -180,8 +180,8 @@ class ResourcesControllerTest < ActionController::TestCase
     user = FixtureFactory.new(:user, age: 34, role: 'Developer', last_name: 'Johnson').factory
     params = {table: 'users', id: user.id, users: {role: '', last_name: '', age: ''}}
     params[:users_nullify_settings] = {role: 'null', last_name: 'empty_string'}
-    post :update, params
-    get :show, table: 'users', id: user.id
+    post :update, params: params
+    get :show, params: {table: 'users', id: user.id}
     item = assigns[:item]
     assert_nil item[:role]
     assert_nil item[:age]
@@ -195,9 +195,9 @@ class ResourcesControllerTest < ActionController::TestCase
       update: [[user.id.to_s, 'martine', 'Martine', 'De La Motte', '1', '28', '2013-04-01 00:00:00 UTC', true, 'PDG', '2', nil, '2013-03-13', nil, '2013-04-19 15:39:52 UTC', '2013-04-19 15:39:52 UTC']],
       headers: %w(id pseudo first_name last_name group_id age activated_at admin role kind user_profile_id birthdate file created_at updated_at)
     }.to_json
-    post :perform_import, table: :users, data: datas
+    post :perform_import, params: {table: :users, data: datas}
     assert_equal({'success' => true}, JSON.parse(@response.body))
-    get :index, table: 'users', asearch: 'Last import'
+    get :index, params: {table: 'users', asearch: 'Last import'}
     assert_equal 2, assigns[:items].count
     assert_equal 'martine', assigns[:items].detect {|r| r[:id] == user.id}[:pseudo]
   end
@@ -208,9 +208,9 @@ class ResourcesControllerTest < ActionController::TestCase
     Timecop.freeze ActiveSupport::TimeZone.new('Paris').parse('6/6/2013 15:36') do
       pk = @fixtures.last.factory.id + 1
       datas = {create: [[pk, 'Jean', 'Marais']], update: [], headers: %w(id first_name last_name)}.to_json
-      post :perform_import, table: :users, data: datas
+      post :perform_import, params: {table: :users, data: datas}
       assert_equal({'success' => true}, JSON.parse(@response.body))
-      get :index, table: 'users', asearch: 'Last import'
+      get :index, params: {table: 'users', asearch: 'Last import'}
       assert_equal 1, assigns[:items].count
       assigned_item = assigns[:items].detect {|r| r[:id] == pk}
       assert_equal 'Marais', assigned_item[:last_name]
@@ -219,33 +219,33 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   def test_order_desc
-    get :index, table: :users, order: 'pseudo desc'
+    get :index, params: {table: :users, order: 'pseudo desc'}
     assert_equal ['Michel', 'Martin', 'Loulou', nil], assigns[:items].map {|i| i[:pseudo]}
   end
 
   def test_order_asc
-    get :index, table: :users, order: 'pseudo'
+    get :index, params: {table: :users, order: 'pseudo'}
     assert_equal ['Loulou', 'Martin', 'Michel', nil], assigns[:items].map {|i| i[:pseudo]}
   end
 
   def test_check_existence
     user = FixtureFactory.new(:user).factory
-    post :check_existence, table: 'users', id: [user.id], format: :json
+    post :check_existence, params: {table: 'users', id: [user.id], format: :json}
     assert_equal({'success' => true, 'update' => true}, JSON.parse(@response.body))
 
-    post :check_existence, table: 'users', id: [user.id.to_s], format: :json
+    post :check_existence, params: {table: 'users', id: [user.id.to_s], format: :json}
     assert_equal({'success' => true, 'update' => true}, JSON.parse(@response.body))
 
-    post :check_existence, table: 'users', id: [12_321, user.id]
+    post :check_existence, params: {table: 'users', id: [12_321, user.id]}
     assert_equal({'error' => true, 'ids' => ['12321']}, JSON.parse(@response.body))
 
-    post :check_existence, table: 'users', id: [12_321]
+    post :check_existence, params: {table: 'users', id: [12_321]}
     assert_equal({'success' => true, 'update' => false}, JSON.parse(@response.body))
   end
 
   def test_bulk_destroy
     request.env['HTTP_REFERER'] = 'plop'
-    post :bulk_destroy, table: :users, item_ids: [@fixtures[0].factory.id, @fixtures[1].factory.id]
+    post :bulk_destroy, params: {table: :users, item_ids: [@fixtures[0].factory.id, @fixtures[1].factory.id]}
     assert_raise(ActiveRecord::RecordNotFound) { @fixtures[0].reload! }
     assert_raise(ActiveRecord::RecordNotFound) { @fixtures[1].reload! }
     assert_nothing_raised { @fixtures[2].reload! }
@@ -254,7 +254,7 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_pet_project_limitation_for_xhr_request
     @account.update plan: Account::Plan::PET_PROJECT
-    xhr :get, :index, table: 'roles_users'
+    get :index, params: {table: 'roles_users'}, xhr: true
     assert_equal %w(widget id), JSON.parse(@response.body).keys
   end
 
@@ -263,7 +263,7 @@ class ResourcesControllerTest < ActionController::TestCase
     setup_resource
     @resource.columns[:listing] = [:group_id]
     @resource.save
-    get :index, table: 'users'
+    get :index, params: {table: 'users'}
     # no label column on groups so we don't need to fetch the groups to generate links
     assert_equal({}, assigns(:associated_items))
   end
@@ -272,7 +272,8 @@ class ResourcesControllerTest < ActionController::TestCase
     Timecop.freeze ActiveSupport::TimeZone.new('Paris').parse('2013-06-02 22:22:07') do
       @account.update database_time_zone: 'UTC', application_time_zone: 'Paris'
       user = FixtureFactory.new(:user)
-      put :update, users: {created_at: '2013-06-02 22:02:07'}, table: 'users', id: user.factory.id.to_s, format: 'json'
+      put :update, params: {users: {created_at: '2013-06-02 22:02:07'}, table: 'users',
+                            id: user.factory.id.to_s, format: 'json'}
       result = JSON.parse(@response.body)
       assert result['value'][/data-raw-value="2013-06-02 22:02:07"/]
       user.reload!
@@ -286,7 +287,7 @@ class ResourcesControllerTest < ActionController::TestCase
     @resource.filters[name] = description
     @resource.save
     @controller.instance_variable_set '@resources', nil
-    get :index, table: table, asearch: name, order: order
+    get :index, params: {table: table, asearch: name, order: order}
     assert_equal pseudos, assigns[:items].map {|r| r[:pseudo]}, "#{name}: #{assigns[:items].inspect}"
   end
 

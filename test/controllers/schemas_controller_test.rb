@@ -75,7 +75,7 @@ class SchemasControllerTest < ActionController::TestCase
   end
 
   def test_create_table_failed
-    post :create, table_name: 'roles', columns: [{name: 'id', type: 'integer'}]
+    post :create, params: {table_name: 'roles', columns: [{name: 'id', type: 'integer'}]}
     assert_response :success
     assert_match 'relation "roles" already exists', JSON.parse(@response.body)['error']
   end
@@ -83,60 +83,60 @@ class SchemasControllerTest < ActionController::TestCase
   def test_rename_table
     create_table_for_test
     new_name = "my_new_name_#{rand(1_000_000)}"
-    put :update, id: @table_name, table_name: new_name
+    put :update, params: {id: @table_name, table_name: new_name}
     assert_response :redirect
     @table_name = new_name
-    get :show, id: @table_name
+    get :show, params: {id: @table_name}
     assert_response :success
   end
 
   def test_rename_table_fail
     create_table_for_test
-    put :update, id: @table_name, table_name: @table_name
+    put :update, params: {id: @table_name, table_name: @table_name}
     assert_response :redirect
   end
 
   def test_drop_column
     create_table_for_test
-    put :update, id: @table_name, remove_column: 'mais_lol'
+    put :update, params: {id: @table_name, remove_column: 'mais_lol'}
     assert_response :redirect
 
     assert_equal [:id], schema.map(&:first)
-    put :update, id: @table_name, remove_column: 'mais_lol'
+    put :update, params: {id: @table_name, remove_column: 'mais_lol'}
     assert_response :redirect
   end
 
   def test_rename_column
     create_table_for_test
-    put :update, id: @table_name, new_column_name: 'mais_pas_lol', column_name: 'mais_lol'
+    put :update, params: {id: @table_name, new_column_name: 'mais_pas_lol', column_name: 'mais_lol'}
     assert_response :redirect
 
     assert_equal [:id, :mais_pas_lol], schema.map(&:first)
-    put :update, id: @table_name, new_column_name: 'mais_pas_lol', column_name: 'mais_lol'
+    put :update, params: {id: @table_name, new_column_name: 'mais_pas_lol', column_name: 'mais_lol'}
     assert_response :redirect
   end
 
   def test_change_column_type
     create_table_for_test
     assert_equal 'character varying(255)', schema.last.last[:db_type]
-    put :update, id: @table_name, new_column_type: 'text', column_name: 'mais_lol'
+    put :update, params: {id: @table_name, new_column_type: 'text', column_name: 'mais_lol'}
     column_definition = schema.last
     assert_equal :mais_lol, column_definition.first
     assert_equal 'text', column_definition.last[:db_type]
-    put :update, id: @table_name, new_column_type: 'boolean', column_name: 'mais_lol'
+    put :update, params: {id: @table_name, new_column_type: 'boolean', column_name: 'mais_lol'}
     assert_response :redirect
     assert_equal 'text', schema.last.last[:db_type]
   end
 
   def test_drop_table
     @generic.db.create_table(:table_test) { primary_key :id }
-    post :destroy, id: 'table_test'
+    post :destroy, params: {id: 'table_test'}
     assert_response :redirect
     assert @generic.db.tables.include?(:table_test)
-    post :destroy, id: 'table_test', table_name_confirmation: 'table_test'
+    post :destroy, params: {id: 'table_test', table_name_confirmation: 'table_test'}
     assert_response :redirect
     assert !@generic.db.tables.include?(:table_test)
-    post :destroy, id: 'unknown_table', table_name_confirmation: 'unknown_table'
+    post :destroy, params: {id: 'unknown_table', table_name_confirmation: 'unknown_table'}
     assert_response :redirect
     assert_match 'table "unknown_table" does not exist', flash[:error]
   end
@@ -145,21 +145,21 @@ class SchemasControllerTest < ActionController::TestCase
     create_table_for_test
     assert_equal 1, @generic.db[@table_name].insert(mais_lol: 'o')
     assert_equal 1, @generic.db[@table_name].count
-    put :update, id: @table_name, truncate: true, table_name_confirmation: @table_name
+    put :update, params: {id: @table_name, truncate: true, table_name_confirmation: @table_name}
     assert_equal 0, @generic.db[@table_name].count
     assert_equal 2, @generic.db[@table_name].insert(mais_lol: 'o')
-    put :update, id: @table_name, truncate: true, table_name_confirmation: @table_name, restart: true
+    put :update, params: {id: @table_name, truncate: true, table_name_confirmation: @table_name, restart: true}
     assert_equal 0, @generic.db[@table_name].count
     assert_equal 1, @generic.db[@table_name].insert(mais_lol: 'o')
   end
 
   def test_add_column
     create_table_for_test
-    put :update, id: @table_name, add_column: 'true', columns: [{name: 'body', type: 'string'}]
+    put :update, params: {id: @table_name, add_column: 'true', columns: [{name: 'body', type: 'string'}]}
     assert_response :redirect
     assert_equal :body, schema.last.first
     assert_equal 'character varying(255)', schema.last.last[:db_type]
-    put :update, id: @table_name, add_column: 'true', columns: [{name: 'body', type: 'string'}]
+    put :update, params: {id: @table_name, add_column: 'true', columns: [{name: 'body', type: 'string'}]}
     assert_match 'column "body" of relation "table_test" already exists', flash[:error]
   end
 
@@ -175,9 +175,9 @@ class SchemasControllerTest < ActionController::TestCase
 
   def create_table columns
     @table_name = 'test_name'
-    post :create, table_name: @table_name, columns: columns
+    post :create, params: {table_name: @table_name, columns: columns}
     assert_response :success
-    get :show, id: @table_name
+    get :show, params: {id: @table_name}
     @schema = assigns[:resource].schema
   end
 

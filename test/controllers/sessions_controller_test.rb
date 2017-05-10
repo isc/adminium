@@ -45,7 +45,7 @@ class SessionsControllerTest < ActionController::TestCase
     user = create :user, provider: 'heroku'
     session[:user] = user.id
     assert_difference 'SignOn.count' do
-      get :login_heroku_app, id: app['id']
+      get :login_heroku_app, params: {id: app['id']}
       heroku_api.delete_app app_name
       assert_redirected_to root_url
       assert_equal account.id, session[:account]
