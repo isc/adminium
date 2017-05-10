@@ -111,4 +111,8 @@ module ApplicationHelper
       content_tag :i, nil, class: 'fa fa-cog'
     end
   end
+
+  def whitelisted_params
+    params.permit(:action, :index, :order, :page, :per_page, :where, :search, :asearch, :exclude)
+  end
 end

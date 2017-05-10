@@ -6,10 +6,10 @@
         == "You are looking for results on page #{@current_page}, but your query only has #{pluralize @items.page_count, 'result page'}, so there are no results on this page, but still #{pluralize @items.pagination_record_count, 'record'}."
         br
         'Try to go to the
-        = link_to "first page", params.merge(page: 1)
+        = link_to "first page", whitelisted_params.merge(page: 1)
         - if @items.page_count > 1
           '  or the
-          = link_to "last page", params.merge(page: @items.page_count)
+          = link_to "last page", whitelisted_params.merge(page: @items.page_count)
         = "."
   - else
     .alert.alert-info No records were found.

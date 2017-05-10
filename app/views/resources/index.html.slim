@@ -24,10 +24,10 @@ nav.navbar.navbar-default
             - if params[:asearch].present? || resource.filters.any?
               li.dropdown-header Filters
             - if params[:asearch].present?
-              li= link_to 'All records', params.merge(asearch: nil)
+              li= link_to 'All records', whitelisted_params.merge(asearch: nil)
             - resource.filters.keys.sort_by(&:downcase).each do |key|
               - next if params[:asearch] == key
-              li= link_to key, params.merge(asearch: key)
+              li= link_to key, whitelisted_params.merge(asearch: key)
             - if resource.filters.any?
               li.divider role="separator"
             li.dropdown-header Current filter
@@ -71,7 +71,7 @@ nav.navbar.navbar-default
       .col-md-3
         .alert.alert-info.alert-dismissible
           == "Search for <i>#{params[:search]}</i>"
-          = link_to params.except(:search), class: 'close' do
+          = link_to whitelisted_params.except(:search), class: 'close' do
             i.fa.fa-times
     - %i(where exclude).each do |filter|
       - if params[filter]

@@ -13,11 +13,11 @@ module ResourcesHelper
     res = ''
     {'up' => key, 'down' => "#{key} desc"}.each do |direction, dorder|
       active = dorder == params[:order] ? 'active' : nil
-      res << link_to(url_for(params.merge(order: dorder)), title: sort_title(display_name, direction == 'up', original_key)) do
+      res << link_to(url_for(whitelisted_params.merge(order: dorder)), title: sort_title(display_name, direction == 'up', original_key)) do
         content_tag('i', '', class: "fa fa-chevron-#{direction} #{active}")
       end
     end
-    res << (link_to display_name, params.merge(order: order), title: sort_title(display_name, ascend, original_key))
+    res << (link_to display_name, whitelisted_params.merge(order: order), title: sort_title(display_name, ascend, original_key))
   end
 
   def sort_title display_name, ascend, original_key
@@ -57,7 +57,7 @@ module ResourcesHelper
         user_defined_bg = "background-color: #{user_defined_bg}" if user_defined_bg.present?
         where_hash = {where: (params[:where] || {}).merge((original_key || key) => value)}
         # FIXME: some params are lost when rendered in return of an in-place edit (update action name)
-        url = %w(show update).include?(action_name) ? resources_path(resource.table, where_hash) : params.merge(where_hash)
+        url = %w(show update).include?(action_name) ? resources_path(resource.table, where_hash) : whitelisted_params.merge(where_hash)
         content = link_to label, url, class: 'label label-info', style: user_defined_bg
         css_class = 'enum'
       end
@@ -312,7 +312,7 @@ module ResourcesHelper
   end
 
   def generate_chart_path
-    chart_resources_path(params.slice(:table, :where, :exclude, :search, :asearch, :grouping)
+    chart_resources_path(params.permit(:table, :where, :exclude, :search, :asearch, :grouping)
       .merge(column: '{column}', type: '{type}'))
   end
 
