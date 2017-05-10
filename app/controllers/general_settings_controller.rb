@@ -3,6 +3,6 @@ class GeneralSettingsController < ApplicationController
 
   def update
     global_settings.update params[:settings]
-    redirect_to :back, flash: {success: 'Settings successully saved'}
+    redirect_back fallback_location: edit_account_path, flash: {success: 'Settings successully saved'}
   end
 end

@@ -3,7 +3,7 @@ class WidgetsController < ApplicationController
     current_account.widgets.create! widget_params
     respond_to do |format|
       format.html do
-        redirect_to :back
+        redirect_back fallback_location: dashboard_path
       end
       format.json do
         render nothing: true
@@ -15,7 +15,7 @@ class WidgetsController < ApplicationController
     current_account.widgets.destroy params[:id]
     respond_to do |format|
       format.html do
-        redirect_to :back
+        redirect_back fallback_location: dashboard_path
       end
       format.js do
         render nothing: true

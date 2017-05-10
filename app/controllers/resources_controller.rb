@@ -130,15 +130,16 @@ class ResourcesController < ApplicationController
     redirection = params[:redirect] == 'index' ? resources_path(params[:table]) : :back
     redirect_to redirection, flash: {success: "#{object_name} successfully destroyed."}
   rescue Sequel::Error => e
-    redirect_to :back, flash: {error: e.message}
+    redirect_back fallback_location: resources_path(params[:table]), flash: {error: e.message}
   end
 
   def bulk_destroy
     params[:item_ids].map! {|id| id.split(',')} if resource.composite_primary_key?
     resource.delete params[:item_ids]
-    redirect_to :back, flash: {success: "#{params[:item_ids].size} #{resource.human_name.pluralize} successfully destroyed."}
+    redirect_back fallback_location: resources_path(params[:table]),
+                  flash: {success: "#{params[:item_ids].size} #{resource.human_name.pluralize} successfully destroyed"}
   rescue Sequel::Error => e
-    redirect_to :back, flash: {error: e.message}
+    redirect_back fallback_location: resources_path(params[:table]), flash: {error: e.message}
   end
 
   def bulk_edit
@@ -159,7 +160,8 @@ class ResourcesController < ApplicationController
 
   def bulk_update
     count = resource.update_multiple_items params[:record_ids], (item_params || {})
-    redirect_to :back, flash: {success: "#{count || 0} rows have been updated"}
+    redirect_back fallback_location: resources_path(params[:table]),
+                  flash: {success: "#{count || 0} rows have been updated"}
   end
 
   def test_threads

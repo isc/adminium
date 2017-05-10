@@ -14,7 +14,7 @@ class SettingsController < ApplicationController
     if params[:back_to]
       redirect_to params[:back_to]
     else
-      redirect_to :back, flash: {success: 'Settings successfully saved.'}
+      redirect_back fallback_location: resources_path(resource.table), flash: {success: 'Settings successfully saved'}
     end
   end
 
@@ -33,7 +33,7 @@ class SettingsController < ApplicationController
   def values
     column_name = params[:column_name].to_sym
     render json: @generic.table(params[:id]).select(column_name).distinct
-      .limit(50).order(column_name).map {|d| d[column_name]}
+                         .limit(50).order(column_name).map {|d| d[column_name]}
   end
 
   def columns

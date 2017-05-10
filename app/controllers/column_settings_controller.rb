@@ -17,7 +17,7 @@ class ColumnSettingsController < ApplicationController
       resource.label_column = params[:label_column][:label_column]
       resource.save
     end
-    redirect_to :back
+    redirect_back fallback_location: resources_path(resource.table)
   end
 
   private

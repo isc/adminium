@@ -44,7 +44,7 @@ class AccountsController < ApplicationController
   def upgrade
     if current_user&.heroku_provider?
       heroku_api.put_addon current_account.name, "adminium:#{params[:plan]}"
-      redirect_to :back
+      redirect_back fallback_location: dashboard_path
     else
       redirect_to 'https://addons.heroku.com/adminium'
     end
