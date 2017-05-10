@@ -161,7 +161,7 @@ class ResourcesControllerTest < ActionController::TestCase
     post :bulk_update, params
     get :index, table: 'users'
     assigns[:items].each do |user|
-      assert_equal nil, user[:role]
+      assert_nil user[:role]
       assert_equal '', user[:last_name]
       assert names.include?(user[:first_name])
     end
@@ -183,8 +183,8 @@ class ResourcesControllerTest < ActionController::TestCase
     post :update, params
     get :show, table: 'users', id: user.id
     item = assigns[:item]
-    assert_equal nil, item[:role]
-    assert_equal nil, item[:age]
+    assert_nil item[:role]
+    assert_nil item[:age]
     assert_equal '', item[:last_name]
   end
 

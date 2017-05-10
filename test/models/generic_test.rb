@@ -26,7 +26,7 @@ class GenericTest < ActiveSupport::TestCase
   end
 
   test 'foreign keys' do
-    assert_equal(nil, @generic.foreign_keys[:users])
+    assert_nil @generic.foreign_keys[:users]
   end
 
   test 'associations' do

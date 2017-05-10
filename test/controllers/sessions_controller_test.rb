@@ -10,7 +10,7 @@ class SessionsControllerTest < ActionController::TestCase
     assert_redirected_to user_path
     user = User.last
     assert_equal 'heroku', user.provider
-    assert_equal nil, user.name
+    assert_nil user.name
     assert_equal 'user@example.com', user.email
     assert_equal '123456@users.heroku.com', user.uid
   end
