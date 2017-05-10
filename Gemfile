@@ -3,7 +3,7 @@ source 'http://rubygems.org'
 ruby '2.3.0'
 
 gem 'rbtrace'
-gem 'rails', '4.2.8'
+gem 'rails', '5.0.2'
 gem 'pg'
 gem 'sendgrid'
 gem 'nokogiri'
@@ -12,7 +12,7 @@ gem 'sequel'
 gem 'sequel_pg', require: 'sequel'
 gem 'hiredis'
 gem 'redis', require: ['redis', 'redis/connection/hiredis']
-gem 'jquery-rails', '2.0.1'
+gem 'jquery-rails'
 gem 'slim-rails'
 gem 'kaminari'
 gem 'json'
@@ -49,7 +49,6 @@ group :development do
   gem 'populator'
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'quiet_assets'
   gem 'xray-rails'
   gem 'guard', require: false
   gem 'rb-fsevent', require: false
@@ -74,6 +73,8 @@ group :test do
   gem 'factory_girl_rails'
   gem 'rack_session_access'
   gem 'simplecov', require: false
+  gem 'rails-controller-testing'
+  gem 'minitest', '~> 5.10', '!= 5.10.2'
 end
 group :development, :test do
   gem 'pry-rails'

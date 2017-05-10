@@ -1,4 +1,4 @@
-Adminium::Application.routes.draw do
+Rails.application.routes.draw do
   get '/ping' => 'ping#ping'
   get '/auth/heroku/callback' => 'sessions#create_from_heroku'
   get '/install' => 'docs#install'
