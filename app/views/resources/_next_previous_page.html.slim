@@ -28,7 +28,7 @@
               = link_to "Go to page #{page}", whitelisted_params.merge(page: page)
         - if @current_page != page_count
           li
-            = link_to "Go to last page (page #{page_count})", params.merge(page: (page_count))
+            = link_to "Go to last page (page #{page_count})", whitelisted_params.merge(page: (page_count))
           li.divider
       li.dropdown-header Rows per page
       - ([25, 50, 100, 200] + [resource.per_page.to_i]).uniq.sort.each do |per_page|
