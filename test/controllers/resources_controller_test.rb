@@ -154,7 +154,9 @@ class ResourcesControllerTest < ActionController::TestCase
     FixtureFactory.clear_db
     request.env['HTTP_REFERER'] = 'http://example.com'
     names = %w(John Jane)
-    users = Array.new(2) {|i| FixtureFactory.new(:user, age: 34, role: 'Developer', last_name: 'Johnson', first_name: names[i]).factory }
+    users = Array.new(2) do |i|
+      FixtureFactory.new(:user, age: 34, role: 'Developer', last_name: 'Johnson', first_name: names[i]).factory
+    end
     params = {table: 'users', record_ids: users.map(&:id)}
     params[:users] = {role: '', last_name: '', first_name: '', age: 55}
     params[:users_nullify_settings] = {role: 'null', last_name: 'empty_string', first_name: ''}
@@ -178,8 +180,8 @@ class ResourcesControllerTest < ActionController::TestCase
   def test_update
     FixtureFactory.clear_db
     user = FixtureFactory.new(:user, age: 34, role: 'Developer', last_name: 'Johnson').factory
-    params = {table: 'users', id: user.id, users: {role: '', last_name: '', age: ''}}
-    params[:users_nullify_settings] = {role: 'null', last_name: 'empty_string'}
+    params = {table: 'users', id: user.id, users: {role: '', last_name: '', age: ''},
+              users_nullify_settings: {role: 'null', last_name: 'empty_string'}}
     post :update, params: params
     get :show, params: {table: 'users', id: user.id}
     item = assigns[:item]

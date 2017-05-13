@@ -15,8 +15,10 @@ class InstallsTest < ActionDispatch::IntegrationTest
     page.set_rack_session user: create(:user, provider: 'heroku', email: 'j@m.com').id
     page.set_rack_session heroku_access_token: '123'
     visit invite_team_install_path
-    assert_difference 'ActionMailer::Base.deliveries.length', 1 do
+    assert_difference 'ActionMailer::Base.deliveries.length' do
       click_button 'Send a welcome email to the team'
+      assert_no_text 'Installation steps'
+      assert_text 'Dashboard'
     end
     mail = ActionMailer::Base.deliveries.last
     assert_equal 'jessy.bernal+should_not_be_receive@gmail.com', mail['to'].to_s

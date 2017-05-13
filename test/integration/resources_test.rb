@@ -382,6 +382,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     fill_in 'Age', with: '37'
     fill_in 'Role', with: 'CTO'
     click_button 'Update 2 Users'
+    assert_text 'Bulk Edit'
     visit resources_path(:users)
     users.each do |user|
       assert_equal '37', find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=age]").text

@@ -91,7 +91,8 @@ module ApplicationHelper
   end
 
   def navbar_toggle navbar_id
-    content_tag :button, class: 'navbar-toggle collapsed', type: 'button', data: {toggle: 'collapse', target: "##{navbar_id}"}, 'aria-expanded': 'false' do
+    content_tag :button, class: 'navbar-toggle collapsed', type: 'button',
+                         data: {toggle: 'collapse', target: "##{navbar_id}"}, 'aria-expanded': 'false' do
       content_tag(:span, 'Toggle navigation', class: 'sr-only') +
         (content_tag(:span, nil, class: 'icon-bar') * 3).html_safe
     end
@@ -113,6 +114,6 @@ module ApplicationHelper
   end
 
   def whitelisted_params
-    params.permit(:action, :index, :order, :page, :per_page, :where, :search, :asearch, :exclude)
+    params.permit(:order, :page, :per_page, :search, :asearch, exclude: {}, where: {})
   end
 end

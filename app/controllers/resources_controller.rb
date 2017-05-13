@@ -89,7 +89,7 @@ class ResourcesController < ApplicationController
   def create
     pk_value = resource.insert item_params
     params[:id] = pk_value
-    redirect_to after_save_redirection, flash: {success: "#{object_name} successfully created."}
+    after_save_redirection flash: {success: "#{object_name} successfully created."}
   rescue Sequel::Error, Resource::ValidationError => e
     flash.now[:error] = e.message.html_safe
     @item = item_params
@@ -101,7 +101,7 @@ class ResourcesController < ApplicationController
     resource.update_item params[:id], item_params
     respond_to do |format|
       format.html do
-        redirect_to after_save_redirection, flash: {success: "#{object_name} successfully updated."}
+        after_save_redirection flash: {success: "#{object_name} successfully updated."}
       end
       format.json do
         column_name = item_params.keys.first.to_sym
@@ -241,23 +241,18 @@ class ResourcesController < ApplicationController
   end
 
   def item_params
-    nullify_params
-    params[resource.table]&.permit!.to_h
+    @item_params ||= nullify_params params[resource.table]&.to_unsafe_h
   end
 
-  def nullify_params
-    return if @already_nullified
-    (params[resource.table] || {}).each do |column_name, value|
+  def nullify_params item_params
+    return unless item_params
+    item_params.each do |column_name, value|
       next if value.present? || resource.schema_hash[column_name.to_sym].try(:[], :type) != :string
-      nullify_setting = nullify_setting_for column_name
-      params[resource.table][column_name] = nil if nullify_setting == 'null'
-      params[resource.table].delete column_name if nullify_setting.blank?
+      nullify_setting = params["#{resource.table}_nullify_settings"].try :[], column_name
+      item_params[column_name] = nil if nullify_setting == 'null'
+      item_params.delete column_name if nullify_setting.blank?
     end
-    @already_nullified = true
-  end
-
-  def nullify_setting_for column_name
-    params["#{resource.table}_nullify_settings"].try :[], column_name
+    item_params
   end
 
   def object_name
@@ -334,8 +329,8 @@ class ResourcesController < ApplicationController
   end
 
   def process_conditions params_key
-    return unless params[params_key].present?
-    params[params_key].map do |k, v|
+    return if params[params_key].blank?
+    params[params_key].to_unsafe_h.map do |k, v|
       v = nil if v == 'null'
       if v.is_a? Hash
         flash.now[:error] = "Invalid <i>#{params_key}</i> parameter value."
@@ -592,21 +587,23 @@ class ResourcesController < ApplicationController
     request.format.csv? ? :export : :listing
   end
 
-  def after_save_redirection
-    return :back if params[:return_to] == 'back'
+  def after_save_redirection options
+    return redirect_back(fallback_location: resources_path(params[:table]), **options) if params[:return_to] == 'back'
     primary_key = resource.primary_key_value(item_params) || params[:id]
-    case params[:then_redirect]
-    when /edit/
-      edit_resource_path(params[:table], primary_key)
-    when /create/
-      new_resource_path(params[:table])
-    else
-      if primary_key # there can be no id if no primary key on the table
-        resource_path(params[:table], primary_key)
+    path =
+      case params[:then_redirect]
+      when /edit/
+        edit_resource_path(params[:table], primary_key)
+      when /create/
+        new_resource_path(params[:table])
       else
-        resources_path params[:table]
+        if primary_key # there can be no id if no primary key on the table
+          resource_path(params[:table], primary_key)
+        else
+          resources_path params[:table]
+        end
       end
-    end
+    redirect_to path, options
   end
 
   def resource

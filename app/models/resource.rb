@@ -417,11 +417,11 @@ module Resource
         case validation['validator']
         when VALIDATES_PRESENCE_OF
           if value.blank?
-            fail ValidationError, "<b>#{column_display_name validation['column_name'].to_sym}</b> can't be blank."
+            raise ValidationError, "<b>#{column_display_name validation['column_name'].to_sym}</b> can't be blank."
           end
         when VALIDATES_UNIQUENESS_OF
           unless pk_filter(primary_key_value).invert.where(validation['column_name'].to_sym => value).empty?
-            fail ValidationError, "<b>#{value}</b> has already been taken."
+            raise ValidationError, "<b>#{value}</b> has already been taken."
           end
         end
       end

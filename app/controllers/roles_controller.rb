@@ -35,8 +35,8 @@ class RolesController < ApplicationController
   private
 
   def role_params
-    params.require(:role).permit(:name, collaborator_ids: []).tap do |role_params|
-      role_params[:permissions] = params[:role][:permissions]
-    end
+    res = params.require(:role).permit(:name, collaborator_ids: [])
+    res[:permissions] = params[:role][:permissions].to_unsafe_h
+    res
   end
 end
