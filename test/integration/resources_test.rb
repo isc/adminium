@@ -84,6 +84,9 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     find('form.navbar-left button').click
     assert_no_text 'Carey'
     assert_no_text 'Haliday'
+    find('.alert-info .close').click
+    assert_text 'Carey'
+    assert_no_text 'Haliday'
   end
 
   test 'search with where on a range date weekly' do

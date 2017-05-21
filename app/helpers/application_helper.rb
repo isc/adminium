@@ -114,6 +114,6 @@ module ApplicationHelper
   end
 
   def whitelisted_params
-    params.permit(:order, :page, :per_page, :search, :asearch, exclude: {}, where: {})
+    params.slice(:order, :page, :per_page, :search, :asearch, :exclude, :where).to_unsafe_h
   end
 end
