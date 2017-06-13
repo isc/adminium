@@ -5,7 +5,7 @@ Sequel.extension :named_timezones
 Sequel.tzinfo_disambiguator = proc {|_datetime, periods| periods.first}
 
 class Generic
-  PG_SYSTEM_TABLES = %i(pg_stat_activity pg_stat_statements pg_stat_all_indexes)
+  PG_SYSTEM_TABLES = %i(pg_stat_activity pg_stat_statements pg_stat_all_indexes pg_stat_user_tables)
   STATEMENT_TIMEOUT = 20_000
   attr_accessor :db_name, :account_id, :db, :account
   attr_reader :current_adapter
@@ -106,7 +106,7 @@ class Generic
     return @tables if @tables
     @tables = (@db.tables + @db.views).sort - %i(ar_internal_metadata)
     @account.update_attribute :tables_count, @tables.size if @account.tables_count != @tables.size
-    @tables.concat %i(pg_stat_activity pg_stat_all_indexes) if postgresql?
+    @tables.concat %i(pg_stat_activity pg_stat_all_indexes pg_stat_user_tables) if postgresql?
     @tables
   end
 

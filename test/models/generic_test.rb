@@ -38,6 +38,7 @@ class GenericTest < ActiveSupport::TestCase
   end
 
   def expected_tables
-    %i(comments documents groups posts roles roles_users schema_migrations uploaded_files user_profiles users pg_stat_activity pg_stat_all_indexes)
+    %i(comments documents groups posts roles roles_users schema_migrations uploaded_files user_profiles users
+    pg_stat_activity pg_stat_all_indexes pg_stat_user_tables)
   end
 end
