@@ -32,9 +32,9 @@ class UsersController < ApplicationController
     if current_user.heroku_provider?
       @apps = heroku_api.app.list.sort_by {|app| app['name'] }
       current_user.update total_heroku_apps: @apps.length
-      @installed_apps = Account.where(deleted_at: nil, heroku_id: @apps.map {|app| app['id']}).order(:name)
-      installed_heroku_ids = @installed_apps.map(&:heroku_id_only)
-      @apps.delete_if {|app| installed_heroku_ids.include? app['id'].to_s}
+      @installed_apps = Account.where(deleted_at: nil, heroku_uuid: @apps.map {|app| app['id']}).order(:name)
+      installed_heroku_ids = @installed_apps.map(&:heroku_uuid)
+      @apps.delete_if {|app| installed_heroku_ids.include? app['id']}
     else
       @installed_apps = current_user.enterprise_accounts
     end

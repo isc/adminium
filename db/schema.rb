@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170209213230) do
+ActiveRecord::Schema.define(version: 20170627225244) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,7 @@ ActiveRecord::Schema.define(version: 20170209213230) do
     t.string   "encrypted_db_url_salt"
     t.string   "encrypted_db_url_iv"
     t.string   "decrypted_db_url"
+    t.string   "heroku_uuid"
   end
 
   create_table "app_profiles", force: :cascade do |t|

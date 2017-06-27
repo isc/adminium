@@ -99,10 +99,6 @@ class Account < ActiveRecord::Base
     tip
   end
 
-  def heroku_id_only
-    heroku_id.match(/\d+/).to_s
-  end
-
   def reactivate attributes
     update attributes.merge(deleted_at: nil, api_key: generate_api_key)
   end
