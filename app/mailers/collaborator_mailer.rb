@@ -15,6 +15,6 @@ class CollaboratorMailer < ActionMailer::Base
     sendgrid_recipients emails
     @account = account
     @user = user
-    mail to: 'jessy.bernal+should_not_be_receive@gmail.com', subject: "Adminium add-on has been installed on #{account.name}"
+    mail to: emails, subject: "Adminium add-on has been installed on #{account.name}"
   end
 end

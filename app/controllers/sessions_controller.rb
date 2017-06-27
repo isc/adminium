@@ -8,11 +8,11 @@ class SessionsController < ApplicationController
   def create_from_heroku
     session[:heroku_access_token] = request.env['omniauth.auth']['credentials']['token']
     unless session[:user]
-      user_infos = heroku_api.get_user.data[:body]
+      user_infos = request.env['omniauth.auth']['extra'].to_h
       user = User.find_by_provider_and_uid('heroku', user_infos['id']) || User.create_with_heroku(user_infos)
       session[:user] = user.id
     end
-    if current_account && current_account.db_url.blank?
+    if current_account && !current_account.db_url?
       detect_app_name
       set_profile
       set_collaborators
@@ -39,9 +39,8 @@ class SessionsController < ApplicationController
   end
 
   def login_heroku_app
-    apps = heroku_api.get_apps.data[:body]
     app_id = params[:id].match(/\d+/).to_s
-    app = apps.detect {|app| app['id'].to_s == app_id}
+    app = heroku_api.app.list.detect {|app| app['id'].to_s == app_id}
     if app
       @account = Account.find_by_heroku_id("app#{app_id}@heroku.com")
       session[:account] = @account.id

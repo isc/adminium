@@ -3,14 +3,14 @@ require 'test_helper'
 class SessionsControllerTest < ActionController::TestCase
   def test_register_via_heroku
     User.delete_all
-    request.env['omniauth.auth'] = {'credentials' => {'token' => '123'}}
+    setup_omniauth_env
     assert_difference 'User.count' do
       get :create_from_heroku
     end
     assert_redirected_to user_path
     user = User.last
     assert_equal 'heroku', user.provider
-    assert_nil user.name
+    assert_equal 'User Example', user.name
     assert_equal 'user@example.com', user.email
     assert_equal '123456@users.heroku.com', user.uid
   end
@@ -24,7 +24,7 @@ class SessionsControllerTest < ActionController::TestCase
     heroku_api.put_config_vars(app_name, 'DATABASE_URL' => db_url)
     account = create :account, heroku_id: app_id, db_url: nil, name: nil, owner_email: nil
     session[:account] = account.id
-    request.env['omniauth.auth'] = {'credentials' => {'token' => '123'}}
+    setup_omniauth_env
     get :create_from_heroku
     heroku_api.delete_app app_name
     assert_redirected_to dashboard_path
@@ -55,7 +55,10 @@ class SessionsControllerTest < ActionController::TestCase
 
   private
 
-  def heroku_api
-    @heroku_api ||= Heroku::API.new(api_key: '123', mock: true)
+  def setup_omniauth_env
+    request.env['omniauth.auth'] = {
+      'credentials' => {'token' => '123'},
+      'extra' => {'id' => '123456@users.heroku.com', 'email' => 'user@example.com', 'name' => 'User Example'}
+    }
   end
 end

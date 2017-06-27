@@ -117,7 +117,7 @@ class ApplicationController < ActionController::Base
   end
 
   def heroku_api
-    @api ||= Heroku::API.new(api_key: session[:heroku_access_token], mock: Rails.env.test?) if session[:heroku_access_token]
+    @api ||= PlatformAPI.connect_oauth(session[:heroku_access_token]) if session[:heroku_access_token]
   end
 
   def track_account_action

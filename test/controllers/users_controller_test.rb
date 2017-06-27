@@ -2,12 +2,13 @@ require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
   def test_show_user
-    heroku_api = Heroku::API.new(api_key: '123', mock: true)
-    app1 = heroku_api.post_app(name: 'app-with-addon-installed').data[:body]
     Account.delete_all
-    create :account, heroku_id: "app#{app1['id']}@heroku.com", name: app1['name']
-    heroku_api.post_app(name: 'app-with-addon-not-installed').data[:body]
-    user = create :user, name: nil, email: 'jessy@cluscrive.fr', provider: 'heroku'
+    app_list = [
+      {'id' => '123', 'name' => 'app-with-addon-installed'}, {'id' => '456', 'name' => 'app-with-addon-not-installed'}
+    ]
+    UsersController.any_instance.stubs(:heroku_api).returns stub(app: stub(list: app_list))
+    create :account, heroku_id: 'app123@heroku.com', name: 'app-with-addon-installed'
+    user = create :user, provider: 'heroku'
     session[:user] = user.id
     session[:heroku_access_token] = '123'
     get :show, params: {format: :json}
@@ -24,6 +25,7 @@ class UsersControllerTest < ActionController::TestCase
   end
 
   def test_show_user_heroku_apps_with_a_user_and_no_account
+    UsersController.any_instance.stubs(:heroku_api).returns stub(app: stub(list: []))
     user = create :user, provider: 'heroku'
     session[:user] = user.id
     session[:heroku_access_token] = '123'

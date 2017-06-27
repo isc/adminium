@@ -1,7 +1,6 @@
 module AppInstall
   def configure_db_url setup_method
-    config_vars = heroku_api.get_config_vars(current_account.name).data[:body]
-    db_urls = db_urls config_vars
+    db_urls = db_urls heroku_api.config_var.info(current_account.name)
     if db_urls.one?
       current_account.db_url = db_urls.first[:value]
       current_account.db_url_setup_method = setup_method
@@ -14,24 +13,23 @@ module AppInstall
   end
 
   def detect_app_name
-    apps = heroku_api.get_apps.data[:body]
     app_id = current_account.heroku_id.match(/\d+/).to_s
-    app = apps.detect {|a| a['id'].to_s == app_id}
+    app = heroku_api.app.list.detect {|a| a['id'].to_s == app_id}
     current_account.name = app['name']
   end
 
   def set_profile
     return if current_account.name.blank?
     attrs = {}
-    app_infos = heroku_api.get_app(current_account.name).data[:body]
-    current_account.owner_email = app_infos['owner_email']
+    app_infos = heroku_api.app.info(current_account.name)
+    current_account.owner_email = app_infos['owner']['email']
     attrs[:app_infos] = app_infos.to_yaml
-    attrs[:addons_infos] = heroku_api.get_addons(current_account.name).data[:body].to_yaml
+    attrs[:addons_infos] = heroku_api.addon.list_by_app(current_account.name).to_yaml
     AppProfile.create attrs.merge(account_id: current_account.id)
   end
 
   def set_collaborators
-    heroku_collaborators = heroku_api.get_collaborators(current_account.name).data[:body]
+    heroku_collaborators = heroku_api.collaborator.list(current_account.name)
     current_account.total_heroku_collaborators = heroku_collaborators.length
   end
 

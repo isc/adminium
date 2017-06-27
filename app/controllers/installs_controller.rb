@@ -7,12 +7,12 @@ class InstallsController < ApplicationController
 
   def invite_team
     if current_user&.heroku_provider?
-      @heroku_collaborators = heroku_api.get_collaborators(current_account.name).data[:body]
-      @heroku_collaborators.delete_if {|c| c['email'] == current_user.email}
+      @heroku_collaborators = heroku_api.collaborator.list(current_account.name)
+      @heroku_collaborators.delete_if {|c| c['user']['email'] == current_user.email}
     else
       redirect_to dashboard_path
     end
-  rescue Heroku::API::Errors::ErrorWithResponse
+  rescue Excon::Errors::Error
     redirect_to dashboard_path
   end
 

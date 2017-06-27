@@ -8,6 +8,7 @@ end
 
 if Figaro.env.use_heroku_omniauth
   Rails.application.config.middleware.use OmniAuth::Builder do
-    provider :heroku, Figaro.env.heroku_oauth_id, Figaro.env.heroku_oauth_secret, scope: 'identity, write-protected'
+    provider :heroku, Figaro.env.heroku_oauth_id, Figaro.env.heroku_oauth_secret,
+      scope: 'identity, write-protected', fetch_info: true
   end
 end

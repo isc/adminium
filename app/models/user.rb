@@ -19,6 +19,7 @@ class User < ActiveRecord::Base
       user.provider = 'heroku'
       user.uid = infos['id']
       user.email = infos['email']
+      user.name = infos['name']
     end
   end
 

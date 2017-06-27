@@ -10,7 +10,7 @@ class InstallsTest < ActionDispatch::IntegrationTest
     account = create :account, name: 'tasty'
     login account
     heroku_api = Heroku::API.new(api_key: '123', mock: true)
-    heroku_api.post_app(name: 'tasty').data[:body]
+    heroku_api.post_app(name: 'tasty')
     heroku_api.post_collaborator('tasty', 'j@m.com')
     page.set_rack_session user: create(:user, provider: 'heroku', email: 'j@m.com').id
     page.set_rack_session heroku_access_token: '123'

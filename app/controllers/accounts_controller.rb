@@ -12,44 +12,42 @@ class AccountsController < ApplicationController
     @roles = @account.roles.order(:name).to_a if @account.enterprise?
     @account_collaborators = @account.collaborators.includes(:roles)
     if current_user&.heroku_provider?
-      @heroku_collaborators = heroku_api.get_collaborators(current_account.name).data[:body]
-      real_heroku_collaborators = @account.collaborators.where(kind: 'heroku').map(&:email)
-      @heroku_collaborators.delete_if {|heroku_collaborator| real_heroku_collaborators.include? heroku_collaborator['email']}
+      @heroku_collaborators = heroku_api.collaborator.list(current_account.name)
+      real_heroku_collaborators = @account.collaborators.where(kind: 'heroku').pluck(:email)
+      @heroku_collaborators.delete_if do |heroku_collaborator|
+        real_heroku_collaborators.include? heroku_collaborator['user']['email']
+      end
     end
-  rescue Heroku::API::Errors::ErrorWithResponse
+  rescue Excon::Errors::Error
     @heroku_collaborators = []
   end
 
   def create
     app_name = params[:name]
     app_id = params[:app_id]
-    resp = heroku_api.post_addon(app_name, "adminium:#{params[:plan]}" || 'petproject')
-    if resp.data[:body]['status'] == 'Installed'
-      @account = Account.find_by heroku_id: "app#{app_id}@heroku.com"
-      session[:account] = @account.id
-      current_account.name = app_name
-      configure_db_url 'self-create'
-      set_profile
-      set_collaborators
-      current_account.save!
-      path = current_account.total_heroku_collaborators > 1 ? invite_team_install_path : dashboard_path
-      render json: {success: true, redirect_path: path}
-    else
-      render json: {success: false, error: resp.data[:body]['status']}
-    end
-  rescue Heroku::API::Errors::ErrorWithResponse => e
-    render json: {sucess: false, error: JSON.parse(e.response.data[:body])['error']}
+    heroku_api.addon.create(app_name, plan: "adminium:#{params[:plan] || 'petproject'}")
+    @account = Account.find_by heroku_id: "app#{app_id}@heroku.com"
+    session[:account] = @account.id
+    current_account.name = app_name
+    configure_db_url 'self-create'
+    set_profile
+    set_collaborators
+    current_account.save!
+    path = current_account.total_heroku_collaborators > 1 ? invite_team_install_path : dashboard_path
+    render json: {success: true, redirect_path: path}
+  rescue Excon::Errors::Error => e
+    render json: {success: false, error: JSON.parse(e.response.body)['message']}
   end
 
   def upgrade
     if current_user&.heroku_provider?
-      heroku_api.put_addon current_account.name, "adminium:#{params[:plan]}"
+      heroku_api.addon.update current_account.name, plan: "adminium:#{params[:plan]}"
       redirect_back fallback_location: dashboard_path
     else
       redirect_to 'https://addons.heroku.com/adminium'
     end
-  rescue Heroku::API::Errors::ErrorWithResponse => error
-    body = error.response.data[:body]
+  rescue Excon::Errors::Error => error
+    body = error.response.body
     @error = JSON.parse(body)['error'] rescue body
   end
 
@@ -84,13 +82,13 @@ class AccountsController < ApplicationController
   end
 
   def redirect_to_invite_collaborators_or_dashboard
-    path = if current_user&.heroku_provider? && heroku_api.get_collaborators(current_account.name).data[:body].many?
+    path = if current_user&.heroku_provider? && heroku_api.collaborator.list(current_account.name).many?
              invite_team_install_path
            else
              dashboard_path
            end
     redirect_to path
-  rescue Heroku::API::Errors::ErrorWithResponse
+  rescue Excon::Errors::Error
     redirect_to dashboard_path
   end
 
