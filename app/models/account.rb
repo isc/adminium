@@ -40,16 +40,19 @@ class Account < ActiveRecord::Base
 
   def self.fetch_missing_owner_emails
     where(owner_email: nil).where.not(callback_url: nil).find_each do |account|
-      begin
-        auth = [HEROKU_MANIFEST['id'], HEROKU_MANIFEST['api']['password']].join(':')
-        res = RestClient.get "https://#{auth}@api.heroku.com/vendor/apps/#{account.callback_url.split('/').last}"
-        res = JSON.parse res
-        account.update owner_email: res['owner_email']
-        account.update name: res['name'] unless account.name?
-      rescue RestClient::ResourceNotFound
-        # not sure what to do with those accounts
-      end
+      res = account.fetch_info
+      next unless res
+      account.update owner_email: res['owner_email']
+      account.update name: res['name'] unless account.name?
     end
+  end
+
+  def fetch_info
+    auth = [HEROKU_MANIFEST['id'], HEROKU_MANIFEST['api']['password']].join(':')
+    res = RestClient.get "https://#{auth}@api.heroku.com/vendor/apps/#{callback_url.split('/').last.strip}"
+    JSON.parse res
+  rescue RestClient::ResourceNotFound
+    {}
   end
 
   def valid_db_url?
