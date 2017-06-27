@@ -39,10 +39,9 @@ class SessionsController < ApplicationController
   end
 
   def login_heroku_app
-    app_id = params[:id].match(/\d+/).to_s
-    app = heroku_api.app.list.detect {|app| app['id'].to_s == app_id}
+    app = heroku_api.app.list.detect {|app| app['id'] == params[:id]}
     if app
-      @account = Account.find_by_heroku_id("app#{app_id}@heroku.com")
+      @account = Account.find_by! heroku_id: app['id']
       session[:account] = @account.id
       unless current_account.app_profile
         set_profile
@@ -54,7 +53,7 @@ class SessionsController < ApplicationController
       track_sign_on current_account, SignOn::Kind::HEROKU_OAUTH
       redirect_to root_url, notice: "Signed in to #{current_account.name}."
     else
-      redirect_to user_path, error: 'You are not unauthorized to access this app because it looks like you are not a collaborator of this app !'
+      redirect_to user_path, error: 'You are not authorized to access this app because it looks like you are not a collaborator of this app !'
     end
   end
 

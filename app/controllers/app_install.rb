@@ -13,8 +13,7 @@ module AppInstall
   end
 
   def detect_app_name
-    app_id = current_account.heroku_id.match(/\d+/).to_s
-    app = heroku_api.app.list.detect {|a| a['id'].to_s == app_id}
+    app = heroku_api.app.list.detect {|a| a['id'] == current_account.heroku_id}
     current_account.name = app['name']
   end
 

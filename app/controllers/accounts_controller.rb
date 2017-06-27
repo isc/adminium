@@ -24,9 +24,8 @@ class AccountsController < ApplicationController
 
   def create
     app_name = params[:name]
-    app_id = params[:app_id]
     heroku_api.addon.create(app_name, plan: "adminium:#{params[:plan] || 'petproject'}")
-    @account = Account.find_by heroku_id: "app#{app_id}@heroku.com"
+    @account = Account.find_by heroku_id: params[:app_id]
     session[:account] = @account.id
     current_account.name = app_name
     configure_db_url 'self-create'
