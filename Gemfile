@@ -2,7 +2,7 @@ source 'http://rubygems.org'
 
 ruby '2.3.0'
 
-gem 'rails', '5.0.3'
+gem 'rails', '5.0.4'
 gem 'pg'
 gem 'sendgrid'
 gem 'nokogiri'
