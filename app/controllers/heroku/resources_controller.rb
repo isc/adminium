@@ -3,7 +3,8 @@ class Heroku::ResourcesController < ApplicationController
   before_action :basic_auth, except: :sso_login
 
   def create
-    attributes = params.require(:resource).permit :heroku_id, :plan, :callback_url
+    attributes = params.require(:resource).permit :plan, :callback_url
+    attributes[:heroku_id] = attributes[:callback_url].strip.split('/').last
     account = Account.deleted.find_by heroku_id: attributes[:heroku_id]
     if account
       account.reactivate attributes
