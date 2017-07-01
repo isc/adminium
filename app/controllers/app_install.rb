@@ -13,11 +13,11 @@ module AppInstall
   end
 
   def detect_app_name
-    current_account.name = heroku_api.app.info(current_account.heroku_uuid)['name']
+    current_account.name = heroku_api.addon.info(current_account.heroku_uuid)['app']['name']
   end
 
   def set_profile
-    return if current_account.name.blank?
+    return unless current_account.name?
     attrs = {}
     app_infos = heroku_api.app.info(current_account.name)
     current_account.owner_email = app_infos['owner']['email']

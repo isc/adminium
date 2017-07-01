@@ -16,7 +16,7 @@ class SessionsController < ApplicationController
       detect_app_name
       set_profile
       set_collaborators
-      current_account.save
+      current_account.save!
       redirect_to configure_db_url('oauth') ? dashboard_path : setup_database_connection_install_path
     else
       redirect_to user_path
@@ -27,7 +27,7 @@ class SessionsController < ApplicationController
     auth = request.env['omniauth.auth']
     user = User.find_by_provider_and_uid(auth['provider'], auth['uid']) || User.create_with_omniauth(auth)
     if account = user.enterprise_accounts.first
-      collaborator = user.collaborators.where(account_id: account.id).first
+      collaborator = user.collaborators.find_by(account_id: account.id)
       session[:account] = account.id
       session[:user] = user.id
       session[:collaborator] = collaborator.id
