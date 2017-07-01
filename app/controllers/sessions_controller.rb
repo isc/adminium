@@ -41,7 +41,7 @@ class SessionsController < ApplicationController
   def login_heroku_app
     app = heroku_api.app.list.detect {|app| app['id'] == params[:id]}
     if app
-      @account = Account.find_by! heroku_id: app['id']
+      @account = Account.find_by! heroku_uuid: app['id']
       session[:account] = @account.id
       unless current_account.app_profile
         set_profile
