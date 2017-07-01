@@ -4,7 +4,8 @@ class Heroku::ResourcesController < ApplicationController
 
   def create
     attributes = params.require(:resource).permit :heroku_id, :plan, :callback_url
-    account = Account.deleted.find_by heroku_id: attributes[:heroku_id]
+    attributes[:heroku_uuid] = attributes[:callback_url].split('/').last.strip
+    account = Account.deleted.find_by heroku_uuid: attributes[:heroku_uuid]
     if account
       account.reactivate attributes
     else

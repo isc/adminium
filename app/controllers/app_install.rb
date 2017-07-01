@@ -13,7 +13,7 @@ module AppInstall
   end
 
   def detect_app_name
-    current_account.name = heroku_api.app.info(current_account.heroku_id)['name']
+    current_account.name = heroku_api.app.info(current_account.heroku_uuid)['name']
   end
 
   def set_profile

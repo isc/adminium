@@ -12,7 +12,7 @@
   $scope.appSelection = ->
     $scope.selectedApp = @app
     if @app.plan
-      window.location.href = "/sessions/login_heroku_app?id=#{@app.heroku_id}"
+      window.location.href = "/sessions/login_heroku_app?id=#{@app.heroku_uuid}"
     else
       $scope.addonProvisioning.showModal @app
 ]

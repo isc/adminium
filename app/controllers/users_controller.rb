@@ -8,7 +8,7 @@ class UsersController < ApplicationController
       format.json do
         begin
           detect_apps
-          render json: {apps: (@installed_apps.map {|a| a.attributes.slice('name', 'plan', 'heroku_id')} + @apps)}
+          render json: {apps: (@installed_apps.map {|a| a.attributes.slice('name', 'plan', 'heroku_uuid')} + @apps)}
         rescue Excon::Errors::Error => e
           render json: {error: JSON.parse(e.response.body)['message']}
         end
