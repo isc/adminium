@@ -24,22 +24,17 @@
         br
         'Feel free to edit, destroy, add records and customize the interface, everything will be reset within the hour.
       p
-        = link_to "Check out the demo account", start_demo_docs_path, :class => "btn btn-success btn-large"
+        = link_to "Check out the demo account", start_demo_docs_path, class: "btn btn-success btn-large"
     section#installation.well
       h3 Add-on Install
-      p
-        'In order to use Adminium with your own data, we need to access your database. To retrieve your database url securely and easily, we use
-        = link_to "Heroku's oauth API", "#heroku_oauth"
-        '  to read the <code>DATABASE_URL</code> configuration variable of your app.
-      'There are also two other ways to retrieve your database url.
-      h4 Command line installation
-      p Adminium can be installed to a Heroku application via the CLI:
-      pre= "heroku addons:add adminium:petproject"
-      p In order to provide you with an administration interface for your data, Adminium needs to be able to connect to your database. The easiest way to do that is to install and run a plugin for the Heroku command line tool :
-      pre="heroku plugins:install git://github.com/isc/heroku-adminium\nheroku adminium"
-      p The plugin execution will store an encrypted version of the <code>DATABASE_URL</code> of your application in the Adminium database. Your <code>DATABASE_URL</code> is sent using SSL and is never logged in the Adminium application logs. Removing the add-on from your application will delete that info from the Adminium database.
-      h4 Browser installation
-      p== "Visit the #{link_to "adminium page", 'https://addons.heroku.com/marketplace/addons/adminium', :target=>'_blank'} on Heroku's marketplace and select a plan and your project."
+      p In order to provide you with an administration interface for your data, Adminium needs to be able to connect to your database.
+      p Adminium will store an encrypted version of the <code>DATABASE_URL</code> of your application in the Adminium database. Removing the add-on from your application will delete that info from the Adminium database.
+      
+      p The easiest way to do that is by using our Heroku's OAuth integration which will be used to read the <code>DATABASE_URL</code> configuration variable of your app.
+      p You can also configure your database URL manually.
+      
+      h4 Manual installation
+      p== "Visit the #{link_to "adminium page", 'https://elements.heroku.com/addons/adminium', target: '_blank'} on Heroku's marketplace and select a plan and your project."
       h5 Find your Heroku Postgres database url
       p Go to the resources page of your application and click on your Heroku Postgres database add-on.
       p= image_tag 'herokuresources-panel.png', class: 'img-thumbnail img-responsive'

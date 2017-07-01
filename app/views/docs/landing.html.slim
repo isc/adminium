@@ -14,6 +14,10 @@ html lang="en"
     link href="images/favicon.ico" rel="shortcut icon"
   body.landing
     .container
+      - flash.each do |k, v|
+        .alert.alert-dismissible class="alert-#{flash_class k}"
+          a.close data-dismiss="alert" href="#" ×
+          = raw v
       .row
         .col-md-6
           h2 Adminium
