@@ -46,7 +46,7 @@ class SessionsController < ApplicationController
       unless current_account.app_profile
         set_profile
         set_collaborators
-        current_account.save!
+        current_account.save # DB URL might be out of date and fail validation
       end
       collaborator = current_user.collaborators.where(account_id: current_account.id).first
       session[:collaborator] = collaborator&.id
