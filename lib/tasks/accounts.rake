@@ -33,7 +33,7 @@ namespace :accounts do
   end
 
   task migrate_searches: :environment do
-    Account.where.not(encrypted_db_url: nil).find_each do |account|
+    Account.where.not(plan: Account::Plan::DELETED, encrypted_db_url: nil).where('id > 328').find_each do |account|
       begin
         puts account.id
         generic = Generic.new account
@@ -45,9 +45,16 @@ namespace :accounts do
           resource.save
         end
         generic.cleanup
-      rescue Sequel::DatabaseConnectionError => e
+      rescue Sequel::DatabaseConnectionError, URI::InvalidURIError => e
         puts e
       end
+    end
+  end
+
+  task cleanup_redis_for_deleted_accounts: :environment do
+    Account.where(plan: Account::Plan::DELETED).pluck(:id).each do |id|
+      keys = REDIS.keys("account:#{id}:*")
+      REDIS.del(keys) if keys.any?
     end
   end
 end
