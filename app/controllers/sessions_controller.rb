@@ -14,7 +14,7 @@ class SessionsController < ApplicationController
     end
     if current_account && !current_account.db_url?
       detect_app_name
-      set_profile
+      set_owner_email
       current_account.save!
       redirect_to configure_db_url('oauth') ? dashboard_path : setup_database_connection_install_path
     else
@@ -42,8 +42,8 @@ class SessionsController < ApplicationController
     if adminium_addon
       @account = Account.find_by! heroku_uuid: params[:id]
       session[:account] = @account.id
-      unless current_account.app_profile
-        set_profile
+      unless current_account.owner_email?
+        set_owner_email
         current_account.save # DB URL might be out of date and fail validation
       end
       collaborator = current_user.collaborators.where(account_id: current_account.id).first

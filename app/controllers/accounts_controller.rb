@@ -29,7 +29,7 @@ class AccountsController < ApplicationController
     session[:account] = @account.id
     current_account.name = params[:name]
     configure_db_url 'self-create'
-    set_profile
+    set_owner_email
     current_account.save!
     path = heroku_api.collaborator.list(current_account.name).size > 1 ? invite_team_install_path : dashboard_path
     render json: {success: true, redirect_path: path}

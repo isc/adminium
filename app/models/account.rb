@@ -11,7 +11,6 @@ class Account < ActiveRecord::Base
   has_many :pie_chart_widgets
   has_many :stat_chart_widgets
   has_many :sign_ons
-  has_one :app_profile
 
   validates :db_url, format: %r{((mysql2?)|(postgres(ql)?)):\/\/.*}, allow_blank: true
   # fucked up "unless" below, but otherwise the tests are fucked up

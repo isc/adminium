@@ -16,14 +16,10 @@ module AppInstall
     current_account.name = heroku_api.addon.info(current_account.heroku_uuid)['app']['name']
   end
 
-  def set_profile
+  def set_owner_email
     return unless current_account.name?
-    attrs = {}
     app_infos = heroku_api.app.info(current_account.name)
     current_account.owner_email = app_infos['owner']['email']
-    attrs[:app_infos] = app_infos.to_yaml
-    attrs[:addons_infos] = heroku_api.addon.list_by_app(current_account.name).to_yaml
-    AppProfile.create attrs.merge(account_id: current_account.id)
   end
 
   def db_urls config_vars
