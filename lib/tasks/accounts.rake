@@ -42,8 +42,8 @@ namespace :accounts do
           resource.filters.each do |name, conditions|
             account.searches.create name: name, conditions: conditions, table: table
           end
+          resource.save
         end
-        resource.save
         generic.cleanup
       rescue Sequel::DatabaseConnectionError => e
         puts e
