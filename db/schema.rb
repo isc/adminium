@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170627225244) do
+ActiveRecord::Schema.define(version: 20170730164232) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,12 +31,11 @@ ActiveRecord::Schema.define(version: 20170627225244) do
     t.text     "plan_migrations"
     t.datetime "last_tip_at"
     t.string   "last_tip_identifier"
-    t.boolean  "tips_opt_in",                default: true
-    t.string   "application_time_zone",      default: "UTC", null: false
-    t.string   "database_time_zone",         default: "UTC", null: false
+    t.boolean  "tips_opt_in",           default: true
+    t.string   "application_time_zone", default: "UTC", null: false
+    t.string   "database_time_zone",    default: "UTC", null: false
     t.string   "source"
     t.string   "db_url_setup_method"
-    t.integer  "total_heroku_collaborators"
     t.string   "encrypted_db_url_salt"
     t.string   "encrypted_db_url_iv"
     t.string   "decrypted_db_url"

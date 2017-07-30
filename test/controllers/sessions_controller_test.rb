@@ -33,7 +33,6 @@ class SessionsControllerTest < ActionController::TestCase
     assert_equal app_name, account.name
     assert account.app_profile.app_infos
     assert account.app_profile.addons_infos
-    assert_equal 2, account.total_heroku_collaborators
     assert_equal 'email@example.com', account.owner_email
   end
 

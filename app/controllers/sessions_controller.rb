@@ -2,8 +2,8 @@ class SessionsController < ApplicationController
   include AppInstall
 
   skip_before_action :connect_to_db
-  skip_before_action :require_account, only: [:create, :create_from_heroku, :login_heroku_app, :destroy]
-  skip_before_action :verify_authenticity_token, only: [:create, :create_from_heroku]
+  skip_before_action :require_account, only: %i(create create_from_heroku login_heroku_app destroy)
+  skip_before_action :verify_authenticity_token, only: %i(create create_from_heroku)
 
   def create_from_heroku
     session[:heroku_access_token] = request.env['omniauth.auth']['credentials']['token']
@@ -15,7 +15,6 @@ class SessionsController < ApplicationController
     if current_account && !current_account.db_url?
       detect_app_name
       set_profile
-      set_collaborators
       current_account.save!
       redirect_to configure_db_url('oauth') ? dashboard_path : setup_database_connection_install_path
     else
@@ -27,7 +26,7 @@ class SessionsController < ApplicationController
     auth = request.env['omniauth.auth']
     user = User.find_by_provider_and_uid(auth['provider'], auth['uid']) || User.create_with_omniauth(auth)
     if account = user.enterprise_accounts.first
-      collaborator = user.collaborators.find_by(account_id: account.id)
+      collaborator = user.collaborators.find_by(account: account)
       session[:account] = account.id
       session[:user] = user.id
       session[:collaborator] = collaborator.id
@@ -39,13 +38,12 @@ class SessionsController < ApplicationController
   end
 
   def login_heroku_app
-    addon = heroku_api.addon.list.detect {|addon| addon['id'] == params[:id]}
-    if addon
+    adminium_addon = heroku_api.addon.list.detect {|addon| addon['id'] == params[:id]}
+    if adminium_addon
       @account = Account.find_by! heroku_uuid: params[:id]
       session[:account] = @account.id
       unless current_account.app_profile
         set_profile
-        set_collaborators
         current_account.save # DB URL might be out of date and fail validation
       end
       collaborator = current_user.collaborators.where(account_id: current_account.id).first

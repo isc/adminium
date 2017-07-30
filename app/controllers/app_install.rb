@@ -26,11 +26,6 @@ module AppInstall
     AppProfile.create attrs.merge(account_id: current_account.id)
   end
 
-  def set_collaborators
-    heroku_collaborators = heroku_api.collaborator.list(current_account.name)
-    current_account.total_heroku_collaborators = heroku_collaborators.length
-  end
-
   def db_urls config_vars
     db_urls = []
     config_vars.keys.find_all {|key| key.match(/(HEROKU_POSTGRESQL_.*_URL)|(.*DATABASE_URL.*)/)}.each do |key|

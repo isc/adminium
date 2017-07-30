@@ -30,9 +30,8 @@ class AccountsController < ApplicationController
     current_account.name = params[:name]
     configure_db_url 'self-create'
     set_profile
-    set_collaborators
     current_account.save!
-    path = current_account.total_heroku_collaborators > 1 ? invite_team_install_path : dashboard_path
+    path = heroku_api.collaborator.list(current_account.name).size > 1 ? invite_team_install_path : dashboard_path
     render json: {success: true, redirect_path: path}
   rescue Excon::Errors::Error => e
     render json: {success: false, error: JSON.parse(e.response.body)['message']}
