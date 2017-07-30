@@ -430,8 +430,10 @@ class ResourcesController < ApplicationController
   end
 
   def apply_filters
-    @current_filter = resource.filters[params[:asearch]] || []
-    @current_filter.each_with_index do |filter, index|
+    @searches = current_account.searches.where(params.permit(:table)).to_a.sort_by {|search| search.name.downcase}
+    @current_search = @searches.detect {|search| search.name === params[:asearch]}
+    return unless @current_search
+    @current_search.conditions.each_with_index do |filter, index|
       clause = apply_filter filter
       next unless clause
       @items = if index.nonzero? && filter['grouping'] == 'or'

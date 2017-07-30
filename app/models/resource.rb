@@ -130,7 +130,7 @@ module Resource
 
     def save
       settings = {
-        columns: @columns, column: @column, filters: @filters, validations: @validations,
+        columns: @columns, column: @column, validations: @validations,
         default_order: @default_order, enum_values: @enum_values, label_column: @label_column,
         export_col_sep: @export_col_sep, export_skip_header: @export_skip_header}
       settings[:per_page] = @per_page if @globals.per_page != @per_page

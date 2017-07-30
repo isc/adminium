@@ -23,11 +23,30 @@ namespace :accounts do
 
   task mark_extra_as_deleted: :fetch_list do
     api_accounts = JSON.parse(File.read(LIST_FILENAME))
-    Account.not_deleted.where(['plan != ?', Account::Plan::COMPLIMENTARY]).find_each do |account|
+    Account.not_deleted.where.not(plan: Account::Plan::COMPLIMENTARY).find_each do |account|
       api_account = api_accounts.detect {|a| a['heroku_id'] == account.heroku_id}
       if api_account.nil?
         puts "Missing account : #{account.id} - #{account.name} - #{account.plan}"
         account.update! plan: Account::Plan::DELETED, deleted_at: account.updated_at, db_url: nil
+      end
+    end
+  end
+
+  task migrate_searches: :environment do
+    Account.where.not(encrypted_db_url: nil).find_each do |account|
+      begin
+        puts account.id
+        generic = Generic.new account
+        generic.tables.each do |table|
+          resource = Resource::Base.new generic, table
+          resource.filters.each do |name, conditions|
+            account.searches.create name: name, conditions: conditions, table: table
+          end
+        end
+        resource.save
+        generic.cleanup
+      rescue Sequel::DatabaseConnectionError => e
+        puts e
       end
     end
   end

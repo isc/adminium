@@ -1,19 +1,22 @@
 class SearchesController < ApplicationController
   def update
-    if params[:name] && params[:filters]
-      resource.filters[params[:name]] = params[:filters].values
-      resource.save
-    end
+    search = searches.find_or_initialize_by params.permit(:name)
+    search.conditions = params[:filters].values
+    search.save!
     redirect_to resources_path(params[:id], asearch: params[:name])
   end
 
   def destroy
-    resource.filters.delete params[:name]
-    resource.save
+    searches.find_by(params.permit(:name)).destroy
     redirect_to resources_path(params[:id])
   end
 
   def show
-    render json: resource.filters.keys
+    render json: searches.pluck(:name)
+  end
+
+  private
+  def searches
+    current_account.searches.where(table: params[:id])
   end
 end

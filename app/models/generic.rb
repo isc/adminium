@@ -168,7 +168,7 @@ class Generic
     @db_name = (uri.path || '').split('/')[1]
     @current_adapter = uri.scheme
     opts[:logger] ||= Rails.logger
-    @db = Sequel.connect uri.to_s, opts.merge(keep_reference: false)
+    @db = Sequel.connect uri.to_s, opts.merge(keep_reference: false, connect_timeout: 5)
     if postgresql?
       @db.execute 'SET application_name to \'Adminium\''
       statement_timeout

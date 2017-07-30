@@ -14,21 +14,21 @@ nav.navbar.navbar-default
             i.fa.fa-table<
         li.dropdown
           a.dropdown-toggle href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false"
-            span.text-more data-content=display_filter(@current_filter) = params[:asearch].presence || 'All records'
+            span.text-more data-content=display_search(@current_search) = params[:asearch].presence || 'All records'
             span.caret<
           ul.dropdown-menu
             - if params[:asearch].blank?
               li
                 a data-toggle="modal" href="#advanced_search" New filter
               li.divider role="separator"
-            - if params[:asearch].present? || resource.filters.any?
+            - if params[:asearch].present? || @searches.any?
               li.dropdown-header Filters
             - if params[:asearch].present?
               li= link_to 'All records', whitelisted_params.merge(asearch: nil)
-            - resource.filters.keys.sort_by(&:downcase).each do |key|
-              - next if params[:asearch] == key
-              li= link_to key, whitelisted_params.merge(asearch: key)
-            - if resource.filters.any?
+            - @searches.each do |search|
+              - next if params[:asearch] == search.name
+              li= link_to search.name, whitelisted_params.merge(asearch: search.name)
+            - if @searches.any?
               li.divider role="separator"
             li.dropdown-header Current filter
             - if @widget

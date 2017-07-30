@@ -48,8 +48,7 @@ module Import
         import_filter.push 'column' => pkey, 'type' => 'integer', 'operator' => 'IN', 'operand' => updated_ids.join(',')
       end
     end
-    resource.filters['Last import'] = import_filter
-    resource.save
+    current_account.searches.create! name: 'Last import', table: resource.table, conditions: import_filter
   end
 
   def check_existence

@@ -1,11 +1,11 @@
 class AdvancedSearch
 
-  unary_operators: ['null', 'not_null', 'present', 'blank', 'is_true', 'is_false', 'today', 'yesterday', 'this_week', 'last_week']
+  unary_operators: ['null', 'not_null', 'present', 'blank', 'is_true', 'is_false', 'today', 'yesterday',
+                    'this_week', 'last_week']
 
   constructor: ->
-    $('table.filters').on 'click', 'span.btn', ->
-      $(this).parents('tr').remove()
-    $('table.filters').on 'change', 'td.operators select', @selectedOperator
+    $('table.filters').on 'click', 'span.btn', -> $(this).parents('tr').remove()
+    $('table.filters').on 'change', 'td.operators select', (evt) => @updateFilterForm $(evt.currentTarget)
     @updateFilterForm $(select) for select in $('table.filters td.operators select')
     $("#new_filter").select2({placeholder: 'Choose a column', matcher: adminiumSelect2Matcher})
     $("#new_filter").bind 'change', (object) =>
@@ -19,9 +19,6 @@ class AdvancedSearch
         selectFilter = filterDiv.find('td.operators select').focus()
         @updateFilterForm selectFilter
         initDatepickers()
-
-  selectedOperator: (evt) =>
-    @updateFilterForm $(evt.currentTarget)
 
   updateFilterForm: (select) =>
     operator = select.val()
@@ -38,5 +35,4 @@ class AdvancedSearch
     operand.get(0).type = type
     
 
-$ ->
-  new AdvancedSearch()
+$ -> new AdvancedSearch()

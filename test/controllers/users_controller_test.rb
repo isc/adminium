@@ -2,6 +2,7 @@ require 'test_helper'
 
 class UsersControllerTest < ActionController::TestCase
   def test_show_user
+    Search.delete_all
     Account.delete_all
     app_list = [
       {'id' => '123', 'name' => 'app-with-addon-installed'}, {'id' => '456', 'name' => 'app-with-addon-not-installed'}

@@ -286,9 +286,7 @@ class ResourcesControllerTest < ActionController::TestCase
   private
 
   def assert_asearch name, pseudos, description, table = 'users', order = 'pseudo'
-    @resource.filters[name] = description
-    @resource.save
-    @controller.instance_variable_set '@resources', nil
+    create :search, name: name, table: table, account: @account, conditions: description
     get :index, params: {table: table, asearch: name, order: order}
     assert_equal pseudos, assigns[:items].map {|r| r[:pseudo]}, "#{name}: #{assigns[:items].inspect}"
   end

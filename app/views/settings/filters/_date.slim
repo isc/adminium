@@ -1,2 +1,2 @@
-select.form-control(name="filters[#{g}][operator]")
+select.form-control name="filters[#{g}][operator]"
   = options_for_select((UNARY_OPERATORS + DATETIME_OPERATORS).map {|o| ["is #{o.humanize.downcase}", o]}, operator)

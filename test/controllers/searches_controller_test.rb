@@ -19,12 +19,10 @@ class SearchesControllerTest < ActionController::TestCase
   end
 
   def test_destroy_a_search
-    generic = Generic.new(@account)
-    resource = Resource::Base.new generic, :users
-    resource.filters['myass'] = {}
-    resource.save
-    post :destroy, params: {id: 'users', name: 'myass'}
-    assert_redirected_to resources_path(:users)
-    generic.cleanup
+    create :search, name: 'myass', table: 'users', account: @account
+    assert_difference '@account.searches.count', -1 do
+      post :destroy, params: {id: 'users', name: 'myass'}
+      assert_redirected_to resources_path(:users)
+    end
   end
 end

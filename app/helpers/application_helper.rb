@@ -32,8 +32,9 @@ module ApplicationHelper
     'active' if controller_name == controller.controller_name
   end
 
-  def display_filter filter
-    filter.map do |f|
+  def display_search search
+    return unless search
+    search.conditions.map do |f|
       column = [f['assoc'].presence, f['column']].compact.map(&:humanize).join(' > ')
       "<strong style=\"white-space: nowrap\">#{column}</strong> #{f['operator']} <i>#{f['operand']}</i>"
     end.join('<br/>')

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170730165521) do
+ActiveRecord::Schema.define(version: 20170730185447) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,6 +68,16 @@ ActiveRecord::Schema.define(version: 20170730165521) do
     t.datetime "updated_at"
   end
 
+  create_table "searches", force: :cascade do |t|
+    t.string   "name"
+    t.string   "table"
+    t.integer  "account_id"
+    t.json     "conditions"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id"], name: "index_searches_on_account_id", using: :btree
+  end
+
   create_table "sign_ons", force: :cascade do |t|
     t.integer  "account_id"
     t.string   "plan"
@@ -108,4 +118,5 @@ ActiveRecord::Schema.define(version: 20170730165521) do
     t.string   "grouping"
   end
 
+  add_foreign_key "searches", "accounts"
 end

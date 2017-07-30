@@ -12,14 +12,12 @@
               select#new_filter.form-control data-table=params[:table]
                 option value=""= ''
                 = columns_options_for_resource resource
-
           table.table.table-condensed.table-hover.filters
-            - @current_filter.each do |filter|
-              tr= render '/settings/filter', filter: filter
+            - if @current_search
+              - @current_search.conditions.each do |filter|
+                tr= render '/settings/filter', filter: filter
         .modal-footer
           .form-inline
-            = label_tag :name, 'Save as'
-            '
-            = text_field_tag :name, (params[:asearch] || 'last search'), class: 'form-control'
-            '
-            input#save_advanced_search.btn.btn-primary type="submit" value="Search"
+            => label_tag :name, 'Save as'
+            => text_field_tag :name, (params[:asearch] || 'last search'), class: 'form-control'
+            input.btn.btn-primary type="submit" value="Search"

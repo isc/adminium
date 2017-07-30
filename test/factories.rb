@@ -33,6 +33,12 @@ FactoryGirl.define do
     table :users
   end
 
+  factory :search do
+    account
+    table :users
+    conditions []
+  end
+
   factory :user_from_test do
     pseudo 'Michel'
   end
