@@ -17,6 +17,8 @@ require 'capybara/rails'
 require 'mocha/setup'
 require 'rack_session_access/capybara'
 
+DatabaseCleaner.strategy = :truncation
+
 class ActiveSupport::TestCase
   include FactoryGirl::Syntax::Methods
   self.use_transactional_tests = false
@@ -24,6 +26,7 @@ class ActiveSupport::TestCase
     REDIS.flushdb
     Rails.cache.clear
     ObjectSpace.each_object(Generic, &:cleanup)
+    DatabaseCleaner.clean
   end
 end
 

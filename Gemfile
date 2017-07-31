@@ -65,6 +65,7 @@ group :production do
   gem 'puma_worker_killer'
 end
 group :test do
+  gem 'database_cleaner'
   gem 'capybara'
   gem 'launchy'
   gem 'timecop'
