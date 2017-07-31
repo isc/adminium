@@ -4,6 +4,7 @@ class InstallTest < ActionDispatch::IntegrationTest
   test 'missing db url page' do
     login
     visit setup_database_connection_install_path
+    assert_text 'Adminium has been successfully provisioned'
   end
 
   test 'get some collaborators' do
@@ -20,6 +21,5 @@ class InstallTest < ActionDispatch::IntegrationTest
     end
     mail = ActionMailer::Base.deliveries.last
     assert_equal 'j@m.com', mail['to'].to_s
-    assert_text 'Dashboard'
   end
 end
