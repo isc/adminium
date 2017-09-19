@@ -2,13 +2,13 @@ doctype html
 html lang="en"
   body
     p
-      = @collaborator.account.owner_email
-      '  invites you to collaborate on project
-      = @collaborator.account.name
-      '  on Adminium.
+      => @collaborator.account.owner_email
+      ' invites you to collaborate on project
+      => @collaborator.account.name
+      ' on Adminium.
     p
       'Sign in with the Google account associated to 
-      = @collaborator.email
-      '  on
+      => @collaborator.email
+      ' on
       = link_to 'Adminium', "https://www.adminium.io"
       '.
