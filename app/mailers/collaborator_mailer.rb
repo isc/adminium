@@ -4,9 +4,9 @@ class CollaboratorMailer < ActionMailer::Base
   sendgrid_subscriptiontrack_text replace: '|unsubscribe_link|'
   default from: 'Adminium <no-reply@adminium.io>'
 
-  def notify_collaboration collaborator
+  def notify_collaboration collaborator, domain
     sendgrid_category 'notify_collaboration'
-    @collaborator = collaborator
+    @collaborator, @domain = collaborator, domain
     mail to: collaborator.email, subject: "Project #{collaborator.account.name} on Adminium"
   end
 

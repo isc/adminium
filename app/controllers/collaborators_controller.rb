@@ -2,7 +2,7 @@ class CollaboratorsController < ApplicationController
   skip_before_action :connect_to_db
 
   def create
-    current_account.collaborators.create! collaborator_params
+    current_account.collaborators.create! collaborator_params.merge(domain: request.host)
     redirect_to edit_account_url(pane: 'collaborators'), flash: {success: 'Collaborator added'}
   end
 

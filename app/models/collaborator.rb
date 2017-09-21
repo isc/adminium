@@ -7,6 +7,7 @@ class Collaborator < ActiveRecord::Base
   before_create :match_with_existing_user
   after_create :mail_collaborator
   has_and_belongs_to_many :roles
+  attr_accessor :domain
 
   # FIXME: check table existence
   def permissions
@@ -28,7 +29,7 @@ class Collaborator < ActiveRecord::Base
   end
 
   def mail_collaborator
-    CollaboratorMailer.notify_collaboration(self).deliver_later if kind == 'google_oauth2'
+    CollaboratorMailer.notify_collaboration(self, domain).deliver_later if kind == 'google_oauth2'
   end
 
   def human_roles
