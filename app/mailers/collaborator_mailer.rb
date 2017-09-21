@@ -1,7 +1,6 @@
 class CollaboratorMailer < ActionMailer::Base
   include SendGrid
   sendgrid_enable :ganalytics, :opentrack
-  sendgrid_subscriptiontrack_text replace: '|unsubscribe_link|'
   default from: 'Adminium <no-reply@adminium.io>'
 
   def notify_collaboration collaborator, domain
