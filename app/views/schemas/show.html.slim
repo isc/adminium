@@ -6,8 +6,8 @@
     a.btn.btn-danger href="#drop-table" data-toggle="modal" Drop this table
 
 h3= "Table #{params[:table]}"
-- if table_comment = @comments.find { |row| row[:objsubid].zero? }
-  h4= table_comment[:description]
+- if @table_comment
+  h4= @table_comment[:description]
 h4
   = "#{@resource.column_names.length} columns, "
   = link_to pluralize(number_to_human(@resource.count_with_timeout || @resource.count_from_stats), 'records'), resources_path(params[:table])

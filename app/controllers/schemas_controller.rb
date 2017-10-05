@@ -7,6 +7,8 @@ class SchemasController < ApplicationController
     @resource = resource_for params[:table]
     @readonly = @resource.system_table? || !admin?
     @comments = @generic.comments [params[:table]]
+    @table_comment = @comments.find { |row| row[:objsubid].zero? }
+    @comments.delete @table_comment
   end
 
   def new
