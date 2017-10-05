@@ -6,6 +6,8 @@
     a.btn.btn-danger href="#drop-table" data-toggle="modal" Drop this table
 
 h3= "Table #{params[:table]}"
+- if table_comment = @comments.find { |row| row[:objsubid].zero? }
+  h4= table_comment[:description]
 h4
   = "#{@resource.column_names.length} columns, "
   = link_to pluralize(number_to_human(@resource.count_with_timeout || @resource.count_from_stats), 'records'), resources_path(params[:table])
@@ -16,11 +18,13 @@ table.table.table-striped.table-hover
     tr
       th
       th Column name
+      - if @comments.any?
+        th Comments
       th Type
       th Null
       th Default
       th
-  - @resource.schema.each do |name, column|
+  - @resource.schema.each_with_index do |(name, column), index|
     tr
       th
         - if column[:primary_key]
@@ -34,6 +38,8 @@ table.table.table-striped.table-hover
         - unless @readonly
           a.rename_column href="#"
             i.fa.fa-pencil.pull-right
+      - if @comments.any?
+        td= @comments.find { |row| row[:objsubid] == index + 1 }.try(:[], :description)
       td class="#{column[:type]}Type"
         = column[:db_type]
         - unless @readonly

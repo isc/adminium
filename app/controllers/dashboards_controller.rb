@@ -8,6 +8,7 @@ class DashboardsController < ApplicationController
     @table_counts = @generic.table_counts @table_list
     @widgets = current_account.widgets
     @widgets = @widgets.find_all {|w| @table_list.include? w.table} if @table_list
+    @comments = @generic.comments(@table_list).index_by { |r| r[:relname] }
   end
 
   protected

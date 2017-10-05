@@ -110,6 +110,19 @@ class Generic
     @tables
   end
 
+  def comments tables
+    return [] unless postgresql?
+    @db.tables do |ds|
+      ds = ds.join(:pg_description, objoid: :pg_class__oid).select(:relname, :description, :objsubid)
+      if tables.nil? || tables.many?
+        ds = ds.where(objsubid: 0)
+      else
+        ds = ds.where(relname: tables)
+      end
+      ds.to_a
+    end
+  end
+
   def schema table
     fail TableNotFoundException, table unless tables.include? table
     @schema ||= {}

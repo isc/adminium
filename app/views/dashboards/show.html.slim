@@ -34,6 +34,8 @@
       tr
         th
         th Table
+        - if @comments.any?
+          th Comments
         th Full table size
         th Table size
         th Record count
@@ -41,6 +43,8 @@
       tr
         td Totals
         td= "#{@table_sizes.length} tables"
+        - if @comments.any?
+          td
         td= number_to_human_size @table_sizes.sum{|e|e[1].to_i}
         td= number_to_human_size @table_sizes.sum{|e|e[2].to_i}
         td.total_table_count data-value='0' 0
@@ -56,6 +60,8 @@
             = link_to resources_path(table), rel: 'tooltip', title: 'Records' do
               i.fa.fa-eye
           td= link_to table, resources_path(table)
+          - if @comments.any?
+            td= @comments.dig(table.to_s, :description)
           td data-value=fulltblsize = number_to_human_size fulltblsize
           td data-value=tblsize = number_to_human_size tblsize
           td data-value=@table_counts[table.to_s] = number_with_delimiter @table_counts[table.to_s]
