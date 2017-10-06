@@ -18,9 +18,7 @@ Rails.application.routes.draw do
       get :search
       get :chart
     end
-    member do
-      get :download
-    end
+    get :download, on: :member
   end
   resources :settings do
     get :values, on: :member
@@ -55,7 +53,9 @@ Rails.application.routes.draw do
     get :upgrade
   end
   resources :roles, except: %i(index show)
-  resource :dashboard, only: :show
+  resource :dashboard, only: :show do
+    get :settings
+  end
   resources :collaborators
   resource :user do
     get :apps

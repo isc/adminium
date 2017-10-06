@@ -11,6 +11,13 @@ class DashboardsController < ApplicationController
     @comments = @generic.comments(@table_list).index_by { |r| r[:relname] }
   end
 
+  def settings
+    @settings = @generic.db['show all'].to_a
+    if params[:filter].present?
+      @settings.select! {|setting| setting[:name][params[:filter]]}
+    end
+  end
+
   protected
 
   def fetch_permissions

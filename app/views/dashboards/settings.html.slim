@@ -1,0 +1,12 @@
+h3 Database settings
+form.pull-right
+  input.form-control type="search" placeholder="Filter" name="filter" value=params[:filter]
+table.table
+  thead
+    - @settings.first.keys.each do |name|
+      th= name
+  tbody
+    - @settings.each do |setting|
+      tr
+        - setting.values.each do |value|
+          td= value

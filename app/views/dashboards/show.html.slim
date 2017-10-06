@@ -74,6 +74,8 @@
     p
       ' System tables:
       == Generic::PG_SYSTEM_TABLES.map {|table| link_to table, resources_path(table)}.join(' - ')
+      |  -
+      =< link_to 'Database settings', settings_dashboard_path
 
 #upgrade_from_pet_project.modal.fade tabindex="-1"
   .modal-dialog
