@@ -379,6 +379,17 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_text '2 records'
   end
 
+  test 'polymorphic has many association' do
+    document = FixtureFactory.new(:document).factory
+    FixtureFactory.new(:comment, comment: 'ComCom', commentable_id: document.id, commentable_type: 'Document').factory
+    visit resource_path(:documents, document)
+    check 'comments as commentable'
+    click_button 'Save settings'
+    click_link '1'
+    assert_text 'ComCom'
+    assert_text 'Where commentable_type is Document'
+  end
+
   test 'bulk edit' do
     users = Array.new(2) {FixtureFactory.new(:user, age: 34, role: 'Developer', last_name: 'Johnson', kind: 7).factory}
     visit bulk_edit_resources_path(:users, record_ids: users.map(&:id))

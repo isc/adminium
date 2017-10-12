@@ -526,11 +526,17 @@ module Resource
     end
 
     def assoc_query item, assoc
-      @generic.db[assoc[:table]].where assoc[:foreign_key] => item[assoc[:primary_key]]
+      @generic.db[assoc[:table]].where assoc_conditions(item, assoc)
     end
 
     def assoc_count item, assoc
       @generic.with_timeout { assoc_query(item, assoc).count }
+    end
+
+    def assoc_conditions item, assoc
+      result = {assoc[:foreign_key] => item[assoc[:primary_key]]}
+      result[assoc[:foreign_key].to_s.gsub(/_id$/, '_type').to_sym] = table.to_s.classify if assoc[:polymorphic]
+      result
     end
 
     def count_with_timeout

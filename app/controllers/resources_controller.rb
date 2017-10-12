@@ -66,6 +66,11 @@ class ResourcesController < ApplicationController
     @leftover_cols = resource.columns[:show] -
                      @strings_and_hstore_cols - @numbers_cols - @pks_dates_and_times_cols - @boolean_and_blob_cols -
                      resource.belongs_to_associations.map {|assoc| assoc[:foreign_key]}
+    @table_configuration = current_account.table_configurations.find_or_create_by(table: resource.table)
+    @candidates_for_polymorphic_associations = @table_configuration.candidates_for_polymorphic_associations @generic
+    @has_many_associations = resource.has_many_associations +
+                             @table_configuration.polymorphic_associations_as_hashes(resource.primary_keys.first)
+    @has_many_associations.sort_by! {|assoc| assoc[:table].to_s}
   end
 
   def edit

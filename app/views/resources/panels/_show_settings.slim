@@ -7,6 +7,17 @@
       = form_tag setting_path(id: params[:table]), method: :put do
         .modal-body
           = accordion do |accordion|
-            - accordion.pane 'Display fields' do
+            = accordion.pane 'Display fields'
               = render 'resources/panels/column_listing', resource: resource, type: :show, sortable: true
+            - if @candidates_for_polymorphic_associations.any?
+              = accordion.pane 'Polymorphic associations'
+                input type="hidden" name='polymorphic_associations[]'
+                ul.list-group
+                  - @candidates_for_polymorphic_associations.each do |table, reference_name, checked|
+                    li.list-group-item
+                      label
+                        input> type='checkbox' name="polymorphic_associations[]" checked=checked value=[table, reference_name]
+                        => table
+                        small as
+                        =< reference_name
         .modal-footer= submit_tag 'Save settings', class: 'btn btn-primary'
