@@ -76,13 +76,13 @@ nav.navbar.navbar-default
                 = link_to resources_path(assoc[:table], where: assoc_params) do
                   span.badge.badge-warning = count
             td
-              - if count.nonzero?
+              - if count.nil?
+                small= link_to "View associated #{assoc[:table].to_s.humanize}", resources_path(assoc[:table], where: assoc_params)
+              - elsif count.nonzero?
                 = display_associated_items resource, @item, assoc
                 - if count > 5
                   ',
                   = link_to "...", resources_path(assoc[:table], where: assoc_params)
-              - elsif count.nil?
-                small= link_to "View associated #{assoc[:table].to_s.humanize}", resources_path(assoc[:table], where: assoc_params)
             td
               = link_to new_resource_path(assoc[:table], attributes: assoc_params), class: 'btn btn-mini', rel: 'tooltip', data: {placement: :left}, title: "Create a new associated #{assoc[:table].to_s.singularize.humanize}" do
                 i.fa.fa-plus
