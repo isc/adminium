@@ -44,6 +44,17 @@ class ChartsTest < ActionDispatch::IntegrationTest
     assert_equal json, page.find('script', visible: false).text(:all)
   end
 
+  test 'display pie chart on foreign key with label column' do
+    rob = FixtureFactory.new(:user, pseudo: 'Rob').factory
+    bob = FixtureFactory.new(:user, pseudo: 'Bob').factory
+    FixtureFactory.new(:comment, user_id: rob.id)
+    2.times { FixtureFactory.new(:comment, user_id: bob.id) }
+    Resource::Base.any_instance.stubs(:label_column).returns 'pseudo'
+    visit chart_resources_path(:comments, column: 'user_id', type: 'PieChart')
+    json = "data_for_graph = {\"chart_data\":[[\"Bob\",2,#{bob.id},\"#CCC\"],[\"Rob\",1,#{rob.id},\"#AAA\"]],\"chart_type\":\"PieChart\",\"column\":\"user_id\",\"grouping\":\"daily\"}"
+    assert_equal json, page.find('script', visible: false).text(:all)
+  end
+
   test 'display stat chart' do
     2.times { FixtureFactory.new(:user, kind: 5) }
     FixtureFactory.new(:user, kind: 10)

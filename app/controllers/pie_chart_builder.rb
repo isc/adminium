@@ -5,8 +5,9 @@ module PieChartBuilder
     column = qualify params[:table], params[:column]
     @items = resource.query
     dataset_filtering
+    @data = @items.group_and_count(column).reverse_order(:count).limit(100).to_a
     enum = determine_enum
-    @data = @items.group_and_count(column).reverse_order(:count).limit(100).map do |row|
+    @data.map! do |row|
       key, count = row.values
       v = enum[key] || enum[key.to_s] || {'label' => key, 'color' => new_color}
       [v['label'], count, key, v['color']]
@@ -52,8 +53,18 @@ module PieChartBuilder
         options = resource.column_options(name)
         {true => {'color' => '#07be25', 'label' => options['boolean_true'] || 'True'},
          false => {'color' => '#777', 'label' => options['boolean_false'] || 'False'}}
-      elsif resource.foreign_key? name
-        {}
+      elsif (assoc = resource.belongs_to_association(name))
+        referenced_resource = resource_for assoc[:referenced_table]
+        if referenced_resource.label_column
+          values = @data.map {|row| row[assoc[:foreign_key]]}
+          referenced_resource.query.where(assoc[:primary_key] => values)
+            .select(assoc[:primary_key], Sequel.identifier(referenced_resource.label_column)).to_a
+            .map do |h|
+              [h[assoc[:primary_key]], {'color' => new_color, 'label' => h[referenced_resource.label_column.to_sym]}]
+            end.to_h
+        else
+          {}
+        end
       else
         resource.enum_values_for(params[:column]) || {}
       end
