@@ -187,7 +187,7 @@ GEM
     multi_json (1.12.1)
     multi_xml (0.6.0)
     multipart-post (2.0.0)
-    mysql2 (0.4.6)
+    mysql2 (0.4.9)
     nenv (0.3.0)
     net-http-digest_auth (1.4.1)
     net-http-persistent (2.9.4)
