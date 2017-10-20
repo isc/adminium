@@ -3,6 +3,7 @@
     "test": {
       "addons":[
          "heroku-redis",
+         "heroku-postgresql",
          "heroku-postgresql"
       ]
     }
