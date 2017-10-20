@@ -1,9 +1,6 @@
 {
   "environments": {
     "test": {
-      "scripts": {
-        "test": "echo $DATABASE_URL && rails test"
-      },
       "addons":[
          "heroku-redis",
          "heroku-postgresql"
