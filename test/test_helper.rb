@@ -74,7 +74,7 @@ class FixtureFactory
   end
 
   def self.with_fixture_connection
-    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
+    ActiveRecord::Base.establish_connection $TEST_DATABASE_CONN_SPEC
     yield
     ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
   end
