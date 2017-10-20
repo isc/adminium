@@ -1,4 +1,5 @@
-conn_spec = ENV['HEROKU_POSTGRESQL_COBALT_URL'] || ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
+conn_spec = ENV.find {|k, _| k =~ /HEROKU_POSTGRESQL_.*_URL/ }.try(:[], 1) ||
+            ActiveRecord::Base.configurations["fixture-#{TEST_ADAPTER}"]
 ActiveRecord::Base.establish_connection conn_spec
 ActiveRecord::Schema.verbose = false
 ActiveRecord::Base.connection.tables.each do |table|
