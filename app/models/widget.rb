@@ -1,4 +1,4 @@
-class Widget < ActiveRecord::Base
+class Widget < ApplicationRecord
   validates :table, presence: true
   belongs_to :account
 

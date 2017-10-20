@@ -1,4 +1,4 @@
-class User < ActiveRecord::Base
+class User < ApplicationRecord
   has_many :collaborators
   has_many :accounts, through: :collaborators
   has_many :enterprise_accounts, -> {where(plan: [Account::Plan::ENTERPRISE, Account::Plan::COMPLIMENTARY]).order('name')},

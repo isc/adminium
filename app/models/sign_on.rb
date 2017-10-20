@@ -1,4 +1,4 @@
-class SignOn < ActiveRecord::Base
+class SignOn < ApplicationRecord
   class Kind
     HEROKU = 0
     GOOGLE = 1

@@ -10,17 +10,21 @@ Metrics/LineLength:
   Enabled: false
 Style/Documentation:
   Enabled: false
-Style/SpaceInsideHashLiteralBraces:
+Layout/SpaceInsideHashLiteralBraces:
   Enabled: false
-Style/SpaceInsideBlockBraces:
+Layout/SpaceInsideBlockBraces:
   Enabled: false
 Style/MethodDefParentheses:
   Enabled: false
-Style/AlignParameters:
+Layout/AlignParameters:
   Enabled: false
 Style/ClassAndModuleChildren:
   Enabled: false
 Metrics/AbcSize:
   Enabled: false
 Style/ParallelAssignment:
+  Enabled: false
+Style/FrozenStringLiteralComment:
+  Enabled: false
+Style/PercentLiteralDelimiters:
   Enabled: false

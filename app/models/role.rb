@@ -1,4 +1,4 @@
-class Role < ActiveRecord::Base
+class Role < ApplicationRecord
   validates :name, presence: true
   belongs_to :account
   has_and_belongs_to_many :collaborators

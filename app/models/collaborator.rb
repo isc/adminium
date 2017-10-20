@@ -1,4 +1,4 @@
-class Collaborator < ActiveRecord::Base
+class Collaborator < ApplicationRecord
   belongs_to :user
   belongs_to :account
   validates :account, presence: true

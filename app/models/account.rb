@@ -1,4 +1,4 @@
-class Account < ActiveRecord::Base
+class Account < ApplicationRecord
   serialize :plan_migrations
   before_create :setup_api_key
   before_save :fill_adapter, :track_plan_migration
