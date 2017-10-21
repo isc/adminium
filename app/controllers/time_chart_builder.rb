@@ -1,9 +1,9 @@
 module TimeChartBuilder
   DEFAULT_GROUPING = %w(Monthly Daily Weekly Yearly Hourly Minutely).map {|g| [g, g.downcase]}
-  DEFAULT_GROUPING_PERIODIC = [['Hour of day', 'hour'], ['Day of week', 'dow'], ['Month of year', 'month']]
+  DEFAULT_GROUPING_PERIODIC = [['Hour of day', 'hour'], ['Day of week', 'dow'], ['Month of year', 'month']].freeze
   GROUPING_OPTIONS = DEFAULT_GROUPING + DEFAULT_GROUPING_PERIODIC
   DEFAULT_DATE_FORMATS = {'monthly' => '%b', 'weekly' => 'Week %W', 'daily' => '%b %d',
-                          'yearly' => '%Y', 'hourly' => '%l%P', 'minutely' => '%H:%M'}
+                          'yearly' => '%Y', 'hourly' => '%l%P', 'minutely' => '%H:%M'}.freeze
 
   private
 
@@ -13,8 +13,8 @@ module TimeChartBuilder
     dataset_filtering
     aggregate = time_chart_aggregate column
     @items = @items.group(aggregate)
-                   .select(aggregate.as('chart_date'), Sequel.function(:count, Sequel.lit('*')))
-                   .order(aggregate)
+      .select(aggregate.as('chart_date'), Sequel.function(:count, Sequel.lit('*')))
+      .order(aggregate)
     @items = @items.where(qualify(params[:table], params[:column]) => date_range) unless periodic_grouping?
     @data = @items.all.map {|row| format_date(row.delete(:chart_date)) + row.values}
     add_missing_zeroes if grouping == 'daily' && @data.present?
@@ -27,7 +27,8 @@ module TimeChartBuilder
       format.json do
         render json: {
           chart_data: @data, chart_type: 'TimeChart',
-          grouping: grouping, column: params[:column], id: params[:widget_id]}
+          grouping: grouping, column: params[:column], id: params[:widget_id]
+        }
       end
     end
   end

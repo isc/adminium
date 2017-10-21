@@ -26,14 +26,14 @@ class Account < ApplicationRecord
   scope :deleted, -> {where plan: Plan::DELETED}
   scope :not_deleted, -> {where.not plan: Plan::DELETED}
 
-  TIPS = %w(basic_search editing enumerable export_import displayed_record advanced_search serialized relationships time_charts keyboard_shortcuts time_zones)
+  TIPS = %w(basic_search editing enumerable export_import displayed_record advanced_search serialized relationships time_charts keyboard_shortcuts time_zones).freeze
 
   class Plan
-    PET_PROJECT = 'petproject'
-    STARTUP = 'startup'
-    ENTERPRISE = 'enterprise'
-    COMPLIMENTARY = 'complimentary'
-    DELETED = 'deleted'
+    PET_PROJECT = 'petproject'.freeze
+    STARTUP = 'startup'.freeze
+    ENTERPRISE = 'enterprise'.freeze
+    COMPLIMENTARY = 'complimentary'.freeze
+    DELETED = 'deleted'.freeze
   end
 
   def to_param

@@ -32,7 +32,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
 
   test 'display pie chart on enums' do
     Resource::Base.any_instance.stubs(:enum_values_for).with('role')
-                  .returns 'admin' => {'label' => 'Chef'}, 'noob' => {'label' => 'Débutant'}
+      .returns 'admin' => {'label' => 'Chef'}, 'noob' => {'label' => 'Débutant'}
     FixtureFactory.new(:user, role: 'admin')
     FixtureFactory.new(:user, role: 'noob')
     FixtureFactory.new(:user, role: 'new_role_1')

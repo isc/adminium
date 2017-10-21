@@ -5,7 +5,7 @@ Sequel.extension :named_timezones
 Sequel.tzinfo_disambiguator = proc {|_datetime, periods| periods.first}
 
 class Generic
-  PG_SYSTEM_TABLES = %i(pg_stat_activity pg_stat_statements pg_stat_all_indexes pg_stat_user_tables)
+  PG_SYSTEM_TABLES = %i(pg_stat_activity pg_stat_statements pg_stat_all_indexes pg_stat_user_tables).freeze
   STATEMENT_TIMEOUT = 20_000
   attr_accessor :db_name, :account_id, :db, :account
   attr_reader :current_adapter
@@ -114,11 +114,11 @@ class Generic
     return [] unless postgresql?
     @db.tables do |ds|
       ds = ds.join(:pg_description, objoid: :pg_class__oid).select(:relname, :description, :objsubid)
-      if tables.nil? || tables.many?
-        ds = ds.where(objsubid: 0)
-      else
-        ds = ds.where(relname: tables)
-      end
+      ds = if tables.nil? || tables.many?
+             ds.where(objsubid: 0)
+           else
+             ds.where(relname: tables)
+           end
       ds.to_a
     end
   end
@@ -218,7 +218,7 @@ class Generic
     @db.opts[:search_path]&.split(',') || %w(public)
   end
 
-  class TableNotFoundException < Exception
+  class TableNotFoundException < RuntimeError
     attr_reader :table_name
     def initialize table_name
       @table_name = table_name

@@ -104,5 +104,4 @@ class UploadedFileFromTest < ApplicationRecord
   self.table_name = 'uploaded_files'
 end
 
-
 ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations[Rails.env]

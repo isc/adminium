@@ -8,7 +8,7 @@ class AccountsControllerTest < ActionController::TestCase
     app = stub(info: {'owner' => {'email' => 'ma@il.com'}})
     collaborator = stub(list: [])
     AccountsController.any_instance.stubs(:heroku_api)
-                      .returns stub(addon: addon, config_var: config_var, app: app, collaborator: collaborator)
+      .returns stub(addon: addon, config_var: config_var, app: app, collaborator: collaborator)
     # Should be done by heroku during the create request
     account = create :account, heroku_uuid: '37', db_url: nil
     post :create, params: {name: 'test-addon', app_id: 37, plan: 'petproject'}

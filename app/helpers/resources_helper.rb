@@ -63,7 +63,7 @@ module ResourcesHelper
         css_class = 'enum'
       end
     elsif value.present? && resource.columns[:serialized].include?(key)
-      content = value.present? ? (YAML.load(value).inspect rescue value) : value
+      content = value.present? ? (YAML.safe_load(value).inspect rescue value) : value
       css_class, content = 'serialized', content_tag(:pre, content, class: 'sh_ruby')
     elsif item[key] && assoc_info = resource.foreign_key_array?(key)
       content = display_foreign_key_array assoc_info[:referenced_table], item[key]
@@ -87,7 +87,7 @@ module ResourcesHelper
     parts = key.to_s.split('.')
     assoc_info = resource.belongs_to_association parts.first.to_sym
     item = @associated_items[assoc_info[:referenced_table]]
-           .find {|i| i[assoc_info[:primary_key]] == item[assoc_info[:foreign_key]]}
+      .find {|i| i[assoc_info[:primary_key]] == item[assoc_info[:foreign_key]]}
     return column_content_tag wrapper_tag, 'null', class: 'nilclass' if item.nil?
     display_attribute wrapper_tag, item, parts.second, resource_for(assoc_info[:referenced_table]), key
   end
@@ -166,7 +166,7 @@ module ResourcesHelper
                 display_time value
               when Time, Date
                 display_datetime value, column: key, resource: resource
-              when Fixnum, BigDecimal, Float
+              when Integer, BigDecimal, Float
                 display_number key, item, resource
               when TrueClass, FalseClass
                 display_boolean key, item, resource
@@ -198,7 +198,7 @@ module ResourcesHelper
     options = resource.column_options key
     number_options = {unit: '', significant: false}
     opts = %i(unit delimiter separator precision)
-    if value.is_a? Fixnum
+    if value.is_a? Integer
       number_options[:precision] = 0
     else
       opts.push :precision
@@ -275,11 +275,7 @@ module ResourcesHelper
       end
     else
       offset = (collection.current_page - 1) * collection.page_size
-      %{<b>%d&nbsp;-&nbsp;%d</b> of <b>%d</b>} % [
-        offset + 1,
-        offset + collection.current_page_record_count,
-        collection.pagination_record_count
-      ]
+      format(%{<b>%d&nbsp;-&nbsp;%d</b> of <b>%d</b>}, offset + 1, offset + collection.current_page_record_count, collection.pagination_record_count)
     end
   end
 

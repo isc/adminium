@@ -22,7 +22,7 @@ class CsvStreamer
         if item[assoc_column]
           assoc = resource.belongs_to_association assoc_column
           pitem = @associated_items[assoc[:referenced_table]]
-                  .binary_search {|i| i[assoc[:primary_key]] <=> item[assoc_column]}
+            .binary_search {|i| i[assoc[:primary_key]] <=> item[assoc_column]}
           @other_resources[assoc[:referenced_table]].raw_column_output pitem, column if pitem
         end
       else

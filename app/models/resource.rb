@@ -24,12 +24,11 @@ module Resource
   end
 
   class Base
-    VALIDATES_PRESENCE_OF = 'validates_presence_of'
-    VALIDATES_UNIQUENESS_OF = 'validates_uniqueness_of'
-    VALIDATORS = [VALIDATES_PRESENCE_OF, VALIDATES_UNIQUENESS_OF]
+    VALIDATES_PRESENCE_OF = 'validates_presence_of'.freeze
+    VALIDATES_UNIQUENESS_OF = 'validates_uniqueness_of'.freeze
+    VALIDATORS = [VALIDATES_PRESENCE_OF, VALIDATES_UNIQUENESS_OF].freeze
 
     attr_accessor :filters, :default_order, :enum_values, :validations, :label_column, :export_col_sep, :export_skip_header, :table
-    attr_reader :export_col_sep
 
     def initialize generic, table
       @generic, @table = generic, table.to_sym
@@ -121,7 +120,7 @@ module Resource
     end
 
     def indexes
-      @indexes ||= @generic.db.indexes(Sequel.identifier @table)
+      @indexes ||= @generic.db.indexes(Sequel.identifier(@table))
     end
 
     def column_names
@@ -132,7 +131,8 @@ module Resource
       settings = {
         columns: @columns, column: @column, validations: @validations,
         default_order: @default_order, enum_values: @enum_values, label_column: @label_column,
-        export_col_sep: @export_col_sep, export_skip_header: @export_skip_header}
+        export_col_sep: @export_col_sep, export_skip_header: @export_skip_header
+      }
       settings[:per_page] = @per_page if @globals.per_page != @per_page
       REDIS.set settings_key, settings.to_json
     end
@@ -291,7 +291,8 @@ module Resource
             {
               listing: default_columns_conf, show: default_columns_conf,
               form: default_form_columns_conf, export: default_columns_conf,
-              search: searchable_column_names, serialized: []}[type]
+              search: searchable_column_names, serialized: []
+            }[type]
         end
       end
     end
@@ -437,7 +438,7 @@ module Resource
       updated_values.delete_if {|k, v| v.blank? && column_type(k.to_sym) != :string}
       updated_values = typecasted_values updated_values, false
       # FIXME: doesn't work with composite primary keys
-      query.where(primary_key => ids).update(updated_values) if updated_values.size > 0
+      query.where(primary_key => ids).update(updated_values) unless updated_values.empty?
     end
 
     def find primary_key_value, fetch_binary_values: false
@@ -449,7 +450,7 @@ module Resource
         keys = primary_key_value.to_a
         keys.map!(&:to_i) if column_type(primary_keys.first) == :integer
         query.where(primary_keys.first => keys)
-             .select(*columns_to_select(fetch_binary_values)).to_a.sort_by {|r| primary_key_value.index(r[primary_keys.first])}
+          .select(*columns_to_select(fetch_binary_values)).to_a.sort_by {|r| primary_key_value.index(r[primary_keys.first])}
       else
         pk_filter(primary_key_value).select(*columns_to_select(fetch_binary_values)).first
       end
@@ -461,7 +462,7 @@ module Resource
 
     def typecast_value column, value
       return value unless (col_schema = schema_hash[column])
-      value = nil if '' == value && !%i(string blob).include?(col_schema[:type])
+      value = nil if value == '' && !%i(string blob).include?(col_schema[:type])
       raise Sequel::InvalidValue, "nil/NULL is not allowed for the #{column} column" if value.nil? && !col_schema[:allow_null]
       if col_schema[:type] == :hstore && !value.nil?
         2.times {value.shift} # remove dummy entry needed to be able to empty the hash
