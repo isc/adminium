@@ -146,9 +146,6 @@ GEM
       thor (>= 0.14, < 2.0)
     json (2.1.0)
     jwt (1.5.6)
-    kaminari (0.17.0)
-      actionpack (>= 3.0.0)
-      activesupport (>= 3.0.0)
     kensa (3.0.2)
       colored (~> 1.2)
       launchy (~> 2.2.0)
@@ -407,7 +404,6 @@ DEPENDENCIES
   hiredis
   jquery-rails
   json
-  kaminari
   kensa
   launchy
   minitest (~> 5.10, != 5.10.2)

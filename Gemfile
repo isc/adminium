@@ -13,7 +13,6 @@ gem 'hiredis'
 gem 'redis', require: ['redis', 'redis/connection/hiredis']
 gem 'jquery-rails'
 gem 'slim-rails'
-gem 'kaminari'
 gem 'json'
 gem 'simple_form'
 gem 'omniauth'
