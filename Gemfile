@@ -72,7 +72,7 @@ group :test do
   gem 'rack_session_access'
   gem 'simplecov', require: false
   gem 'rails-controller-testing'
-  gem 'minitest', '~> 5.10', '!= 5.10.2'
+  gem 'minitest'
 end
 group :development, :test do
   gem 'pry-rails'

@@ -401,7 +401,7 @@ DEPENDENCIES
   json
   kensa
   launchy
-  minitest (~> 5.10, != 5.10.2)
+  minitest
   mocha
   mysql2
   newrelic_rpm
