@@ -20,7 +20,7 @@ require 'rack_session_access/capybara'
 DatabaseCleaner.strategy = :truncation
 
 class ActiveSupport::TestCase
-  include FactoryGirl::Syntax::Methods
+  include FactoryBot::Syntax::Methods
   self.use_transactional_tests = false
   teardown do
     REDIS.flushdb
@@ -52,7 +52,7 @@ class FixtureFactory
   attr_reader :factory
 
   def initialize(name, options = {})
-    self.class.with_fixture_connection { @factory = FactoryGirl.create "#{name}_from_test", options }
+    self.class.with_fixture_connection { @factory = FactoryBot.create "#{name}_from_test", options }
   end
 
   def save!

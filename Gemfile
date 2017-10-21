@@ -68,7 +68,7 @@ group :test do
   gem 'launchy'
   gem 'timecop'
   gem 'mocha', require: false
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'rack_session_access'
   gem 'simplecov', require: false
   gem 'rails-controller-testing'
