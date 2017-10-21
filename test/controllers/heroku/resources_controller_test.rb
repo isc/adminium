@@ -15,7 +15,7 @@ class Heroku::ResourcesControllerTest < ActionController::TestCase
     end
     assert_equal account.reload.api_key, JSON.parse(@response.body)['id']
     account = Account.where(heroku_uuid: id).last
-    assert_equal %w(deleted startup), account.plan_migrations.map {|d| d[:plan]}
+    assert_equal %w(deleted startup), (account.plan_migrations.map {|d| d[:plan]})
     assert_nil account.deleted_at
   end
 

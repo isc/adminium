@@ -97,7 +97,7 @@ class ResourcesControllerTest < ActionController::TestCase
   def test_json_response
     get :index, params: {table: 'users', order: 'pseudo', format: 'json'}
     data = JSON.parse(@response.body)
-    assert_equal ['Loulou', 'Martin', 'Michel', nil], assigns[:items].map {|i| i[:pseudo]}
+    assert_equal ['Loulou', 'Martin', 'Michel', nil], (assigns[:items].map {|i| i[:pseudo]})
     assert_equal 4, data['total_count']
   end
 
@@ -135,7 +135,7 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_search_found
     get :index, params: {table: 'users', search: 'Michel'}
-    assert_equal ['Michel'], assigns[:items].map {|i| i[:pseudo]}
+    assert_equal ['Michel'], (assigns[:items].map {|i| i[:pseudo]})
   end
 
   def test_search_not_found
@@ -222,12 +222,12 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_order_desc
     get :index, params: {table: :users, order: 'pseudo desc'}
-    assert_equal ['Michel', 'Martin', 'Loulou', nil], assigns[:items].map {|i| i[:pseudo]}
+    assert_equal ['Michel', 'Martin', 'Loulou', nil], (assigns[:items].map {|i| i[:pseudo]})
   end
 
   def test_order_asc
     get :index, params: {table: :users, order: 'pseudo'}
-    assert_equal ['Loulou', 'Martin', 'Michel', nil], assigns[:items].map {|i| i[:pseudo]}
+    assert_equal ['Loulou', 'Martin', 'Michel', nil], (assigns[:items].map {|i| i[:pseudo]})
   end
 
   def test_check_existence
@@ -288,7 +288,7 @@ class ResourcesControllerTest < ActionController::TestCase
   def assert_asearch name, pseudos, description, table = 'users', order = 'pseudo'
     create :search, name: name, table: table, account: @account, conditions: description
     get :index, params: {table: table, asearch: name, order: order}
-    assert_equal pseudos, assigns[:items].map {|r| r[:pseudo]}, "#{name}: #{assigns[:items].inspect}"
+    assert_equal pseudos, (assigns[:items].map {|r| r[:pseudo]}), "#{name}: #{assigns[:items].inspect}"
   end
 
   def setup_resource table = :users

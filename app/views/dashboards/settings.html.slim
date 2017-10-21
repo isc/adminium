@@ -8,5 +8,5 @@ table.table
   tbody
     - @settings.each do |setting|
       tr
-        - setting.values.each do |value|
+        - setting.each_value do |value|
           td= value

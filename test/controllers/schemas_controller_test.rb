@@ -35,12 +35,12 @@ class SchemasControllerTest < ActionController::TestCase
 
   def test_create_table_with_every_column_types
     columns = []
-    [:integer, :string, :datetime, :text, :float, :decimal, :time, :date, :blob, :boolean].each do |ruby_type|
+    %i(integer string datetime text float decimal time date blob boolean).each do |ruby_type|
       columns.push name: "#{ruby_type}_column", type: ruby_type
     end
     create_table columns
     db_types = ['integer', 'character varying(255)', 'timestamp without time zone', 'text', 'double precision', 'numeric', 'time without time zone', 'date', 'bytea', 'boolean']
-    assert_equal db_types, @schema.map {|c| c.last[:db_type]}
+    assert_equal db_types, (@schema.map {|c| c.last[:db_type]})
   end
 
   def test_create_table_with_single_auto_i_pk
@@ -111,7 +111,7 @@ class SchemasControllerTest < ActionController::TestCase
     put :update, params: {id: @table_name, new_column_name: 'mais_pas_lol', column_name: 'mais_lol'}
     assert_response :redirect
 
-    assert_equal [:id, :mais_pas_lol], schema.map(&:first)
+    assert_equal %i(id mais_pas_lol), schema.map(&:first)
     put :update, params: {id: @table_name, new_column_name: 'mais_pas_lol', column_name: 'mais_lol'}
     assert_response :redirect
   end

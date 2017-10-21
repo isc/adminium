@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+
 namespace :accounts do
   LIST_FILENAME = 'apps-list.json'
 
@@ -54,8 +55,8 @@ namespace :accounts do
   task cleanup_redis_for_deleted_accounts: :environment do
     Account.where.not(plan: Account::Plan::DELETED, encrypted_db_url: nil).find_each do |account|
       begin
-        generic = Generic.new account
-      rescue Sequel::DatabaseConnectionError, URI::InvalidURIError => e
+        Generic.new account
+      rescue Sequel::DatabaseConnectionError, URI::InvalidURIError
         keys = REDIS.keys("account:#{account.id}:*")
         REDIS.del(keys) if keys.any?
       end

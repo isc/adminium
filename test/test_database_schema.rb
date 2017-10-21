@@ -82,25 +82,25 @@ ActiveRecord::Schema.define(version: 27) do
 end
 
 # load some models
-class UserFromTest < ActiveRecord::Base
+class UserFromTest < ApplicationRecord
   self.table_name = 'users'
 end
-class CommentFromTest < ActiveRecord::Base
+class CommentFromTest < ApplicationRecord
   self.table_name = 'comments'
 end
-class GroupFromTest < ActiveRecord::Base
+class GroupFromTest < ApplicationRecord
   self.table_name = 'groups'
 end
-class RoleFromTest < ActiveRecord::Base
+class RoleFromTest < ApplicationRecord
   self.table_name = 'roles'
 end
-class RoleUserFromTest < ActiveRecord::Base
+class RoleUserFromTest < ApplicationRecord
   self.table_name = 'roles_users'
 end
-class DocumentFromTest < ActiveRecord::Base
+class DocumentFromTest < ApplicationRecord
   self.table_name = 'documents'
 end
-class UploadedFileFromTest < ActiveRecord::Base
+class UploadedFileFromTest < ApplicationRecord
   self.table_name = 'uploaded_files'
 end
 

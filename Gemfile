@@ -2,34 +2,34 @@ source 'http://rubygems.org'
 
 ruby '2.3.0'
 
-gem 'rails', '5.0.6'
-gem 'pg'
-gem 'sendgrid'
-gem 'nokogiri'
-gem 'premailer-rails'
-gem 'sequel'
-gem 'sequel_pg', require: 'sequel'
+gem 'airbrake'
+gem 'attr_encrypted'
+gem 'binary_search', require: 'binary_search/pure'
+gem 'bootstrap-components-helpers'
+gem 'bootstrap-wysihtml5-rails'
+gem 'figaro'
+gem 'font-awesome-rails'
 gem 'hiredis'
-gem 'redis', require: ['redis', 'redis/connection/hiredis']
 gem 'jquery-rails'
-gem 'slim-rails'
 gem 'json'
-gem 'simple_form'
+gem 'newrelic_rpm'
+gem 'nokogiri'
 gem 'omniauth'
 gem 'omniauth-google-oauth2'
 gem 'omniauth-heroku'
+gem 'pg'
 gem 'platform-api'
+gem 'premailer-rails'
+gem 'rails', '5.0.6'
+gem 'redis', require: ['redis', 'redis/connection/hiredis']
 gem 'rest-client'
-gem 'attr_encrypted'
-gem 'airbrake'
-gem 'bootstrap-components-helpers'
-gem 'bootstrap-wysihtml5-rails'
-gem 'newrelic_rpm'
-gem 'select2-rails'
-gem 'binary_search', require: 'binary_search/pure'
 gem 'sass-rails'
-gem 'figaro'
-gem 'font-awesome-rails'
+gem 'select2-rails'
+gem 'sendgrid'
+gem 'sequel'
+gem 'sequel_pg', require: 'sequel'
+gem 'simple_form'
+gem 'slim-rails'
 
 source 'https://rails-assets.org' do
   gem 'rails-assets-bootstrap-datepicker'
@@ -43,39 +43,39 @@ group :assets do
   gem 'uglifier'
 end
 group :development do
-  gem 'kensa'
-  gem 'populator'
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'xray-rails'
   gem 'guard', require: false
-  gem 'rb-fsevent', require: false
   gem 'guard-livereload', require: false
+  gem 'kensa'
+  gem 'populator'
   gem 'rack-livereload'
-  gem 'spring'
   gem 'rack-mini-profiler'
+  gem 'rb-fsevent', require: false
+  gem 'spring'
+  gem 'xray-rails'
 end
 group :production do
+  gem 'puma'
+  gem 'puma_worker_killer'
   gem 'rack-timeout'
   gem 'unicorn'
   gem 'unicorn-worker-killer'
-  gem 'puma'
-  gem 'puma_worker_killer'
 end
 group :test do
-  gem 'database_cleaner'
   gem 'capybara'
-  gem 'launchy'
-  gem 'timecop'
-  gem 'mocha', require: false
+  gem 'database_cleaner'
   gem 'factory_bot_rails'
-  gem 'rack_session_access'
-  gem 'simplecov', require: false
-  gem 'rails-controller-testing'
+  gem 'launchy'
   gem 'minitest'
+  gem 'mocha', require: false
+  gem 'rack_session_access'
+  gem 'rails-controller-testing'
+  gem 'simplecov', require: false
+  gem 'timecop'
 end
 group :development, :test do
-  gem 'pry-rails'
   gem 'pry-byebug'
+  gem 'pry-rails'
   gem 'rubocop'
 end

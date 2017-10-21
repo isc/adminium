@@ -124,14 +124,14 @@ class Generic
   end
 
   def schema table
-    fail TableNotFoundException, table unless tables.include? table
+    raise TableNotFoundException, table unless tables.include? table
     @schema ||= {}
     @schema[table] || (@schema[table] = @db.schema(Sequel.identifier(table)))
   end
 
   def table table_name
     table_name = table_name.to_sym
-    fail TableNotFoundException, table_name unless tables.include? table_name
+    raise TableNotFoundException, table_name unless tables.include? table_name
     @db[Sequel.identifier table_name]
   end
 
