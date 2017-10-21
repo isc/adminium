@@ -16,6 +16,7 @@ class SearchesController < ApplicationController
   end
 
   private
+
   def searches
     current_account.searches.where(table: params[:id])
   end

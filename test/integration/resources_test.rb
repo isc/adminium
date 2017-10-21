@@ -229,7 +229,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     stub_resource_columns listing: %w(title user_id.role)
     Resource::Base.any_instance.stubs(:enum_values_for).returns nil
     Resource::Base.any_instance.stubs(:enum_values_for).with(:role)
-                  .returns 'admin' => {'label' => 'Chef'}, 'noob' => {'label' => 'Débutant'}
+      .returns 'admin' => {'label' => 'Chef'}, 'noob' => {'label' => 'Débutant'}
     visit resources_path(:comments)
     assert_text 'Funny joke'
     assert_text 'You are fired'

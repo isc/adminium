@@ -7,7 +7,7 @@ class UsersControllerTest < ActionController::TestCase
     ]
     addon_list = [{'app' => {'name' => 'app-with-addon-installed'}, 'addon_service' => {'name' => 'adminium'}}]
     UsersController.any_instance.stubs(:heroku_api)
-                   .returns stub(app: stub(list: app_list), addon: stub(list: addon_list))
+      .returns stub(app: stub(list: app_list), addon: stub(list: addon_list))
     create :account, heroku_id: '123', name: 'app-with-addon-installed'
     user = create :user, provider: 'heroku'
     session[:user] = user.id

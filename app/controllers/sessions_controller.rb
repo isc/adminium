@@ -58,7 +58,7 @@ class SessionsController < ApplicationController
 
   def switch_account
     collaborator = current_user.collaborators.where(account_id: params[:account_id]).first
-    if collaborator && collaborator.account.enterprise?
+    if collaborator&.account&.enterprise?
       session[:account] = collaborator.account_id
       session[:collaborator] = collaborator.id
       track_sign_on collaborator.account, SignOn::Kind::GOOGLE

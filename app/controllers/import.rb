@@ -87,7 +87,7 @@ module Import
         insert_rows.each {|row| row << now}
         insert_columns << column
       end
-      unless update_rows.nil? || (column.to_s[/(created)|(inserted)/])
+      unless update_rows.nil? || column.to_s[/(created)|(inserted)/]
         update_rows.each {|row| row << now}
         update_columns << column
       end

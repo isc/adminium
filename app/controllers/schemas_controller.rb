@@ -11,8 +11,7 @@ class SchemasController < ApplicationController
     @comments.delete @table_comment
   end
 
-  def new
-  end
+  def new; end
 
   def update
     return rename_table if params[:table_name]
@@ -84,7 +83,7 @@ class SchemasController < ApplicationController
 
   def add_column
     table_name = params[:id]
-    columns, _ = reformat_columns_params
+    columns, = reformat_columns_params
     @generic.db.alter_table table_name do
       columns.each do |data|
         add_column data[:name], data[:ruby_type], data[:options]
@@ -112,7 +111,7 @@ class SchemasController < ApplicationController
   def reformat_columns_params
     primary_column_names = []
     columns = params[:columns].map do |column|
-      next unless column[:name].present?
+      next if column[:name].blank?
       c = {}
       type, options = type_converted column[:type]
       c[:ruby_type] = type

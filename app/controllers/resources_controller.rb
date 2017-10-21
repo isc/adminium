@@ -265,7 +265,7 @@ class ResourcesController < ApplicationController
   end
 
   def apply_search
-    return unless params[:search].present?
+    return if params[:search].blank?
     conds = []
     number_columns = resource.columns[:search].select {|c| resource.number_column?(c)}
     if number_columns.any? && params[:search].match(/\A\-?\d+\Z/)
@@ -300,7 +300,7 @@ class ResourcesController < ApplicationController
   end
 
   def apply_select
-    columns = resource.columns[settings_type].select {|c| !c.to_s.starts_with?('has_many/')}
+    columns = resource.columns[settings_type].reject {|c| c.to_s.starts_with?('has_many/')}
     columns.map! {|column| column['.'] ? column.to_s.split('.').first.to_sym : column}
     columns.uniq!
     columns |= resource.primary_keys
@@ -405,10 +405,10 @@ class ResourcesController < ApplicationController
       aliased_table = Sequel::SQL::AliasedExpression.new(assoc_info[:table], table_alias)
       count_on = qualify_primary_keys resource_for(assoc_info[:table]), table_alias
       @items = @items
-               .left_outer_join(aliased_table, assoc_info[:foreign_key] => qualify(assoc_info[:referenced_table],
+        .left_outer_join(aliased_table, assoc_info[:foreign_key] => qualify(assoc_info[:referenced_table],
                  assoc_info[:primary_key]))
-               .group(qualify_primary_keys(resource))
-               .select_append(Sequel.function(:count, Sequel.function(:distinct, *count_on)).as(column))
+        .group(qualify_primary_keys(resource))
+        .select_append(Sequel.function(:count, Sequel.function(:distinct, *count_on)).as(column))
     end
   end
 
@@ -618,7 +618,7 @@ class ResourcesController < ApplicationController
   end
 
   def dates_from_params
-    return unless item_params.present?
+    return if item_params.blank?
     item_params.each do |key, value|
       next unless value.is_a? Hash
       if value.key?('date') && value['date'].blank? || (!value.key?('date') && value.key?('4i') && value['4i'].blank?)

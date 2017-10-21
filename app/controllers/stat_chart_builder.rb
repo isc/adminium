@@ -26,7 +26,7 @@ module StatChartBuilder
         value = display_number(params[:column].to_sym, nil, resource, value) if value
       end
       d = [I18n.t("statistics.#{calc}"), value]
-      d.push(@data_hash[calc]) if [:max, :min].include?(calc)
+      d.push(@data_hash[calc]) if %i[max min].include?(calc)
       @data.push d
     end
     respond_to do |format|

@@ -12,7 +12,7 @@ class ResourceTest < ActiveSupport::TestCase
 
   test 'composite primary keys by convention' do
     resource = Resource::Base.new @generic, :roles_users
-    assert_equal [:role_id, :user_id], resource.primary_keys
+    assert_equal %i[role_id user_id], resource.primary_keys
   end
 
   test 'sanitize label_colum when loading' do

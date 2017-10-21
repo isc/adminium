@@ -7,6 +7,6 @@ class Widget < ApplicationRecord
   end
 
   def self.widget_types
-    [['Table', 'TableWidget'], ['Time Chart', 'TimeChartWidget'], ['Pie Chart', 'PieChartWidget'], ['Statistics', 'StatChartWidget']]
+    [%w[Table TableWidget], ['Time Chart', 'TimeChartWidget'], ['Pie Chart', 'PieChartWidget'], %w[Statistics StatChartWidget]]
   end
 end
