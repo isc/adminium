@@ -59,7 +59,6 @@ group :production do
   gem 'rack-timeout'
   gem 'unicorn'
   gem 'unicorn-worker-killer'
-  gem 'rails_12factor'
   gem 'puma'
   gem 'puma_worker_killer'
 end
