@@ -64,11 +64,11 @@ module Resource
     end
 
     def default_order_column
-      default_order.split(' ').first if default_order
+      default_order&.split(' ')&.first
     end
 
     def default_order_direction
-      default_order.split(' ').second if default_order
+      default_order&.split(' ')&.second
     end
 
     def primary_keys
@@ -84,7 +84,7 @@ module Resource
     end
 
     def primary_key
-      fail 'Asking for a single primary_key on a composite primary key table' if composite_primary_key?
+      raise 'Asking for a single primary_key on a composite primary key table' if composite_primary_key?
       primary_keys.first
     end
 
@@ -179,7 +179,7 @@ module Resource
       return if params[:enum_data].nil?
       @enum_values.delete_if {|enums| enums['column_name'] == params[:column]}
       values = {}
-      params[:enum_data].values.each do |value|
+      params[:enum_data].each_value do |value|
         db_value = value.delete 'value'
         values[db_value] = value if db_value.present? && value['label'].present?
       end
@@ -441,7 +441,7 @@ module Resource
     end
 
     def find primary_key_value, fetch_binary_values: false
-      find_by_primary_key(primary_key_value, fetch_binary_values) || (fail RecordNotFound)
+      find_by_primary_key(primary_key_value, fetch_binary_values) || (raise RecordNotFound)
     end
 
     def find_by_primary_key primary_key_value, fetch_binary_values = false
@@ -462,7 +462,7 @@ module Resource
     def typecast_value column, value
       return value unless (col_schema = schema_hash[column])
       value = nil if '' == value && !%i(string blob).include?(col_schema[:type])
-      fail Sequel::InvalidValue, "nil/NULL is not allowed for the #{column} column" if value.nil? && !col_schema[:allow_null]
+      raise Sequel::InvalidValue, "nil/NULL is not allowed for the #{column} column" if value.nil? && !col_schema[:allow_null]
       if col_schema[:type] == :hstore && !value.nil?
         2.times {value.shift} # remove dummy entry needed to be able to empty the hash
         return Sequel.hstore Hash[*value.delete_if {|k, _| k == '_'}]
