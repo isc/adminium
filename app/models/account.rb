@@ -20,7 +20,8 @@ class Account < ApplicationRecord
   # and the fact that this validation causes a new connection to be established
   validate :db_url_validation unless Rails.env.test?
 
-  attr_encrypted :db_url, key: (ENV['ENCRYPTION_KEY'] || 'shablagoo')
+  attr_encrypted :db_url, key: Rails.application.secrets.encryption_key, algorithm: 'aes-256-cbc',
+                          v2_gcm_iv: true, mode: :per_attribute_iv_and_salt
 
   scope :deleted, -> {where plan: Plan::DELETED}
   scope :not_deleted, -> {where.not plan: Plan::DELETED}
