@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :account do
     owner_email 'john.doe@email.com'
     db_url { $TEST_DATABASE_CONN_SPEC }
