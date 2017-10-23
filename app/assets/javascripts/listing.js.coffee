@@ -47,16 +47,14 @@ class BulkActions
 class CustomColumns
 
   constructor: (root) ->
-    @columnSelect = $(root).find('select.select-custom-column')
-    @columnSelect.select2({placeholder: 'Select a column', matcher: adminiumSelect2Matcher}).on 'change', @columnSelected
+    $(root).find('select.select-custom-column').on 'change', @columnSelected
   
-  columnSelected: (object) =>
-    column = object.val
-    optgroup = $(object.added.element).closest('optgroup')
+  columnSelected: (event) =>
+    column = event.target.value
+    optgroup = $(event.target).find(':selected').closest('optgroup')
     ul = optgroup.parents('.custom-column').siblings('ul:not(.master_checkbox)')
-    kind = optgroup.data('kind')
     assoc = optgroup.data('name')
-    switch kind
+    switch optgroup.data('kind')
       when 'belongs_to'
         value = "#{assoc}.#{column}"
         text = "#{assoc}'s #{column}"

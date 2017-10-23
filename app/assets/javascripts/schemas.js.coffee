@@ -18,15 +18,15 @@
 ]
 
 $ ->
-  $("form#create_table").bind 'ajax:before', ->
+  $("form#create_table").on 'ajax:before', ->
     $("#create-table-modal").modal('show')
     $("#create-table-modal .s").hide()
     $("#create-table-modal .before").show()
 
-  $("form#create_table").bind 'ajax:error', (evt) ->
+  $("form#create_table").on 'ajax:error', (evt) ->
     $("#create-table-modal .s").hide()
     $("#create-table-modal .error").show().find('p').html("Something unusual happened, we've been notified, you can open a ticket if you want to get in touch with us to know more about this issue and its resolving")
-  $("form#create_table").bind 'ajax:success', (evt, data) ->
+  $("form#create_table").on 'ajax:success', (evt, data) ->
     $("#create-table-modal .s").hide()
     if data.error
       $("#create-table-modal .error").show().find('p').html(data.error)

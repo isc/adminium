@@ -5,28 +5,19 @@ class Navigation
     @itemList()
     @tableSelection()
     @searchBar()
-    @applist()
+    $('.apps-list').on 'mouseenter click', @fetchAppList
 
-  applist: ->
-    $(".apps-list").hover @fetchAppList
-    $(".apps-list").click @fetchAppList
-      
-  
   fetchAppList: ->
-    return if $(".apps-list").data('fetched')
-    $(".apps-list").data('fetched', true)
-    $.get "/user/apps", (data) ->
-      $("ul.accounts-menu").html(data)
-    
+    return if $('.apps-list').data('fetched')
+    $('.apps-list').data('fetched', true)
+    $.get '/user/apps', (data) -> $('ul.accounts-menu').html(data)
+
   tableSelection: ->
-    options = {placeholder: "Jump to table (s to focus)", allowClear: true}
-    options.matcher = adminiumSelect2Matcher
     @selector = '#table_select'
-    $(@selector).select2(options).removeClass('hidden').on 'change', (object) =>
+    $(@selector).select2(placeholder: 'Jump to table (s to focus)').removeClass('hidden').on 'change', (event) =>
       $(@selector).select2('destroy').closest('form').replaceWith('<div class="navbar-text">Loading...</div>')
-      window.location.href = "/resources/#{object.val}"
-    $('.modal').on 'hide', ->
-      $(this).find('input:focus').blur()
+      window.location.href = "/resources/#{event.target.value}"
+    $('.modal').on 'hide', -> $(this).find('input:focus').blur()
 
     $(document).keypress (e) =>
       return if $(e.target).is(':input')
@@ -55,13 +46,13 @@ class Navigation
         $(selector).on 'hidden', => @helpShown = false
         _gaq.push ['_trackPageview', docs_url] if window['_gaq']
       @helpShown = true
-  
+
   searchBar: ->
     $(document).keypress (e) =>
       return if $(e.target).is(':input')
-      if e.which is 47
-        $('form.navbar-form input[type=text]').focus()
-        e.preventDefault()
+      return unless e.which is 47
+      $('form.navbar-form input[type=text]').focus()
+      e.preventDefault()
 
   itemList: ->
     $(document).keydown (e) =>
@@ -87,10 +78,5 @@ class Navigation
       else
         return
       e.preventDefault()
-
-window.adminiumSelect2Matcher = (term, text, opts) ->
-  return true if term is ''
-  r = new RegExp(term.split('').join('.*'), 'i')
-  return true if text.match(r)
 
 $ -> new Navigation()
