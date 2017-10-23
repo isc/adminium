@@ -9,7 +9,7 @@
           .form-group
             = label_tag :new_filter, 'Add a filter on column', class: 'control-label col-sm-4'
             .col-sm-8
-              select#new_filter.form-control data-table=params[:table]
+              select#new_filter.form-control.select2 data-table=params[:table] data-placeholder="Choose a column"
                 option value=""= ''
                 = columns_options_for_resource resource
           table.table.table-condensed.table-hover.filters

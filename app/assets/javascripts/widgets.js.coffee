@@ -57,8 +57,7 @@ class Widget
         time_charts.graphData data, widget.find('.content')
 
   setupDeletion: ->
-    $('.widget .btn-mini').bind 'ajax:success', ->
-      $(this).closest('.widget').remove()
+    $('.widget .btn-mini').on 'ajax:success', -> $(this).closest('.widget').remove()
 
   updateWidgetSorting: (id, data) ->
     $.ajax "/widgets/#{id}", type: "PUT", data: {widget: data}

@@ -7,15 +7,14 @@ class AdvancedSearch
     $('table.filters').on 'click', 'span.btn', -> $(this).parents('tr').remove()
     $('table.filters').on 'change', 'td.operators select', (evt) => @updateFilterForm $(evt.currentTarget)
     @updateFilterForm $(select) for select in $('table.filters td.operators select')
-    $("#new_filter").select2({placeholder: 'Choose a column', matcher: adminiumSelect2Matcher})
-    $("#new_filter").bind 'change', (object) =>
-      column_name = object.val
-      optgroup = $(object.added.element).closest('optgroup')
-      assoc = optgroup.data('name')
-      table = $('#new_filter').attr('data-table')
-      $('#new_filter').select2("val", "")
-      $.get "/settings/#{table}", {column_name: column_name, assoc: assoc}, (resp) =>
-        filterDiv = $("<tr>").append(resp).appendTo($(".filters"))
+    $("#new_filter").on 'change', (event) =>
+      column_name = event.target.value
+      return unless column_name
+      $('#new_filter').val('').trigger('change')
+      optgroup = $(event.target).find(':selected').closest('optgroup')
+      table = $('#new_filter').data('table')
+      $.get "/settings/#{table}", {column_name, assoc: optgroup.data('name')}, (resp) =>
+        filterDiv = $('<tr>').append(resp).appendTo($('.filters'))
         selectFilter = filterDiv.find('td.operators select').focus()
         @updateFilterForm selectFilter
         initDatepickers()
@@ -33,6 +32,5 @@ class AdvancedSearch
     else
       'text'
     operand.get(0).type = type
-    
 
 $ -> new AdvancedSearch()
