@@ -185,7 +185,8 @@ class Generic
     if postgresql?
       @db.execute 'SET application_name to \'Adminium\''
       statement_timeout
-      @db.extension :pg_array, :error_sql#, :pg_hstore
+      @db.extension :pg_array, :error_sql
+      @db.extension :pg_hstore if @db.from(:pg_type).where(typtype: ['b', 'e'], typname: 'hstore').get(:oid)
       @db.schema_parse_complete
     end
     @db.extension :named_timezones
