@@ -113,7 +113,7 @@ class Generic
   def comments tables
     return [] unless postgresql?
     @db.tables do |ds|
-      ds = ds.join(:pg_description, objoid: :pg_class__oid).select(:relname, :description, :objsubid)
+      ds = ds.join(:pg_description, objoid: Sequel[:pg_class][:oid]).select(:relname, :description, :objsubid)
       ds = if tables.nil? || tables.many?
              ds.where(objsubid: 0)
            else
@@ -168,7 +168,7 @@ class Generic
     query = if postgresql?
               db.from(:pg_stat_user_tables).select(:relname, :n_live_tup).where(relname: table_list)
             else
-              db.from(:INFORMATION_SCHEMA__TABLES).select(:table_name, :table_rows).where(table_schema: @db_name).where(table_name: table_list)
+              db.from(Sequel[:INFORMATION_SCHEMA][:TABLES]).select(:table_name, :table_rows).where(table_schema: @db_name).where(table_name: table_list)
             end
     query.to_a.map(&:values).to_h
   end

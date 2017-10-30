@@ -175,15 +175,15 @@ module Resource
       save
     end
 
-    def update_enum_values params
-      return if params[:enum_data].nil?
-      @enum_values.delete_if {|enums| enums['column_name'] == params[:column]}
+    def update_enum_values column, enum_data
+      return if enum_data.nil?
+      @enum_values.delete_if {|enums| enums['column_name'] == column}
       values = {}
-      params[:enum_data].each_value do |value|
+      enum_data.each do |value|
         db_value = value.delete 'value'
         values[db_value] = value if db_value.present? && value['label'].present?
       end
-      @enum_values.push 'column_name' => params[:column], 'values' => values if values.present?
+      @enum_values.push 'column_name' => column, 'values' => values if values.present?
       save
     end
 
