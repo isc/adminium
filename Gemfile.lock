@@ -81,7 +81,7 @@ GEM
     crass (1.0.2)
     css_parser (1.6.0)
       addressable
-    database_cleaner (1.6.1)
+    database_cleaner (1.6.2)
     debug_inspector (0.0.3)
     docile (1.1.5)
     domain_name (0.5.20170404)
