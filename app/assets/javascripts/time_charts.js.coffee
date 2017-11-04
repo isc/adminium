@@ -24,14 +24,12 @@ class TimeCharts
   
   setupTimeChartsCreation: ->
     $('th i.time-chart').click (e) =>
-      @column_name = $(e.currentTarget).closest('.column_header').data('column-name')
-      @type = $(e.currentTarget).data('type')
-      remoteModal '#time-chart', {column: @column_name, type: @type}, @graphData
+      remoteModal '#time-chart', $(e.currentTarget).data('path'), @graphData
       _gaq.push ['_trackPageview', "/#{@kind}_chart"] if window['_gaq']
 
   setupGroupingChange: ->
     $(document).on 'change', '#time-chart.modal #grouping', (e) =>
-      remoteModal '#time-chart', {column: "#{@column_name}&grouping=#{e.currentTarget.value}", type: @type}, @graphData
+      remoteModal '#time-chart', "#{$(e.currentTarget).data('path')}&grouping=#{e.currentTarget.value}", @graphData
   
   statChart: (data, container) =>
     tbody = $(container).html('<table class="table table-condensed"><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody></tbody></table>').find('tbody')
@@ -106,12 +104,8 @@ class TimeCharts
 $ ->
   window.time_charts = new TimeCharts()
 
-
-window.remoteModal = (selector, params, callback) ->
+window.remoteModal = (selector, path, callback) ->
   $(selector).html($('.loading_modal').html()).modal('show')
-  path = $(selector).data('remote-path')
-  for key, value of params
-    path = path.replace(encodeURIComponent("{#{key}}"), value)
   $.get path, (data) =>
     $(selector).html(data)
     callback() if callback
