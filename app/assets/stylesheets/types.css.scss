@@ -1,12 +1,12 @@
-td.fixnum, td.bigdecimal, td.integer, td.float, td.decimal {
+td.bigdecimal, td.integer, td.float, td.decimal {
   font-family: Monaco;
   font-weight: bold;
   text-align: right;
 }
-td.fixnum:not([data-editable]) {
+td.integer:not([data-editable]) {
   cursor: pointer;
 }
-td.fixnum, td.bigdecimal, td.integer, td.float, td.decimal, td.decimalType, td.floatType, td.integerType {
+td.bigdecimal, td.integer, td.float, td.decimal, td.decimalType, td.floatType, td.integerType {
   color: green;
 }
 

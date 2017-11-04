@@ -120,7 +120,7 @@ class ColumnSettings
 
 class ClickToCopyFixnums
   constructor: ->
-    selector = 'td.column.fixnum:not([data-editable])'
+    selector = 'td.column.integer:not([data-editable])'
     $(selector).each ->
       $(@).attr('data-clipboard-text': @innerText.replace(/,/g, ''), title: 'Click to copy')
     new Clipboard(selector).on 'success', (e) ->
