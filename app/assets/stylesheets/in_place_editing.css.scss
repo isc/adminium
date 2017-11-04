@@ -24,6 +24,16 @@ td[data-raw-value], td.nilclass, td[data-editable] {
 td[data-editable] {
   form {
     padding: 10px;
+    .ui-datepicker-calendar {
+      td, th {
+        padding: 0px;
+        a {
+          margin: 0px;
+          text-align: center;
+          display: block;
+        }
+      }
+    }
     select, input[type=text], .select2-container {
       width: 235px;
     }

@@ -2,6 +2,7 @@
 //= require bootstrap-3.3.6.min
 //= require modernizr-custom
 //= require jquery_ujs
+//= require jquery-ui-1.11.4.custom.min
 //= require sh_main.min
 //= require sh_ruby.min
 //= require bootstrap-wysihtml5
