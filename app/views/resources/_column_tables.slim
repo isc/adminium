@@ -1,0 +1,9 @@
+- column_groups.each do |columns|
+  - if columns.present?
+    table.table.table-condensed
+      - columns.each do |name|
+        tr
+          th.col-md-3 title=name
+            i.column_settings.fa.fa-cog data-path=column_setting_path(params[:table], column: name, view: 'show')
+            = resource.column_display_name name
+          == display_attribute :td, @item, name, resource

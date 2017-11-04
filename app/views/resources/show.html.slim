@@ -21,31 +21,9 @@ nav.navbar.navbar-default
 
 .row.item-attributes data-table=params[:table] data-item-id=params[:id]
   .col-md-7
-    - [@strings_and_hstore_cols, @numbers_cols, @leftover_cols].each do |columns|
-      - if columns.present?
-        table.table.table-condensed.layout-fixed
-          - columns.each do |name|
-            tr
-              th.col-md-3 title=name
-                i.column_settings.fa.fa-cog data-path=column_setting_path(params[:table], column: name, view: 'show')
-                = resource.column_display_name name
-              == display_attribute :td, @item, name, resource
+    = render 'column_tables', column_groups: [@strings_and_hstore_cols, @numbers_cols, @leftover_cols]
   .col-md-5
-    table.table.table-condensed
-      - @pks_dates_and_times_cols.each do |name|
-        tr
-          th.col-md-3 title=name
-            i.column_settings.fa.fa-cog data-path=column_setting_path(params[:table], column: name, view: 'show')
-            = resource.column_display_name name
-          == display_attribute :td, @item, name, resource
-    - if @boolean_and_blob_cols.present?
-      table.table.table-condensed
-        - @boolean_and_blob_cols.each do |name|
-          tr
-            th.col-md-3 title=name
-              i.column_settings.fa.fa-cog data-path=column_setting_path(params[:table], column: name, view: 'show')
-              = resource.column_display_name name
-            == display_attribute :td, @item, name, resource
+    = render 'column_tables', column_groups: [@pks_dates_and_times_cols, @boolean_and_blob_cols]
 
     - if resource.belongs_to_associations.any?
       table.table.table-condensed
