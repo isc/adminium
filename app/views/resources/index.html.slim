@@ -90,7 +90,7 @@ nav.navbar.navbar-default
 = render '/resources/panels/listing_settings'
 = render '/resources/panels/export'
 = render '/resources/panels/advanced_search'
-#column-settings.modal.fade tabindex="-1" data-remote-path=column_setting_path('{table}', column: '{column}', view: '{view}')
-#time-chart.modal.fade tabindex="-1" data-remote-path=generate_chart_path
+#column-settings.modal.fade tabindex="-1"
+#time-chart.modal.fade tabindex="-1"
 #bulk-edit-modal.modal.fade tabindex="-1" data-remote-path=bulk_edit_resources_path(table: params[:table])
 = form_tag bulk_destroy_resources_path(params[:table]), id: 'bulk-destroy-form'

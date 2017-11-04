@@ -7,8 +7,7 @@ class BulkActions
     @setupBulkCheckbox()
 
   setupBulkEdit: ->
-    $("#bulk-edit-modal").on 'hide', =>
-      $("#bulk-edit-modal").html($(".loading_modal").html())
+    $("#bulk-edit-modal").on 'hide', => $('#bulk-edit-modal').html($('.loading_modal').html())
     $('.bulk-edit').on 'click', =>
       return false if $('.bulk-edit').attr('disabled')
       $("#bulk-edit-modal").html($(".loading_modal").html()).modal('show')
@@ -73,11 +72,7 @@ class ColumnSettings
 
   constructor: ->
     $('.column_settings').click (evt) =>
-      [@column_name, table, view] = if (header = $(evt.currentTarget).closest('.column_header')).length
-        [header.data('column-name'), header.data('table-name'), 'listing']
-      else
-        [$(evt.currentTarget).closest('th').attr('title'), $('.item-attributes').data('table'), 'show']
-      remoteModal '#column-settings', {column: @column_name, table: table, view: view}, @setupEnumConfigurationPanel
+      remoteModal '#column-settings', $(evt.currentTarget).data('path'), @setupEnumConfigurationPanel
 
   setupEnumConfigurationPanel: =>
     $("#is_enum").click @toggleEnumConfigurationPanel

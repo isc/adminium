@@ -24,15 +24,15 @@
         - else
           th
         - resource.columns[:listing].each do |name|
-          = column_header_with_metadata resource, name do
+          = column_header_with_metadata resource, name do |table, column|
             == header_link name
             - if resource.date_column?(name) && actions_cell
-              i.fa.time-chart.fa-bar-chart data-type="TimeChart" title="Time chart for #{name}"
+              i.fa.time-chart.fa-bar-chart data-type="TimeChart" title="Time chart for #{name}" data-path=generate_chart_path(name, 'TimeChart')
             - if resource.pie_chart_column?(name) && actions_cell
-              i.fa.time-chart.fa-pie-chart data-type="PieChart" title="Pie chart for #{name}"
+              i.fa.time-chart.fa-pie-chart data-type="PieChart" title="Pie chart for #{name}" data-path=generate_chart_path(name, 'PieChart')
             - if resource.stat_chart_column?(name) && actions_cell
-              i.fa.time-chart.fa-bar-chart data-type="StatChart" title="Statistics for #{name}"
-            i.column_settings.fa.fa-cog title="Column settings"
+              i.fa.time-chart.fa-bar-chart data-type="StatChart" title="Statistics for #{name}" data-path=generate_chart_path(name, 'StatChart')
+            i.column_settings.fa.fa-cog title="Column settings" data-path=column_setting_path(table, column: column, view: 'listing')
 
     tbody
       - items.each do |item|

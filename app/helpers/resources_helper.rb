@@ -308,9 +308,9 @@ module ResourcesHelper
     res
   end
 
-  def generate_chart_path
-    chart_resources_path(params.slice(:table, :where, :exclude, :search, :asearch).to_unsafe_h
-      .merge(column: '{column}', type: '{type}'))
+  def generate_chart_path column, type
+    chart_resources_path(params.permit(:table, :search, :asearch, :grouping, where: {}, exclude: {})
+      .merge(column: column, type: type))
   end
 
   def column_header_with_metadata resource, name
@@ -327,7 +327,7 @@ module ResourcesHelper
     data = {'column-name' => column, 'column-type' => type, 'table-name' => table}
     data['foreign-key'] = foreign_key if foreign_key
     content_tag(:th, class: 'column_header', data: data) do
-      yield
+      yield table, column
     end
   end
 

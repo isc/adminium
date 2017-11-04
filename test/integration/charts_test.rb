@@ -55,6 +55,18 @@ class ChartsTest < ActionDispatch::IntegrationTest
     assert_equal json, page.find('script', visible: false).text(:all)
   end
 
+  test 'display pie chart with where and grouping' do
+    FixtureFactory.new(:user, admin: false, created_at: '2017-01-01')
+    FixtureFactory.new(:user, admin: true, created_at: '2017-01-02')
+    visit chart_resources_path(:users, column: 'admin', type: 'PieChart', where: {created_at: '2017-01-01'})
+    json = 'data_for_graph = {"chart_data":[["False",1,false,"#777"]],"chart_type":"PieChart","column":"admin","grouping":"daily"}'
+    assert_equal json, page.find('script', visible: false).text(:all)
+    visit chart_resources_path(:users,
+      column: 'admin', type: 'PieChart', where: {created_at: '2017-01-01'}, grouping: 'yearly')
+    json = 'data_for_graph = {"chart_data":[["False",1,false,"#777"],["True",1,true,"#07be25"]],"chart_type":"PieChart","column":"admin","grouping":"yearly"}'
+    assert_equal json, page.find('script', visible: false).text(:all)
+  end
+
   test 'display stat chart' do
     2.times { FixtureFactory.new(:user, kind: 5) }
     FixtureFactory.new(:user, kind: 10)

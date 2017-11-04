@@ -27,7 +27,7 @@ nav.navbar.navbar-default
           - columns.each do |name|
             tr
               th.col-md-3 title=name
-                i.column_settings.fa.fa-cog
+                i.column_settings.fa.fa-cog data-path=column_setting_path(params[:table], column: name, view: 'show')
                 = resource.column_display_name name
               == display_attribute :td, @item, name, resource
   .col-md-5
@@ -35,7 +35,7 @@ nav.navbar.navbar-default
       - @pks_dates_and_times_cols.each do |name|
         tr
           th.col-md-3 title=name
-            i.column_settings.fa.fa-cog
+            i.column_settings.fa.fa-cog data-path=column_setting_path(params[:table], column: name, view: 'show')
             = resource.column_display_name name
           == display_attribute :td, @item, name, resource
     - if @boolean_and_blob_cols.present?
@@ -43,7 +43,7 @@ nav.navbar.navbar-default
         - @boolean_and_blob_cols.each do |name|
           tr
             th.col-md-3 title=name
-              i.column_settings.fa.fa-cog
+              i.column_settings.fa.fa-cog data-path=column_setting_path(params[:table], column: name, view: 'show')
               = resource.column_display_name name
             == display_attribute :td, @item, name, resource
 
@@ -88,4 +88,4 @@ nav.navbar.navbar-default
                 i.fa.fa-plus
 
 = render 'resources/panels/show_settings'
-#column-settings.modal.fade tabindex="-1" data-remote-path=column_setting_path('{table}', column: '{column}', view: '{view}')
+#column-settings.modal.fade tabindex="-1"

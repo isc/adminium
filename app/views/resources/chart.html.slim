@@ -17,7 +17,7 @@
         = t.hidden_field :advanced_search, value: params[:asearch] if params[:asearch].present?
 
       - if params[:type] == 'TimeChart'
-        = select_tag 'grouping', options_for_select(TimeChartBuilder::GROUPING_OPTIONS, grouping), class: 'form-control'
+        = select_tag 'grouping', options_for_select(TimeChartBuilder::GROUPING_OPTIONS, grouping), class: 'form-control', data: {path: generate_chart_path(params[:column], 'TimeChart')}
       hr
       #chart_div
       javascript:
