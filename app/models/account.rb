@@ -14,6 +14,7 @@ class Account < ApplicationRecord
   has_many :searches
   has_many :table_configurations
 
+  attribute :db_url
   validates :db_url, format: %r{((mysql2?)|(postgres(ql)?)):\/\/.*}, allow_blank: true
   # fucked up "unless" below, but otherwise the tests are fucked up
   # likely because of the transactions being used in tests
