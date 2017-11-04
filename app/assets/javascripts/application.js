@@ -9,6 +9,6 @@
 //= require jquery.csv-0.8.1.min
 //= require select2
 //= require md5.min
-//= require bootstrap-datepicker
+//= require bootstrap-datepicker/dist/js/bootstrap-datepicker.min
 //= require clipboard.min
 //= require_tree .
