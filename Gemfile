@@ -20,7 +20,7 @@ gem 'omniauth-heroku'
 gem 'pg'
 gem 'platform-api'
 gem 'premailer-rails'
-gem 'rails', '5.0.6'
+gem 'rails'
 gem 'redis', require: ['redis', 'redis/connection/hiredis']
 gem 'rest-client'
 gem 'sass-rails'

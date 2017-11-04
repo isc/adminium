@@ -55,7 +55,7 @@ module ResourcesHelper
         label = enum_values[value.to_s].try(:[], 'label') || value
         user_defined_bg = enum_values[value.to_s].try(:[], 'color')
         user_defined_bg = "background-color: #{user_defined_bg}" if user_defined_bg.present?
-        where_hash = {where: (params[:where] || {}).merge((original_key || key) => value)}
+        where_hash = {where: (params[:where].try(:permit!) || {}).merge((original_key || key) => value)}
         # FIXME: some params are lost when rendered in return of an in-place edit (update action name)
         link_params = %w(show update).include?(action_name) ? where_hash : whitelisted_params.merge(where_hash)
         content = link_to label, resources_path(params[:table], link_params),
