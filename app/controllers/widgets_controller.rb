@@ -6,7 +6,7 @@ class WidgetsController < ApplicationController
         redirect_back fallback_location: dashboard_path
       end
       format.json do
-        render nothing: true
+        head :no_content
       end
     end
   end
@@ -18,14 +18,14 @@ class WidgetsController < ApplicationController
         redirect_back fallback_location: dashboard_path
       end
       format.js do
-        render nothing: true
+        head :no_content
       end
     end
   end
 
   def update
     current_account.widgets.find(params[:id]).update! widget_params
-    render nothing: true
+    head :no_content
   end
 
   private

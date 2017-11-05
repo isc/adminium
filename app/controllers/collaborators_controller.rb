@@ -24,7 +24,7 @@ class CollaboratorsController < ApplicationController
 
   def destroy
     current_account.collaborators.destroy params[:id]
-    render nothing: true
+    head :no_content
   end
 
   private
