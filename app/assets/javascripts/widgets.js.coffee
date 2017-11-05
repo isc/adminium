@@ -37,7 +37,7 @@ class Widget
   setupCreationFromListing: ->
     $('#time-chart').on 'click', '.add_widget', (evt) ->
       target = $(evt.currentTarget)
-      target.removeClass('discrete add_widget')
+      target.removeClass('subtle add_widget')
       $(target.data('form')).submit()
 
   fetchAllContent: ->

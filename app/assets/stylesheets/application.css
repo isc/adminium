@@ -28,10 +28,10 @@ body.landing { padding-top: 20px; }
 .table-sortable th {
   cursor: pointer;
 }
-i.fa.discrete {
+i.fa.subtle {
   opacity: 0.3;
 }
-i.fa.discrete:hover {
+i.fa.subtle:hover {
   opacity: 1;
 }
 .tab-pane {

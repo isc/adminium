@@ -33,10 +33,8 @@ td[data-editable] {
     }
   }
 }
-.resource-form {
-  .controls {
-    position: relative;
-  }
+.resource-form .controls {
+  position: relative;
 }
 .form-horizontal {
   .null_btn, .empty_string_btn {

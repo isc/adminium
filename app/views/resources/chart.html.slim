@@ -7,7 +7,7 @@
         - if @widget
           i.fa.fa-star title="This view is on your dashboard" rel="tooltip" data-placement="right"
         - else
-          i.fa.fa-star.add_widget.discrete title="Add to your dashboard" rel="tooltip" data-placement="right" data-form="#time-chart form"
+          i.fa.fa-star.add_widget.subtle title="Add to your dashboard" rel="tooltip" data-placement="right" data-form="#time-chart form"
     .modal-body
       = form_for Widget.new, remote: true do |t|
         = t.hidden_field :type, value: "#{params[:type]}Widget"
