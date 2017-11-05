@@ -5,7 +5,10 @@
          "heroku-redis",
          "heroku-postgresql",
          "heroku-postgresql"
-      ]
+      ],
+      "scripts": {
+        "test-setup": "bin/rails assets:precompile"
+      }
     }
   }
 }
