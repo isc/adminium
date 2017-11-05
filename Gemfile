@@ -30,6 +30,7 @@ gem 'sequel'
 gem 'sequel_pg', require: 'sequel'
 gem 'simple_form'
 gem 'slim-rails'
+gem 'webpacker'
 
 group :mysql_support do
   gem 'mysql2'
