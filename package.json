@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "@rails/webpacker": "^3.0.2",
+    "bootstrap": "3.3.7",
     "bootstrap-datepicker": "^1.7.1",
     "coffeescript": "1.12.7"
   },
