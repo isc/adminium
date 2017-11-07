@@ -275,6 +275,15 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_text 'does not exist'
   end
 
+  test 'destroy from index' do
+    FixtureFactory.new(:user, pseudo: 'ToDelete').factory
+    visit resources_path(:users)
+    assert_text 'ToDelete'
+    click_link 'Destroy'
+    assert_text 'successfully destroyed'
+    assert_no_text 'ToDelete'
+  end
+
   test 'clone from show' do
     user = FixtureFactory.new(:user, pseudo: 'Cloned Boy', age: 5).factory
     visit resource_path(:users, user)

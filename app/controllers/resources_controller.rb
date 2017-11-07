@@ -132,8 +132,12 @@ class ResourcesController < ApplicationController
 
   def destroy
     resource.delete params[:id]
-    redirection = params[:redirect] == 'index' ? resources_path(params[:table]) : :back
-    redirect_to redirection, flash: {success: "#{object_name} successfully destroyed."}
+    options = {flash: {success: "#{object_name} successfully destroyed."}}
+    if params[:redirect] == 'index'
+      redirect_to resources_path(params[:table]), options
+    else
+      redirect_back fallback_location: resources_path(params[:table]), **options
+    end
   rescue Sequel::Error => e
     redirect_back fallback_location: resources_path(params[:table]), flash: {error: e.message}
   end

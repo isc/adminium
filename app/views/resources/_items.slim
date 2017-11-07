@@ -47,7 +47,7 @@
                   = link_to edit_resource_path(params[:table], item_pk) do
                     i.fa.fa-pencil>
                 - if user_can? 'destroy', params[:table]
-                  = link_to resource_path(params[:table], item_pk), method: :delete, data: {confirm: t('items.destroy_warning')} do
+                  = link_to resource_path(params[:table], item_pk), method: :delete, data: {confirm: t('items.destroy_warning')}, title: 'Destroy' do
                     i.fa.fa-trash.text-danger>
               - if item_pk && (user_can?('destroy', params[:table]) || user_can?('update', params[:table]))
                 input type="checkbox"

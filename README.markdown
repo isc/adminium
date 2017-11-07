@@ -20,7 +20,6 @@
 - support pour les images
 - optim de la clause select sql (jarter les text / binaries non selectionnes par les settings)
 - supprimer plusieurs pages de records en une action
-- more ajax (destroy) / pjax
 - for pg 9.2 users ; https://github.com/will/datascope
 - advanced search definition improvements :
   - select input for column with enum values defined
