@@ -22,7 +22,7 @@
               td
                 label for="all_actions_#{table}"= table.to_s.humanize
               - %w(create read update delete).each do |action|
-                td= check_box_tag "role[permissions][#{table}][#{action}]", '1', @role.permissions[table].try(:[], action)
+                td= check_box_tag "role[permissions][#{table}][#{action}]", '1', @role.permissions[table.to_s].try(:[], action)
     .col-md-6
       - non_admin_collaborators = current_account.collaborators.where(is_administrator: false)
       - if non_admin_collaborators.present?

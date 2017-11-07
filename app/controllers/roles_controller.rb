@@ -35,8 +35,6 @@ class RolesController < ApplicationController
   private
 
   def role_params
-    res = params.require(:role).permit(:name, collaborator_ids: [])
-    res[:permissions] = params[:role][:permissions].to_unsafe_h
-    res
+    params.require(:role).permit(:name, collaborator_ids: [], permissions: {})
   end
 end
