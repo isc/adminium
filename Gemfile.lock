@@ -79,8 +79,6 @@ GEM
     colored (1.2)
     concurrent-ruby (1.0.5)
     crass (1.0.3)
-    css_parser (1.6.0)
-      addressable
     database_cleaner (1.6.2)
     debug_inspector (0.0.3)
     docile (1.1.5)
@@ -134,7 +132,6 @@ GEM
       multi_json (>= 1.9.2)
       netrc
     hiredis (0.6.1)
-    htmlentities (4.3.4)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
     http_parser.rb (0.6.0)
@@ -227,13 +224,6 @@ GEM
       heroics (~> 0.0.17)
     populator (1.0.0)
     powerpack (0.1.1)
-    premailer (1.11.0)
-      addressable
-      css_parser (>= 1.6.0)
-      htmlentities (>= 4.0.0)
-    premailer-rails (1.9.7)
-      actionmailer (>= 3, < 6)
-      premailer (~> 1.7, >= 1.7.9)
     pry (0.11.3)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
@@ -416,7 +406,6 @@ DEPENDENCIES
   pg
   platform-api
   populator
-  premailer-rails
   pry-byebug
   pry-rails
   puma
