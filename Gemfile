@@ -19,7 +19,6 @@ gem 'omniauth-google-oauth2'
 gem 'omniauth-heroku'
 gem 'pg'
 gem 'platform-api'
-gem 'premailer-rails'
 gem 'rails'
 gem 'redis', require: ['redis', 'redis/connection/hiredis']
 gem 'rest-client'
