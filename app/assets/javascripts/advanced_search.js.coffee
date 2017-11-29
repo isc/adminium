@@ -10,8 +10,8 @@ class AdvancedSearch
     $("#new_filter").on 'change', (event) =>
       column_name = event.target.value
       return unless column_name
-      $('#new_filter').val('').trigger('change')
       optgroup = $(event.target).find(':selected').closest('optgroup')
+      $('#new_filter').val('').trigger('change')
       table = $('#new_filter').data('table')
       $.get "/settings/#{table}", {column_name, assoc: optgroup.data('name')}, (resp) =>
         filterDiv = $('<tr>').append(resp).appendTo($('.filters'))
