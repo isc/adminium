@@ -10,9 +10,9 @@ javascript:
         .col-sm-offset-4.col-sm-8
           = submit_tag 'Save', class: 'btn btn-primary', data: {disable_with: 'Sending...'}, name: 'then_redirect'
           '
-          = submit_tag 'Save and create another', class: 'btn', data: {disable_with: 'Sending...'}, name: 'then_redirect'
+          = submit_tag 'Save and create another', class: 'btn btn-info', data: {disable_with: 'Sending...'}, name: 'then_redirect'
           '
-          = submit_tag 'Save and continue editing', class: 'btn', data: {disable_with: 'Sending...'}, name: 'then_redirect'
+          = submit_tag 'Save and continue editing', class: 'btn btn-info', data: {disable_with: 'Sending...'}, name: 'then_redirect'
 - else
   .alert.alert-warning
     h4 No form fields configured
