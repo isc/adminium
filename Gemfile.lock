@@ -314,8 +314,8 @@ GEM
       thor (~> 0.14)
     sendgrid (1.2.4)
       json
-    sequel (5.2.0)
-    sequel_pg (1.8.0)
+    sequel (5.3.0)
+    sequel_pg (1.8.1)
       pg (>= 0.18.0)
       sequel (>= 4.34.0)
     shellany (0.0.1)
