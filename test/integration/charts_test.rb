@@ -33,14 +33,14 @@ class ChartsTest < ActionDispatch::IntegrationTest
   test 'display pie chart on enums' do
     Resource::Base.any_instance.stubs(:enum_values_for).with('role')
       .returns 'admin' => {'label' => 'Chef'}, 'noob' => {'label' => 'Débutant'}
-    FixtureFactory.new(:user, role: 'admin')
-    FixtureFactory.new(:user, role: 'noob')
-    FixtureFactory.new(:user, role: 'new_role_1')
-    FixtureFactory.new(:user, role: 'new_role_2')
+    6.times { FixtureFactory.new(:user, role: nil) }
+    5.times { FixtureFactory.new(:user, role: 'noob') }
+    4.times { FixtureFactory.new(:user, role: 'admin') }
+    3.times { FixtureFactory.new(:user, role: 'new_role_1') }
+    2.times { FixtureFactory.new(:user, role: 'new_role_2') }
     FixtureFactory.new(:user, role: 'new_role_3')
-    FixtureFactory.new(:user, role: nil)
     visit chart_resources_path(:users, column: 'role', type: 'PieChart')
-    json = 'data_for_graph = {"chart_data":[["Not set",1,null,"#DDD"],["new_role_3",1,"new_role_3","#AAA"],["new_role_2",1,"new_role_2","#CCC"],["Débutant",1,"noob",null],["Chef",1,"admin",null],["new_role_1",1,"new_role_1","#AAA"]],"chart_type":"PieChart","column":"role","grouping":"daily"}'
+    json = 'data_for_graph = {"chart_data":[["Not set",6,null,"#DDD"],["Débutant",5,"noob",null],["Chef",4,"admin",null],["new_role_1",3,"new_role_1","#AAA"],["new_role_2",2,"new_role_2","#CCC"],["new_role_3",1,"new_role_3","#AAA"]],"chart_type":"PieChart","column":"role","grouping":"daily"}'
     assert_equal json, page.find('script', visible: false).text(:all)
   end
 
