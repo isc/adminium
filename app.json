@@ -2,9 +2,9 @@
   "environments": {
     "test": {
       "addons":[
-         "heroku-redis",
-         "heroku-postgresql",
-         "heroku-postgresql"
+         "heroku-redis:in-dyno",
+         "heroku-postgresql:in-dyno",
+         "heroku-postgresql:in-dyno"
       ]
     }
   }
