@@ -1,4 +1,7 @@
 {
+  "buildpacks": [
+    { "url": "heroku/ruby" }
+  ],
   "environments": {
     "test": {
       "addons":[
