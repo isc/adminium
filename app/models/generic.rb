@@ -110,6 +110,10 @@ class Generic
     @tables
   end
 
+  def user_tables
+    tables - Generic::PG_SYSTEM_TABLES
+  end
+
   def comments tables
     return [] unless postgresql?
     @db.tables do |ds|

@@ -564,7 +564,7 @@ class ResourcesController < ApplicationController
   def table_access_limitation
     return unless current_account.pet_project?
     @generic.table params[:table] # possibly triggers the table not found exception
-    return if @generic.tables.index(params[:table].to_sym) < 5
+    return if @generic.user_tables.index(params[:table].to_sym) < 5
     notice = "You are currently on the free plan meant for pet projects which is limited to five tables of your schema.<br/><a href=\"#{current_account.upgrade_link}\" class=\"btn btn-warning\">Upgrade</a> to the startup plan ($10 per month) to access your full schema with Adminium.".html_safe
     if request.xhr?
       render json: {widget: view_context.content_tag(:div, notice, class: 'alert alert-warning'), id: params[:widget_id]}
