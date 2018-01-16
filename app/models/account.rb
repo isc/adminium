@@ -122,7 +122,7 @@ class Account < ApplicationRecord
     generic.db.test_connection
     generic.cleanup
   rescue Sequel::Error, URI::InvalidURIError => e
-    errors[:base] = e.message
+    errors.add :base, e.message
   end
 
   def fill_adapter
