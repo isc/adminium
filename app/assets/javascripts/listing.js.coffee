@@ -83,7 +83,7 @@ class ColumnSettings
     $("table.enum_details_area tbody tr:not(.template_line)").remove()
     if checked
       $('.loading_enum').removeClass('hidden').parents(".modal-body").scrollTop(1000)
-      $.getJSON $(evt.currentTarget).data('values-url'), column_name: @column_name, (data) =>
+      $.getJSON $(evt.currentTarget).data('values-url'), (data) =>
         $('.enum_details_area').removeClass('hidden')
         for value in data
           $('.template_line input[type=text]').val(value)
