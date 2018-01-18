@@ -1,12 +1,17 @@
 h3 Database settings
 form.pull-right
   input.form-control type="search" placeholder="Filter" name="filter" value=params[:filter]
-table.table
-  thead
-    - @settings.first.keys.each do |name|
-      th= name
-  tbody
-    - @settings.each do |setting|
-      tr
-        - setting.each_value do |value|
-          td= value
+- if @settings.any?
+  table.table
+    thead
+      - @settings.first.keys.each do |name|
+        th= name
+    tbody
+      - @settings.each do |setting|
+        tr
+          - setting.each_value do |value|
+            td= value
+- else
+  .clearfix
+  hr
+  .alert.alert-warning No settings found for <b>#{params[:filter]}</b>.

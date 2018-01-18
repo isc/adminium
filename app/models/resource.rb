@@ -568,7 +568,7 @@ module Resource
     end
 
     def system_table?
-      Generic::PG_SYSTEM_TABLES.include? table
+      @generic.system_table? table
     end
 
     def columns_to_select fetch_binary_values

@@ -111,7 +111,11 @@ class Generic
   end
 
   def user_tables
-    tables - Generic::PG_SYSTEM_TABLES
+    tables - PG_SYSTEM_TABLES
+  end
+
+  def system_table? table
+    PG_SYSTEM_TABLES.include? table.to_sym
   end
 
   def comments tables

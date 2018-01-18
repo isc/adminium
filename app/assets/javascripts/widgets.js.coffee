@@ -20,6 +20,7 @@ class Widget
       @fillColumnsSelection table
 
   fetchAdvancedSearches: (table) ->
+    return unless table
     $.getJSON "/searches/#{table}", (data) ->
       if data.length
         $('#widget_advanced_search').empty().append($('<option>'))
