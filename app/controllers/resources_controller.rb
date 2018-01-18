@@ -9,6 +9,7 @@ class ResourcesController < ApplicationController
   before_action :dates_from_params
   before_action :fetch_item, only: %i(show edit download update)
   before_action :warn_if_no_primary_key, only: %i(index new)
+  before_action :check_column, only: :chart
   helper_method :user_can?, :grouping, :resource, :format_date
 
   def search
@@ -660,5 +661,19 @@ class ResourcesController < ApplicationController
     columns = resource.columns[:show]
     columns &= resource.find_all_columns_for_types(*types).map(&:first)
     columns - resource.primary_keys - (resource.belongs_to_associations.map {|assoc| assoc[:foreign_key]})
+  end
+
+  def check_column
+    return if resource.column_names.include? params[:column].to_sym
+    respond_to do |format|
+      format.html do
+        @missing_column = true
+        render layout: false
+      end
+      format.json do
+        render json: { error: "The column #{params[:column]} doesn't exist on table #{params[:table]}.",
+                       id: params[:widget_id] }
+      end
+    end
   end
 end

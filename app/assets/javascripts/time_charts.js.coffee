@@ -54,6 +54,10 @@ class TimeCharts
     return @dataBeforeGoogleChartsLoad.push [data, container] unless @googleChartsLoaded
     container ||= '#chart_div'
     data ||= window.data_for_graph
+    if data.error
+      $(container).text data.error
+      return
+
     if data.chart_data is null
       $(container).text "No data to chart for this grouping value."
       return
