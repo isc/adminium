@@ -680,7 +680,7 @@ class ResourcesController < ApplicationController
   def permitted_columns
     @permitted_columns ||= resource.columns[settings_type].select do |column|
       if column['.']
-        table = resource.belongs_to_association(column.split('.').first.to_sym)[:referenced_table]
+        table = resource.belongs_to_association(column.to_s.split('.').first.to_sym)[:referenced_table]
         user_can? 'show', table
       else
         true
