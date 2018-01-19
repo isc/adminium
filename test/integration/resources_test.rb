@@ -219,6 +219,15 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     stub_resource_columns listing: %w(user_id.pseudo)
     visit resources_path(:comments)
     assert_selector 'td', text: 'bob'
+    user = create :user
+    role = create :role, permissions: {'comments' => {'read' => '1'}, 'users' => {'read' => '1'}}
+    collaborator = create :collaborator, user: user, account: @account, is_administrator: false, roles: [role]
+    page.set_rack_session user: user.id, collaborator: collaborator.id
+    visit resources_path(:comments)
+    assert_selector 'td', text: 'bob'
+    role.update permissions: {'comments' => {'read' => '1'}}
+    visit resources_path(:comments)
+    assert_no_selector 'td', text: 'bob'
   end
 
   test 'filter by enum label from a custom column' do

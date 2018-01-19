@@ -23,7 +23,7 @@
               input type="checkbox"
         - else
           th
-        - resource.columns[:listing].each do |name|
+        - permitted_columns.each do |name|
           = column_header_with_metadata resource, name do |table, column|
             == header_link name
             - if resource.date_column?(name) && actions_cell
@@ -55,5 +55,5 @@
             - if item_pk
               td= link_to resource_path(params[:table], item_pk) do
                 i.fa.fa-eye
-          - resource.columns[:listing].each do |name|
+          - permitted_columns.each do |name|
             == display_attribute :td, item, name, resource

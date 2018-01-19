@@ -118,7 +118,7 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   def test_csv_response_with_belongs_to_column
-    Resource::Base.any_instance.stubs(:columns).returns(export: %i(group_id.name))
+    Resource::Base.any_instance.stubs(:columns).returns(export: %w(group_id.name))
     get :index, params: {table: 'users', format: 'csv', order: 'id'}
     lines = @response.body.split("\n")
     assert_equal 'Admins', lines.last

@@ -10,7 +10,7 @@ class ResourcesController < ApplicationController
   before_action :fetch_item, only: %i(show edit download update)
   before_action :warn_if_no_primary_key, only: %i(index new)
   before_action :check_column, only: :chart
-  helper_method :user_can?, :grouping, :resource, :format_date
+  helper_method :user_can?, :grouping, :resource, :format_date, :permitted_columns
 
   def search
     @items = resource.query
@@ -305,7 +305,7 @@ class ResourcesController < ApplicationController
   end
 
   def apply_select
-    columns = resource.columns[settings_type].reject {|c| c.to_s.starts_with?('has_many/')}
+    columns = permitted_columns.reject {|c| c.to_s.starts_with?('has_many/')}
     columns.map! {|column| column['.'] ? column.to_s.split('.').first.to_sym : column}
     columns.uniq!
     columns |= resource.primary_keys
@@ -372,7 +372,7 @@ class ResourcesController < ApplicationController
   def fetch_associated_items
     @fetched_items = @items.to_a
     @associated_items = {}
-    foreign_keys = resource.columns[settings_type].map do |c|
+    foreign_keys = permitted_columns.map do |c|
       if c.to_s['.']
         c.to_s.split('.').first.to_sym
       elsif resource.foreign_key? c
@@ -384,7 +384,7 @@ class ResourcesController < ApplicationController
     foreign_keys.compact.uniq.map do |foreign_key|
       fetch_items_for_assoc @fetched_items, resource.belongs_to_association(foreign_key)
     end
-    resource.columns[settings_type].each do |c|
+    permitted_columns.each do |c|
       next unless c.to_s['.']
       foreign_key, column = c.to_s.split('.').map(&:to_sym)
       assoc = resource.belongs_to_association foreign_key
@@ -403,7 +403,7 @@ class ResourcesController < ApplicationController
   end
 
   def apply_has_many_counts
-    resource.columns[settings_type].find_all {|c| c.to_s.starts_with? 'has_many/'}.each do |column|
+    permitted_columns.find_all {|c| c.to_s.starts_with? 'has_many/'}.each do |column|
       assoc_info = resource.find_has_many_association_for_key column
       next if assoc_info.nil?
       table_alias = "#{column}_join"
@@ -673,6 +673,17 @@ class ResourcesController < ApplicationController
       format.json do
         render json: { error: "The column #{params[:column]} doesn't exist on table #{params[:table]}.",
                        id: params[:widget_id] }
+      end
+    end
+  end
+
+  def permitted_columns
+    @permitted_columns ||= resource.columns[settings_type].select do |column|
+      if column['.']
+        table = resource.belongs_to_association(column.split('.').first.to_sym)[:referenced_table]
+        user_can? 'show', table
+      else
+        true
       end
     end
   end
