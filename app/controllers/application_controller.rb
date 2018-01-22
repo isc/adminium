@@ -143,9 +143,12 @@ class ApplicationController < ActionController::Base
   def check_permissions
     return if admin?
     @permissions = current_collaborator.permissions
-    return if user_can? action_name, params[:table]
+    table = params[:table] || params[:id]
+    return if user_can? action_name, table
     respond_to do |format|
-      format.html {redirect_to dashboard_url, flash: {error: "You haven't the permission to perform #{action_name} on #{params[:table] || params[:id]}"}}
+      format.html do
+        redirect_to dashboard_url, flash: {error: "You haven't the permission to perform #{action_name} on #{table}"}
+      end
       format.js {head :forbidden}
     end
   end

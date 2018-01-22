@@ -7,7 +7,8 @@ class SchemasTest < ActionDispatch::IntegrationTest
 
   test 'schema page' do
     visit schema_path(:users)
-    assert_text 'Table users'
+    assert_text 'Column name'
+    assert_selector 'a', text: 'Add a column'
   end
 
   test 'readonly schema page' do
@@ -18,7 +19,9 @@ class SchemasTest < ActionDispatch::IntegrationTest
     assert_text "You haven't the permission to perform show on users"
     role.update permissions: {'users' => {'read' => '1'}}
     visit schema_path(:users)
-    assert_text 'Table users'
+    assert_no_text "You haven't the permission to perform show on users"
+    assert_text 'Column name'
+    assert_no_selector 'a', text: 'Add a column'
   end
 
   test 'create a table' do
