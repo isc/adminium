@@ -1,5 +1,6 @@
 class SchemasController < ApplicationController
-  before_action :require_admin
+  before_action :require_admin, except: :show
+  before_action :check_permissions, only: :show
 
   def show
     @title = 'Schema'
