@@ -39,7 +39,7 @@ table.table.table-striped.table-hover
           a.rename_column href="#"
             i.fa.fa-pencil.pull-right
       - if @comments.any?
-        td= @comments.find { |row| row[:objsubid] == index + 1 }.try(:[], :description)
+        td= @comments[name.to_s]
       td class="#{column[:type]}Type"
         = column[:db_type]
         - unless @readonly

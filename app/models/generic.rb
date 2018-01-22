@@ -118,7 +118,7 @@ class Generic
     PG_SYSTEM_TABLES.include? table.to_sym
   end
 
-  def comments tables
+  def table_comments tables
     return [] unless postgresql?
     @db.tables do |ds|
       ds = ds.join(:pg_description, objoid: Sequel[:pg_class][:oid]).select(:relname, :description, :objsubid)
@@ -129,6 +129,15 @@ class Generic
            end
       ds.to_a
     end
+  end
+
+  def column_comments table
+    return [] unless postgresql?
+    @db[Sequel.qualify(:pg_catalog, :pg_attribute)]
+      .select(:attname, Sequel.function(:col_description, :attrelid, :attnum))
+      .where(attrelid: Sequel.lit("'#{table}'::regclass")).where {attnum > 0}.exclude(attisdropped: true).to_a
+      .select {|row| row[:col_description].present? }
+      .map {|row| [row[:attname], row[:col_description]]}.to_h
   end
 
   def schema table

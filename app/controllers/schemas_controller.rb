@@ -6,8 +6,8 @@ class SchemasController < ApplicationController
     params[:table] = params[:id]
     @resource = resource_for params[:table]
     @readonly = @resource.system_table? || !admin?
-    @comments = @generic.comments [params[:table]]
-    @table_comment = @comments.find { |row| row[:objsubid].zero? }
+    @comments = @generic.column_comments params[:table]
+    @table_comment = @generic.table_comments([params[:table]]).first
     @comments.delete @table_comment
   end
 
