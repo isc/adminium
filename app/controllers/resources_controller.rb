@@ -215,12 +215,6 @@ class ResourcesController < ApplicationController
     resource.save
   end
 
-  def user_can? action_name, table
-    return true if @permissions.nil?
-    action_to_perm = {'index' => 'read', 'show' => 'read', 'search' => 'read', 'edit' => 'update', 'update' => 'update', 'new' => 'create', 'create' => 'create', 'destroy' => 'delete', 'bulk_destroy' => 'delete', 'import' => 'create', 'perform_import' => 'create', 'check_existence' => 'read', 'time_chart' => 'read', 'bulk_edit' => 'update', 'bulk_update' => 'update', 'chart' => 'read'}
-    @permissions[table.to_s] && @permissions[table.to_s][action_to_perm[action_name.to_s]]
-  end
-
   def fetch_item
     @item = resource.find params[:id], fetch_binary_values: (params[:action] == 'download')
   rescue Resource::RecordNotFound

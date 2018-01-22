@@ -145,8 +145,14 @@ class ApplicationController < ActionController::Base
     @permissions = current_collaborator.permissions
     return if user_can? action_name, params[:table]
     respond_to do |format|
-      format.html {redirect_to dashboard_url, flash: {error: "You haven't the permission to perform #{action_name} on #{params[:table]}"}}
+      format.html {redirect_to dashboard_url, flash: {error: "You haven't the permission to perform #{action_name} on #{params[:table] || params[:id]}"}}
       format.js {head :forbidden}
     end
+  end
+
+  def user_can? action_name, table
+    return true if @permissions.nil?
+    action_to_perm = {'index' => 'read', 'show' => 'read', 'search' => 'read', 'edit' => 'update', 'update' => 'update', 'new' => 'create', 'create' => 'create', 'destroy' => 'delete', 'bulk_destroy' => 'delete', 'import' => 'create', 'perform_import' => 'create', 'check_existence' => 'read', 'time_chart' => 'read', 'bulk_edit' => 'update', 'bulk_update' => 'update', 'chart' => 'read'}
+    @permissions[table.to_s] && @permissions[table.to_s][action_to_perm[action_name.to_s]]
   end
 end
