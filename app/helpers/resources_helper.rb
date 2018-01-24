@@ -116,6 +116,7 @@ module ResourcesHelper
     else
       foreign_resource, referenced_table = (resource_for assoc[:referenced_table]), assoc[:referenced_table]
     end
+    return "#{foreign_resource.human_name} ##{value}" unless user_can? 'show', referenced_table
     label_column = foreign_resource.label_column
     if label_column.present?
       item = if @associated_items && !assoc[:polymorphic]
@@ -126,8 +127,7 @@ module ResourcesHelper
       return value if item.nil?
       label = foreign_resource.item_label item
     else
-      object_name = referenced_table.to_s.singularize.humanize
-      label = "#{object_name} ##{value}"
+      label = "#{foreign_resource.human_name} ##{value}"
     end
     link_to label, resource_path(referenced_table, value)
   end

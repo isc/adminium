@@ -214,20 +214,24 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_selector 'table.items-list tbody tr:first-child td.hasmany a', text: '2'
   end
 
-  test 'custom column belongs_to' do
-    FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'bob').factory.id)
-    stub_resource_columns listing: %w(user_id.pseudo)
+  test 'permissions for custom column belongs_to and label column' do
+    FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'bob', first_name: 'Robert').factory.id)
+    stub_resource_columns listing: %i(user_id user_id.pseudo)
+    Resource::Base.any_instance.stubs(:label_column).returns 'first_name'
     visit resources_path(:comments)
     assert_selector 'td', text: 'bob'
+    assert_selector 'a', text: 'Robert'
     user = create :user
     role = create :role, permissions: {'comments' => {'read' => '1'}, 'users' => {'read' => '1'}}
     collaborator = create :collaborator, user: user, account: @account, is_administrator: false, roles: [role]
     page.set_rack_session user: user.id, collaborator: collaborator.id
     visit resources_path(:comments)
     assert_selector 'td', text: 'bob'
+    assert_selector 'a', text: 'Robert'
     role.update permissions: {'comments' => {'read' => '1'}}
     visit resources_path(:comments)
     assert_no_selector 'td', text: 'bob'
+    assert_no_selector 'a', text: 'Robert'
   end
 
   test 'filter by enum label from a custom column' do

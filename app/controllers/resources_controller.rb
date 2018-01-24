@@ -81,7 +81,7 @@ class ResourcesController < ApplicationController
   end
 
   def new
-    @title = "New #{params[:table].humanize.singularize}"
+    @title = "New #{resource.human_name}"
     @form_url = resources_path(params[:table])
     @item = if params.key? :clone_id
               attrs = resource.find(params[:clone_id])
@@ -362,7 +362,7 @@ class ResourcesController < ApplicationController
       elsif resource.foreign_key? c
         # FIXME: polymorphic belongs_to generate N+1 queries (since no referenced_table in assoc_info)
         table = resource.belongs_to_association(c)[:referenced_table]
-        c if table && resource_for(table).label_column
+        c if table && resource_for(table).label_column && user_can?('show', table)
       end
     end
     foreign_keys.compact.uniq.map do |foreign_key|

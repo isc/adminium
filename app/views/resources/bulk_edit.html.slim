@@ -8,7 +8,7 @@
         a.close data-dismiss="modal" ×
         h4.modal-title
           - if @item.present?
-            == "Edit #{params[:table].singularize.humanize} ##{@item[resource.primary_key]}"
+            == "Edit #{resource.human_name} ##{@item[resource.primary_key]}"
           -else
             == "Bulk Edit (#{@record_ids.length} #{params[:table].humanize} selected)"
       .modal-body
