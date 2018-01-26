@@ -355,6 +355,9 @@ class ResourcesController < ApplicationController
 
   def fetch_associated_items
     @fetched_items = @items.to_a
+    @has_many_counts_alias_mapping.each do |column, column_alias|
+      @fetched_items.each { |row| row[column] = row.delete(column_alias) }
+    end
     @associated_items = {}
     foreign_keys = permitted_columns.map do |c|
       if c.to_s['.']
@@ -387,17 +390,20 @@ class ResourcesController < ApplicationController
   end
 
   def apply_has_many_counts
+    @has_many_counts_alias_mapping = {}
     permitted_columns.find_all {|c| c.to_s.starts_with? 'has_many/'}.each do |column|
       assoc_info = resource.find_has_many_association_for_key column
       next if assoc_info.nil?
       table_alias = "#{column}_join"
       aliased_table = Sequel::SQL::AliasedExpression.new(assoc_info[:table], table_alias)
       count_on = qualify_primary_keys resource_for(assoc_info[:table]), table_alias
+      @has_many_counts_alias_mapping[column.to_sym] = :"has_many-#{SecureRandom.hex}"
       @items = @items
         .left_outer_join(aliased_table, assoc_info[:foreign_key] => qualify(assoc_info[:referenced_table],
                  assoc_info[:primary_key]))
         .group(qualify_primary_keys(resource))
-        .select_append(Sequel.function(:count, Sequel.function(:distinct, *count_on)).as(column))
+        .select_append(Sequel.function(:count, Sequel.function(:distinct, *count_on))
+        .as(@has_many_counts_alias_mapping[column]))
     end
   end
 
@@ -413,7 +419,7 @@ class ResourcesController < ApplicationController
       column = qualify joined_table_alias, column
     elsif order['/']
       nullable = false
-      column = column.to_sym
+      column = @has_many_counts_alias_mapping[column.to_sym]
     else
       nullable = resource.schema_hash[column.to_sym][:allow_null]
       column = qualify params[:table], column
