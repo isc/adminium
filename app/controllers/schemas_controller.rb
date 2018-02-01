@@ -10,6 +10,7 @@ class SchemasController < ApplicationController
     @comments = @generic.column_comments params[:table]
     @table_comment = @generic.table_comments([params[:table]]).first
     @comments.delete @table_comment
+    @indexes = @generic.detailed_indexes params[:table]
   end
 
   def new; end

@@ -56,19 +56,26 @@ table.table.table-striped.table-hover
 h4
   i.fa.fa-link>
   ' Indices
-- if @resource.indexes.any?
+- if @indexes.any?
   table.table.table-striped.table-hover
     thead
       tr
         th Index name
-        th Columns
+        - if @indexes.values.first[:columns]
+          th Columns
+        - else
+          th Definition
         th Uniqueness
     tbody
-      - @resource.indexes.each do |name, info|
+      - @indexes.each do |name, info|
         tr
           th= name
-          td== info[:columns].join('<br/>')
+          - if info[:columns]
+            td== info[:columns].join('<br/>')
+          - else
+            td= info[:indexdef]
           td= 'UNIQUE' if info[:unique]
+
 - else
   p.alert.alert-info No indices on this table.
 

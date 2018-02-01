@@ -118,6 +118,20 @@ class Generic
     PG_SYSTEM_TABLES.include? table.to_sym
   end
 
+  def indexes table
+    db.indexes(Sequel.identifier(table))
+  end
+
+  def detailed_indexes table
+    return indexes(table) unless postgresql?
+    result = db[:pg_indexes].select(:indexname, :indexdef).where(tablename: table).to_a
+    result.each do |row|
+      row[:unique] = row[:indexdef]['CREATE UNIQUE INDEX'].present?
+      row[:indexdef] = row[:indexdef].split(' USING ').second
+    end
+    result.index_by {|r| r[:indexname]}
+  end
+
   def table_comments tables
     return [] unless postgresql?
     @db.tables do |ds|
