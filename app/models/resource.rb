@@ -120,7 +120,7 @@ module Resource
     end
 
     def indexes
-      @indexes ||= @generic.db.indexes(Sequel.identifier(@table))
+      @indexes ||= @generic.indexes @table
     end
 
     def column_names
