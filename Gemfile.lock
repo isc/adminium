@@ -188,7 +188,7 @@ GEM
     net-http-digest_auth (1.4.1)
     net-http-persistent (2.9.4)
     netrc (0.10.3)
-    newrelic_rpm (4.7.1.340)
+    newrelic_rpm (4.8.0.341)
     nio4r (2.1.0)
     nokogiri (1.8.2)
       mini_portile2 (~> 2.3.0)
