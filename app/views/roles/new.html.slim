@@ -24,7 +24,7 @@
               - %w(create read update delete).each do |action|
                 td= check_box_tag "role[permissions][#{table}][#{action}]", '1', @role.permissions[table.to_s].try(:[], action)
     .col-md-6
-      - non_admin_collaborators = current_account.collaborators.where(is_administrator: false)
+      - non_admin_collaborators = current_account.collaborators.where(is_administrator: false).order(:email)
       - if non_admin_collaborators.present?
         = f.association :collaborators, as: :check_boxes, collection: non_admin_collaborators.map {|collaborator|[collaborator.name, collaborator.id]}
       - else
