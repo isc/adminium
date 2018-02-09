@@ -8,8 +8,7 @@
       hr
       table.table.table-condensed.table-striped
         thead
-          th colspan="2"
-            'Table name
+          th colspan="2" Table name
           - %w(create read update delete).each do |action|
             th
               = check_box_tag "#{action}_all"
@@ -17,8 +16,7 @@
         tbody
           - @generic.tables.each do |table|
             tr
-              td
-                = check_box_tag 'all_actions', nil, nil, id: "all_actions_#{table}"
+              td= check_box_tag 'all_actions', nil, nil, id: "all_actions_#{table}"
               td
                 label for="all_actions_#{table}"= table.to_s.humanize
               - %w(create read update delete).each do |action|

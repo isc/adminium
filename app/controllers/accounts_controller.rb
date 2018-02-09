@@ -10,7 +10,7 @@ class AccountsController < ApplicationController
     @account = current_account
     @heroku_collaborators = []
     @roles = @account.roles.order(:name).to_a if @account.enterprise?
-    @account_collaborators = @account.collaborators.includes(:roles)
+    @account_collaborators = @account.collaborators.includes(:roles).order(:email)
     if current_user&.heroku_provider?
       @heroku_collaborators = heroku_api.collaborator.list(current_account.name)
       real_heroku_collaborators = @account.collaborators.where(kind: 'heroku').pluck(:email)
