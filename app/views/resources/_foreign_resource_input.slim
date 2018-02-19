@@ -1,5 +1,5 @@
 - value = value.is_a?(Sequel::Postgres::PGArray) ? value.to_a : value
-- record = foreign_resource.query.where(assoc[:primary_key] => value) unless value.nil?
+- record = foreign_resource.query.where(assoc[:primary_key] => value.select(&:present?)) unless value.nil?
 - input_name = "#{assoc[:table]}[#{assoc[:foreign_key]}]"
 .adminium-association
   - if resource.array_column? assoc[:foreign_key]
