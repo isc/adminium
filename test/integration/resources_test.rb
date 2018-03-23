@@ -358,7 +358,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test 'export rows' do
     FixtureFactory.new(:user, pseudo: 'bobleponge')
     visit resources_path(:users)
-    click_button 'Export records to csv'
+    click_button 'Export records to CSV'
     assert_text 'bobleponge'
   end
 
