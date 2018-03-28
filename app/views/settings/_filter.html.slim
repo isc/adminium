@@ -12,6 +12,7 @@ td.operators
   - filter_type = 'integer' if %w(decimal float).include? filter_type
   - filter_type = 'date' if %w(date datetime).include? filter_type
   - filter_type = 'string' if %w(text uuid).include? filter_type
+  - filter_type = 'array' if filter_type.ends_with? '_array'
   = render "/settings/filters/#{filter_type}", g: g, operator: filter['operator']
 td
   - options = {class: 'operand form-control'}
