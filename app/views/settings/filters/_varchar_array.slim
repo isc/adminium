@@ -1,0 +1,3 @@
+select.form-control name="filters[#{g}][operator]"
+  - options = [["contains", 'any'], ["does not contain", 'not_any']]
+  = options_for_select(UNARY_OPERATORS.map {|o| ["is #{o.humanize.downcase}", o]} + options, operator)

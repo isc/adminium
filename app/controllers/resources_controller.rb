@@ -445,22 +445,7 @@ class ResourcesController < ApplicationController
   end
 
   def apply_filter filter
-    operators = {
-      'null' => {operator: :IS, right: nil},
-      'not_null' => {operator: :'IS NOT', right: nil},
-      'is_true' => {operator: :'=', right: true},
-      'is_false' => {operator: :'=', right: false},
-      '!=' => {operator: :'!='},
-      '=' => {operator: :'='},
-      '>' => {operator: :>},
-      '>=' => {operator: :>=},
-      '<' => {operator: :<},
-      '<=' => {operator: :<=},
-      'IN' => {operator: :IN, right: filter['operand'].to_s.split(/[, ]/).map(&:strip).delete_if(&:empty?)},
-      'is' => {operator: :'='},
-      'blank' => {specific: 'blank'},
-      'present' => {specific: 'present'}
-    }
+    operators = base_operators filter
     if filter['assoc'].present?
       assoc = resource.belongs_to_association filter['assoc'].to_sym
       resource_with_column = resource_for assoc[:referenced_table]
@@ -481,12 +466,37 @@ class ResourcesController < ApplicationController
     end
     operators.merge! datetime_operators if %i(date datetime).index(type)
     operators.merge! string_operators if %i(string text).index(type)
+    operators.merge! array_operators if type.to_s.ends_with? '_array'
     column = qualify(joined_table_alias || table, filter['column'].to_sym)
     operation = operators[filter['operator']]
     column = Sequel.function operation[:named_function], column if operation[:named_function]
     return send("apply_filter_#{operation[:specific]}", column) if operation[:specific]
     return Sequel::SQL::BooleanExpression.from_value_pairs column => operation[:right] if operation[:boolean_operator]
-    return Sequel::SQL::ComplexExpression.new operation[:operator], column, right_value(operation, filter['operand']) if operation[:operator]
+    if operation[:invert_operands]
+      return Sequel::SQL::ComplexExpression.new operation[:operator], right_value(operation, filter['operand']), column
+    end
+    if operation[:operator]
+      return Sequel::SQL::ComplexExpression.new operation[:operator], column, right_value(operation, filter['operand'])
+    end
+  end
+
+  def base_operators filter
+    {
+      'null' => {operator: :IS, right: nil},
+      'not_null' => {operator: :'IS NOT', right: nil},
+      'is_true' => {operator: :'=', right: true},
+      'is_false' => {operator: :'=', right: false},
+      '!=' => {operator: :'!='},
+      '=' => {operator: :'='},
+      '>' => {operator: :>},
+      '>=' => {operator: :>=},
+      '<' => {operator: :<},
+      '<=' => {operator: :<=},
+      'IN' => {operator: :IN, right: filter['operand'].to_s.split(/[, ]/).map(&:strip).delete_if(&:empty?)},
+      'is' => {operator: :'='},
+      'blank' => {specific: 'blank'},
+      'present' => {specific: 'present'}
+    }
   end
 
   def string_operators
@@ -513,6 +523,13 @@ class ResourcesController < ApplicationController
       'not' => {operator: :'!=', named_function: 'DATE', right_function: 'to_date'},
       'after' => {operator: :'>', named_function: 'DATE', right_function: 'to_date'},
       'before' => {operator: :'<', named_function: 'DATE', right_function: 'to_date'}
+    }
+  end
+
+  def array_operators
+    {
+      'any' => {operator: :'=', named_function: 'ANY', invert_operands: true},
+      'not_any' => {operator: :'!=', named_function: 'ANY', invert_operands: true}
     }
   end
 

@@ -141,13 +141,18 @@ module ResourcesHelper
   def display_foreign_key_array table, ids
     resource = resource_for table
     items = resource.query.where(resource.primary_keys.first => ids.map(&:to_i)).all
+    items = ids.map { |id| items.find {|item| item[resource.primary_keys.first] == id.to_i } || id }
     display_items items, resource
   end
 
   def display_items items, resource
     items.map do |item|
-      item_pk = item[resource.primary_keys.first]
-      link_to_if item_pk, resource.item_label(item), (resource_path(resource.table, item_pk) if item_pk)
+      if item.is_a?(Hash)
+        item_pk = item[resource.primary_keys.first]
+        link_to_if item_pk, resource.item_label(item), (resource_path(resource.table, item_pk) if item_pk)
+      else
+        item
+      end
     end.join(', ').html_safe
   end
 
