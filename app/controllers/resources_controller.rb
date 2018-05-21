@@ -431,16 +431,12 @@ class ResourcesController < ApplicationController
 
   def apply_filters
     @searches = current_account.searches.where(params.permit(:table)).to_a.sort_by {|search| search.name.downcase}
-    @current_search = @searches.detect {|search| search.name === params[:asearch]}
+    @current_search = @searches.detect {|search| search.name == params[:asearch]}
     return unless @current_search
     @current_search.conditions.each_with_index do |filter, index|
       clause = apply_filter filter
       next unless clause
-      @items = if index.nonzero? && filter['grouping'] == 'or'
-                 @items.or(clause)
-               else
-                 @items.where(clause)
-               end
+      @items = index.nonzero? && filter['grouping'] == 'or' ? @items.or(clause) : @items.where(clause)
     end
   end
 
@@ -583,11 +579,11 @@ class ResourcesController < ApplicationController
 
   def join_belongs_to foreign_key
     foreign_key = foreign_key.to_sym
+    join_alias = "#{foreign_key}_join"
     @joined_belongs_to ||= []
-    return if @joined_belongs_to.include? foreign_key
+    return join_alias if @joined_belongs_to.include? foreign_key
     @joined_belongs_to << foreign_key
     assoc_info = resource.belongs_to_association foreign_key
-    join_alias = "#{foreign_key}_join"
     aliased_join_table = Sequel::SQL::AliasedExpression.new(assoc_info[:referenced_table], join_alias)
     @items = @items.left_outer_join aliased_join_table,
       assoc_info[:primary_key] => qualify(params[:table], assoc_info[:foreign_key])
