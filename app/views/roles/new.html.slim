@@ -1,5 +1,5 @@
 .page-header
-  h3== @role.new_record? ? 'New role' : "Edit role <i>#{@role.name}</i>"
+  h3== @role.new_record? ? 'New role' : "Edit role <i>#{h @role.name}</i>"
 
 = simple_form_for @role, html: {class: 'form-vertical edit_role'} do |f|
   .row
