@@ -71,7 +71,7 @@ class ApplicationController < ActionController::Base
   end
 
   def table_not_found exception
-    redirect_to dashboard_url, flash: {error: "The table <b>#{exception.table_name}</b> cannot be found.".html_safe}
+    redirect_to dashboard_url, flash: {error: "The table <b>#{ERB::Util.h exception.table_name}</b> cannot be found.".html_safe}
   end
 
   def cleanup_generic

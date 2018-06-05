@@ -51,7 +51,7 @@ class SchemasController < ApplicationController
   rescue Sequel::Error => e
     flash[:error] = "Destroying the table failed: #{e.message}"
   ensure
-    redirect_to dashboard_path, flash: {success: "Table #{params[:id]} has been dropped."}
+    redirect_to dashboard_path, flash: {success: "Table #{ERB::Util.h params[:id]} has been dropped."}
   end
 
   private

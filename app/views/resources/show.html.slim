@@ -11,8 +11,8 @@ nav.navbar.navbar-default
     #subnavbar.collapse.navbar-collapse
       .btn-group
         - if user_can? 'create', params[:table]
-          = icon_button_link new_resource_path(table:params[:table]), 'plus', 'Create a new row', class: 'create-action'
-          = icon_button_link new_resource_path(table:params[:table], clone_id: params[:id]), 'copy', 'Clone'
+          = icon_button_link new_resource_path(table: params[:table]), 'plus', 'Create a new row', class: 'create-action'
+          = icon_button_link new_resource_path(table: params[:table], clone_id: params[:id]), 'copy', 'Clone'
         - if user_can? 'edit', params[:table]
           = icon_button_link edit_resource_path(resource.table, params[:id]), 'pencil', 'Edit', class: 'edit-action'
         - if user_can? 'destroy', params[:table]

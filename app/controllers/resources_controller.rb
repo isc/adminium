@@ -95,7 +95,7 @@ class ResourcesController < ApplicationController
   def create
     pk_value = resource.insert item_params
     params[:id] = pk_value
-    after_save_redirection flash: {success: "#{object_name} successfully created."}
+    after_save_redirection flash: {success: "#{ERB::Util.h object_name} successfully created."}
   rescue Sequel::Error, Resource::ValidationError => e
     flash.now[:error] = e.message.html_safe
     @item = item_params
@@ -107,7 +107,7 @@ class ResourcesController < ApplicationController
     resource.update_item params[:id], item_params
     respond_to do |format|
       format.html do
-        after_save_redirection flash: {success: "#{object_name} successfully updated."}
+        after_save_redirection flash: {success: "#{ERB::Util.h object_name} successfully updated."}
       end
       format.json do
         column_name = item_params.keys.first.to_sym
@@ -133,7 +133,7 @@ class ResourcesController < ApplicationController
 
   def destroy
     resource.delete params[:id]
-    options = {flash: {success: "#{object_name} successfully destroyed."}}
+    options = {flash: {success: "#{ERB::Util.h object_name} successfully destroyed."}}
     if params[:redirect] == 'index'
       redirect_to resources_path(params[:table]), options
     else
@@ -224,7 +224,7 @@ class ResourcesController < ApplicationController
       format.js {render json: {message: message}}
     end
   rescue Sequel::DatabaseError => e
-    redirect_to resources_path(params[:table]), flash: {error: "Couldn't fetch record with id <b>#{params[:id]}</b>.<br>#{e.message}".html_safe}
+    redirect_to resources_path(params[:table]), flash: {error: "Couldn't fetch record with id <b>#{ERB::Util.h params[:id]}</b>.<br>#{ERB::Util.h e.message}".html_safe}
   end
 
   def check_per_page_setting
@@ -347,7 +347,7 @@ class ResourcesController < ApplicationController
           [qualify(joined_table_alias || table, k.to_sym), v]
         else
           params[params_key].delete k
-          flash.now[:error] = "Column <i>#{k}</i> doesn't exist on table #{table}.<br>Existing columns are <i>#{resource_for(table).column_names.join(', ')}</i>.".html_safe
+          flash.now[:error] = "Column <i>#{ERB::Util.h k}</i> doesn't exist on table #{table}.<br>Existing columns are <i>#{resource_for(table).column_names.join(', ')}</i>.".html_safe
         end
       end
     end.compact

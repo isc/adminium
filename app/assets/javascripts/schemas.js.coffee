@@ -29,7 +29,7 @@ $ ->
   $("form#create_table").on 'ajax:success', (evt, data) ->
     $("#create-table-modal .s").hide()
     if data.error
-      $("#create-table-modal .error").show().find('p').html(data.error)
+      $("#create-table-modal .error").show().find('p').text(data.error)
     else
       $("#create-table-modal .success").show()
 

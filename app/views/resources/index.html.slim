@@ -70,7 +70,7 @@ nav.navbar.navbar-default
     - if params[:search].present?
       .col-md-3
         .alert.alert-info.alert-dismissible
-          == "Search for <i>#{params[:search]}</i>"
+          == "Search for <i>#{h params[:search]}</i>"
           = link_to whitelisted_params.except(:search), class: 'close' do
             i.fa.fa-times
     - %i(where exclude).each do |filter|
@@ -82,7 +82,7 @@ nav.navbar.navbar-default
               - if resource.date_column? k.to_sym
                 == "Where <i>#{grouping} #{k}</i> is #{excluded} <b>#{format_date(v).first}</b>"
               - else
-                == "Where <i>#{k}</i> is #{excluded} <b>#{v}</b>"
+                == "Where <i>#{k}</i> is #{excluded} <b>#{h v}</b>"
               = link_to params_without_filter(k, filter), class: 'close' do
                 i.fa.fa-times
 .content

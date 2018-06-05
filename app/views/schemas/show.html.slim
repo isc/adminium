@@ -5,7 +5,7 @@
     a.btn.btn-danger> href="#truncate-table" data-toggle="modal" Truncate this table
     a.btn.btn-danger href="#drop-table" data-toggle="modal" Drop this table
 
-h3= "Table #{params[:table]}"
+h3 Table #{params[:table]}
 - if @table_comment
   h4= @table_comment[:description]
 h4
@@ -105,7 +105,7 @@ h4
   = modal 'Are you serious about dropping?', id: 'drop-table' do |modal|
     - modal.body do
       p.alert.alert-danger
-        = "You are about to drop the <u>#{params[:table]}</u> table with all its data.".html_safe
+        = "You are about to drop the <u>#{h params[:table]}</u> table with all its data.".html_safe
         br
         'You won't be able to rollback this action!
       p To proceed, confirm by entering the table name:
@@ -116,7 +116,7 @@ h4
   = modal 'Are you serious about truncating?', id: 'truncate-table' do |modal|
     - modal.body do
       p.alert.alert-danger
-        = "You are about to remove all data from the <u>#{params[:table]}</u> table.".html_safe
+        = "You are about to remove all data from the <u>#{h params[:table]}</u> table.".html_safe
         br
         'You won't be able to rollback this action!
       p To proceed, confirm by entering the table name:
