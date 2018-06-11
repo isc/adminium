@@ -39,6 +39,11 @@ Airbrake.configure do |c|
   # environments.
   # https://github.com/airbrake/airbrake-ruby#ignore_environments
   c.ignore_environments = %w(test development)
+
+  if Figaro.env.proxy_url
+    uri = URI.parse Figaro.env.proxy_url
+    c.proxy = { host: uri.host, port: uri.port, user: uri.user, password: uri.password }
+  end
 end
 
 # If Airbrake doesn't send any expected exceptions, we suggest to uncomment the
