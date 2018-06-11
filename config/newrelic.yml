@@ -106,12 +106,6 @@ common: &default_settings
   #
   # If a proxy is used, the host setting is required.  Other settings
   # are optional.  Default port is 8080.
-
-  <% if Figaro.env.external_tools_proxy.present? %>
-  <% proxy = URI.parse(Figaro.env.external_tools_proxy) %>
-    proxy_host: '<%= proxy.host %>'
-    proxy_port: '<%= proxy.port %>'
-  <% end %>
   # proxy_host: hostname
   # proxy_port: 8080
   # proxy_user:
