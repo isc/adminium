@@ -95,7 +95,7 @@ class ResourcesController < ApplicationController
   def create
     pk_value = resource.insert item_params
     params[:id] = pk_value
-    after_save_redirection flash: {success: "#{ERB::Util.h object_name} successfully created."}
+    after_save_redirection flash: {success: "#{object_name} successfully created."}
   rescue Sequel::Error, Resource::ValidationError => e
     flash.now[:error] = e.message.html_safe
     @item = item_params
@@ -107,7 +107,7 @@ class ResourcesController < ApplicationController
     resource.update_item params[:id], item_params
     respond_to do |format|
       format.html do
-        after_save_redirection flash: {success: "#{ERB::Util.h object_name} successfully updated."}
+        after_save_redirection flash: {success: "#{object_name} successfully updated."}
       end
       format.json do
         column_name = item_params.keys.first.to_sym
@@ -133,7 +133,7 @@ class ResourcesController < ApplicationController
 
   def destroy
     resource.delete params[:id]
-    options = {flash: {success: "#{ERB::Util.h object_name} successfully destroyed."}}
+    options = {flash: {success: "#{object_name} successfully destroyed."}}
     if params[:redirect] == 'index'
       redirect_to resources_path(params[:table]), options
     else
@@ -250,7 +250,7 @@ class ResourcesController < ApplicationController
   end
 
   def object_name
-    "#{resource.human_name} #<b>#{params[:id] || resource.primary_key_value(@item)}</b>"
+    "#{resource.human_name} #<b>#{ERB::Util.h(params[:id] || resource.primary_key_value(@item))}</b>"
   end
 
   def apply_search
