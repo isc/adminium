@@ -13,7 +13,11 @@ td.operators
   - filter_type = 'date' if %w(date datetime).include? filter_type
   - filter_type = 'string' if %w(text uuid).include? filter_type
   - filter_type = 'array' if filter_type.ends_with? '_array'
-  = render "/settings/filters/#{filter_type}", g: g, operator: filter['operator']
+  - if lookup_context.exists?("settings/filters/_#{filter_type}")
+    = render "/settings/filters/#{filter_type}", g: g, operator: filter['operator']
+  - else
+    select.form-control name="filters[#{g}][operator]"
+      = options_for_select((UNARY_OPERATORS).map {|o| [o.humanize.downcase,o]}, filter['operator'])
 td
   - options = {class: 'operand form-control'}
   - options['data-type'] = filter_type
