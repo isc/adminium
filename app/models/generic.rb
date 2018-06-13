@@ -149,7 +149,7 @@ class Generic
     return [] unless postgresql?
     @db[Sequel.qualify(:pg_catalog, :pg_attribute)]
       .select(:attname, Sequel.function(:col_description, :attrelid, :attnum))
-      .where(attrelid: Sequel.lit("'#{table}'::regclass")).where {attnum > 0}.exclude(attisdropped: true).to_a
+      .where(attrelid: Sequel.lit("'\"#{table}\"'::regclass")).where {attnum > 0}.exclude(attisdropped: true).to_a
       .select {|row| row[:col_description].present? }
       .map {|row| [row[:attname], row[:col_description]]}.to_h
   end
