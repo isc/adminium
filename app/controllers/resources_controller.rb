@@ -421,6 +421,7 @@ class ResourcesController < ApplicationController
       joined_table_alias = join_belongs_to assoc_info[:foreign_key]
       nullable = resource_for(assoc_info[:referenced_table]).schema_hash[column.to_sym][:allow_null]
       column = qualify joined_table_alias, column
+      column = Sequel.function(:min, column) if @has_many_counts_alias_mapping.present?
     elsif order['/']
       nullable = false
       column = @has_many_counts_alias_mapping[column.to_sym]
