@@ -344,6 +344,10 @@ class ResourcesController < ApplicationController
           table = resource.table
         end
         if resource_for(table).column_names.include? k.to_sym
+          if resource_for(table).array_column?(k.to_sym)
+            array_type, = resource_for(table).column_type(k.to_sym).to_s.split('_')
+            v = Sequel.pg_array(v.split(','), array_type)
+          end
           [qualify(joined_table_alias || table, k.to_sym), v]
         else
           params[params_key].delete k
