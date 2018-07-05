@@ -13,6 +13,7 @@ class ResourcesControllerTest < ActionController::TestCase
     @fixtures << FixtureFactory.new(:user, pseudo: 'Loulou', last_name: '', admin: true, age: 18,
                                            activated_at: 5.minutes.ago, group_id: group.id)
     @generic = Generic.new @account
+    Search.any_instance.stubs(:generic).returns @generic
   end
 
   def teardown

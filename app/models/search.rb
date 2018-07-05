@@ -6,7 +6,7 @@ class Search < ApplicationRecord
   attr_accessor :generic
 
   def conditions_operands
-    resource = Resource::Base.new @generic, table
+    resource = Resource::Base.new generic, table
     conditions.each do |condition|
       next unless condition['operator'] == 'IN'
       type = resource.column_type condition['column'].to_sym
