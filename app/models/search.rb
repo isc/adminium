@@ -1,7 +1,7 @@
 class Search < ApplicationRecord
   belongs_to :account
   validates :name, :table, presence: true
-  validate :conditions_operands
+  validate :conditions_operands, on: %i(create update)
 
   attr_accessor :generic
 
