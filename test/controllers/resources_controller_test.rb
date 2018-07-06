@@ -13,7 +13,6 @@ class ResourcesControllerTest < ActionController::TestCase
     @fixtures << FixtureFactory.new(:user, pseudo: 'Loulou', last_name: '', admin: true, age: 18,
                                            activated_at: 5.minutes.ago, group_id: group.id)
     @generic = Generic.new @account
-    Search.any_instance.stubs(:generic).returns @generic
   end
 
   def teardown
@@ -287,7 +286,7 @@ class ResourcesControllerTest < ActionController::TestCase
   private
 
   def assert_asearch name, pseudos, description, table = 'users', order = 'pseudo'
-    create :search, name: name, table: table, account: @account, conditions: description
+    create :search, name: name, table: table, account: @account, conditions: description, generic: @generic
     get :index, params: {table: table, asearch: name, order: order}
     assert_equal pseudos, (assigns[:items].map {|r| r[:pseudo]}), "#{name}: #{assigns[:items].inspect}"
   end
