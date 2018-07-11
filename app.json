@@ -5,7 +5,10 @@
          "heroku-redis",
          "heroku-postgresql",
          "heroku-postgresql"
-      ]
+      ],
+      "env": {
+        "DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL": true
+      }
     }
   }
 }
