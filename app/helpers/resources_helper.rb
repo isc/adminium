@@ -220,9 +220,11 @@ module ResourcesHelper
     if @prevent_truncate || value.length < 100
       value
     else
-      popover = content_tag :a, content_tag(:i, nil, class: 'fa fa-plus-circle'),
-        data: {content: ERB::Util.h(value), title: key}, class: 'text-more'
-      (ERB::Util.h(value.truncate(100)) + popover).html_safe
+      modal_id = "#{key}-#{Digest::MD5.hexdigest value}"
+      modal = modal(key.to_s.humanize, id: modal_id) { |m| m.body { ERB::Util.h(value) } }
+      modal_trigger = content_tag :a, content_tag(:i, nil, class: 'fa fa-plus-circle'),
+        data: {toggle: 'modal', target: "##{modal_id}"}, href: '#'
+      ERB::Util.h(value.truncate(100)) + modal_trigger + modal
     end
   end
 
