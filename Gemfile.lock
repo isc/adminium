@@ -46,7 +46,7 @@ GEM
     airbrake-ruby (2.10.0)
     arel (8.0.0)
     ast (2.4.0)
-    attr_encrypted (3.0.3)
+    attr_encrypted (3.1.0)
       encryptor (~> 3.0.0)
     better_errors (2.4.0)
       coderay (>= 1.0.0)
