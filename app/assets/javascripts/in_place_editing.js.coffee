@@ -45,7 +45,7 @@ class InPlaceEditing
     id = td.data('item-id') or td.parents('tr').data('item-id') or $('.item-attributes').data('item-id')
     if td.find('a i.fa-plus-circle').length
       type = 'text'
-      raw_value = td.find('a').attr('data-content')
+      raw_value = $(td.find('a').attr('data-target')).find('.modal-body').text()
     td.attr('data-original-content', td.html())
     td.html($("<form class='well form form-inline' action='/resources/#{table}/#{id}'><div class='control-group'><div class='controls'>&nbsp;<button class='btn btn-sm btn-primary'><i class='fa fa-check' /></button><a class='cancel btn btn-sm'><i class='fa fa-remove'></i></a></div</div></form>")).attr('data-mode', 'editing')
     td.find('a.cancel').click @cancelEditionMode
