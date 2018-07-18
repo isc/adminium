@@ -34,20 +34,18 @@ class TimeCharts
   statChart: (data, container) =>
     tbody = $(container).html('<table class="table table-condensed"><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody></tbody></table>').find('tbody')
     for row, i in data.chart_data
-      if row.length == 3 && data.id
-        value = "<a href='#{@value_with_where_link(container, data, i)}'>#{row[1]}</a>"
+      if row.length == 3
+        value = "<a href='#{@valueWithWhereLink(container, data, i)}'>#{row[1]}</a>"
       else
         value = row[1]
       metric = $('<tr>').html("<th>#{row[0]}</th><td>#{value}</td>")
       tbody.append(metric)
 
-  value_with_where_link: (wrapper, data, index) ->
-    link = wrapper.parents(".widget").find("h4 a").attr('href')
-    sep = if (link.indexOf("?") isnt -1) then '&' else '?'
-    if data.chart_type == 'TimeChart'
-      value = "#{data.chart_data[index][2]}&grouping=#{data.grouping}"
-    else
-      value = data.chart_data[index][2]
+  valueWithWhereLink: (wrapper, data, index) ->
+    link = wrapper.parents && wrapper.parents('.widget').find('h4 a').attr('href')
+    link = link || window.location.href
+    sep = if (link.indexOf('?') isnt -1) then '&' else '?'
+    value = data.chart_data[index][2]
     link += "#{sep}where[#{data.column}]=#{value}"
   
   graphData: (data, container) =>
@@ -59,7 +57,7 @@ class TimeCharts
       return
 
     if data.chart_data is null
-      $(container).text "No data to chart for this grouping value."
+      $(container).text 'No data to chart for this grouping value.'
       return
     
     if data.chart_type is 'StatChart'
