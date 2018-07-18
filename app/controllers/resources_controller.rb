@@ -460,13 +460,13 @@ class ResourcesController < ApplicationController
       flash.now[:error] = "Filter on the #{filter['column']} column is not valid anymore (#{filter['column']} cannot be found on the #{table} table anymore)."
       return
     end
-    type = column_info[:type] || column_info[:db_type]
+    type = column_info[:type] || column_info[:db_type].to_sym
     if type.to_sym != filter['type'].to_sym
       flash.now[:error] = "Filter on the #{filter['column']} column is not valid anymore (defined on a #{filter['type']} column, not #{type})."
       return
     end
     operators.merge! datetime_operators if %i(date datetime).index(type)
-    operators.merge! string_operators if %i(string text).index(type)
+    operators.merge! string_operators if %i(string text name).index(type)
     operators.merge! array_operators if type.to_s.ends_with? '_array'
     column = qualify(joined_table_alias || table, filter['column'].to_sym)
     operation = operators[filter['operator']]
