@@ -150,7 +150,7 @@ GEM
       mechanize (~> 2.7.5)
       netrc (~> 0.10.3)
       rest-client (~> 1.8)
-    kgio (2.11.1)
+    kgio (2.11.2)
     launchy (2.2.0)
       addressable (~> 2.3)
     listen (3.1.5)
@@ -356,7 +356,7 @@ GEM
       unf_ext
     unf_ext (0.0.7.4)
     unicode-display_width (1.4.0)
-    unicorn (5.4.0)
+    unicorn (5.4.1)
       kgio (~> 2.6)
       raindrops (~> 0.7)
     unicorn-worker-killer (0.4.4)
