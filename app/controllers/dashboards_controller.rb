@@ -18,6 +18,10 @@ class DashboardsController < ApplicationController
     end
   end
 
+  def bloat
+    @rows = @generic.db[IO.read(Rails.root.join('lib', 'btree_bloat.sql'))].all
+  end
+
   protected
 
   def fetch_permissions

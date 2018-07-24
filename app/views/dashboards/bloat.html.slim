@@ -1,0 +1,13 @@
+h3 Database bloat
+table.table.table-bordered
+  thead
+    tr
+      - @rows.first.each_key do |k|
+        th= k
+  tbody
+    - @rows.each do |row|
+      tr
+        - row.each_value do |v|
+          td= v
+- url = 'https://github.com/ioguix/pgsql-bloat-estimation/blob/master/btree/btree_bloat.sql'
+p Based on #{link_to url, url, target: :blank}

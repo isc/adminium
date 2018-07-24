@@ -55,6 +55,7 @@ Rails.application.routes.draw do
   resources :roles, except: %i(index show)
   resource :dashboard, only: :show do
     get :settings
+    get :bloat
   end
   resources :collaborators
   resource :user do
