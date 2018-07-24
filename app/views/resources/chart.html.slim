@@ -9,6 +9,10 @@
         - else
           i.fa.fa-star.add_widget.subtle title="Add to your dashboard" rel="tooltip" data-placement="right" data-form="#time-chart form"
     .modal-body
+      - if params[:type] == 'StatChart' && params[:table] == 'pg_stat_all_indexes'
+        small.pull-right= link_to generate_chart_path(params[:column], 'EvolutionChart'), class: 'evolution-chart' do
+          i.fa.fa-line-chart>
+          ' Live evolution
       - if @missing_column
         .alert.alert-danger The column <b>#{params[:column]}</b> doesn't exist on table <b>#{params[:table]}</b>.
       - else

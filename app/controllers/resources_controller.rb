@@ -2,6 +2,7 @@ class ResourcesController < ApplicationController
   include TimeChartBuilder
   include PieChartBuilder
   include StatChartBuilder
+  include EvolutionChartBuilder
   include Import
 
   before_action :table_access_limitation, except: :search
@@ -187,6 +188,8 @@ class ResourcesController < ApplicationController
       pie_chart
     when 'StatChart'
       stat_chart
+    when 'EvolutionChart'
+      evolution_chart
     else
       render plain: 'cant render this page'
     end

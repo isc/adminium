@@ -26,6 +26,10 @@ class TimeCharts
     $('th i.time-chart').click (e) =>
       remoteModal '#time-chart', $(e.currentTarget).data('path'), @graphData
       _gaq.push ['_trackPageview', "/#{@kind}_chart"] if window['_gaq']
+    $(document).on 'click', '#time-chart.modal a.evolution-chart', (e) =>
+      href = $(e.currentTarget).attr('href')
+      remoteModal '#time-chart', href, @evolutionChart(href)
+      false
 
   setupGroupingChange: ->
     $(document).on 'change', '#time-chart.modal #grouping', (e) =>
@@ -41,6 +45,25 @@ class TimeCharts
       metric = $('<tr>').html("<th>#{row[0]}</th><td>#{value}</td>")
       tbody.append(metric)
 
+  evolutionChart: (path) => =>
+    dataTable = new google.visualization.DataTable()
+    dataTable.addColumn 'datetime'
+    dataTable.addColumn 'number', name for name, _ of window.data_for_graph.chart_data
+    wrapper = $('#chart_div')
+    width = wrapper.parent().css('width')
+    options = { width: width, height: 300, chartArea: { top: 15, left: '5%', height: '75%', width: '50%' } }
+    chart = new google.visualization.LineChart(wrapper.get(0))
+    chart.draw(dataTable, options)
+    previousDataset = window.data_for_graph.chart_data
+    @evolutionChartInterval = setInterval =>
+      $.getJSON path, (data) =>
+        newRow = [new Date()]
+        newRow.push(data[name] - previousDataset[name]) for name, _ of window.data_for_graph.chart_data
+        dataTable.addRows([newRow])
+        chart.draw(dataTable, options)
+        clearInterval @evolutionChartInterval unless $('#chart_div:visible').length
+    , 5000
+
   valueWithWhereLink: (wrapper, data, index) ->
     link = wrapper.parents && wrapper.parents('.widget').find('h4 a').attr('href')
     link = link || window.location.href
@@ -52,31 +75,21 @@ class TimeCharts
     return @dataBeforeGoogleChartsLoad.push [data, container] unless @googleChartsLoaded
     container ||= '#chart_div'
     data ||= window.data_for_graph
-    if data.error
-      $(container).text data.error
-      return
 
-    if data.chart_data is null
-      $(container).text 'No data to chart for this grouping value.'
-      return
-    
-    if data.chart_type is 'StatChart'
-      @statChart(data, container)
-      return
-    
+    return $(container).text data.error if data.error
+    return $(container).text 'No data to chart for this grouping value.' if data.chart_data is null
+    return @statChart(data, container) if data.chart_type is 'StatChart'
+
     dataTable = new google.visualization.DataTable()
-    
-    dataTable.addColumn 'string', column_type
-    dataTable.addColumn 'number', 'Count'
     if data.chart_type is 'TimeChart'
-      column_type = 'none'
       legend = 'none'
       colors = ['#7d72bd']
     else
-      column_type = 'Column'
-      legend = {position: 'right'}
+      legend = { position: 'right' }
       colors = (row[3] for row in data.chart_data)
-    
+    dataTable.addColumn 'string'
+    dataTable.addColumn 'number', 'Count'
+
     rows = ([String(row[0]), row[1]] for row in data.chart_data)
     dataTable.addRows rows
     wrapper = $(container)
