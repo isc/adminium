@@ -61,6 +61,7 @@ class TimeCharts
         newRow.push(data[name] - previousDataset[name]) for name, _ of window.data_for_graph.chart_data
         dataTable.addRows([newRow])
         chart.draw(dataTable, options)
+        previousDataset = data
         clearInterval @evolutionChartInterval unless $('#chart_div:visible').length
     , 5000
 
