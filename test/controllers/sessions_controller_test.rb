@@ -17,10 +17,10 @@ class SessionsControllerTest < ActionController::TestCase
   def test_should_fill_db_url_if_account_logged
     app_name = 'my-test-app-1'
     db_url = 'postgres://u:p@h/d'
-    addon = stub(info: {'app' => {'name' => app_name}})
     app = stub(info: {'owner' => {'email' => 'email@example.com'}})
     config_var = stub(info: {'DATABASE_URL' => db_url})
-    SessionsController.any_instance.stubs(:heroku_api).returns stub(addon: addon, app: app, config_var: config_var)
+    SessionsController.any_instance.stubs(:heroku_api).returns stub(app: app, config_var: config_var)
+    Account.any_instance.stubs(:fetch_info).returns 'name' => app_name
     account = create :account, heroku_uuid: '37', db_url: nil, name: nil, owner_email: nil
     session[:account] = account.id
     setup_omniauth_env
