@@ -44,7 +44,6 @@ class Navigation
           .appendTo('body').html($(".loading_modal").html()).modal('show')
         $.get docs_url, (data) => $(selector).html(data)
         $(selector).on 'hidden', => @helpShown = false
-        _gaq.push ['_trackPageview', docs_url] if window['_gaq']
       @helpShown = true
 
   searchBar: ->

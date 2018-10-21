@@ -39,7 +39,6 @@ class window.ImportManager
     reader = new FileReader()
     reader.onload = @readFile
     @processing('Loading file locally')
-    Analytics.importEvent('loading-file')
     reader.readAsText(file)
 
   disableImport: =>
@@ -66,7 +65,6 @@ class window.ImportManager
     $('.importHeader').toggleClass('panel-danger', true)
     details = if details then "(#{details})" else ""
     $(".status").html("<i class='fa fa-ban text-danger' /> <b>#{msg}</b> #{details}").removeClass('hidden')
-    Analytics.importEvent 'error', tracker_code
 
   notice: (msg) =>
     $('.status').html(msg)
@@ -91,7 +89,7 @@ class window.ImportManager
     @preview()
     @prepareToImport()
     @checkExistenceOfUpdatingRecord() if @checkQuota()
-  
+
   detectSeparator: (text) =>
     seps = {}
     min_pos = 100000
@@ -205,7 +203,6 @@ class window.ImportManager
     return alert('Sorry. Already importing') if @importing
     @importing = true
     @processing 'Importing your data'
-    Analytics.importEvent('importing', "insert=#{@data.create.length} update=#{@data.update.length}")
     @import_started_at = new Date()
     $.ajax
       type: 'POST',
@@ -221,7 +218,6 @@ class window.ImportManager
     else
       @success()
       delay = Math.round((new Date() - @import_started_at) / 100) / 10
-      Analytics.importEvent('imported', "insert=#{@data.create.length} update=#{@data.update.length} time=#{delay} account=#{adminium_account.name} plan=#{adminium_account.plan}")
 
   success: =>
     $('.importHeader').removeClass('panel-danger').addClass('panel-success')
