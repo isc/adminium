@@ -1,53 +1,53 @@
 FactoryBot.define do
   factory :account do
-    owner_email 'john.doe@email.com'
+    owner_email { 'john.doe@email.com' }
     db_url { $TEST_DATABASE_CONN_SPEC }
-    plan Account::Plan::STARTUP
+    plan { Account::Plan::STARTUP }
   end
 
   factory :user do
-    email 'john.doe@emai.com'
+    email { 'john.doe@emai.com' }
   end
 
   factory :collaborator do
     account
     user
-    is_administrator true
-    email 'blabla@adasd.com'
+    is_administrator { true }
+    email { 'blabla@adasd.com' }
   end
 
   factory :role do
-    name 'Read only'
+    name { 'Read only' }
   end
 
   factory :time_chart_widget do
     account
-    table :users
-    columns :created_at
+    table { :users }
+    columns { :created_at }
   end
 
   factory :table_widget do
     account
-    table :users
+    table { :users }
   end
 
   factory :search do
     account
-    table :users
-    conditions []
+    table { :users }
+    conditions { [] }
   end
 
   factory :user_from_test do
-    pseudo 'Michel'
+    pseudo { 'Michel' }
   end
 
   factory :comment_from_test do
-    title 'My Comment'
+    title { 'My Comment' }
   end
 
   factory :group_from_test do
-    name 'Administrators'
-    level 37
+    name { 'Administrators' }
+    level { 37 }
   end
 
   factory :role_from_test do
