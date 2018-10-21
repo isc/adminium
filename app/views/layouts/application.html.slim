@@ -40,7 +40,6 @@ html lang="en" ng-app=""
     = yield :modal
     = javascript_include_tag 'application'
     - unless Rails.env.development?
-      = render '/layouts/ga'
       = render '/layouts/uservoice'
     .modal#modal-window tabindex="-1"
       .modal-dialog
