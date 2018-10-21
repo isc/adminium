@@ -581,7 +581,7 @@ class ResourcesController < ApplicationController
     if request.xhr?
       render json: {widget: view_context.content_tag(:div, notice, class: 'alert alert-warning'), id: params[:widget_id]}
     else
-      redirect_to dashboard_url, flash: {warning: notice}
+      redirect_to dashboard_url, flash: { alert: notice }
     end
   end
 

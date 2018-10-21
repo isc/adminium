@@ -9,12 +9,15 @@ class ColumnSettingsTest < ActionDispatch::IntegrationTest
   test 'column settings for foreign key column' do
     group = FixtureFactory.new(:group, name: 'Admins').factory
     FixtureFactory.new(:user, group_id: group.id)
-    visit column_setting_path(:users, column: 'group_id', view: 'listing')
+    visit resources_path(:users)
+    find('th[data-column-name="group_id"]').hover
+    find('th .fa-cog').click
+    open_accordion 'Association discovery', selector: 'label', text: 'Label column'
     select 'name', from: 'Label column'
     click_button 'Save settings'
-    visit resources_path(:users)
-    assert_equal resource_path(:groups, group), page.find('td.foreignkey a')['href']
-    assert_equal 'Admins', page.find('td.foreignkey a').text
+    assert_no_selector '.modal'
+    click_link 'Admins'
+    assert_equal resource_path(:groups, group), current_path
   end
 
   test 'change visibility from column settings' do

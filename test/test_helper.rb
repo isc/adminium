@@ -10,7 +10,7 @@ if ENV['COVER']
   end
 end
 
-require File.expand_path('../../config/environment', __FILE__)
+require File.expand_path('../config/environment', __dir__)
 require 'rails/test_help'
 require 'test_database_schema.rb'
 require 'capybara/rails'
@@ -18,6 +18,7 @@ require 'mocha/setup'
 require 'rack_session_access/capybara'
 
 DatabaseCleaner.strategy = :truncation
+Capybara.default_driver = :selenium_chrome_headless
 
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
@@ -39,12 +40,16 @@ class ActionDispatch::IntegrationTest
     account
   end
 
-  def logout
-    page.set_rack_session account: nil, user: nil, collaborator: nil
+  def click_link_with_title title
+    find("a[data-original-title=\"#{title}\"]").click
+  end
+
+  def open_accordion pane_label, selector:, text:
+    click_link pane_label while all(selector, text: text, minimum: 0).size.zero?
   end
 
   teardown do
-    logout
+    Capybara.reset!
   end
 end
 

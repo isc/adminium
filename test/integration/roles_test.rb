@@ -7,6 +7,7 @@ class RolesTest < ActionDispatch::IntegrationTest
 
   test 'role creation and edition' do
     visit edit_account_path
+    click_link 'Roles and permissions'
     click_link 'Create your first role'
     fill_in 'Name', with: 'Users read only'
     check 'role[permissions][users][create]'

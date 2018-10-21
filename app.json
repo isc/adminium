@@ -1,10 +1,9 @@
 {
   "environments": {
     "test": {
-      "addons":[
-         "heroku-redis",
-         "heroku-postgresql",
-         "heroku-postgresql"
+      "addons": ["heroku-redis", "heroku-postgresql", "heroku-postgresql"],
+      "buildpacks": [
+        { "url": "https://github.com/heroku/heroku-buildpack-google-chrome" }
       ],
       "env": {
         "DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL": true

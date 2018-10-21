@@ -1,4 +1,7 @@
-td.bigdecimal, td.integer, td.float, td.decimal {
+td.bigdecimal,
+td.integer,
+td.float,
+td.decimal {
   font-family: Monaco;
   font-weight: bold;
   text-align: right;
@@ -6,11 +9,18 @@ td.bigdecimal, td.integer, td.float, td.decimal {
 td.integer:not([data-editable]) {
   cursor: pointer;
 }
-td.bigdecimal, td.integer, td.float, td.decimal, td.decimalType, td.floatType, td.integerType {
+td.bigdecimal,
+td.integer,
+td.float,
+td.decimal,
+td.decimalType,
+td.floatType,
+td.integerType {
   color: green;
 }
 
-.trueclass, .falseclass {
+.trueclass,
+.falseclass {
   color: #777;
   text-align: center;
 }
@@ -19,7 +29,9 @@ td.bigdecimal, td.integer, td.float, td.decimal, td.decimalType, td.floatType, t
   color: rgb(7, 190, 37);
 }
 
-.nilclass, .emptystring, td.nilclass {
+.nilclass,
+.emptystring,
+td.nilclass {
   color: lightGray;
   font-style: italic;
 }
@@ -28,8 +40,15 @@ td.bigdecimal, td.integer, td.float, td.decimal, td.decimalType, td.floatType, t
   font-size: 10px;
 }
 
-.time, .datetime, .activesupport-timewithzone, .date, .sequel-sqltime, td.dateType, td.datetimeType, td.timeType {
-  color:purple;
+.time,
+.datetime,
+.activesupport-timewithzone,
+.date,
+.sequel-sqltime,
+td.dateType,
+td.datetimeType,
+td.timeType {
+  color: purple;
 }
 
 td.booleanType {
@@ -80,7 +99,9 @@ td.checkboxes {
   &:not(:hover) i:not(.active) {
     opacity: 0;
   }
-  i {
+  i,
+  a.sort-up,
+  a.sort-down {
     cursor: pointer;
     position: absolute;
   }
@@ -92,17 +113,18 @@ td.checkboxes {
     bottom: 2px;
     right: 2px;
   }
-  .fa-chevron-up {
+  a.sort-up {
     top: 2px;
     left: 2px;
   }
-  .fa-chevron-down {
-    bottom: 2px;
+  a.sort-down {
+    bottom: 16px;
     left: 2px;
   }
 }
 table.table.items-list {
-  td.actions, th.actions {
+  td.actions,
+  th.actions {
     vertical-align: middle;
     text-align: right;
     max-width: 50px;
@@ -113,7 +135,7 @@ table.table.items-list {
   line-height: 34px;
 }
 
-input.form-control[type=color] {
+input.form-control[type="color"] {
   padding: 1px;
 }
 

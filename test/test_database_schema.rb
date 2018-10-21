@@ -15,7 +15,7 @@ ActiveRecord::Schema.verbose = false
 ActiveRecord::Base.connection.tables.each do |table|
   ActiveRecord::Base.connection.drop_table table
 end
-ActiveRecord::Schema.define(version: 27) do
+ActiveRecord::Schema.define(version: 28) do
   enable_extension :hstore
   create_table :users do |t|
     t.string :pseudo, :first_name, :last_name
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 27) do
     t.decimal :Average_Price_Online__c
     t.boolean :Awesome_Person__c
     t.time :daily_alarm
+    t.uuid :token
     t.column :nicknames, 'character varying[]'
     t.timestamps null: true
   end

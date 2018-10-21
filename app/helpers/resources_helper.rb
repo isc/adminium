@@ -13,7 +13,9 @@ module ResourcesHelper
     res = ''
     {'up' => key, 'down' => "#{key} desc"}.each do |direction, dorder|
       active = dorder == params[:order] ? 'active' : nil
-      res << link_to(url_for(whitelisted_params.merge(order: dorder)), title: sort_title(display_name, direction == 'up', original_key)) do
+      url = url_for(whitelisted_params.merge(order: dorder))
+      title = sort_title(display_name, direction == 'up', original_key)
+      res << link_to(url, title: title, class: "sort-#{direction}") do
         content_tag('i', '', class: "fa fa-chevron-#{direction} #{active}")
       end
     end

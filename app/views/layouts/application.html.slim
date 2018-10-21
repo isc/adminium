@@ -39,8 +39,7 @@ html lang="en" ng-app=""
           = yield
     = yield :modal
     = javascript_include_tag 'application'
-    - unless Rails.env.development?
-      = render '/layouts/uservoice'
+    = render '/layouts/uservoice' if Rails.env.production?
     .modal#modal-window tabindex="-1"
       .modal-dialog
         .modal-content

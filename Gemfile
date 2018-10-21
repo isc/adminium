@@ -63,6 +63,7 @@ group :production do
 end
 group :test do
   gem 'capybara'
+  gem 'chromedriver-helper'
   gem 'database_cleaner'
   gem 'factory_bot_rails'
   gem 'launchy'
@@ -70,6 +71,7 @@ group :test do
   gem 'mocha', require: false
   gem 'rack_session_access'
   gem 'rails-controller-testing'
+  gem 'selenium-webdriver'
   gem 'simplecov', require: false
   gem 'timecop'
 end

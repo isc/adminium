@@ -4,8 +4,9 @@ class DashboardTest < ActionDispatch::IntegrationTest
   test 'view dashboard' do
     login
     visit dashboard_path
-    assert_text 'Database size'
     assert_text 'Welcome On Board'
+    find('a', text: 'Close').click
+    assert_text 'Database size'
     visit dashboard_path
     assert_no_text 'Welcome On Board'
     assert_no_text 'Basic Search'

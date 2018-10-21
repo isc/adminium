@@ -8,8 +8,11 @@ class AccountsTest < ActionDispatch::IntegrationTest
   test 'pet project limitation' do
     login create(:account, plan: Account::Plan::PET_PROJECT)
     visit dashboard_path
+    find('a', text: 'Close').click
     click_link 'roles_users' # table number 6 is off limit
-    assert_equal dashboard_path, page.current_path
+    assert_selector '.modal', text: 'This table is not accessible'
+    visit resources_path(:roles_users)
+    assert_equal dashboard_path, current_path
     assert_text 'to the startup plan ($10 per month)'
   end
 
