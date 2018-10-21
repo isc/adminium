@@ -18,7 +18,7 @@ require 'mocha/setup'
 require 'rack_session_access/capybara'
 
 DatabaseCleaner.strategy = :truncation
-Capybara.default_driver = :selenium_chrome_headless
+Capybara.default_driver = ENV['DISABLE_HEADLESS'] ? :selenium_chrome : :selenium_chrome_headless
 
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
@@ -48,6 +48,13 @@ class ActionDispatch::IntegrationTest
     click_link pane_label while all(selector, text: text, minimum: 0).size.zero?
   end
 
+  def stub_resource_columns value
+    %i(serialized show form listing search).each do |key|
+      value[key] = [] unless value.key? key
+    end
+    Resource::Base.any_instance.stubs(:columns).returns value
+  end
+  
   teardown do
     Capybara.reset!
   end

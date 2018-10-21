@@ -564,11 +564,4 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     click_link 'Download (37 Bytes)'
     # assert_equal uploaded_file.data, page.body
   end
-
-  def stub_resource_columns value
-    %i(serialized show form listing search).each do |key|
-      value[key] = [] unless value.key? key
-    end
-    Resource::Base.any_instance.stubs(:columns).returns value
-  end
 end

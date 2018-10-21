@@ -1,31 +1,12 @@
 class TimeCharts
-  
+
   constructor: ->
-    newScript = document.createElement('script')
-    newScript.type = 'text/javascript'
-    newScript.src = 'https://www.google.com/jsapi'
-    document.getElementsByTagName("head")[0].appendChild(newScript)
     @setupTimeChartsCreation()
     @setupGroupingChange()
-    @dataBeforeGoogleChartsLoad = []
-    @loadGoogleCharts()
-  
-  loadGoogleCharts: =>
-    if window.hasOwnProperty 'google'
-      google.load 'visualization', '1',
-        callback: @googleChartsLoadCallback
-        packages: ['corechart']
-    else
-      setTimeout @loadGoogleCharts, 100
-  
-  googleChartsLoadCallback: =>
-    @googleChartsLoaded = true
-    @graphData args... for args in @dataBeforeGoogleChartsLoad
-  
+
   setupTimeChartsCreation: ->
     $('th i.time-chart').click (e) =>
       remoteModal '#time-chart', $(e.currentTarget).data('path'), @graphData
-      _gaq.push ['_trackPageview', "/#{@kind}_chart"] if window['_gaq']
     $(document).on 'click', '#time-chart.modal a.evolution-chart', (e) =>
       href = $(e.currentTarget).attr('href')
       remoteModal '#time-chart', href, @evolutionChart(href)
@@ -34,14 +15,11 @@ class TimeCharts
   setupGroupingChange: ->
     $(document).on 'change', '#time-chart.modal #grouping', (e) =>
       remoteModal '#time-chart', "#{$(e.currentTarget).data('path')}&grouping=#{e.currentTarget.value}", @graphData
-  
+
   statChart: (data, container) =>
     tbody = $(container).html('<table class="table table-condensed"><thead><tr><th>Metric</th><th>Value</th></tr></thead><tbody></tbody></table>').find('tbody')
     for row, i in data.chart_data
-      if row.length == 3
-        value = "<a href='#{@valueWithWhereLink(container, data, i)}'>#{row[1]}</a>"
-      else
-        value = row[1]
+      value = if row.length is 3 then "<a href='#{@valueWithWhereLink(container, data, i)}'>#{row[1]}</a>" else row[1]
       metric = $('<tr>').html("<th>#{row[0]}</th><td>#{value}</td>")
       tbody.append(metric)
 
@@ -66,59 +44,29 @@ class TimeCharts
     , 5000
 
   valueWithWhereLink: (wrapper, data, index) ->
-    link = wrapper.parents && wrapper.parents('.widget').find('h4 a').attr('href')
-    link = link || window.location.href
+    value = data.chart_data.keys[index]
+    value = "#{value}&grouping=#{data.grouping}" if data.chart_type is 'TimeChart'
+    link = $(wrapper).parents('.widget').find('h4 a').attr('href') || location.href
     sep = if (link.indexOf('?') isnt -1) then '&' else '?'
-    value = data.chart_data[index][2]
-    link += "#{sep}where[#{data.column}]=#{value}"
-  
+    "#{link}#{sep}where[#{data.column}]=#{value}"
+
   graphData: (data, container) =>
-    return @dataBeforeGoogleChartsLoad.push [data, container] unless @googleChartsLoaded
     container ||= '#chart_div'
-    data ||= window.data_for_graph
-
-    return $(container).text data.error if data.error
-    return $(container).text 'No data to chart for this grouping value.' if data.chart_data is null
-    return @statChart(data, container) if data.chart_type is 'StatChart'
-
-    dataTable = new google.visualization.DataTable()
-    if data.chart_type is 'TimeChart'
-      legend = 'none'
-      colors = ['#7d72bd']
-    else
-      legend = { position: 'right' }
-      colors = (row[3] for row in data.chart_data)
-    dataTable.addColumn 'string'
-    dataTable.addColumn 'number', 'Count'
-
-    rows = ([String(row[0]), row[1]] for row in data.chart_data)
-    dataTable.addRows rows
     wrapper = $(container)
-    width = wrapper.parent().css('width')
-    if width is '0px'
-      setTimeout =>
-        @graphData(data, container)
-      , 125
-    options = {width: width, height:300, colors: colors, legend: legend, chartArea:{top:15, left: '5%', height: '75%', width:'90%'}}
-    if data.chart_type is 'TimeChart'
-      chart = new google.visualization.ColumnChart(wrapper.get(0))
-    else
-      chart = new google.visualization.PieChart(wrapper.get(0))
-    chart.draw(dataTable, options)
-    google.visualization.events.addListener chart, 'select', =>
-      index = chart.getSelection()[0].row
-      link = wrapper.parents(".widget").find("h4 a").attr('href') || location.href
-      sep = if (link.indexOf('?') isnt -1) then '&' else '?'
-      if data.chart_type is 'PieChart'
-        value = data.chart_data[index][2]
-      else
-        value = "#{data.chart_data[index][2]}&grouping=#{data.grouping}"
-      link += "#{sep}where[#{data.column}]=#{value}"
-      location.href = link
+    data ||= window.data_for_graph
+    return setTimeout (=> @graphData(data, container)), 125 if wrapper.parent().css('width') is '0px'
+    return wrapper.text data.error if data.error
+    return wrapper.text 'No data to chart for this grouping value.' if data.chart_data is null
+    return @statChart(data, container) if data.chart_type is 'StatChart'
+    type = if data.chart_type is 'TimeChart' then 'bar' else 'percentage'
+    height = if data.chart_type is 'TimeChart' then 300 else 200
+    chart = new frappe.Chart container, {
+      data: data.chart_data, type: type, height: height, colors: data.chart_data.colors,
+      axisOptions: { xIsSeries: 1, xAxisMode: 'tick' }, isNavigable: true }
+    chart.parent.addEventListener 'data-select', (e) => location.href = @valueWithWhereLink(wrapper, data, e.index)
     $('#time-chart i[rel=tooltip]').tooltip()
 
-$ ->
-  window.time_charts = new TimeCharts()
+$ -> window.time_charts = new TimeCharts()
 
 window.remoteModal = (selector, path, callback) ->
   $(selector).html($('.loading_modal').html()).modal('show')
