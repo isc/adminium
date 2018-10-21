@@ -450,10 +450,10 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit new_resource_path(:users)
     find('#users_daily_alarm_4i').select '08'
     select '37'
-    find('#users_birthdate').set '22/5/2013'
+    find('#users_birthdate').set '5/5/2013'
     click_button 'Save'
     assert_equal '08:37', find('td[data-column-name=daily_alarm]').text
-    assert_equal 'May 22, 2013', find('td[data-column-name=birthdate]').text
+    assert_equal 'May 05, 2013', find('td[data-column-name=birthdate]').text
   end
 
   test 'update date time column with time zone configuration' do
