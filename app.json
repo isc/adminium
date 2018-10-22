@@ -12,7 +12,7 @@
       },
       "scripts": {
         "test":
-          "bin/rake test ; argos upload tmp/capybara --token aaacbbd69f88ea80cbfe34055c2974cfc3b9ef04"
+          "bin/rake test ; argos upload tmp/capybara --token aaacbbd69f88ea80cbfe34055c2974cfc3b9ef04 --branch $HEROKU_TEST_RUN_BRANCH"
       }
     }
   }

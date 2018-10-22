@@ -56,7 +56,7 @@ class TimeCharts
     data ||= window.data_for_graph
     return setTimeout (=> @graphData(data, container)), 125 if wrapper.parent().css('width') is '0px'
     return @alertDiv(wrapper, data.error, 'danger') if data.error
-    return @alertDiv(wrapper, 'No data to chart for this grouping value.', 'info') unless data.chart_data.labels.length
+    return @alertDiv(wrapper, 'No data to chart for this grouping value.', 'info') unless data.chart_data
     return @statChart(data, container) if data.chart_type is 'StatChart'
     type = if data.chart_type is 'TimeChart' then 'bar' else 'percentage'
     height = if data.chart_type is 'TimeChart' then 300 else 200

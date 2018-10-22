@@ -7,17 +7,19 @@ class ChartsTest < ActionDispatch::IntegrationTest
   end
 
   test 'display default timechart then periodic grouping' do
-    2.times { FixtureFactory.new(:user, created_at: Time.current.beginning_of_week) }
-    FixtureFactory.new(:user, created_at: (Time.current.beginning_of_week + 2.days))
-    display_chart :users, :created_at
-    actual = evaluate_script 'data_for_graph.chart_data.datasets[0].values'
-    expected = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0]
-    assert_equal expected, actual
-    select 'Day of week'
-    assert_text 'Monday'
-    assert_text 'Wednesday'
-    actual = evaluate_script 'data_for_graph.chart_data.datasets[0].values'
-    assert_equal [2, 1], actual
+    Timecop.travel '2018-10-21 21:00' do
+      2.times { FixtureFactory.new(:user, created_at: Time.current.beginning_of_week) }
+      FixtureFactory.new(:user, created_at: (Time.current.beginning_of_week + 2.days))
+      display_chart :users, :created_at
+      actual = evaluate_script 'data_for_graph.chart_data.datasets[0].values'
+      expected = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0]
+      assert_equal expected, actual
+      select 'Day of week'
+      assert_text 'Monday'
+      assert_text 'Wednesday'
+      actual = evaluate_script 'data_for_graph.chart_data.datasets[0].values'
+      assert_equal [2, 1], actual
+    end
   end
 
   test 'display pie chart on boolean' do
