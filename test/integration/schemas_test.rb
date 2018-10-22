@@ -9,6 +9,7 @@ class SchemasTest < ActionDispatch::IntegrationTest
     visit schema_path(:users)
     assert_text 'Column name'
     assert_selector 'a', text: 'Add a column'
+    save_screenshot 'schema_page'
   end
 
   test 'readonly schema page' do

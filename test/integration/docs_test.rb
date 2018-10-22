@@ -1,12 +1,11 @@
 require 'test_helper'
 
 class DocsTest < ActionDispatch::IntegrationTest
-  test 'landing' do
+  test 'browsing landing and documentation page' do
     visit root_path
-  end
-
-  test 'docs index' do
-    visit docs_path
+    save_screenshot 'landing_page.png'
+    click_link 'the docs'
+    save_screenshot 'documentation_index.png'
   end
 
   test 'show doc page' do

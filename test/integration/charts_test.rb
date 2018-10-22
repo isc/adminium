@@ -19,6 +19,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
       assert_text 'Wednesday'
       actual = evaluate_script 'data_for_graph.chart_data.datasets[0].values'
       assert_equal [2, 1], actual
+      save_screenshot 'time_chart_periodic_grouping.png'
     end
   end
 
@@ -30,6 +31,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
     assert_text 'True: 2'
     assert_text 'Not set: 1'
     assert_text 'False: 1'
+    save_screenshot 'percentage_chart_boolean.png'
   end
 
   test 'display pie chart on enums' do
@@ -46,6 +48,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
     ['Not set: 6', 'Débutant: 5', 'Chef: 4', 'new_role_1: 3', 'new_role_2: 2', 'new_role_3: 1'].each do |slice|
       assert_text slice
     end
+    save_screenshot 'percentage_chart_enum.png'
   end
 
   test 'display pie chart on foreign key with label column' do
@@ -86,6 +89,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
       .each do |metric|
         assert_text metric
       end
+    save_screenshot 'stat_chart.png'
   end
 
   private
