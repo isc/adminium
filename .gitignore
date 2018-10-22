@@ -16,3 +16,5 @@ coverage
 .powenv
 public/assets
 bin
+node_modules
+yarn-error.log

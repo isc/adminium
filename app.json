@@ -4,10 +4,15 @@
       "addons": ["heroku-redis", "heroku-postgresql", "heroku-postgresql"],
       "buildpacks": [
         { "url": "heroku/ruby" },
+        { "url": "heroku/nodejs" },
         { "url": "https://github.com/heroku/heroku-buildpack-google-chrome" }
       ],
       "env": {
         "DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL": true
+      },
+      "scripts": {
+        "test":
+          "bin/rake test ; argos upload tmp/capybara --token aaacbbd69f88ea80cbfe34055c2974cfc3b9ef04"
       }
     }
   }
