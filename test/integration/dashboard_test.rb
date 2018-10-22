@@ -5,6 +5,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
     login
     visit dashboard_path
     assert_text 'Welcome On Board'
+    save_screenshot 'welcome_modal.png'
     find('a', text: 'Close').click
     assert_text 'Database size'
     visit dashboard_path
@@ -12,7 +13,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
     assert_no_text 'Basic Search'
     Timecop.travel 2.days.from_now do
       visit dashboard_path
-      assert_text 'Basic Search'
+      assert_selector '.modal-title', text: 'Basic Search'
     end
   end
 
@@ -23,6 +24,10 @@ class DashboardTest < ActionDispatch::IntegrationTest
     login account
     visit dashboard_path
     assert_selector '.widget', count: 2
+    find('a', text: 'Close').click
+    assert_no_selector '.modal'
+    assert_selector '.alert', text: 'No data to chart'
+    save_screenshot 'dashboard_with_widget.png'
   end
 
   test 'catching database url errors' do

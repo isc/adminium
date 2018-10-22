@@ -2,7 +2,7 @@ class Widget
 
   constructor: ->
     @setupSorting()
-    @fetchAllContent()
+    @fetchContent widget for widget in $('.widget')
     @setupCreationFromDashboard()
     @setupCreationFromListing()
     @setupDeletion()
@@ -26,7 +26,7 @@ class Widget
         $('#widget_advanced_search').empty().append($('<option>'))
         $('<option>').text(search).val(search).appendTo('#widget_advanced_search') for search in data
       $('#widget_advanced_search').closest('.form-group').parent().toggleClass('hidden', data.length is 0)
-  
+
   fillColumnsSelection: (table) ->
     @fetchAdvancedSearches table
     widgetType = $('input[name="widget[type]"]:checked').val()
@@ -41,9 +41,6 @@ class Widget
       target.removeClass('subtle add_widget')
       $(target.data('form')).submit()
 
-  fetchAllContent: ->
-    @fetchContent widget for widget in $('.widget')
-
   fetchContent: (widget) ->
     $.getJSON $(widget).data('query-url'), (data) =>
       widget = $(".widget[data-widget-id=#{data.id}]")
@@ -55,13 +52,13 @@ class Widget
           window.location.href = link.attr('href') if link.length
         widget.find('h4 small').removeClass('hidden').find('span').text(data.total_count) if data.total_count
       else
-        time_charts.graphData data, widget.find('.content')
+        time_charts.graphData data, widget.find('.content').get(0)
 
   setupDeletion: ->
     $('.widget .btn-mini').on 'ajax:success', -> $(this).closest('.widget').remove()
 
   updateWidgetSorting: (id, data) ->
-    $.ajax "/widgets/#{id}", type: "PUT", data: {widget: data}
+    $.ajax "/widgets/#{id}", type: 'PUT', data: { widget: data }
 
   setupSorting: ->
     $('.widget .content').on 'click', 'th.column_header a', (ev) =>

@@ -32,3 +32,5 @@ Style/RescueModifier:
   Enabled: false
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
+Lint/Debugger:
+  Enabled: false

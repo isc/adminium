@@ -55,8 +55,8 @@ class TimeCharts
     wrapper = $(container)
     data ||= window.data_for_graph
     return setTimeout (=> @graphData(data, container)), 125 if wrapper.parent().css('width') is '0px'
-    return wrapper.text data.error if data.error
-    return wrapper.text 'No data to chart for this grouping value.' if data.chart_data is null
+    return @alertDiv(wrapper, data.error, 'danger') if data.error
+    return @alertDiv(wrapper, 'No data to chart for this grouping value.', 'info') unless data.chart_data.labels.length
     return @statChart(data, container) if data.chart_type is 'StatChart'
     type = if data.chart_type is 'TimeChart' then 'bar' else 'percentage'
     height = if data.chart_type is 'TimeChart' then 300 else 200
@@ -65,6 +65,8 @@ class TimeCharts
       axisOptions: { xIsSeries: 1, xAxisMode: 'tick' }, isNavigable: true }
     chart.parent.addEventListener 'data-select', (e) => location.href = @valueWithWhereLink(wrapper, data, e.index)
     $('#time-chart i[rel=tooltip]').tooltip()
+
+  alertDiv: (container, message, level) => container.html("<div class='alert alert-#{level}'>#{message}</div>")
 
 $ -> window.time_charts = new TimeCharts()
 
