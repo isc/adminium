@@ -150,6 +150,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     click_link_with_title 'Create a new row'
     # FIXME: not ideal support for polymorphic belongs_to in the form at the moment
     assert_selector 'input[type=number][name="comments[commentable_id]"]'
+    save_screenshot 'resources_new.png'
   end
 
   test 'save new' do
@@ -169,6 +170,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_selector '.alert.alert-danger'
     assert_text 'New User'
     assert has_field?('Age', with: '123123123183829384728832')
+    save_screenshot 'resources_update_failed.png'
   end
 
   test 'failed save due to invalid cast' do
@@ -287,6 +289,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test 'destroy from show' do
     user = FixtureFactory.new(:user).factory
     visit resource_path(:users, user)
+    save_screenshot 'resources_show.png'
     accept_alert { click_link_with_title 'Destroy' }
     assert_selector '.alert-success', text: 'successfully destroyed'
     visit resource_path(:users, user)
@@ -365,6 +368,8 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, pseudo: 'bobleponge')
     visit resources_path(:users)
     click_link_with_title 'Export rows'
+    assert_selector '.modal'
+    save_screenshot 'export.png'
     click_button 'Export records to CSV'
     # FIXME: https://collectiveidea.com/blog/archives/2012/01/27/testing-file-downloads-with-capybara-and-chromedriver
     assert_text 'bobleponge'
