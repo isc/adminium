@@ -17,9 +17,11 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit resources_path(:users)
     assert_selector 'table.items-list'
     assert_selector 'th a', text: 'First name'
+    save_screenshot 'resources_index.png'
     click_link_with_title 'Listing settings'
     open_accordion 'Displayed columns', selector: 'label', text: 'Check / uncheck all'
     within('#listing_columns_list') { uncheck 'First name' }
+    save_screenshot 'listing_settings_modal.png'
     click_button 'Save settings'
     assert_no_selector 'th a', text: 'First name'
   end
@@ -62,6 +64,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_text 'Haliday'
     assert_text 'Deep'
     assert_no_text 'Carey'
+    save_screenshot 'resources_index_with_search.png'
 
     fill_in 'search_input', with: 'Johnny singer'
     find('form.navbar-left button').click
