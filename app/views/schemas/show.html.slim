@@ -128,7 +128,7 @@ h4
           | Restart identity
         = submit_tag "Truncate the table", class: "btn btn-danger"
 
-  .modal.fade#add-column tabindex="-1"
+  .modal#add-column tabindex="-1"
     .modal-dialog
       .modal-content
         = form_tag schema_path(params[:table]), method: :put, class: 'form-horizontal' do
