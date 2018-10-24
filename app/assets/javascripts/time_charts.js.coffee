@@ -62,8 +62,9 @@ class TimeCharts
     height = if data.chart_type is 'TimeChart' then 300 else 200
     chart = new frappe.Chart container, {
       data: data.chart_data, type: type, height: height, colors: data.chart_data.colors,
-      axisOptions: { xIsSeries: 1, xAxisMode: 'tick' }, isNavigable: true }
-    chart.parent.addEventListener 'data-select', (e) => location.href = @valueWithWhereLink(wrapper, data, e.index)
+      axisOptions: { xIsSeries: 1, xAxisMode: 'tick' } }
+    $(chart.parent).on 'click', 'rect[data-point-index]', (e) =>
+      location.href = @valueWithWhereLink(wrapper, data, Number(e.target.dataset.pointIndex))
     $('#time-chart i[rel=tooltip]').tooltip()
 
   alertDiv: (container, message, level) => container.html("<div class='alert alert-#{level}'>#{message}</div>")
