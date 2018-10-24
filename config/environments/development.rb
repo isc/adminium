@@ -48,7 +48,6 @@ Rails.application.configure do
   # Suppress logger output for asset requests.
   config.assets.quiet = true
 
-  config.middleware.insert_before ActionDispatch::DebugExceptions, Rack::LiveReload, no_swf: true
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
 

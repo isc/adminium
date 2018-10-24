@@ -44,11 +44,8 @@ end
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'guard', require: false
-  gem 'guard-livereload', require: false
   gem 'kensa'
   gem 'populator'
-  gem 'rack-livereload'
   gem 'rack-mini-profiler'
   gem 'rb-fsevent', require: false
   gem 'spring'
