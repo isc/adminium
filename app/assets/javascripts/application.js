@@ -1,4 +1,3 @@
-//= require frappe-charts.min.js
 //= require jquery-2.1.4.min
 //= require bootstrap-3.3.6.min
 //= require modernizr-custom

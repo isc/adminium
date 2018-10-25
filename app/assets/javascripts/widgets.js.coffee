@@ -52,7 +52,7 @@ class Widget
           window.location.href = link.attr('href') if link.length
         widget.find('h4 small').removeClass('hidden').find('span').text(data.total_count) if data.total_count
       else
-        time_charts.graphData data, widget.find('.content').get(0)
+        time_charts.graphData data, widget.find('.content')
 
   setupDeletion: ->
     $('.widget .btn-mini').on 'ajax:success', -> $(this).closest('.widget').remove()

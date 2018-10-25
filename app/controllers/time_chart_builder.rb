@@ -16,13 +16,9 @@ module TimeChartBuilder
       .select(aggregate.as('chart_date'), Sequel.function(:count, Sequel.lit('*')))
       .order(aggregate)
     @items = @items.where(qualify(params[:table], params[:column]) => date_range) unless periodic_grouping?
-    @data = @items.all.map { |row| format_date(row.delete(:chart_date)) + row.values }
+    @data = @items.all.map {|row| format_date(row.delete(:chart_date)) + row.values}
     add_missing_zeroes if grouping == 'daily' && @data.present?
-    @data =
-      if @data.present?
-        { labels: @data.map(&:first), keys: @data.map(&:second), datasets: [{ values: @data.map {|d| d[2].to_i } }],
-          colors: ['#7d72bd'] }
-      end
+    @data = @data.map {|e| [e[0], e[2].to_i, e[1]]} if @data
     respond_to do |format|
       format.html do
         @widget = current_account.time_chart_widgets.where(table: params[:table], columns: params[:column], grouping: grouping).first

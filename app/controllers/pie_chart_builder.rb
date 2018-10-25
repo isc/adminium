@@ -10,10 +10,9 @@ module PieChartBuilder
     @data.map! do |row|
       key, count = row.values
       v = enum[key] || enum[key.to_s] || {'label' => key, 'color' => new_color}
-      [v['label'], count, key, v['color']]
+      [v['label'], count, key, v['color'] || new_color]
     end
-    @data = { labels: @data.map(&:first), colors: @data.map(&:last), keys: @data.map(&:third),
-              datasets: [{ values: @data.map {|d| d[1] } }] }
+
     respond_to do |format|
       format.html do
         @widget = current_account.pie_chart_widgets.find_by table: params[:table], columns: params[:column]

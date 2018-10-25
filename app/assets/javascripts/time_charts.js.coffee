@@ -1,12 +1,29 @@
 class TimeCharts
 
   constructor: ->
+    newScript = document.createElement('script')
+    newScript.type = 'text/javascript'
+    newScript.src = 'https://www.google.com/jsapi'
+    document.getElementsByTagName("head")[0].appendChild(newScript)
     @setupTimeChartsCreation()
     @setupGroupingChange()
+    @dataBeforeGoogleChartsLoad = []
+    @loadGoogleCharts()
+
+  loadGoogleCharts: =>
+    if window.hasOwnProperty 'google'
+      google.load 'visualization', '1',
+        callback: @googleChartsLoadCallback
+        packages: ['corechart']
+    else
+      setTimeout @loadGoogleCharts, 100
+
+  googleChartsLoadCallback: =>
+    @googleChartsLoaded = true
+    @graphData args... for args in @dataBeforeGoogleChartsLoad
 
   setupTimeChartsCreation: ->
-    $('th i.time-chart').click (e) =>
-      remoteModal '#time-chart', $(e.currentTarget).data('path'), @graphData
+    $('th i.time-chart').click (e) => remoteModal '#time-chart', $(e.currentTarget).data('path'), @graphData
     $(document).on 'click', '#time-chart.modal a.evolution-chart', (e) =>
       href = $(e.currentTarget).attr('href')
       remoteModal '#time-chart', href, @evolutionChart(href)
@@ -44,27 +61,44 @@ class TimeCharts
     , 5000
 
   valueWithWhereLink: (wrapper, data, index) ->
-    value = data.chart_data.keys[index]
-    value = "#{value}&grouping=#{data.grouping}" if data.chart_type is 'TimeChart'
+    value = data.chart_data[index][2]
+    value += "&grouping=#{data.grouping}" if data.chart_type is 'TimeChart'
     link = $(wrapper).parents('.widget').find('h4 a').attr('href') || location.href
     sep = if (link.indexOf('?') isnt -1) then '&' else '?'
     "#{link}#{sep}where[#{data.column}]=#{value}"
 
   graphData: (data, container) =>
+    return @dataBeforeGoogleChartsLoad.push [data, container] unless @googleChartsLoaded
     container ||= '#chart_div'
-    wrapper = $(container)
     data ||= window.data_for_graph
-    return setTimeout (=> @graphData(data, container)), 125 if wrapper.parent().css('width') is '0px'
+    wrapper = $(container)
     return @alertDiv(wrapper, data.error, 'danger') if data.error
-    return @alertDiv(wrapper, 'No data to chart for this grouping value.', 'info') unless data.chart_data
+    return @alertDiv(wrapper, 'No data to chart for this grouping value.', 'info') unless data.chart_data.length
     return @statChart(data, container) if data.chart_type is 'StatChart'
-    type = if data.chart_type is 'TimeChart' then 'bar' else 'percentage'
-    height = if data.chart_type is 'TimeChart' then 300 else 200
-    chart = new frappe.Chart container, {
-      data: data.chart_data, type: type, height: height, colors: data.chart_data.colors,
-      axisOptions: { xIsSeries: 1, xAxisMode: 'tick' } }
-    $(chart.parent).on 'click', 'rect[data-point-index]', (e) =>
-      location.href = @valueWithWhereLink(wrapper, data, Number(e.target.dataset.pointIndex))
+    width = wrapper.parent().css('width')
+    return setTimeout (=> @graphData(data, container)), 125 if width is '0px'
+
+    dataTable = new google.visualization.DataTable()
+    dataTable.addColumn 'string'
+    dataTable.addColumn 'number', 'Count'
+    dataTable.addRows ([String(row[0]), row[1]] for row in data.chart_data)
+    if data.chart_type is 'TimeChart'
+      legend = 'none'
+      colors = ['#7d72bd']
+    else
+      legend = { position: 'right' }
+      colors = (row[3] for row in data.chart_data)
+    options = {
+      width: width, height:300, colors: colors, legend: legend,
+      chartArea: {top:15, left: '5%', height: '75%', width:'90%'}
+    }
+    chart = if data.chart_type is 'TimeChart'
+      new google.visualization.ColumnChart(wrapper.get(0))
+    else
+      new google.visualization.PieChart(wrapper.get(0))
+    chart.draw(dataTable, options)
+    google.visualization.events.addListener chart, 'select', =>
+      location.href = @valueWithWhereLink wrapper, data, chart.getSelection()[0].row
     $('#time-chart i[rel=tooltip]').tooltip()
 
   alertDiv: (container, message, level) => container.html("<div class='alert alert-#{level}'>#{message}</div>")
