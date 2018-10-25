@@ -64,7 +64,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
     Resource::Base.any_instance.stubs(:label_column).returns 'pseudo'
     display_chart :comments, :user_id
     actual = evaluate_script 'data_for_graph.chart_data'
-    assert_equal [['Bob', 2, 2, '#CCC'], ['Rob', 1, 1, '#AAA']], actual
+    assert_equal [['Bob', 2], ['Rob', 1]], actual.map { |r| r[0..1] }
   end
 
   test 'display pie chart with where and grouping' do
@@ -88,6 +88,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
   end
 
   test 'display stat chart' do
+    stub_resource_columns listing: %i(role kind)
     2.times { FixtureFactory.new(:user, kind: 5) }
     FixtureFactory.new(:user, kind: 10)
     FixtureFactory.new(:user, kind: nil)
