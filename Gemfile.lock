@@ -70,6 +70,9 @@ GEM
       rack (>= 1.6.0)
       rack-test (>= 0.6.3)
       xpath (~> 3.1)
+    capybara-screenshot (1.0.22)
+      capybara (>= 1.0, < 4)
+      launchy
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
     chromedriver-helper (2.1.0)
@@ -361,6 +364,7 @@ DEPENDENCIES
   bootstrap-components-helpers
   bootstrap-wysihtml5-rails
   capybara
+  capybara-screenshot
   chromedriver-helper
   coffee-rails
   database_cleaner

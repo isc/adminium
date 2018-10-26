@@ -14,6 +14,7 @@ require File.expand_path('../config/environment', __dir__)
 require 'rails/test_help'
 require 'test_database_schema.rb'
 require 'capybara/rails'
+require 'capybara-screenshot/minitest'
 require 'mocha/setup'
 require 'rack_session_access/capybara'
 
@@ -33,6 +34,7 @@ end
 
 class ActionDispatch::IntegrationTest
   include Capybara::DSL
+  include Capybara::Screenshot::MiniTestPlugin
 
   def login account = nil
     account ||= create :account
@@ -54,7 +56,7 @@ class ActionDispatch::IntegrationTest
     end
     Resource::Base.any_instance.stubs(:columns).returns value
   end
-  
+
   teardown do
     Capybara.reset!
   end

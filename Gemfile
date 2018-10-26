@@ -60,6 +60,7 @@ group :production do
 end
 group :test do
   gem 'capybara'
+  gem 'capybara-screenshot'
   gem 'chromedriver-helper'
   gem 'database_cleaner'
   gem 'factory_bot_rails'
