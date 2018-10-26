@@ -452,6 +452,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
 
   test 'bulk update and nullify settings' do
+    # FIXME: add the time_zone to the mix and it gets stuck for 2 or 3 seconds in default_input_type
     stub_resource_columns form: %i(last_name first_name age role), listing: %i(last_name first_name age role)
     names = %w(John Jane)
     Array.new(2) do |i|
