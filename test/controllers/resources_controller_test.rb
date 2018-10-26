@@ -4,7 +4,6 @@ class ResourcesControllerTest < ActionController::TestCase
   def setup
     @account = create :account, plan: 'startup'
     session[:account] = @account.id
-    FixtureFactory.clear_db
     @fixtures = ['Michel', 'Martin', nil].each_with_index.map do |pseudo, index|
       FixtureFactory.new(:user, pseudo: pseudo, admin: false, age: (17 + index),
                                 activated_at: (2 * (index - 1)).week.ago)
@@ -151,7 +150,6 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   def test_bulk_update
-    FixtureFactory.clear_db
     request.env['HTTP_REFERER'] = 'http://example.com'
     names = %w(John Jane)
     users = Array.new(2) do |i|
@@ -178,7 +176,6 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   def test_update
-    FixtureFactory.clear_db
     user = FixtureFactory.new(:user, age: 34, role: 'Developer', last_name: 'Johnson').factory
     params = {table: 'users', id: user.id, users: {role: '', last_name: '', age: ''},
               users_nullify_settings: {role: 'null', last_name: 'empty_string'}}

@@ -2,7 +2,6 @@ require 'test_helper'
 
 class ChartsTest < ActionDispatch::IntegrationTest
   def setup
-    FixtureFactory.clear_db
     login
   end
 
@@ -46,12 +45,14 @@ class ChartsTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:user, role: 'new_role_3')
     display_chart :users, :role
     actual = evaluate_script 'data_for_graph.chart_data'
-    expected = [['Not set', 6, nil, '#DDD'],
+    expected = [
+      ['Not set', 6, nil, '#DDD'],
       ['Débutant', 5, 'noob', '#AAA'],
       ['Chef', 4, 'admin', '#CCC'],
       ['new_role_1', 3, 'new_role_1', '#AAA'],
       ['new_role_2', 2, 'new_role_2', '#CCC'],
-      ['new_role_3', 1, 'new_role_3', '#AAA']]
+      ['new_role_3', 1, 'new_role_3', '#AAA']
+    ]
     assert_equal expected, actual
     save_screenshot 'percentage_chart_enum.png'
   end
@@ -64,7 +65,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
     Resource::Base.any_instance.stubs(:label_column).returns 'pseudo'
     display_chart :comments, :user_id
     actual = evaluate_script 'data_for_graph.chart_data'
-    assert_equal [['Bob', 2], ['Rob', 1]], actual.map { |r| r[0..1] }
+    assert_equal [['Bob', 2], ['Rob', 1]], (actual.map { |r| r[0..1] })
   end
 
   test 'display pie chart with where and grouping' do

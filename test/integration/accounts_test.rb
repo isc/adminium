@@ -1,10 +1,6 @@
 require 'test_helper'
 
 class AccountsTest < ActionDispatch::IntegrationTest
-  def setup
-    FixtureFactory.clear_db
-  end
-
   test 'pet project limitation' do
     login create(:account, plan: Account::Plan::PET_PROJECT)
     visit dashboard_path

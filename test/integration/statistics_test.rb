@@ -2,7 +2,6 @@ require 'test_helper'
 
 class StatisticsTest < ActionDispatch::IntegrationTest
   def setup
-    FixtureFactory.clear_db
     login
   end
 

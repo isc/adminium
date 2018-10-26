@@ -24,6 +24,11 @@ Capybara.default_driver = ENV['DISABLE_HEADLESS'] ? :selenium_chrome : :selenium
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
   self.use_transactional_tests = false
+
+  setup do
+    FixtureFactory.clear_db
+  end
+
   teardown do
     REDIS.flushdb
     Rails.cache.clear

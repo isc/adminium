@@ -4,7 +4,6 @@ class SearchesControllerTest < ActionController::TestCase
   def setup
     @account = create :account, plan: 'startup'
     session[:account] = @account.id
-    FixtureFactory.clear_db
     @fixtures = []
   end
 

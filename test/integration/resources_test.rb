@@ -2,7 +2,6 @@ require 'test_helper'
 
 class ResourcesTest < ActionDispatch::IntegrationTest
   def setup
-    FixtureFactory.clear_db
     @account = login
   end
 
