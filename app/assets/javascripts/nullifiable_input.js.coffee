@@ -1,9 +1,8 @@
 class @NullifiableInput
-  
+
   @setup: (path, bulkEdit) ->
-    $(path).each (index, elt) ->
-      new NullifiableInput($(elt), bulkEdit)
-  
+    $(path).each (index, elt) -> new NullifiableInput($(elt), bulkEdit)
+
   constructor: (input, bulkEdit, @type) ->
     @bulkEditMode = bulkEdit
     @input = input
@@ -32,22 +31,22 @@ class @NullifiableInput
       @unselectBoth()
     else
       @switchEmptyInputValue @null_btn, false if input.data('null-value')
-  
+
   displaySwitchEmptyValueLink: =>
     @toggleBtns()
-  
+
   toggleBtns: =>
     show = @input.val().length is 0
     @unselectBoth() if show and @bulkEditMode
     @btns.toggleClass('hidden', not show)
-    
+
   setBtnPositions: =>
     return if @input.length is 0
     left = @input.position().left + @input.width() - @empty_string_btn.width() + 8
     top = @input.position().top
     @empty_string_btn.css('left', left)
     @null_btn.css('left', left - @null_btn.width() - 15)
-  
+
   switchEmptyInputValue: (link, user_action) =>
     @input.focus() if user_action
     return @unselectBoth() if @bulkEditMode and link.hasClass 'btn-info'

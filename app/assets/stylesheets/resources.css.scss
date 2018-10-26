@@ -3,8 +3,9 @@
     table-layout: fixed;
   }
   .table {
-    border: 1px solid #DDD;
-    td, th {
+    border: 1px solid #ddd;
+    td,
+    th {
       border: none;
     }
     td {
@@ -13,16 +14,13 @@
       form {
         width: 99%;
         margin: 0.5%;
-        .controls:not(.datetime-in-place-edit) input {
-          width: 80%;
-        }
       }
     }
     th {
       position: relative;
-      background: #F9F9F9;
+      background: #f9f9f9;
       color: #5e6469;
-      border-right: 1px solid #F1F1F1;
+      border-right: 1px solid #f1f1f1;
       text-align: right;
       white-space: nowrap;
       overflow: hidden;
@@ -62,10 +60,11 @@
     max-height: 305px;
   }
 }
-#chart_div, .stat_chart_widget {
+#chart_div,
+.stat_chart_widget {
   .table th:first-child {
     width: 33%;
-    border-right: 1px solid #CCC;
+    border-right: 1px solid #ccc;
     text-align: right;
   }
 }

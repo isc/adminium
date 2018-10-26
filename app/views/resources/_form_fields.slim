@@ -4,7 +4,7 @@
       - if required_constraints && resource.required_column?(name)
         abbr> title="required" *
       = resource.column_display_name name
-    .col-sm-8
+    .col-sm-8.controls
       - if (assoc_info = resource.foreign_key?(name)) && !assoc_info[:polymorphic]
         - foreign_resource = resource_for assoc_info[:referenced_table]
         - count = foreign_resource.count_with_timeout

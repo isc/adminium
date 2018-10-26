@@ -451,6 +451,27 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_equal '37', page.find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=age]").text
   end
 
+  test 'bulk update and nullify settings' do
+    stub_resource_columns form: %i(last_name first_name age role), listing: %i(last_name first_name age role)
+    names = %w(John Jane)
+    Array.new(2) do |i|
+      FixtureFactory.new(:user, age: 34, role: 'Developer', last_name: 'Johnson', first_name: names[i]).factory
+    end
+    visit resources_path(:users)
+    assert_text 'Johnson', count: 2
+    find('thead input[type=checkbox]').click
+    click_link_with_title 'Edit selected rows'
+    fill_in 'Age', with: 55
+    all('.empty_string_btn')[0].click # click on empty string button for last name column
+    all('.null_btn')[2].click # click null button for role column
+    click_on 'Update 2 Users'
+    assert_no_text 'Johnson'
+    assert_selector 'td[data-column-name="role"]', text: 'null'
+    assert_selector 'td[data-column-name="last_name"]', text: 'empty string'
+    assert_text 'John'
+    assert_text 'Jane'
+  end
+
   test 'edit and display time and date column' do
     stub_resource_columns form: %i(daily_alarm birthdate), listing: %i(daily_alarm birthdate),
                           show: %i(daily_alarm birthdate)
@@ -524,7 +545,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
       set_column_default :delete_on, Sequel::CURRENT_DATE
     end
     visit new_resource_path(:documents)
-    v = Date.today.to_s
+    v = Date.current.to_s
     assert_equal v, find('input#documents_delete_on').value
     assert_equal v, find('input#documents_some_datetime').value
     generic.cleanup

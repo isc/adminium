@@ -51,16 +51,16 @@ nav.navbar.navbar-default
             .input-group-btn
               button.btn.btn-default>
                 i.fa.fa-search
-        .btn-group
-          - if user_can? 'create', params[:table]
-            = icon_button_link new_resource_path(table:params[:table]), 'plus', 'Create a new row', class: 'create-action'
-          - if user_can? 'edit', params[:table]
-            = icon_button_link '#', 'pencil', 'Edit selected rows', disabled: 'disabled', class: 'bulk-edit'
-          - if user_can? 'destroy', params[:table]
-            = icon_button_link '#', 'trash', 'Delete selected rows', disabled: 'disabled', class: 'bulk-destroy'
-          = icon_button_link '#export', 'download', 'Export rows', data: {toggle: 'modal'}
-          - if user_can? 'create', params[:table]
-            = icon_button_link import_resources_path(table: params[:table]), 'upload', 'Import rows'
+      .btn-group
+        - if user_can? 'create', params[:table]
+          = icon_button_link new_resource_path(table:params[:table]), 'plus', 'Create a new row', class: 'create-action'
+        - if user_can? 'edit', params[:table]
+          = icon_button_link '#', 'pencil', 'Edit selected rows', disabled: 'disabled', class: 'bulk-edit'
+        - if user_can? 'destroy', params[:table]
+          = icon_button_link '#', 'trash', 'Delete selected rows', disabled: 'disabled', class: 'bulk-destroy'
+        = icon_button_link '#export', 'download', 'Export rows', data: {toggle: 'modal'}
+        - if user_can? 'create', params[:table]
+          = icon_button_link import_resources_path(table: params[:table]), 'upload', 'Import rows'
       .navbar-right
         => render 'next_previous_page', scope: @items
         = settings_button 'Listing settings'

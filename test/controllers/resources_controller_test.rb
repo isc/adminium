@@ -149,24 +149,6 @@ class ResourcesControllerTest < ActionController::TestCase
     assert_equal @records.map(&:id), assigns[:record_ids].map(&:to_i)
   end
 
-  def test_bulk_update
-    request.env['HTTP_REFERER'] = 'http://example.com'
-    names = %w(John Jane)
-    users = Array.new(2) do |i|
-      FixtureFactory.new(:user, age: 34, role: 'Developer', last_name: 'Johnson', first_name: names[i]).factory
-    end
-    params = {table: 'users', record_ids: users.map(&:id)}
-    params[:users] = {role: '', last_name: '', first_name: '', age: 55}
-    params[:users_nullify_settings] = {role: 'null', last_name: 'empty_string', first_name: ''}
-    post :bulk_update, params: params
-    get :index, params: {table: 'users'}
-    assigns[:items].each do |user|
-      assert_nil user[:role]
-      assert_equal '', user[:last_name]
-      assert names.include?(user[:first_name])
-    end
-  end
-
   def test_search_for_association_input
     get :search, params: {table: 'users', search: 'Loulou', primary_key: 'id'}
     data = JSON.parse @response.body

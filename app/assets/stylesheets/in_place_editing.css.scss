@@ -1,4 +1,6 @@
-td[data-raw-value], td.nilclass, td[data-editable] {
+td[data-raw-value],
+td.nilclass,
+td[data-editable] {
   padding-right: 20px !important;
   position: relative;
   i.cell-action {
@@ -24,7 +26,9 @@ td[data-raw-value], td.nilclass, td[data-editable] {
 td[data-editable] {
   form {
     padding: 10px;
-    select, input[type=text], .select2-container {
+    select,
+    input[type="text"],
+    .select2-container {
       width: 235px;
     }
     textarea {
@@ -33,19 +37,19 @@ td[data-editable] {
     }
   }
 }
-.resource-form .controls {
-  position: relative;
-}
 .form-horizontal {
-  .null_btn, .empty_string_btn {
-    bottom: 4px;
+  .null_btn,
+  .empty_string_btn {
+    bottom: 5px;
   }
 }
 .form-inline {
-  .null_btn, .empty_string_btn {
+  .null_btn,
+  .empty_string_btn {
     bottom: 24px;
   }
 }
-.null_btn, .empty_string_btn {
+.null_btn,
+.empty_string_btn {
   position: absolute;
 }
