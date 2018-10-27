@@ -35,17 +35,6 @@ module PieChartBuilder
     Sequel.as(Sequel.function(:sum, Sequel.case({{qualify(resource.table, c) => x} => 1}, 0)), "c#{rand(1000)}")
   end
 
-  def apply_enum_statistics
-    resource.schema_hash.each do |name, _|
-      enum_values = resource.enum_values_for(name)
-      next if enum_values.blank?
-      enum_values.each do |key, value|
-        @projections.push sum_case_when(name, key)
-        @select_values.push [name, value]
-      end
-    end
-  end
-
   def determine_enum
     name = params[:column].to_sym
     enum =
