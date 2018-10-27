@@ -12,7 +12,7 @@ html lang="en"
     meta name="viewport" content="width=device-width, initial-scale=1.0"
     meta name="twitter:widgets:csp" content="on"
     link href="images/favicon.ico" rel="shortcut icon"
-  body.landing
+  body.landing class="rails-env-#{Rails.env}"
     .container
       - flash.each do |k, v|
         .alert.alert-dismissible class="alert-#{flash_class k}"

@@ -15,7 +15,7 @@ html lang="en" ng-app=""
     - [144, 114, 72].each do |size|
       link rel="apple-touch-icon" sizes="#{size}x#{size}" href="/images/ios-icons/touch-icon-#{size}.png"
     link href="/images/favicon.ico" rel="shortcut icon"
-  body class="#{controller.controller_name} #{controller.action_name}"
+  body class="#{controller.controller_name} #{controller.action_name} rails-env-#{Rails.env}"
     - if session[:account]
       div#plan style="display:none" = current_account.plan
     = render '/layouts/demo'
