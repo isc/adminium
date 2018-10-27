@@ -9,7 +9,6 @@ class ApplicationController < ActionController::Base
   before_action :connect_to_db
   before_action :set_source_cookie
   after_action :cleanup_generic
-  after_action :track_account_action
   around_action :tag_current_account
 
   helper_method :global_settings, :current_account, :current_user, :admin?, :current_account?, :resource_for
@@ -118,18 +117,6 @@ class ApplicationController < ActionController::Base
 
   def heroku_api
     @api ||= PlatformAPI.connect_oauth(session[:heroku_access_token]) if session[:heroku_access_token]
-  end
-
-  def track_account_action
-    format = ".#{request.format.to_s.split('/').last}" if request.format != 'text/html'
-    return unless session[:account]
-    attrs = {account_id: session[:account], action: "#{params[:controller]}##{params[:action]}#{format}"}
-    begin
-      rows = Statistic.where(attrs).update_all ['value = value + 1, updated_at = ?', Time.current]
-      Statistic.create attrs.merge(value: 1) if rows.zero?
-    rescue PG::UniqueViolation
-      retry
-    end
   end
 
   def valid_db_url?
