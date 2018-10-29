@@ -2,11 +2,18 @@ module PieChartBuilder
   private
 
   def pie_chart
-    column = qualify params[:table], params[:column]
     @items = resource.query
+    if params[:column]['.']
+      foreign_key, column_name = params[:column].split('.')
+      column = qualify(join_belongs_to(foreign_key), column_name.to_sym)
+      table = resource.belongs_to_association(foreign_key.to_sym)[:referenced_table]
+      enum = determine_enum table, column_name
+    else
+      column = qualify params[:table], params[:column]
+      enum = determine_enum params[:table], params[:column]
+    end
     dataset_filtering
     @data = @items.group_and_count(column).reverse_order(:count).limit(100).to_a
-    enum = determine_enum
     @data.map! do |row|
       key, count = row.values
       v = enum[key] || enum[key.to_s] || {'label' => key, 'color' => new_color}
@@ -31,12 +38,9 @@ module PieChartBuilder
     %w(#CCC #AAA)[@i % 2]
   end
 
-  def sum_case_when c, x
-    Sequel.as(Sequel.function(:sum, Sequel.case({{qualify(resource.table, c) => x} => 1}, 0)), "c#{rand(1000)}")
-  end
-
-  def determine_enum
-    name = params[:column].to_sym
+  def determine_enum(table_name, name)
+    resource = resource_for table_name
+    name = name.to_sym
     enum =
       if resource.boolean_column? name
         options = resource.column_options(name)
@@ -55,9 +59,17 @@ module PieChartBuilder
           {}
         end
       else
-        resource.enum_values_for(params[:column]) || {}
+        resource.enum_values_for(name) || {}
       end
     enum[nil] = {'color' => '#DDD', 'label' => 'Not set'}
     enum
+  end
+
+  def pie_chart_column?(name)
+    return true if resource.pie_chart_column?(name)
+    return false unless name['.']
+    foreign_key, column = name.to_s.split('.')
+    table = resource.belongs_to_association(foreign_key.to_sym)[:referenced_table]
+    resource_for(table).pie_chart_column?(column)
   end
 end

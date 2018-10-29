@@ -1,8 +1,10 @@
 ### Sequel Migration TODOS / FIXMES :
-  - composite primary keys for import, bulk edit
-  - bug time chart day of week ; 2 sundays
+
+- composite primary keys for import, bulk edit
+- bug time chart day of week ; 2 sundays
 
 ### FEATURES:
+
 - nullifier une date depuis l'edit plus facilement
 - pour remplir une date null dans l'edit il faut selectionner une heure sinon ca reste null
 - nullifier autre chose que des string dans le cadre d'un bulk edit
@@ -24,25 +26,24 @@
 - advanced search definition improvements :
   - select input for column with enum values defined
 - gerer les colonnes binary (file field for upload ?)
-- in-place edit improvements :
-	- country, time_zone
-	- belongs_to
-	- custom columns in index
+- in-place edit improvements : - country, time_zone - belongs_to - custom columns in index
 - gestion de tables sans PK : pour le moment on peut creer, on pourrait supprimer (delete from table where <tous les attr> limit 1)
 - fail on forms ameliorables (highlight des champs en erreur)
 
 ### TODOS:
+
 - données stockées dans redis pour les comptes deprovisionnés ?
 
 ### BUGS:
+
 - cas de l'install / switch sur une app heroku ou ca fail sur la db url
 - column settings sur une colonne d'une table associée ; quand on change la visibilité ca s'applique sur le listing de la table associee, pas la table de depart.
-- searchable columns only integer, rechercher une string ne veut rien dire mais ramene tous les results
 - ugly show avec une text column bien remplie (https://www.adminium.io/resources/stories/15 sur enigmatic-beach-4845)
 - serialized columns containing smth else than a basic type
 - on peut pas mettre un espace comme thousand delimiter (or j'aurais bien voulu pouvoir le faire sur une colonne zipcode)
 
 ### Refacto
+
 - clickable area des accordéons de settings popins
 - color polyfill for safari
 - null/empty string dans les forms autres que in place edit

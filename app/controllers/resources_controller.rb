@@ -11,7 +11,7 @@ class ResourcesController < ApplicationController
   before_action :fetch_item, only: %i(show edit download update)
   before_action :warn_if_no_primary_key, only: %i(index new)
   before_action :check_column, only: :chart
-  helper_method :user_can?, :grouping, :resource, :format_date, :permitted_columns
+  helper_method :user_can?, :grouping, :resource, :format_date, :permitted_columns, :pie_chart_column?
 
   def search
     @items = resource.query
@@ -676,6 +676,7 @@ class ResourcesController < ApplicationController
 
   def check_column
     return if resource.column_names.include? params[:column].to_sym
+    return if pie_chart_column?(params[:column])
     respond_to do |format|
       format.html do
         @missing_column = true

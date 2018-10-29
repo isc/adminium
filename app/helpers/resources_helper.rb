@@ -67,7 +67,7 @@ module ResourcesHelper
     elsif value.present? && resource.columns[:serialized].include?(key)
       content = value.present? ? (YAML.safe_load(value).inspect rescue value) : value
       css_class, content = 'serialized', content_tag(:pre, content, class: 'sh_ruby')
-    elsif item[key] && assoc_info = resource.foreign_key_array?(key)
+    elsif item[key] && (assoc_info = resource.foreign_key_array?(key))
       content = display_foreign_key_array assoc_info[:referenced_table], item[key]
     else
       css_class, content = display_value item, key, resource
@@ -300,7 +300,8 @@ module ResourcesHelper
       next if assoc[:polymorphic]
       name = assoc[:foreign_key].to_s
       res << content_tag(:optgroup, label: name.humanize, data: {name: name, kind: 'belongs_to'}) do
-        resource_for(assoc[:referenced_table]).column_names.map {|name| content_tag(:option, name, value: name)}.join.html_safe
+        resource_for(assoc[:referenced_table]).column_names
+          .map {|column_name| content_tag(:option, column_name, value: column_name)}.join.html_safe
       end
     end
     if options[:has_many]

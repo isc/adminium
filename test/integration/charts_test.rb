@@ -75,9 +75,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
       display_chart :users, :created_at
       first('rect[height="223"]').click
       assert_selector '.alert-warning', text: 'Where daily created_at is Jan 01'
-      find('th[data-column-name="admin"]').hover
-      find('i.time-chart').click
-      assert_selector '#chart_div svg'
+      display_chart nil, :admin
       assert_text 'False'
       assert_text '100%'
       assert_no_text 'True'
@@ -86,6 +84,25 @@ class ChartsTest < ActionDispatch::IntegrationTest
       # json = 'data_for_graph = {'chart_data':[['False',1,false,'#777'],['True',1,true,'#07be25']],'chart_type':'PieChart','column':'admin','grouping':'yearly'}'
       # assert_equal json, page.find('script', visible: false).text(:all)
     end
+  end
+
+  test 'display pie chart on enum from belongs_to association' do
+    stub_resource_columns listing: %i(title user_id user_id.role)
+    FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, role: :admin).factory.id)
+    FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, role: :developer).factory.id)
+    FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, role: :admin).factory.id)
+    visit resources_path(:comments)
+    find('th[data-column-name="role"]').hover
+    find('i.column_settings').click
+    click_link 'Enumerable data'
+    check 'Check if this column represents a specific set of values'
+    all('.enum_details_area input[type=text]', minimum: 4)[1].set 'Administrator'
+    click_on 'Save settings'
+    assert_text 'Administrator'
+    display_chart nil, :role
+    expected = [['Administrator', 2, 'admin', '#86b558'], ['developer', 1, 'developer', '#ffb650']]
+    actual = evaluate_script 'data_for_graph.chart_data'
+    assert_equal expected, actual
   end
 
   test 'display stat chart' do
@@ -104,7 +121,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
   private
 
   def display_chart table, column, svg: true
-    visit resources_path(table)
+    visit resources_path(table) if table
     find("th[data-column-name=\"#{column}\"]").hover
     find('i.time-chart').click
     assert_selector '#chart_div svg' if svg

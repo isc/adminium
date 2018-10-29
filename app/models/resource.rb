@@ -468,7 +468,7 @@ module Resource
         2.times {value.shift} # remove dummy entry needed to be able to empty the hash
         return Sequel.hstore Hash[*value.delete_if {|k, _| k == '_'}]
       end
-      if value && value.is_a?(String) && col_schema[:type].to_s['_array']
+      if value&.is_a?(String) && col_schema[:type].to_s['_array']
         begin
           value = JSON.parse value
         rescue JSON::ParserError => e
@@ -499,9 +499,7 @@ module Resource
       columns += %i(created_at inserted_at created_on) if creation
       columns.each do |column|
         next if values.detect {|k, _| k.to_sym == column}
-        if schema_hash[column] && %i(timestamp date datetime).include?(schema_hash[column][:type])
-          values[column] = now
-        end
+        values[column] = now if schema_hash[column] && %i(timestamp date datetime).include?(schema_hash[column][:type])
       end
     end
 
