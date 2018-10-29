@@ -9,7 +9,7 @@ class BulkActions
   setupBulkEdit: ->
     $("#bulk-edit-modal").on 'hide', => $('#bulk-edit-modal').html($('.loading_modal').html())
     $('.bulk-edit').on 'click', =>
-      return false if $('.bulk-edit').attr('disabled')
+      return if $('.bulk-edit').attr('disabled')
       $("#bulk-edit-modal").html($(".loading_modal").html()).modal('show')
       item_ids = ("record_ids[]=#{$(item).closest('tr').data('item-id')}" for item in $("#{@checkbox_selector}:checked"))
       path = $("#bulk-edit-modal").attr("data-remote-path")
@@ -21,6 +21,7 @@ class BulkActions
 
   setupBulkDestroy: ->
     $('.bulk-destroy').on 'click', =>
+      return if $('.bulk-destroy').attr('disabled')
       items = $("#{@checkbox_selector}:checked")
       return false unless confirm "Are you sure you want to trash the #{items.length} selected items ?"
       for item in items
@@ -47,7 +48,7 @@ class CustomColumns
 
   constructor: (root) ->
     $(root).find('select.select-custom-column').on 'change', @columnSelected
-  
+
   columnSelected: (event) =>
     column = event.target.value
     optgroup = $(event.target).find(':selected').closest('optgroup')
