@@ -58,7 +58,7 @@ Rails.application.routes.draw do
     get :bloat
   end
   resources :collaborators
-  resource :user do
+  resource :user, only: :show do
     get :apps
   end
   namespace :heroku do
