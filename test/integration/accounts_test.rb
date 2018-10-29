@@ -20,6 +20,7 @@ class AccountsTest < ActionDispatch::IntegrationTest
     fill_in 'Database URL', with: new_db_url
     click_button 'Update Account'
     assert has_field?('Database URL', with: new_db_url)
+    fill_in 'Database URL', with: 'stable screenshot'
     save_screenshot 'account_settings.png'
   end
 end
