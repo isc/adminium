@@ -6,14 +6,15 @@ module PieChartBuilder
     if params[:column]['.']
       foreign_key, column_name = params[:column].split('.')
       column = qualify(join_belongs_to(foreign_key), column_name.to_sym)
-      table = resource.belongs_to_association(foreign_key.to_sym)[:referenced_table]
-      enum = determine_enum table, column_name
+      table_name = resource.belongs_to_association(foreign_key.to_sym)[:referenced_table]
     else
+      column_name = params[:column]
+      table_name = params[:table]
       column = qualify params[:table], params[:column]
-      enum = determine_enum params[:table], params[:column]
     end
     dataset_filtering
     @data = @items.group_and_count(column).reverse_order(:count).limit(100).to_a
+    enum = determine_enum table_name, column_name
     @data.map! do |row|
       key, count = row.values
       v = enum[key] || enum[key.to_s] || {'label' => key, 'color' => new_color}
