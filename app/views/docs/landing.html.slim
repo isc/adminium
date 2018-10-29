@@ -7,6 +7,7 @@ html lang="en"
     /[if lt IE 9]
       = javascript_include_tag "https://html5shim.googlecode.com/svn/trunk/html5.js"
     = stylesheet_link_tag 'application'
+    = stylesheet_link_tag 'test' if Rails.env.test?
     meta name="description" content="Administration interface for your database as a service"
     meta name="keywords" content="Adminium, database, administration, interface, export, heroku, add-on"
     meta name="viewport" content="width=device-width, initial-scale=1.0"
