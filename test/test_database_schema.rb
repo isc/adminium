@@ -1,7 +1,7 @@
 test_adapter = ENV['adapter'] || ENV['ADAPTER'] || 'postgres'
 Rails.configuration.test_database_conn_spec =
   if ENV['CI']
-    ActiveRecord::Base.connection.execute 'create database \"adminium-fixture\"'
+    ActiveRecord::Base.connection.execute 'create database "adminium-fixture"'
     conn_spec = ENV['DATABASE_URL'].split('/')
     conn_spec[-1] = 'adminium-fixture'
     conn_spec.join('/')
