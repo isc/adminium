@@ -463,6 +463,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     fill_in 'Age', with: 55
     all('.empty_string_btn')[0].click # click on empty string button for last name column
     all('.null_btn')[2].click # click null button for role column
+    save_screenshot 'resources_bulk_edit.png'
     click_on 'Update 2 Users'
     assert_no_text 'Johnson'
     assert_selector 'td[data-column-name="role"]', text: 'null'

@@ -87,8 +87,9 @@ class FixtureFactory
   def self.clear_db
     with_fixture_connection do
       %w(users comments groups roles roles_users documents uploaded_files).each do |table_name|
-        ActiveRecord::Base.connection.execute("TRUNCATE TABLE #{table_name} RESTART IDENTITY")
+        ActiveRecord::Base.connection.execute "TRUNCATE TABLE #{table_name} RESTART IDENTITY"
       end
+      ActiveRecord::Base.connection.execute 'select pg_stat_reset()'
     end
   end
 
