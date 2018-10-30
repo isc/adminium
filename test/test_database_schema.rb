@@ -1,20 +1,19 @@
 test_adapter = ENV['adapter'] || ENV['ADAPTER'] || 'postgres'
-conn_spec = ENV.find {|k, _| k =~ /HEROKU_POSTGRESQL_.*_URL/ }
-conn_spec = conn_spec[1] if conn_spec
-conn_spec ||= ActiveRecord::Base.configurations["fixture-#{test_adapter}"]
-
-$TEST_DATABASE_CONN_SPEC =
-  if conn_spec.is_a? Hash
-    "#{conn_spec['adapter']}://#{conn_spec['username']}@#{conn_spec['host']}/#{conn_spec['database']}"
+Rails.configuration.test_database_conn_spec =
+  if ENV['CI']
+    ActiveRecord::Base.connection.execute 'create database \"adminium-fixture\"'
+    conn_spec = ENV['DATABASE_URL'].split('/')
+    conn_spec[-1] = 'adminium-fixture'
+    conn_spec.join('/')
   else
-    conn_spec
+    conn_spec = ActiveRecord::Base.configurations["fixture-#{test_adapter}"]
+    "#{conn_spec['adapter']}://#{conn_spec['username']}@#{conn_spec['host']}/#{conn_spec['database']}"
   end
 
-ActiveRecord::Base.establish_connection $TEST_DATABASE_CONN_SPEC
+ActiveRecord::Base.establish_connection Rails.configuration.test_database_conn_spec
 ActiveRecord::Schema.verbose = false
-ActiveRecord::Base.connection.tables.each do |table|
-  ActiveRecord::Base.connection.drop_table table
-end
+ActiveRecord::Base.connection.tables.each { |table| ActiveRecord::Base.connection.drop_table table }
+
 ActiveRecord::Schema.define(version: 28) do
   enable_extension :hstore
   create_table :users do |t|
@@ -82,7 +81,6 @@ ActiveRecord::Schema.define(version: 28) do
   end
 end
 
-# load some models
 class UserFromTest < ApplicationRecord
   self.table_name = 'users'
 end

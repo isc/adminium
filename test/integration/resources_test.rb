@@ -162,7 +162,6 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
 
   test 'failed save due to value out of range for db' do
-    return if $TEST_DATABASE_CONN_SPEC['mysql']
     visit new_resource_path(:users)
     fill_in 'Age', with: '123123123183829384728832'
     click_button 'Save'
@@ -339,7 +338,6 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
 
   test 'failed update' do
-    return if $TEST_DATABASE_CONN_SPEC['mysql']
     user = FixtureFactory.new(:user).factory
     out_of_range_int = '3241234234141234'
     visit edit_resource_path(:users, user)
@@ -506,7 +504,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test 'display of datetime depending on time zone conf' do
     stub_resource_columns listing: %i(column_with_time_zone activated_at)
     user = FixtureFactory.new(:user).factory
-    ActiveRecord::Base.establish_connection $TEST_DATABASE_CONN_SPEC
+    ActiveRecord::Base.establish_connection Rails.configuration.test_database_conn_spec
     ActiveRecord::Base.connection.execute "update users set activated_at = '2012-10-09 05:00:00' where id = #{user.id}"
     ActiveRecord::Base.connection.execute "update users set column_with_time_zone = '2012-10-09 05:00:00 +1000' where id = #{user.id}"
     ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
