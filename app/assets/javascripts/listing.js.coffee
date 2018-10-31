@@ -9,7 +9,7 @@ class BulkActions
   setupBulkEdit: ->
     $("#bulk-edit-modal").on 'hide', => $('#bulk-edit-modal').html($('.loading_modal').html())
     $('.bulk-edit').on 'click', =>
-      return if $('.bulk-edit').attr('disabled')
+      return false if $('.bulk-edit').attr('disabled')
       $("#bulk-edit-modal").html($(".loading_modal").html()).modal('show')
       item_ids = ("record_ids[]=#{$(item).closest('tr').data('item-id')}" for item in $("#{@checkbox_selector}:checked"))
       path = $("#bulk-edit-modal").attr("data-remote-path")
@@ -21,7 +21,7 @@ class BulkActions
 
   setupBulkDestroy: ->
     $('.bulk-destroy').on 'click', =>
-      return if $('.bulk-destroy').attr('disabled')
+      return false if $('.bulk-destroy').attr('disabled')
       items = $("#{@checkbox_selector}:checked")
       return false unless confirm "Are you sure you want to trash the #{items.length} selected items ?"
       for item in items
