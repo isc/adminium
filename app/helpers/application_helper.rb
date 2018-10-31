@@ -12,9 +12,9 @@ module ApplicationHelper
     resource_for resource.belongs_to_association(key.to_sym)[:referenced_table]
   end
 
-  def display_datetime_control_group opts = {}
+  def display_datetime_control_group opts
     opts[:label] ||= 'DateTime format'
-    d = Time.zone.now
+    d = opts[:kind] == :date ? Date.current : Time.current
     formats = %i(long default short time_ago_in_words)
     datas = formats.map {|f| [display_datetime(d, format: f), f.to_s]}
     datas.unshift [opts[:allow_blank], ''] if opts[:allow_blank]

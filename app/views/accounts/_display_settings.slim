@@ -10,7 +10,9 @@
             p.help-block number of rows displayed per page by default
       fieldset
         legend Types
-        = display_datetime_control_group input_name: 'settings[datetime_format]', selected: global_settings.datetime_format
-        = display_datetime_control_group kind: :date, label: "Date format", input_name: 'settings[date_format]', selected: global_settings.date_format
+        = display_datetime_control_group input_name: 'settings[datetime_format]',
+          selected: global_settings.datetime_format
+        = display_datetime_control_group kind: :date, label: 'Date format',
+          input_name: 'settings[date_format]', selected: global_settings.date_format
       .form-group
         .col-sm-9.col-sm-offset-3= submit_tag 'Save settings', class: 'btn btn-primary'
