@@ -14,10 +14,12 @@ class AccountsTest < ActionDispatch::IntegrationTest
   end
 
   test 'update account settings' do
+    Timecop.travel '2019-01-09 20:59'
     account = login
-    FixtureFactory.new(:user, pseudo: 'Zoé')
+    FixtureFactory.new(:user, pseudo: 'Zoé', birthdate: '2017-08-02')
     visit resources_path(:users)
     assert_no_text 'less than a minute ago'
+    assert_text 'August 02, 2017'
     visit edit_account_path
     new_db_url = "#{account.db_url}?plop=plip"
     fill_in 'Database URL', with: new_db_url
@@ -30,6 +32,7 @@ class AccountsTest < ActionDispatch::IntegrationTest
     assert has_field?('Per page', with: 25)
     fill_in 'Per page', with: 150
     select 'less than a minute ago'
+    select '2019-01-09'
     click_on 'Save settings'
     assert_text 'Changes saved'
     click_on 'Display settings'
@@ -37,5 +40,6 @@ class AccountsTest < ActionDispatch::IntegrationTest
     assert has_select?('Datetime format', selected: 'less than a minute ago')
     visit resources_path(:users)
     assert_text 'less than a minute ago'
+    assert_text '2017-08-02'
   end
 end

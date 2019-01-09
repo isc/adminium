@@ -238,7 +238,7 @@ module ResourcesHelper
       opts[:format] = opts[:resource].column_options(opts[:column])['format']
       opts[:format] = nil if opts[:format].blank?
     end
-    opts[:format] ||= current_account.datetime_format
+    opts[:format] ||= value.instance_of?(Date) ? current_account.date_format : current_account.datetime_format
     if opts[:format].to_sym == :time_ago_in_words
       str = time_ago_in_words(value) + ' ago'
       content_tag('span', str, title: l(value, format: :long), rel: 'tooltip')
