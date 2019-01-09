@@ -1,24 +1,4 @@
 module Resource
-  class Global
-    DEFAULTS = {per_page: 25, date_format: :long, datetime_format: :long}.freeze
-
-    def initialize account_id
-      @account_id = account_id
-      value = REDIS.get global_key_settings
-      @globals = value.nil? ? {} : JSON.parse(value)
-      @globals.reverse_merge!(DEFAULTS).symbolize_keys!
-    end
-
-    def global_key_settings
-      "account:#{@account_id}:global_settings"
-    end
-
-    def method_missing name, *args, &block
-      return @globals[name] if @globals.key? name
-      super
-    end
-  end
-
   class Base
     VALIDATES_PRESENCE_OF = 'validates_presence_of'.freeze
     VALIDATES_UNIQUENESS_OF = 'validates_uniqueness_of'.freeze
@@ -32,7 +12,6 @@ module Resource
     end
 
     def load
-      @globals = Global.new @generic.account_id
       value = REDIS.get settings_key
       if value.nil?
         @column, @columns, @enum_values, @validations = {}, {}, [], []
