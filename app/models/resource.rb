@@ -1,12 +1,9 @@
 module Resource
   class Global
-    DEFAULTS = { export_col_sep: ',', export_skip_header: false }.freeze
-
     def initialize account_id
       @account_id = account_id
       value = REDIS.get global_key_settings
       @globals = value.nil? ? {} : JSON.parse(value)
-      @globals.reverse_merge!(DEFAULTS).symbolize_keys!
     end
 
     def global_key_settings

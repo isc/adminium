@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20181101165808) do
+ActiveRecord::Schema.define(version: 20190109201356) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -43,8 +43,6 @@ ActiveRecord::Schema.define(version: 20181101165808) do
     t.integer "per_page", default: 25, null: false
     t.string "date_format", default: "long", null: false
     t.string "datetime_format", default: "long", null: false
-    t.string "export_col_sep", default: ",", null: false
-    t.boolean "export_skip_header", default: false, null: false
   end
 
   create_table "collaborators", force: :cascade do |t|
