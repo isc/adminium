@@ -1,18 +1,13 @@
 .row
   .col-lg-8
-    = form_tag general_settings_path, method: :put, class: 'form form-horizontal' do
+    = simple_form_for @account, html: {class: 'form-horizontal'} do |f|
       fieldset
         legend Listing
-        .form-group
-          label.control-label.col-sm-3 Per page
-          .col-sm-5
-            input.form-control type="number" step=25 min=25 max=200 value=global_settings.per_page name="settings[per_page]"
-            p.help-block number of rows displayed per page by default
+        = f.input :per_page, input_html: { step: 25, min: 25, max: 200, type: :number },
+          hint: 'number of rows displayed per page by default'
       fieldset
         legend Types
-        = display_datetime_control_group input_name: 'settings[datetime_format]',
-          selected: global_settings.datetime_format
-        = display_datetime_control_group kind: :date, label: 'Date format',
-          input_name: 'settings[date_format]', selected: global_settings.date_format
+        = f.input :datetime_format, collection: datetime_display_options(kind: :datetime), include_blank: false
+        = f.input :date_format, collection: datetime_display_options(kind: :date), include_blank: false
       .form-group
         .col-sm-9.col-sm-offset-3= submit_tag 'Save settings', class: 'btn btn-primary'

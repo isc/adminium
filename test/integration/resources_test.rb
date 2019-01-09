@@ -266,9 +266,9 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     stub_resource_columns listing: %w(user_id.pseudo)
     Resource::Base.any_instance.stubs(:default_order).returns 'user_id.pseudo'
     visit resources_path(:comments)
-    assert_equal %w(bob zob), page.all('table.items-list tr td:last-child').map(&:text)
+    assert_equal %w(bob zob), all('table.items-list tr td:last-child').map(&:text)
     first('a[title="Sort by User > Pseudo Z → A"]').click
-    assert_equal %w(zob bob), page.all('table.items-list tr td:last-child').map(&:text)
+    assert_equal %w(zob bob), all('table.items-list tr td:last-child').map(&:text)
   end
 
   test 'custom column belongs_to which is a foreign_key to another belongs_to' do
@@ -446,7 +446,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     fill_in 'Age', with: '37'
     click_button "Update Users ##{user.id}"
     visit resources_path(:users)
-    assert_equal '37', page.find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=age]").text
+    assert_equal '37', find("tr[data-item-id=\"#{user.id}\"] td[data-column-name=age]").text
   end
 
   test 'bulk update and nullify settings' do

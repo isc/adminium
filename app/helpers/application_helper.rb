@@ -12,17 +12,22 @@ module ApplicationHelper
     resource_for resource.belongs_to_association(key.to_sym)[:referenced_table]
   end
 
-  def display_datetime_control_group opts
-    opts[:label] ||= 'DateTime format'
-    d = opts[:kind] == :date ? Date.current : Time.current
+  def datetime_display_options kind:, allow_blank: false
+    d = kind == :date ? Date.current : Time.current
     formats = %i(long default short time_ago_in_words)
-    datas = formats.map {|f| [display_datetime(d, format: f), f.to_s]}
-    datas.unshift [opts[:allow_blank], ''] if opts[:allow_blank]
+    options = formats.map {|f| [display_datetime(d, format: f), f.to_s]}
+    options.unshift [allow_blank, ''] if allow_blank
+    options
+  end
+
+  def display_datetime_control_group kind:, allow_blank: false, label: nil, input_name:, selected: nil
+    label ||= 'DateTime format'
+    datas = datetime_display_options kind: kind, allow_blank: allow_blank
     content_tag :div, class: 'form-group' do
-      content_tag(:label, opts[:label], class: 'control-label col-sm-3') +
+      content_tag(:label, label, class: 'control-label col-sm-3') +
         content_tag(:div, class: 'col-sm-9') do
-          content_tag(:select, name: opts[:input_name], class: 'form-control') do
-            options_for_select(datas, opts[:selected])
+          content_tag(:select, name: input_name, class: 'form-control') do
+            options_for_select(datas, selected)
           end
         end
     end

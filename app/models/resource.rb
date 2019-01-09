@@ -13,10 +13,6 @@ module Resource
       "account:#{@account_id}:global_settings"
     end
 
-    def update settings
-      REDIS.set global_key_settings, settings.to_json
-    end
-
     def method_missing name, *args, &block
       return @globals[name] if @globals.key? name
       super

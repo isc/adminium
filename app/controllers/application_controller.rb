@@ -11,13 +11,9 @@ class ApplicationController < ActionController::Base
   after_action :cleanup_generic
   around_action :tag_current_account
 
-  helper_method :global_settings, :current_account, :current_user, :admin?, :current_account?, :resource_for
+  helper_method :current_account, :current_user, :admin?, :current_account?, :resource_for
 
   private
-
-  def global_settings
-    @global_settings ||= Resource::Global.new session[:account]
-  end
 
   def require_account
     if Rails.env.development?

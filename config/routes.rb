@@ -29,7 +29,6 @@ Rails.application.routes.draw do
   resources :schemas
   resources :searches
   resources :column_settings
-  resource :general_settings, only: %i(edit update)
   resources :docs, only: :index do
     collection do
       get :start_demo
