@@ -1,2 +1,2 @@
-= display_datetime_control_group label: 'Datetime format', input_name: 'column_options[format]',
-  selected: resource.column_options(params[:column])['format'], allow_blank: "use global settings"
+= display_datetime_control_group kind: :datetime, label: 'Display format', input_name: 'column_options[format]',
+  selected: resource.column_options(params[:column])['format'], allow_blank: 'use global settings'

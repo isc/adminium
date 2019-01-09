@@ -2,17 +2,17 @@ class Account < ApplicationRecord
   serialize :plan_migrations
   before_create :setup_api_key
   before_save :fill_adapter, :track_plan_migration
-  has_many :collaborators
+  has_many :collaborators, dependent: :destroy
   has_many :users, through: :collaborators
-  has_many :roles
+  has_many :roles, dependent: :destroy
   has_many :widgets, dependent: :destroy
-  has_many :table_widgets
-  has_many :time_chart_widgets
-  has_many :pie_chart_widgets
-  has_many :stat_chart_widgets
-  has_many :sign_ons
-  has_many :searches
-  has_many :table_configurations
+  has_many :table_widgets, dependent: :destroy
+  has_many :time_chart_widgets, dependent: :destroy
+  has_many :pie_chart_widgets, dependent: :destroy
+  has_many :stat_chart_widgets, dependent: :destroy
+  has_many :sign_ons, dependent: :destroy
+  has_many :searches, dependent: :destroy
+  has_many :table_configurations, dependent: :destroy
 
   attribute :db_url
   validates :db_url, format: %r{((mysql2?)|(postgres(ql)?)):\/\/.*}, allow_blank: true
@@ -94,11 +94,9 @@ class Account < ApplicationRecord
   def displayed_next_tip
     return unless tips_opt_in
     tips = ['welcome'] + Account::TIPS
-    tip = nil
-    if last_tip_at.nil? || last_tip_at < 1.day.ago
-      tip = tips[(tips.index(last_tip_identifier) || -1) + 1]
-    end
-    update! last_tip_at: Time.current, last_tip_identifier: tip if tip
+    return unless last_tip_at.nil? || last_tip_at < 1.day.ago
+    tip = tips[(tips.index(last_tip_identifier) || -1) + 1]
+    update! last_tip_at: Time.current, last_tip_identifier: tip
     tip
   end
 
@@ -132,8 +130,6 @@ class Account < ApplicationRecord
   def track_plan_migration
     self.plan_migrations ||= []
     last_plan = plan_migrations.last[:plan] if plan_migrations.last
-    if last_plan.nil? || last_plan != plan
-      plan_migrations.push migrated_at: Time.current, plan: plan
-    end
+    plan_migrations.push migrated_at: Time.current, plan: plan if last_plan.nil? || last_plan != plan
   end
 end

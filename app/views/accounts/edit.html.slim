@@ -87,7 +87,7 @@
                       = link_to content_tag(:i, nil, class: 'fa fa-trash'), collaborator, method: :delete, remote: true, class: 'trash_collaborator', title: 'Remove all access for this collaborator', rel: 'tooltip', data: { confirm: 'Sure?' }
     - else
       = upgrade_to_enterprise_notice
-      
+
   - tabs.pane 'Roles and permissions', active: (@active_pane == 'roles') do
     = render 'roles'
   - tabs.pane 'Display settings' do

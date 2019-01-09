@@ -93,6 +93,8 @@ class AccountsController < ApplicationController
   private
 
   def account_params
-    params.require(:account).permit(:db_url, :db_url_setup_method, :application_time_zone, :database_time_zone)
+    params.require(:account)
+      .permit(:db_url, :db_url_setup_method, :application_time_zone, :database_time_zone,
+        :per_page, :date_format, :datetime_format)
   end
 end
