@@ -1,6 +1,6 @@
 module Resource
   class Global
-    DEFAULTS = {per_page: 25, date_format: :long, datetime_format: :long, export_col_sep: ',', export_skip_header: false}.freeze
+    DEFAULTS = { export_col_sep: ',', export_skip_header: false }.freeze
 
     def initialize account_id
       @account_id = account_id
@@ -42,7 +42,7 @@ module Resource
         @filters = datas[:filters]
         @column = datas[:column] || {}
         @default_order = datas[:default_order] if datas[:default_order].present? && column_names.include?(datas[:default_order].to_s.split(' ').first.to_sym)
-        @per_page = datas[:per_page] || @globals.per_page
+        @per_page = datas[:per_page] || @generic.account.per_page
         @enum_values = datas[:enum_values] || []
         @validations = datas[:validations] || []
         @label_column = datas[:label_column] if column_names.include? datas[:label_column].try(:to_sym)
@@ -129,7 +129,7 @@ module Resource
         default_order: @default_order, enum_values: @enum_values, label_column: @label_column,
         export_col_sep: @export_col_sep, export_skip_header: @export_skip_header
       }
-      settings[:per_page] = @per_page if @globals.per_page != @per_page
+      settings[:per_page] = @per_page if @generic.account.per_page != @per_page
       REDIS.set settings_key, settings.to_json
     end
 
@@ -147,7 +147,7 @@ module Resource
     end
 
     def per_page
-      @per_page ||= @globals.per_page
+      @per_page ||= @generic.account.per_page
     end
 
     def columns type = nil
