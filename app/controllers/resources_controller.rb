@@ -471,10 +471,11 @@ class ResourcesController < ApplicationController
     operators.merge! datetime_operators if %i(date datetime).index(type)
     operators.merge! string_operators if %i(string text name).index(type)
     operators.merge! array_operators if type.to_s.ends_with? '_array'
+    operators.merge! jsonb_operators if type == :jsonb
     column = qualify(joined_table_alias || table, filter['column'].to_sym)
     operation = operators[filter['operator']]
     column = Sequel.function operation[:named_function], column if operation[:named_function]
-    return send("apply_filter_#{operation[:specific]}", column) if operation[:specific]
+    return send("apply_filter_#{operation[:specific]}", column, filter['operand']) if operation[:specific]
     return Sequel::SQL::BooleanExpression.from_value_pairs column => operation[:right] if operation[:boolean_operator]
     if operation[:invert_operands]
       return Sequel::SQL::ComplexExpression.new operation[:operator], right_value(operation, filter['operand']), column
@@ -537,16 +538,27 @@ class ResourcesController < ApplicationController
     }
   end
 
-  def apply_filter_blank column
+  def jsonb_operators
+    {
+      'contains' => {specific: :jsonb_containment}
+    }
+  end
+
+  def apply_filter_blank column, _value
     is_null = Sequel::SQL::ComplexExpression.new(:IS, column, nil)
     is_blank = Sequel::SQL::ComplexExpression.new(:'=', column, '')
     Sequel::SQL::ComplexExpression.new(:OR, is_null, is_blank)
   end
 
-  def apply_filter_present column
+  def apply_filter_present column, _value
     is_not_null = Sequel::SQL::ComplexExpression.new(:'IS NOT', column, nil)
     is_not_blank = Sequel::SQL::ComplexExpression.new(:'!=', column, '')
     Sequel::SQL::ComplexExpression.new(:AND, is_not_null, is_not_blank)
+  end
+
+  def apply_filter_jsonb_containment column, value
+    column = Sequel.pg_jsonb_op(column)
+    column.contains(value)
   end
 
   def right_value operation, value
