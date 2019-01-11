@@ -14,7 +14,7 @@ ActiveRecord::Base.establish_connection Rails.configuration.test_database_conn_s
 ActiveRecord::Schema.verbose = false
 ActiveRecord::Base.connection.tables.each { |table| ActiveRecord::Base.connection.drop_table table }
 
-ActiveRecord::Schema.define(version: 28) do
+ActiveRecord::Schema.define(version: 30) do
   enable_extension :hstore
   create_table :users do |t|
     t.string :pseudo, :first_name, :last_name
@@ -70,6 +70,7 @@ ActiveRecord::Schema.define(version: 28) do
   create_table :roles do |t|
     t.string :name
     t.timestamps null: true
+    t.jsonb :metadata
   end
   create_table :roles_users, id: false do |t|
     t.references :role
