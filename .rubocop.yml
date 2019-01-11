@@ -8,6 +8,8 @@ Rails:
   Enabled: true
 Metrics/LineLength:
   Enabled: false
+Metrics/ClassLength:
+  Enabled: false
 Style/Documentation:
   Enabled: false
 Layout/SpaceInsideHashLiteralBraces:
