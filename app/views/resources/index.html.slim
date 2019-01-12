@@ -85,8 +85,7 @@ nav.navbar.navbar-default
                 == "Where <i>#{k}</i> is #{excluded} <b>#{h v}</b>"
               = link_to params_without_filter(k, filter), class: 'close' do
                 i.fa.fa-times
-.content
-  = render 'items', items: @fetched_items, actions_cell: true
+.content= render 'items', items: @fetched_items, actions_cell: true
 = render '/resources/panels/listing_settings'
 = render '/resources/panels/export'
 = render '/resources/panels/advanced_search'

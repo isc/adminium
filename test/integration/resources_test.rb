@@ -102,6 +102,8 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_text 'Where weekly activated_at is'
     assert_text '1 record'
     assert_text 'Johnny'
+    first('a[title="Sort by Last name A → Z"]').click
+    assert_text 'Where weekly activated_at is' # grouping param is conserved when changing order
   end
 
   test 'where on a full date' do
