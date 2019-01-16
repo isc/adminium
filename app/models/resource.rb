@@ -464,6 +464,7 @@ class Resource
 
   def insert values
     values = typecasted_values values, true
+    validations_check nil, values
     query.insert values
   end
 

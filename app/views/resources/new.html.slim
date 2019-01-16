@@ -10,7 +10,7 @@ nav.navbar.navbar-default
             == "| cloning #{link_to "#{resource.human_name} ##{params[:clone_id]}", resource_path(params[:table], params[:clone_id])}"
     #subnavbar.collapse.navbar-collapse
       .navbar-right
-        a.navbar-btn.btn.btn-default data-toggle="modal" href="#settings" title="Form Settings" data-placement="bottom" rel="tooltip"
+        a.navbar-btn.btn.btn-default data-toggle="modal" href="#settings" title="Form settings" data-placement="bottom" rel="tooltip"
           i.fa.fa-cog
 
 = render 'resources/form'

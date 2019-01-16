@@ -14,11 +14,7 @@ class SettingsController < ApplicationController
     resource.label_column = params[:label_column].presence if params.key? :label_column
     resource.default_order = params[:default_order].join(' ') if params[:default_order].present?
     resource.save
-    if params[:back_to]
-      redirect_to params[:back_to]
-    else
-      redirect_back fallback_location: resources_path(resource.table), flash: {success: 'Settings successfully saved'}
-    end
+    redirect_back fallback_location: resources_path(resource.table), flash: {success: 'Settings successfully saved'}
   end
 
   def show

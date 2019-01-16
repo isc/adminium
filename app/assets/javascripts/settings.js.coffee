@@ -25,11 +25,12 @@ setupRemoval = (pane_id) ->
 
 setupValidations = ->
   setupRemoval '#validations_pane'
-  $('#validations_pane a.btn').click ->
+  $('#validations_pane button.btn').click ->
     validator = $('#validations_pane select:eq(0) option:selected')
     column_name = $('#validations_pane select:eq(1) option:selected')
     addToTable '#validations_pane', [validator.text(), column_name.text()]
     addToHiddenParams '#validations_pane', 'validations', validator:validator.val(), column_name:column_name.val()
+    false
 
 setupDbUrlPresence = ->
   return unless $('.heroku-connection-instructions').length
