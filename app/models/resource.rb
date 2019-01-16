@@ -3,7 +3,8 @@ class Resource
   VALIDATES_UNIQUENESS_OF = 'validates_uniqueness_of'.freeze
   VALIDATORS = [VALIDATES_PRESENCE_OF, VALIDATES_UNIQUENESS_OF].freeze
 
-  attr_accessor :filters, :default_order, :enum_values, :label_column, :export_col_sep, :export_skip_header, :table
+  attr_accessor :default_order, :enum_values, :label_column, :export_col_sep, :export_skip_header, :table, :datas
+  delegate :validations, to: :table_configuration
 
   def initialize generic, table
     @generic, @table = generic, table.to_sym
@@ -17,7 +18,6 @@ class Resource
     else
       datas = JSON.parse(value).symbolize_keys!
       @columns = datas[:columns].symbolize_keys!
-      @filters = datas[:filters]
       @column = datas[:column] || {}
       if datas[:default_order].present? && column_names.include?(datas[:default_order].to_s.split(' ').first.to_sym)
         @default_order = datas[:default_order]
@@ -29,8 +29,8 @@ class Resource
       @export_col_sep = datas[:export_col_sep]
     end
     @default_order ||= default_primary_keys_order
+    @datas = datas # temp for validations migration
     set_missing_columns_conf
-    @filters ||= {}
   end
 
   def default_primary_keys_order
@@ -114,10 +114,6 @@ class Resource
 
   def settings_key
     "account:#{@generic.account_id}:settings:#{@table}"
-  end
-
-  def validations
-    table_configuration.validations
   end
 
   def table_configuration
@@ -388,9 +384,7 @@ class Resource
   def pk_filter primary_key_value
     q = query
     values = primary_key_value.is_a?(String) ? primary_key_value.split(',') : [primary_key_value]
-    primary_keys.each do |key|
-      q = q.where(key => values.shift)
-    end
+    primary_keys.each { |key| q = q.where(key => values.shift) }
     q
   end
 
@@ -565,6 +559,7 @@ class Resource
       end
     end
   end
+
   class RecordNotFound < StandardError
   end
   class ValidationError < StandardError
