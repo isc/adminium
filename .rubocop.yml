@@ -6,11 +6,19 @@ AllCops:
     - config/initializers/sequel_schema_parser.rb
 Rails:
   Enabled: true
-Metrics/LineLength:
+Rails/DynamicFindBy:
   Enabled: false
+Metrics/LineLength:
+  Max: 120
 Metrics/BlockLength:
   Enabled: false
 Metrics/ClassLength:
+  Enabled: false
+Metrics/MethodLength:
+  Enabled: false
+Metrics/PerceivedComplexity:
+  Enabled: false
+Metrics/CyclomaticComplexity:
   Enabled: false
 Style/Documentation:
   Enabled: false
@@ -39,4 +47,6 @@ Layout/MultilineMethodCallIndentation:
 Layout/EmptyLineAfterGuardClause:
   Enabled: false
 Lint/Debugger:
+  Enabled: false
+Naming/PredicateName:
   Enabled: false
