@@ -7,21 +7,10 @@ class SearchesControllerTest < ActionController::TestCase
     @fixtures = []
   end
 
-  def test_create_a_search
-    put :update, params: {'filters' =>
-        {'410' => {'grouping' => 'and', 'column' => 'pseudo', 'type' => 'string', 'operator' => 'null', 'operand' => ''}},
-                          'name' => 'last search', 'id' => 'users'}
-    assert_redirected_to resources_path(:users, asearch: 'last search')
+  def test_show_searches
+    create :search, name: 'my search', table: 'users', account: @account, generic: Generic.new(@account)
     get :show, params: { id: 'users' }
     assert_response :success
-    assert_equal ['last search'], JSON.parse(response.body)
-  end
-
-  def test_destroy_a_search
-    create :search, name: 'myass', table: 'users', account: @account, generic: Generic.new(@account)
-    assert_difference '@account.searches.count', -1 do
-      post :destroy, params: {id: 'users', name: 'myass'}
-      assert_redirected_to resources_path(:users)
-    end
+    assert_equal ['my search'], JSON.parse(response.body)
   end
 end
