@@ -6,7 +6,7 @@ class FillBackValidations < ActiveRecord::Migration[5.1]
         generic = Generic.new account
         generic.tables.each do |table|
           resource = Resource.new generic, table
-          next unless resource.datas[:validations].present?
+          next unless resource.datas && resource.datas[:validations].present?
           account.table_configurations.find_or_create_by(table: table).update! validations: resource.datas[:validations]
           resource.save
         end
