@@ -4,12 +4,7 @@ class SettingsController < ApplicationController
       param_key = "#{type}_columns".to_sym
       resource.columns[type] = params[param_key].delete_if(&:empty?) if params.key? param_key
     end
-    if params[:polymorphic_associations]
-      table_configuration = current_account.table_configurations.find_or_create_by(table: resource.table)
-      table_configuration.update! polymorphic_associations:
-        params[:polymorphic_associations].delete_if(&:empty?).map {|p| JSON.parse(p)}
-    end
-    resource.validations = params[:validations].delete_if(&:empty?) if params.key? :validations
+    table_configuration.update! table_configuration_params if table_configuration.present?
     resource.per_page = params[:per_page] if params[:per_page]
     resource.label_column = params[:label_column].presence if params.key? :label_column
     resource.default_order = params[:default_order].join(' ') if params[:default_order].present?
@@ -47,5 +42,20 @@ class SettingsController < ApplicationController
               resource_for(params[:table]).column_names
             end
     render json: names.sort
+  end
+
+  private
+
+  def table_configuration
+    current_account.table_configurations.find_or_create_by(table: resource.table)
+  end
+
+  def table_configuration_params
+    res = {}
+    if params[:polymorphic_associations]
+      res[:polymorphic_associations] = params[:polymorphic_associations].delete_if(&:empty?).map {|p| JSON.parse(p)}
+    end
+    res[:validations] = params[:validations].delete_if(&:empty?) if params[:validations]
+    res
   end
 end
