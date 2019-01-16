@@ -140,7 +140,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test 'link on index for polymorphic belongs to with label column setup' do
     user = FixtureFactory.new(:user, pseudo: 'Ralph').factory
     comment = FixtureFactory.new(:comment, commentable_type: 'User', commentable_id: user.id).factory
-    Resource::Base.any_instance.stubs(:label_column).returns 'pseudo'
+    Resource.any_instance.stubs(:label_column).returns 'pseudo'
     visit resources_path(:comments)
     assert_equal 'Ralph',
       find("tr[data-item-id=\"#{comment.id}\"] a[href=\"#{resource_path :users, user}\"]").text
@@ -226,7 +226,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test 'permissions for custom column belongs_to and label column' do
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'bob', first_name: 'Robert').factory.id)
     stub_resource_columns listing: %i(user_id user_id.pseudo)
-    Resource::Base.any_instance.stubs(:label_column).returns 'first_name'
+    Resource.any_instance.stubs(:label_column).returns 'first_name'
     visit resources_path(:comments)
     assert_selector 'td', text: 'bob'
     assert_selector 'a', text: 'Robert'
@@ -249,8 +249,8 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:comment, title: 'You are fired', user_id:
       FixtureFactory.new(:user, pseudo: 'BossMan', role: 'admin').factory.id)
     stub_resource_columns listing: %w(title user_id.role)
-    Resource::Base.any_instance.stubs(:enum_values_for).returns nil
-    Resource::Base.any_instance.stubs(:enum_values_for).with(:role)
+    Resource.any_instance.stubs(:enum_values_for).returns nil
+    Resource.any_instance.stubs(:enum_values_for).with(:role)
       .returns 'admin' => {'label' => 'Chef'}, 'noob' => {'label' => 'Débutant'}
     visit resources_path(:comments)
     assert_text 'Funny joke'
@@ -266,7 +266,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'bob').factory.id)
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'zob').factory.id)
     stub_resource_columns listing: %w(user_id.pseudo)
-    Resource::Base.any_instance.stubs(:default_order).returns 'user_id.pseudo'
+    Resource.any_instance.stubs(:default_order).returns 'user_id.pseudo'
     visit resources_path(:comments)
     assert_equal %w(bob zob), all('table.items-list tr td:last-child').map(&:text)
     first('a[title="Sort by User > Pseudo Z → A"]').click
@@ -278,7 +278,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, group_id: group.id).factory.id)
     stub_resource_columns listing: %w(user_id.group_id)
     generic = Generic.new @account
-    resource = Resource::Base.new generic, :groups
+    resource = Resource.new generic, :groups
     resource.label_column = 'name'
     resource.save
     generic.cleanup
@@ -353,7 +353,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test 'validate uniqueness on update' do
     FixtureFactory.new(:user, pseudo: 'Rob')
     user = FixtureFactory.new(:user, pseudo: 'Bob').factory
-    Resource::Base.any_instance.stubs(:validations).returns [{'validator' => 'validates_uniqueness_of', 'column_name' => 'pseudo'}]
+    Resource.any_instance.stubs(:validations).returns [{'validator' => 'validates_uniqueness_of', 'column_name' => 'pseudo'}]
     visit edit_resource_path(:users, user)
     fill_in 'Pseudo', with: 'Rob'
     click_button 'Save'
@@ -385,13 +385,13 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test 'show with polymorphic belongs_to association' do
     user = FixtureFactory.new(:user, pseudo: 'Bobby').factory
     comment = FixtureFactory.new(:comment, commentable_id: user.id, commentable_type: 'User').factory
-    Resource::Base.any_instance.stubs(:label_column).returns 'pseudo'
+    Resource.any_instance.stubs(:label_column).returns 'pseudo'
     visit resource_path(:comments, comment)
     assert_equal 'Bobby', find("a[href=\"#{resource_path :users, user.id}\"]").text
   end
 
   test 'show with belongs_to association with label_column set' do
-    Resource::Base.any_instance.stubs(:label_column).returns 'name'
+    Resource.any_instance.stubs(:label_column).returns 'name'
     group = FixtureFactory.new(:group, name: 'Admins').factory
     user = FixtureFactory.new(:user, group_id: group.id).factory
     visit resource_path(:users, user)

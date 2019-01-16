@@ -8,7 +8,7 @@ class Search < ApplicationRecord
   private
 
   def conditions_operands
-    resource = Resource::Base.new generic, table
+    resource = Resource.new generic, table
     conditions.each do |condition|
       validate_integer_array_condition condition, resource
       validate_jsonb_containment_condition condition

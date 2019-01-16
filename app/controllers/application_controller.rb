@@ -99,7 +99,7 @@ class ApplicationController < ActionController::Base
 
   def resource_for table
     @resources ||= {}
-    @resources[table.to_sym] ||= Resource::Base.new @generic, table
+    @resources[table.to_sym] ||= Resource.new @generic, table
   end
 
   def set_source_cookie

@@ -39,7 +39,7 @@ namespace :accounts do
         puts account.id
         generic = Generic.new account
         generic.tables.each do |table|
-          resource = Resource::Base.new generic, table
+          resource = Resource.new generic, table
           resource.filters.each do |name, conditions|
             account.searches.create name: name, conditions: conditions, table: table
           end

@@ -35,7 +35,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
 
   test 'display pie chart on enums' do
     stub_resource_columns listing: %i(role)
-    Resource::Base.any_instance.stubs(:enum_values_for)
+    Resource.any_instance.stubs(:enum_values_for)
       .returns 'admin' => {'label' => 'Chef'}, 'noob' => {'label' => 'Débutant'}
     6.times { FixtureFactory.new(:user, role: nil) }
     5.times { FixtureFactory.new(:user, role: 'noob') }
@@ -62,7 +62,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
     bob = FixtureFactory.new(:user, pseudo: 'Bob').factory
     FixtureFactory.new(:comment, user_id: rob.id)
     2.times { FixtureFactory.new(:comment, user_id: bob.id) }
-    Resource::Base.any_instance.stubs(:label_column).returns 'pseudo'
+    Resource.any_instance.stubs(:label_column).returns 'pseudo'
     display_chart :comments, :user_id
     actual = evaluate_script 'data_for_graph.chart_data'
     assert_equal [['Bob', 2], ['Rob', 1]], (actual.map { |r| r[0..1] })

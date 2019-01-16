@@ -64,7 +64,7 @@ class ActionDispatch::IntegrationTest
     %i(serialized show form listing search).each do |key|
       value[key] = [] unless value.key? key
     end
-    Resource::Base.any_instance.stubs(:columns).returns value
+    Resource.any_instance.stubs(:columns).returns value
   end
 
   teardown do

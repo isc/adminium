@@ -15,7 +15,7 @@ table.table.table-bordered
   label.control-label.col-sm-4 Validator
   .col-sm-8
     select.form-control
-      - Resource::Base::VALIDATORS.each do |validator|
+      - Resource::VALIDATORS.each do |validator|
         option value=validator = validator.humanize
 input type="hidden" name="validations[]"
 .params.hide
