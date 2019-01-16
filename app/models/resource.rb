@@ -3,7 +3,7 @@ class Resource
   VALIDATES_UNIQUENESS_OF = 'validates_uniqueness_of'.freeze
   VALIDATORS = [VALIDATES_PRESENCE_OF, VALIDATES_UNIQUENESS_OF].freeze
 
-  attr_accessor :filters, :default_order, :enum_values, :validations, :label_column, :export_col_sep, :export_skip_header, :table
+  attr_accessor :filters, :default_order, :enum_values, :label_column, :export_col_sep, :export_skip_header, :table
 
   def initialize generic, table
     @generic, @table = generic, table.to_sym
@@ -13,16 +13,17 @@ class Resource
   def load
     value = REDIS.get settings_key
     if value.nil?
-      @column, @columns, @enum_values, @validations = {}, {}, [], []
+      @column, @columns, @enum_values = {}, {}, []
     else
       datas = JSON.parse(value).symbolize_keys!
       @columns = datas[:columns].symbolize_keys!
       @filters = datas[:filters]
       @column = datas[:column] || {}
-      @default_order = datas[:default_order] if datas[:default_order].present? && column_names.include?(datas[:default_order].to_s.split(' ').first.to_sym)
+      if datas[:default_order].present? && column_names.include?(datas[:default_order].to_s.split(' ').first.to_sym)
+        @default_order = datas[:default_order]
+      end
       @per_page = datas[:per_page] || @generic.account.per_page
       @enum_values = datas[:enum_values] || []
-      @validations = datas[:validations] || []
       @label_column = datas[:label_column] if column_names.include? datas[:label_column].try(:to_sym)
       @export_skip_header = datas[:export_skip_header]
       @export_col_sep = datas[:export_col_sep]
@@ -103,7 +104,7 @@ class Resource
 
   def save
     settings = {
-      columns: @columns, column: @column, validations: @validations,
+      columns: @columns, column: @column,
       default_order: @default_order, enum_values: @enum_values, label_column: @label_column,
       export_col_sep: @export_col_sep, export_skip_header: @export_skip_header
     }
@@ -113,6 +114,14 @@ class Resource
 
   def settings_key
     "account:#{@generic.account_id}:settings:#{@table}"
+  end
+
+  def validations
+    table_configuration.validations
+  end
+
+  def table_configuration
+    @table_configuration ||= @generic.account.table_configurations.find_or_create_by(table: @table)
   end
 
   def csv_options= options
@@ -424,7 +433,8 @@ class Resource
       keys = primary_key_value.to_a
       keys.map!(&:to_i) if column_type(primary_keys.first) == :integer
       query.where(primary_keys.first => keys)
-        .select(*columns_to_select(fetch_binary_values)).to_a.sort_by {|r| primary_key_value.index(r[primary_keys.first])}
+        .select(*columns_to_select(fetch_binary_values)).to_a
+        .sort_by {|r| primary_key_value.index(r[primary_keys.first])}
     else
       pk_filter(primary_key_value).select(*columns_to_select(fetch_binary_values)).first
     end
@@ -437,7 +447,9 @@ class Resource
   def typecast_value column, value
     return value unless (col_schema = schema_hash[column])
     value = nil if value == '' && !%i(string blob).include?(col_schema[:type])
-    raise Sequel::InvalidValue, "nil/NULL is not allowed for the #{column} column" if value.nil? && !col_schema[:allow_null]
+    if value.nil? && !col_schema[:allow_null]
+      raise Sequel::InvalidValue, "nil/NULL is not allowed for the #{column} column"
+    end
     if col_schema[:type] == :hstore && !value.nil?
       2.times {value.shift} # remove dummy entry needed to be able to empty the hash
       return Sequel.hstore Hash[*value.delete_if {|k, _| k == '_'}]
