@@ -1,5 +1,6 @@
 class FillBackValidations < ActiveRecord::Migration[5.1]
   def up
+    TableConfiguration.reset_column_information
     Account.not_deleted.where.not(encrypted_db_url: nil).find_each do |account|
       begin
         puts account.id
