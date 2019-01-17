@@ -525,6 +525,9 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     click_button 'Save'
     assert_no_selector '.alert.alert-danger'
     assert_equal '["Bob", "Bobby"]', find('td[data-column-name="nicknames"]')['data-raw-value']
+    click_link_with_title 'Edit'
+    click_on 'Rich text editor'
+    assert_text 'Plain text area'
   end
 
   test 'date fields with default' do
