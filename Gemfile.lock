@@ -299,9 +299,9 @@ GEM
     sendgrid (1.2.4)
       json
     sequel (5.6.0)
-    sequel_pg (1.8.1)
+    sequel_pg (1.11.0)
       pg (>= 0.18.0)
-      sequel (>= 4.34.0)
+      sequel (>= 4.38.0)
     simple_form (4.1.0)
       actionpack (>= 5.0)
       activemodel (>= 5.0)
