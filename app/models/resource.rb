@@ -3,7 +3,7 @@ class Resource
   VALIDATES_UNIQUENESS_OF = 'validates_uniqueness_of'.freeze
   VALIDATORS = [VALIDATES_PRESENCE_OF, VALIDATES_UNIQUENESS_OF].freeze
 
-  attr_accessor :default_order, :enum_values, :label_column, :export_col_sep, :export_skip_header, :table, :datas
+  attr_accessor :default_order, :enum_values, :label_column, :export_col_sep, :export_skip_header, :table
   delegate :validations, to: :table_configuration
 
   def initialize generic, table
@@ -29,7 +29,6 @@ class Resource
       @export_col_sep = datas[:export_col_sep]
     end
     @default_order ||= default_primary_keys_order
-    @datas = datas # temp for validations migration
     set_missing_columns_conf
   end
 
