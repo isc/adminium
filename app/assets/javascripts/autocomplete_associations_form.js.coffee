@@ -46,7 +46,7 @@ class window.AutocompleteAssociationsForm
       success: (data) =>
         @list.html('')
         for record in data.results
-          text = record.adminium_label.toLowerCase()
+          text = record.adminium_label.toString().toLowerCase()
           if text.indexOf(query) isnt -1
             text = text.replace(query, "<span class='highlight'>#{query}</span>")
           else
