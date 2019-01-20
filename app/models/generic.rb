@@ -1,6 +1,9 @@
 require 'uri'
 require 'sequel'
-Sequel.extension :pg_array, :pg_hstore, :pg_json_ops # So that Sequel::Postgres::PGArray used in ResourcesHelper is loaded even though we didn't connect to a Postgres database yet.
+
+# So that Sequel::Postgres::PGArray used in ResourcesHelper is loaded
+# even though we didn't connect to a Postgres database yet.
+Sequel.extension :pg_array, :pg_hstore, :pg_json_ops
 Sequel.extension :named_timezones
 Sequel.tzinfo_disambiguator = proc {|_datetime, periods| periods.first}
 
@@ -69,7 +72,8 @@ class Generic
       foreign_keys = {}
       fk_info.each do |row|
         foreign_keys[row[:table_name].to_sym] ||= []
-        foreign_keys[row[:table_name].to_sym] << {column: row[:column].to_sym, to_table: row[:to_table].to_sym, primary_key: row[:primary_key].to_sym}
+        foreign_keys[row[:table_name].to_sym] <<
+          {column: row[:column].to_sym, to_table: row[:to_table].to_sym, primary_key: row[:primary_key].to_sym}
       end
       foreign_keys
     end
@@ -105,7 +109,9 @@ class Generic
 
   def tables
     return @tables if @tables
-    @tables = (@db.tables + @db.views).sort - %i(ar_internal_metadata)
+    @tables = (@db.tables + @db.views) - %i(ar_internal_metadata)
+    @tables += @db.send(:pg_class_relname, 'm', {}) if postgresql? # materialized views
+    @tables.sort!
     @account.update_attribute :tables_count, @tables.size if @account.tables_count != @tables.size
     @tables.concat PG_SYSTEM_TABLES - %i(pg_stat_statements) if postgresql?
     @tables
@@ -169,7 +175,8 @@ class Generic
 
   def db_size
     sql = if mysql?
-            "select sum(data_length + index_length) as fulldbsize FROM information_schema.TABLES WHERE table_schema = '#{db_name}'"
+            "select sum(data_length + index_length) as fulldbsize FROM information_schema.TABLES
+            WHERE table_schema = '#{db_name}'"
           else
             "select pg_database_size('#{db_name}') as fulldbsize"
           end
@@ -181,7 +188,8 @@ class Generic
     if mysql?
       return [] if table_list.try(:empty?)
       cond = "AND table_name in (#{table_list.map {|t| "'#{t}'"}.join(', ')})" if table_list.present?
-      @db["select table_name, data_length + index_length, data_length from information_schema.TABLES WHERE table_schema = '#{db_name}' #{cond}"].map do |row|
+      @db["select table_name, data_length + index_length, data_length from information_schema.TABLES
+          WHERE table_schema = '#{db_name}' #{cond}"].map do |row|
         v = row.values
         v[0] = v[0].to_sym
         v
@@ -189,7 +197,9 @@ class Generic
     else
       table_list.map do |table|
         res = [table]
-        res + @db["select pg_total_relation_size('\"#{table}\"') as fulltblsize, pg_relation_size('\"#{table}\"') as tblsize"].first.values rescue ['?']
+        size_query =
+          "select pg_total_relation_size('\"#{table}\"') as fulltblsize, pg_relation_size('\"#{table}\"') as tblsize"
+        res + @db[size_query].first.values rescue ['?']
       end.compact
     end
   end
@@ -200,7 +210,8 @@ class Generic
     query = if postgresql?
               db.from(:pg_stat_user_tables).select(:relname, :n_live_tup).where(relname: table_list)
             else
-              db.from(Sequel[:INFORMATION_SCHEMA][:TABLES]).select(:table_name, :table_rows).where(table_schema: @db_name).where(table_name: table_list)
+              db.from(Sequel[:INFORMATION_SCHEMA][:TABLES])
+                .select(:table_name, :table_rows).where(table_schema: @db_name).where(table_name: table_list)
             end
     query.to_a.map(&:values).to_h
   end
@@ -218,7 +229,7 @@ class Generic
       @db.execute 'SET application_name to \'Adminium\''
       statement_timeout
       @db.extension :pg_array, :error_sql
-      @db.extension :pg_hstore if @db.from(:pg_type).where(typtype: ['b', 'e'], typname: 'hstore').get(:oid)
+      @db.extension :pg_hstore if @db.from(:pg_type).where(typtype: %w(b e), typname: 'hstore').get(:oid)
       @db.schema_parse_complete
     end
     @db.extension :named_timezones
