@@ -31,7 +31,7 @@
         .alert.alert-warning
           - if current_account.collaborators.empty?
             p A role should be assigned to collaborators but you have not invited any yet.
-            = link_to "Add a collaborator", edit_account_path, class: 'btn btn-primary'
+            = link_to "Add a collaborator", edit_account_path(pane: 'collaborators'), class: 'btn btn-primary'
           - else
             p Your collaborators are administrators of this account, thus they have all permissions on all tables and cannot be assigned a role.
 

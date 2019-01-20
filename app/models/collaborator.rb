@@ -1,5 +1,5 @@
 class Collaborator < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, optional: true
   belongs_to :account
   validates :account, presence: true
   validates :email, presence: true,
