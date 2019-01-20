@@ -47,6 +47,7 @@ class Resource
   def primary_keys
     primary_keys = schema.find_all {|_, info| info[:primary_key]}.map(&:first)
     return primary_keys if primary_keys.any?
+    return [:queryid] if table == :pg_stat_statements
     %i(id Id uuid).each do |name|
       return [name] if column_names.include? name
     end
