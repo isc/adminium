@@ -7,7 +7,6 @@ class ApplicationController < ActionController::Base
   before_action :ensure_proper_subdomain
   before_action :require_account
   before_action :connect_to_db
-  before_action :set_source_cookie
   after_action :cleanup_generic
   around_action :tag_current_account
 
@@ -100,10 +99,6 @@ class ApplicationController < ActionController::Base
   def resource_for table
     @resources ||= {}
     @resources[table.to_sym] ||= Resource.new @generic, table
-  end
-
-  def set_source_cookie
-    cookies[:source] = params[:utm_source] if params[:utm_source].present?
   end
 
   def ensure_proper_subdomain
