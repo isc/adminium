@@ -25,7 +25,7 @@ class SessionsController < ApplicationController
   def create
     auth = request.env['omniauth.auth']
     user = User.find_by_provider_and_uid(auth['provider'], auth['uid']) || User.create_with_omniauth(auth)
-    if account = user.enterprise_accounts.first
+    if (account = user.enterprise_accounts.first)
       collaborator = user.collaborators.find_by(account: account)
       session[:account] = account.id
       session[:user] = user.id
@@ -51,13 +51,13 @@ class SessionsController < ApplicationController
       track_sign_on current_account, SignOn::Kind::HEROKU_OAUTH
       redirect_to root_url, notice: "Signed in to #{current_account.name}."
     else
-      redirect_to user_path,
-        error: 'You are not authorized to access this app because it looks like you are not a collaborator of this app !'
+      redirect_to user_path, error:
+        'You are not authorized to access this app because it looks like you are not a collaborator of this app !'
     end
   end
 
   def switch_account
-    collaborator = current_user.collaborators.where(account_id: params[:account_id]).first
+    collaborator = current_user.collaborators.find_by(account_id: params[:account_id])
     if collaborator&.account&.enterprise?
       session[:account] = collaborator.account_id
       session[:collaborator] = collaborator.id
