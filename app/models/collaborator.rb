@@ -1,7 +1,6 @@
 class Collaborator < ApplicationRecord
-  belongs_to :user
+  belongs_to :user, optional: true
   belongs_to :account
-  validates :account, presence: true
   validates :email, presence: true,
                     format: {with: /([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})/i}
   before_create :match_with_existing_user

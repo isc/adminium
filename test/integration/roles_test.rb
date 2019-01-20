@@ -13,5 +13,16 @@ class RolesTest < ActionDispatch::IntegrationTest
     assert_text 'Role successfully created'
     click_link 'Users read only'
     assert find('input[name="role[permissions][users][create]"]').checked?
+    click_on 'Add a collaborator'
+    fill_in 'Email', with: 'john@mail.com'
+    check 'Users read only'
+    save_screenshot 'account_collaborators.png'
+    click_on 'Add a collaborator'
+    assert_text 'Collaborator added'
+    click_link_with_title 'Edit this collaborator roles'
+    within('.modal') { fill_in 'Email', with: 'john@mail.net' }
+    click_on 'Update Collaborator'
+    assert_text 'Changes on john@mail.net saved'
+    assert_no_text 'john@mail.com'
   end
 end

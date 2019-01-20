@@ -17,6 +17,7 @@ FactoryBot.define do
   end
 
   factory :role do
+    account
     name { 'Read only' }
   end
 
