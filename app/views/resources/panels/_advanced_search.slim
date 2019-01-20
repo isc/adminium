@@ -19,5 +19,5 @@
         .modal-footer
           .form-inline
             => label_tag :name, 'Save as'
-            => text_field_tag :name, (params[:asearch] || 'last search'), class: 'form-control'
+            => text_field_tag :name, (params[:asearch] || 'last search'), class: 'form-control', required: true
             input.btn.btn-primary type="submit" value="Search"
