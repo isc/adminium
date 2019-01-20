@@ -109,8 +109,9 @@ class Generic
 
   def tables
     return @tables if @tables
-    @tables = (@db.tables + @db.views) - %i(ar_internal_metadata)
-    @tables += @db.send(:pg_class_relname, 'm', {}) if postgresql? # materialized views
+    # Fetching tables, views and materialized view all at once for PG
+    @tables = postgresql? ? @db.send(:pg_class_relname, %w(r v m), {}) : (@db.tables + @db.views)
+    @tables -= %i(ar_internal_metadata)
     @tables.sort!
     @account.update_attribute :tables_count, @tables.size if @account.tables_count != @tables.size
     @tables.concat PG_SYSTEM_TABLES - %i(pg_stat_statements) if postgresql?
