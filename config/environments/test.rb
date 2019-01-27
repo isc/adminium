@@ -40,3 +40,5 @@ Rails.application.configure do
 
   config.middleware.use RackSessionAccess::Middleware
 end
+
+Rails.application.routes.default_url_options[:account_name] = 'doe'

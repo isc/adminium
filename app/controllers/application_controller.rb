@@ -11,15 +11,16 @@ class ApplicationController < ActionController::Base
   around_action :tag_current_account
 
   helper_method :current_account, :current_user, :admin?, :current_account?, :resource_for
+  attr_accessor :current_collaborator
+
+  def url_options
+    { account_name: current_account&.name }.merge(super)
+  end
 
   private
 
   def require_account
-    if Rails.env.development?
-      %i(user collaborator account).each do |key|
-        session[key] ||= 1
-      end
-    end
+    session[:user] ||= 1 if Rails.env.development?
     redirect_to docs_url unless current_account
   end
 
@@ -37,23 +38,31 @@ class ApplicationController < ActionController::Base
   end
 
   def current_account?
-    session[:account] ||= 2 if Rails.env.development?
     current_account.present?
   end
 
   def current_account
-    @account ||= Account.not_deleted.find session[:account] if session[:account]
-  rescue ActiveRecord::RecordNotFound
-    session.delete :account
-    nil
+    return @account if @account
+    begin
+      if session[:account]
+        @account = Account.not_deleted.find session[:account]
+      elsif current_user
+        @account =
+          if params[:account_name]
+            current_user.enterprise_accounts.find_by name: params[:account_name]
+          else
+            current_user.enterprise_accounts.first
+          end
+        @current_collaborator = current_user.collaborators.find_by(account: @account)
+      end
+    rescue ActiveRecord::RecordNotFound
+      session.delete :account
+      nil
+    end
   end
 
   def current_user
     @user ||= User.find session[:user] if session[:user]
-  end
-
-  def current_collaborator
-    @collaborator ||= Collaborator.find(session[:collaborator]) if session[:collaborator]
   end
 
   def admin?

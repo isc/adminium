@@ -5,30 +5,36 @@ Rails.application.routes.draw do
   post '/auth/:provider/callback' => 'sessions#create'
   get '/auth/:provider/callback' => 'sessions#create'
   get '/signout' => 'sessions#destroy', as: :signout
+  get '/sessions/login_heroku_app' => 'sessions#login_heroku_app', as: :login_heroku_app
 
-  resources :resources, path: '/resources/:table', constraints: {id: /.*/} do
-    collection do
-      get 'page/:page', action: :index
-      post :bulk_destroy
-      post :bulk_update
-      get :bulk_edit
-      get :import
-      post :check_existence
-      post :perform_import
-      get :search
-      get :chart
+  scope ':account_name' do
+    resources :resources, path: '/resources/:table', constraints: {id: /.*/} do
+      collection do
+        get 'page/:page', action: :index
+        post :bulk_destroy
+        post :bulk_update
+        get :bulk_edit
+        get :import
+        post :check_existence
+        post :perform_import
+        get :search
+        get :chart
+      end
+      get :download, on: :member
     end
-    get :download, on: :member
+    resources :settings do
+      get :values, on: :member
+      get :columns, on: :collection
+      post :update_advanced_search, on: :member
+    end
+    resources :widgets, only: %i(create update destroy)
+    resources :schemas, :searches, :collaborators, :column_settings, :collaborators
+    resources :roles, except: %i(index show)
+    resource :dashboard, only: :show do
+      get :settings
+      get :bloat
+    end
   end
-  resources :settings do
-    get :values, on: :member
-    get :columns, on: :collection
-    post :update_advanced_search, on: :member
-  end
-  resources :widgets, only: %i(create update destroy)
-  resources :schemas
-  resources :searches
-  resources :column_settings
   resources :docs, only: :index do
     collection do
       get :start_demo
@@ -41,22 +47,12 @@ Rails.application.routes.draw do
     get :setup_database_connection
     post :send_email_team
   end
-  resource :sessions, only: [] do
-    get :switch_account
-    get :login_heroku_app
-  end
   resource :account, only: %i(create edit update) do
     get :db_url_presence, on: :member
     get :update_db_url_from_heroku_api, on: :collection
     post :cancel_tips, on: :member
     get :upgrade
   end
-  resources :roles, except: %i(index show)
-  resource :dashboard, only: :show do
-    get :settings
-    get :bloat
-  end
-  resources :collaborators
   resource :user, only: :show do
     get :apps
   end

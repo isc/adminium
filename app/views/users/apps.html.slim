@@ -6,7 +6,7 @@
   li.divider
 - @installed_apps.each do |account|
   - if account != current_account
-    - path = current_user.heroku_provider? ? login_heroku_app_sessions_path(id: account.heroku_uuid) : switch_account_sessions_path(account_id: account.id)
+    - path = current_user.heroku_provider? ? login_heroku_app_path(id: account.heroku_uuid) : dashboard_path(account_name: account.name)
     li= link_to account.name, path
 li.divider
 - if @apps.length > 0

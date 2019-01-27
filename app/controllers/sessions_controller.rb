@@ -1,8 +1,7 @@
 class SessionsController < ApplicationController
   include AppInstall
 
-  skip_before_action :connect_to_db
-  skip_before_action :require_account, only: %i(create create_from_heroku login_heroku_app destroy)
+  skip_before_action :connect_to_db, :require_account
   skip_before_action :verify_authenticity_token, only: %i(create create_from_heroku)
 
   def create_from_heroku
@@ -54,16 +53,6 @@ class SessionsController < ApplicationController
       redirect_to user_path, error:
         'You are not authorized to access this app because it looks like you are not a collaborator of this app !'
     end
-  end
-
-  def switch_account
-    collaborator = current_user.collaborators.find_by(account_id: params[:account_id])
-    if collaborator&.account&.enterprise?
-      session[:account] = collaborator.account_id
-      session[:collaborator] = collaborator.id
-      track_sign_on collaborator.account, SignOn::Kind::GOOGLE
-    end
-    redirect_to dashboard_url
   end
 
   def destroy
