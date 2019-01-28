@@ -496,7 +496,9 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     user = FixtureFactory.new(:user).factory
     ActiveRecord::Base.establish_connection Rails.configuration.test_database_conn_spec
     ActiveRecord::Base.connection.execute "update users set activated_at = '2012-10-09 05:00:00' where id = #{user.id}"
-    ActiveRecord::Base.connection.execute "update users set column_with_time_zone = '2012-10-09 05:00:00 +1000' where id = #{user.id}"
+    ActiveRecord::Base.connection.execute(
+      "update users set column_with_time_zone = '2012-10-09 05:00:00 +1000' where id = #{user.id}"
+    )
     ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
     visit resources_path(:users)
     cell = find('td[data-column-name="activated_at"]')

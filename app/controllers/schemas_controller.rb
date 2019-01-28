@@ -58,7 +58,8 @@ class SchemasController < ApplicationController
 
   def rename_table
     @generic.db.rename_table Sequel.identifier(params[:id]), Sequel.identifier(params[:table_name])
-    redirect_to schema_path(params[:table_name]), flash: {success: "Table #{params[:id]} has been renamed to #{params[:table_name]}."}
+    redirect_to schema_path(params[:table_name]),
+      flash: {success: "Table #{params[:id]} has been renamed to #{params[:table_name]}."}
   rescue Sequel::Error => e
     flash[:error] = "Renaming the table failed: #{e.message}"
     redirect_to schema_path(params[:id])
