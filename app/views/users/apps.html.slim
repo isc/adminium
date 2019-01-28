@@ -1,5 +1,7 @@
 - if current_account
-  li= link_to "Dashboard for <b>#{current_account.name}</b>".html_safe, dashboard_path
+  li
+    = link_to dashboard_path
+      ' Dashboard for <b>#{current_account.name}</b>
 - if current_account && @installed_apps.many?
   li.divider
 - @installed_apps.each do |account|

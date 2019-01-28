@@ -57,7 +57,8 @@ class ApplicationController < ActionController::Base
   end
 
   def admin?
-    (session[:account] && current_user.nil?) || current_collaborator&.is_administrator || (current_user&.heroku_provider? && current_collaborator.nil?)
+    (session[:account] && current_user.nil?) || current_collaborator&.is_administrator ||
+      (current_user&.heroku_provider? && current_collaborator.nil?)
   end
 
   def require_admin
@@ -65,7 +66,8 @@ class ApplicationController < ActionController::Base
   end
 
   def table_not_found exception
-    redirect_to dashboard_url, flash: {error: "The table <b>#{ERB::Util.h exception.table_name}</b> cannot be found.".html_safe}
+    redirect_to dashboard_url,
+      flash: { error: "The table <b>#{ERB::Util.h exception.table_name}</b> cannot be found." }
   end
 
   def cleanup_generic
@@ -73,8 +75,9 @@ class ApplicationController < ActionController::Base
   end
 
   def global_db_error exception
-    msg = "There was a database error, it might be a problem with your database URL. The error was : <pre>#{exception.message}</pre>".html_safe
-    redirect_to edit_account_url, flash: {error: msg}
+    msg = "There was a database error, it might be a problem with your database URL.
+      The error was : <pre>#{exception.message}</pre>"
+    redirect_to edit_account_url, flash: { error: msg }
   end
 
   def statement_timeouts exception
@@ -102,7 +105,10 @@ class ApplicationController < ActionController::Base
   end
 
   def ensure_proper_subdomain
-    return if !Rails.env.production? || request.host_with_port['doctolib'] || request.host_with_port['adminium-staging.herokuapp']
+    if !Rails.env.production? || request.host_with_port['doctolib'] ||
+       request.host_with_port['adminium-staging.herokuapp']
+      return
+    end
     redirect_to host: 'www.adminium.io' if request.host_with_port != 'www.adminium.io'
   end
 
@@ -127,7 +133,7 @@ class ApplicationController < ActionController::Base
       format.html do
         redirect_to dashboard_url, flash: {error: "You haven't the permission to perform #{action_name} on #{table}"}
       end
-      format.js {head :forbidden}
+      format.js { head :forbidden }
     end
   end
 

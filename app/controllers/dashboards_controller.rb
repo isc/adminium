@@ -13,9 +13,7 @@ class DashboardsController < ApplicationController
 
   def settings
     @settings = @generic.db['show all'].to_a
-    if params[:filter].present?
-      @settings.select! {|setting| setting[:name][params[:filter]]}
-    end
+    @settings.select! {|setting| setting[:name][params[:filter]]} if params[:filter].present?
   end
 
   def bloat
