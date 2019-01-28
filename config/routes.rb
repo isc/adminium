@@ -34,6 +34,12 @@ Rails.application.routes.draw do
       get :settings
       get :bloat
     end
+    resource :account, only: %i(create edit update) do
+      get :db_url_presence, on: :member
+      get :update_db_url_from_heroku_api, on: :collection
+      post :cancel_tips, on: :member
+      get :upgrade
+    end
   end
   resources :docs, only: :index do
     collection do
@@ -46,12 +52,6 @@ Rails.application.routes.draw do
     get :invite_team
     get :setup_database_connection
     post :send_email_team
-  end
-  resource :account, only: %i(create edit update) do
-    get :db_url_presence, on: :member
-    get :update_db_url_from_heroku_api, on: :collection
-    post :cancel_tips, on: :member
-    get :upgrade
   end
   resource :user, only: :show do
     get :apps

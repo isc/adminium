@@ -3,7 +3,7 @@ ul.nav.navbar-nav.navbar-right
     li= link_to 'Sign in', '/auth/google_oauth2'
   - else
     li.dropdown
-      a.apps-list.dropdown-toggle data-toggle="dropdown" href="#"
+      a.apps-list.dropdown-toggle data-toggle="dropdown" data-path=apps_user_path(account_name: current_account.name) href="#"
         ' Signed in as
         b = current_user&.name || current_user&.email || 'heroku admin'
         b.caret<

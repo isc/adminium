@@ -10,7 +10,7 @@ class Navigation
   fetchAppList: ->
     return if $('.apps-list').data('fetched')
     $('.apps-list').data('fetched', true)
-    $.get '/user/apps', (data) -> $('ul.accounts-menu').html(data)
+    $.get $('.apps-list').data('path'), (data) -> $('ul.accounts-menu').html(data)
 
   tableSelection: ->
     @selector = '#table_select'
