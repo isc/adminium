@@ -20,6 +20,7 @@ require 'rack_session_access/capybara'
 
 DatabaseCleaner.strategy = :truncation
 Capybara.default_driver = ENV['DISABLE_HEADLESS'] ? :selenium_chrome : :selenium_chrome_headless
+Capybara.server = :puma, { Silent: true }
 
 Capybara::Screenshot.register_filename_prefix_formatter(:minitest) do |test_case|
   test_name = test_case.respond_to?(:name) ? test_case.name : test_case.__name__
