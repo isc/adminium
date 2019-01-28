@@ -122,8 +122,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
 
   def display_chart table, column, svg: true
     visit resources_path(table) if table
-    find("th[data-column-name=\"#{column}\"]").hover
-    find('i.time-chart').click
+    find("th[data-column-name=\"#{column}\"] i.time-chart").click
     assert_selector '#chart_div svg' if svg
   end
 end
