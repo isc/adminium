@@ -203,7 +203,7 @@ class Generic
           )
           .where(where_hash)
       end
-    query.map(&:values).each {|row| row[0] = row[0].to_sym }
+    result = query.map(&:values).sort_by(&:first).each {|row| row[0] = row[0].to_sym }
   end
 
   def table_counts table_list
