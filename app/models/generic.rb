@@ -194,7 +194,7 @@ class Generic
             WHERE table_schema = '#{db_name}' #{cond}"]
       else
         where_hash = { schemaname: search_path }
-        where_hash[:tablename] = table_list if table_list
+        where_hash[:tablename] = table_list.map(&:to_s) if table_list
         db[:pg_tables]
           .select(
             :tablename,
