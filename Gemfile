@@ -31,10 +31,6 @@ gem 'sequel_pg', require: 'sequel'
 gem 'simple_form'
 gem 'slim-rails'
 
-source 'https://rails-assets.org' do
-  gem 'rails-assets-bootstrap-datepicker'
-end
-
 group :mysql_support do
   gem 'mysql2'
 end
