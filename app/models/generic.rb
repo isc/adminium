@@ -186,24 +186,23 @@ class Generic
 
   def table_sizes table_list
     table_list ||= tables
-    return [] if table_list.try(:empty?)
-    query =
-      if mysql?
-        cond = "AND table_name in (#{table_list.map {|t| "'#{t}'"}.join(', ')})" if table_list.present?
-        db["select table_name, data_length + index_length, data_length from information_schema.TABLES
-            WHERE table_schema = '#{db_name}' #{cond}"]
-      else
-        where_hash = { schemaname: search_path }
-        where_hash[:tablename] = table_list.map(&:to_s) if table_list
-        db[:pg_tables]
-          .select(
-            :tablename,
-            Sequel.function(:pg_total_relation_size, Sequel.cast(:tablename, :text)),
-            Sequel.function(:pg_relation_size, Sequel.cast(:tablename, :text))
-          )
-          .where(where_hash)
+    if mysql?
+      return [] if table_list.try(:empty?)
+      cond = "AND table_name in (#{table_list.map {|t| "'#{t}'"}.join(', ')})" if table_list.present?
+      @db["select table_name, data_length + index_length, data_length from information_schema.TABLES
+          WHERE table_schema = '#{db_name}' #{cond}"].map do |row|
+        v = row.values
+        v[0] = v[0].to_sym
+        v
       end
-    result = query.map(&:values).sort_by(&:first).each {|row| row[0] = row[0].to_sym }
+    else
+      table_list.map do |table|
+        res = [table]
+        size_query =
+          "select pg_total_relation_size('\"#{table}\"') as fulltblsize, pg_relation_size('\"#{table}\"') as tblsize"
+        res + @db[size_query].first.values rescue ['?']
+      end.compact
+    end
   end
 
   def table_counts table_list
