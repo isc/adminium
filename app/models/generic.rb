@@ -194,7 +194,7 @@ class Generic
             WHERE table_schema = '#{db_name}' #{cond}"]
       else
         where_hash = { nspname: search_path, relkind: 'r' }
-        where_hash[:tablename] = table_list.map(&:to_s) if table_list
+        where_hash[:relname] = table_list.map(&:to_s) if table_list
         db[:pg_class]
           .join(:pg_namespace, oid: :relnamespace)
           .select(:relname,
