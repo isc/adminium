@@ -186,23 +186,22 @@ class Generic
 
   def table_sizes table_list
     table_list ||= tables
-    if mysql?
-      return [] if table_list.try(:empty?)
-      cond = "AND table_name in (#{table_list.map {|t| "'#{t}'"}.join(', ')})" if table_list.present?
-      @db["select table_name, data_length + index_length, data_length from information_schema.TABLES
-          WHERE table_schema = '#{db_name}' #{cond}"].map do |row|
-        v = row.values
-        v[0] = v[0].to_sym
-        v
+    return [] if table_list.try(:empty?)
+    query =
+      if mysql?
+        cond = "AND table_name in (#{table_list.map {|t| "'#{t}'"}.join(', ')})" if table_list.present?
+        db["select table_name, data_length + index_length, data_length from information_schema.TABLES
+            WHERE table_schema = '#{db_name}' #{cond}"]
+      else
+        where_hash = { nspname: search_path, relkind: 'r' }
+        where_hash[:relname] = table_list.map(&:to_s) if table_list
+        db[:pg_class]
+          .join(:pg_namespace, oid: :relnamespace)
+          .select(:relname,
+            Sequel.lit('pg_total_relation_size(pg_class.oid)'), Sequel.lit('pg_relation_size(pg_class.oid)'))
+          .where(where_hash)
       end
-    else
-      table_list.map do |table|
-        res = [table]
-        size_query =
-          "select pg_total_relation_size('\"#{table}\"') as fulltblsize, pg_relation_size('\"#{table}\"') as tblsize"
-        res + @db[size_query].first.values rescue ['?']
-      end.compact
-    end
+    query.map(&:values).sort_by(&:first).each {|row| row[0] = row[0].to_sym }
   end
 
   def table_counts table_list
