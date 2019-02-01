@@ -193,17 +193,15 @@ class Generic
         db["select table_name, data_length + index_length, data_length from information_schema.TABLES
             WHERE table_schema = '#{db_name}' #{cond}"]
       else
-        where_hash = { schemaname: search_path }
+        where_hash = { nspname: search_path, relkind: 'r' }
         where_hash[:tablename] = table_list.map(&:to_s) if table_list
-        db[:pg_tables]
-          .select(
-            :tablename,
-            Sequel.function(:pg_total_relation_size, Sequel.cast(:tablename, :text)),
-            Sequel.function(:pg_relation_size, Sequel.cast(:tablename, :text))
-          )
+        db[:pg_class]
+          .join(:pg_namespace, oid: :relnamespace)
+          .select(:relname,
+            Sequel.lit('pg_total_relation_size(pg_class.oid)'), Sequel.lit('pg_relation_size(pg_class.oid)'))
           .where(where_hash)
       end
-    result = query.map(&:values).sort_by(&:first).each {|row| row[0] = row[0].to_sym }
+    query.map(&:values).sort_by(&:first).each {|row| row[0] = row[0].to_sym }
   end
 
   def table_counts table_list
