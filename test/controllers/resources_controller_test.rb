@@ -186,17 +186,16 @@ class ResourcesControllerTest < ActionController::TestCase
   def test_import_with_pks_and_magic_timestamp_filling
     # FIXME: import feature incorrectly reports an error when importing with specific PKs if one of the specified pk value is below the max pk value in the database.
     @account.update application_time_zone: 'Paris', database_time_zone: 'UTC'
-    travel_to ActiveSupport::TimeZone.new('Paris').parse('6/6/2013 15:36') do
-      pk = @fixtures.last.factory.id + 1
-      datas = {create: [[pk, 'Jean', 'Marais']], update: [], headers: %w(id first_name last_name)}.to_json
-      post :perform_import, params: {table: :users, data: datas}
-      assert_equal({'success' => true}, JSON.parse(@response.body))
-      get :index, params: {table: 'users', asearch: 'Last import'}
-      assert_equal 1, assigns[:items].count
-      assigned_item = assigns[:items].detect {|r| r[:id] == pk}
-      assert_equal 'Marais', assigned_item[:last_name]
-      assert_equal '2013-06-06T15:36:00+02:00', assigned_item[:created_at].to_s
-    end
+    travel_to ActiveSupport::TimeZone.new('Paris').parse('6/6/2013 15:36')
+    pk = @fixtures.last.factory.id + 1
+    datas = {create: [[pk, 'Jean', 'Marais']], update: [], headers: %w(id first_name last_name)}.to_json
+    post :perform_import, params: {table: :users, data: datas}
+    assert_equal({'success' => true}, JSON.parse(@response.body))
+    get :index, params: {table: 'users', asearch: 'Last import'}
+    assert_equal 1, assigns[:items].count
+    assigned_item = assigns[:items].detect {|r| r[:id] == pk}
+    assert_equal 'Marais', assigned_item[:last_name]
+    assert_equal '2013-06-06T15:36:00+02:00', assigned_item[:created_at].to_s
   end
 
   def test_order_desc
@@ -250,16 +249,15 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   def test_xhr_update
-    travel_to ActiveSupport::TimeZone.new('Paris').parse('2013-06-02 22:22:07') do
-      @account.update database_time_zone: 'UTC', application_time_zone: 'Paris'
-      user = FixtureFactory.new(:user)
-      put :update, params: {users: {created_at: '2013-06-02 22:02:07'}, table: 'users',
-                            id: user.factory.id.to_s, format: 'json'}
-      result = JSON.parse(@response.body)
-      assert result['value'][/data-raw-value="2013-06-02 22:02:07"/]
-      user.reload!
-      assert_equal '2013-06-02 20:22:07 UTC', user.factory.updated_at.to_s
-    end
+    travel_to ActiveSupport::TimeZone.new('Paris').parse('2013-06-02 22:22:07')
+    @account.update database_time_zone: 'UTC', application_time_zone: 'Paris'
+    user = FixtureFactory.new(:user)
+    put :update, params: {users: {created_at: '2013-06-02 22:02:07'}, table: 'users',
+                          id: user.factory.id.to_s, format: 'json'}
+    result = JSON.parse(@response.body)
+    assert result['value'][/data-raw-value="2013-06-02 22:02:07"/]
+    user.reload!
+    assert_equal '2013-06-02 20:22:07 UTC', user.factory.updated_at.to_s
   end
 
   private
