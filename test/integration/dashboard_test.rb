@@ -46,7 +46,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
     click_on 'Database settings'
     assert_text 'application_name'
     assert_text 'autovacuum'
-    fill_in 'Filter', with: 'vacuum'
+    fill_in 'Filter by name', with: 'vacuum'
     click_on 'Filter'
     assert_text 'autovacuum'
     assert_no_text 'application_name'
