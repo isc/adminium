@@ -7,7 +7,7 @@ class DashboardsController < ApplicationController
     @table_sizes = @generic.table_sizes @table_list
     @table_counts = @generic.table_counts @table_list
     @widgets = current_account.widgets
-    @widgets = @widgets.find_all { |w| @table_list.include? w.table }
+    @widgets = @widgets.find_all { |w| @table_list.include? w.table.to_sym }
     @comments = @generic.table_comments(@table_list).index_by { |r| r[:relname] }
   end
 
