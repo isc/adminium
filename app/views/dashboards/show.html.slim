@@ -45,15 +45,12 @@
         td= "#{@table_sizes.length} tables"
         - if @comments.any?
           td
-        td= number_to_human_size @table_sizes.sum{|e|e[1].to_i}
-        td= number_to_human_size @table_sizes.sum{|e|e[2].to_i}
+        td= number_to_human_size @table_sizes.values.sum { |e|e[1].to_i }
+        td= number_to_human_size @table_sizes.values.sum { |e|e[2].to_i }
         td.total_table_count data-value='0' 0
     tbody
-      - index = 0
-      - @table_sizes.each do |table, fulltblsize, tblsize|
-        - next if table.in? Generic::PG_SYSTEM_TABLES
-        - index += 1
-        tr class=((current_account&.pet_project? && index > 5) ? 'deactivated' : '')
+      - (@table_list - Generic::PG_SYSTEM_TABLES).each_with_index do |table, index|
+        tr class=((current_account&.pet_project? && index >= 5) ? 'deactivated' : '')
           td
             = link_to schema_path(table), rel: 'tooltip', title: 'Schema'
               i.fa.fa-table>
@@ -62,14 +59,17 @@
           td= link_to table, resources_path(table)
           - if @comments.any?
             td= @comments.dig(table.to_s, :description)
-          td data-value=fulltblsize = number_to_human_size fulltblsize
-          td data-value=tblsize = number_to_human_size tblsize
+          - if (sizes = @table_sizes[table.to_s])
+            td data-value=sizes.second = number_to_human_size sizes.second
+            td data-value=sizes.third = number_to_human_size sizes.third
+          - else
+            td colspan=2
           td data-value=@table_counts[table.to_s] = number_with_delimiter @table_counts[table.to_s]
 
   - if admin?
     = link_to "Add a new table", new_schema_path, class: "btn btn-info"
   .pull-right= "Database size #{number_to_human_size @db_size}"
-  - if !@table_list || (@table_list & Generic::PG_SYSTEM_TABLES).any?
+  - if (@table_list & Generic::PG_SYSTEM_TABLES).any?
     hr
     p
       ' System tables:
