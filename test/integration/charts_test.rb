@@ -6,20 +6,19 @@ class ChartsTest < ActionDispatch::IntegrationTest
   end
 
   test 'display default timechart then periodic grouping' do
-    Timecop.travel '2018-10-21 21:00' do
-      2.times { FixtureFactory.new(:user, created_at: Time.current.beginning_of_week) }
-      FixtureFactory.new(:user, created_at: (Time.current.beginning_of_week + 2.days))
-      display_chart :users, :created_at
-      actual = evaluate_script 'data_for_graph.chart_data'
-      expected = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0]
-      assert_equal expected, actual.map(&:second)
-      select 'Day of week'
-      assert_text 'Monday'
-      assert_text 'Wednesday'
-      actual = evaluate_script 'data_for_graph.chart_data'
-      assert_equal [2, 1], actual.map(&:second)
-      save_screenshot 'time_chart_periodic_grouping.png'
-    end
+    travel_to '2018-10-21 21:00'
+    2.times { FixtureFactory.new(:user, created_at: Time.current.beginning_of_week) }
+    FixtureFactory.new(:user, created_at: (Time.current.beginning_of_week + 2.days))
+    display_chart :users, :created_at
+    actual = evaluate_script 'data_for_graph.chart_data'
+    expected = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 1, 0, 0, 0, 0]
+    assert_equal expected, actual.map(&:second)
+    select 'Day of week'
+    assert_text 'Monday'
+    assert_text 'Wednesday'
+    actual = evaluate_script 'data_for_graph.chart_data'
+    assert_equal [2, 1], actual.map(&:second)
+    save_screenshot 'time_chart_periodic_grouping.png'
   end
 
   test 'display pie chart on boolean' do
@@ -69,21 +68,20 @@ class ChartsTest < ActionDispatch::IntegrationTest
   end
 
   test 'display pie chart with where and grouping' do
-    Timecop.travel '2017-01-10' do
-      FixtureFactory.new(:user, admin: false, created_at: '2017-01-01')
-      FixtureFactory.new(:user, admin: true, created_at: '2017-01-02')
-      display_chart :users, :created_at
-      first('rect[height="223"]').click
-      assert_selector '.alert-warning', text: 'Where daily created_at is Jan 01'
-      display_chart nil, :admin
-      assert_text 'False'
-      assert_text '100%'
-      assert_no_text 'True'
-      # visit chart_resources_path(:users,
-      #   column: 'admin', type: 'PieChart', where: {created_at: '2017-01-01'}, grouping: 'yearly')
-      # json = 'data_for_graph = {'chart_data':[['False',1,false,'#777'],['True',1,true,'#07be25']],'chart_type':'PieChart','column':'admin','grouping':'yearly'}'
-      # assert_equal json, page.find('script', visible: false).text(:all)
-    end
+    travel_to '2017-01-10'
+    FixtureFactory.new(:user, admin: false, created_at: '2017-01-01')
+    FixtureFactory.new(:user, admin: true, created_at: '2017-01-02')
+    display_chart :users, :created_at
+    first('rect[height="223"]').click
+    assert_selector '.alert-warning', text: 'Where daily created_at is Jan 01'
+    display_chart nil, :admin
+    assert_text 'False'
+    assert_text '100%'
+    assert_no_text 'True'
+    # visit chart_resources_path(:users,
+    #   column: 'admin', type: 'PieChart', where: {created_at: '2017-01-01'}, grouping: 'yearly')
+    # json = 'data_for_graph = {'chart_data':[['False',1,false,'#777'],['True',1,true,'#07be25']],'chart_type':'PieChart','column':'admin','grouping':'yearly'}'
+    # assert_equal json, page.find('script', visible: false).text(:all)
   end
 
   test 'display pie chart on enum from belongs_to association' do

@@ -11,10 +11,9 @@ class DashboardTest < ActionDispatch::IntegrationTest
     visit dashboard_path
     assert_no_text 'Welcome On Board'
     assert_no_text 'Basic Search'
-    Timecop.travel 2.days.from_now do
-      visit dashboard_path
-      assert_selector '.modal-title', text: 'Basic Search'
-    end
+    travel 2.days
+    visit dashboard_path
+    assert_selector '.modal-title', text: 'Basic Search'
   end
 
   test 'view dashboard with widgets' do

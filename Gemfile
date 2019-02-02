@@ -69,7 +69,6 @@ group :test do
   gem 'rails-controller-testing'
   gem 'selenium-webdriver'
   gem 'simplecov', require: false
-  gem 'timecop'
 end
 group :development, :test do
   gem 'pry-byebug'

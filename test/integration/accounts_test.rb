@@ -14,7 +14,7 @@ class AccountsTest < ActionDispatch::IntegrationTest
   end
 
   test 'update account settings' do
-    Timecop.travel '2019-01-09 20:59'
+    travel_to '2019-01-09 20:59'
     account = login
     FixtureFactory.new(:user, pseudo: 'Zoé', birthdate: '2017-08-02')
     visit resources_path(:users)
