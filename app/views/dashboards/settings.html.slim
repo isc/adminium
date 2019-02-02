@@ -1,6 +1,7 @@
 h3 Database settings
-form.pull-right
-  input.form-control type="search" placeholder="Filter" name="filter" value=params[:filter]
+form.pull-right.form-inline
+  input.form-control> type="search" placeholder="Filter by name" name="filter" value=params[:filter]
+  button.btn.btn-primary Filter
 - if @settings.any?
   table.table
     thead

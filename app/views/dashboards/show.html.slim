@@ -69,7 +69,7 @@
   - if admin?
     = link_to "Add a new table", new_schema_path, class: "btn btn-info"
   .pull-right= "Database size #{number_to_human_size @db_size}"
-  - if (@table_sizes.map(&:first) & Generic::PG_SYSTEM_TABLES).any?
+  - if !@table_list || (@table_list & Generic::PG_SYSTEM_TABLES).any?
     hr
     p
       ' System tables:

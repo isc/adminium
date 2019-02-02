@@ -4,7 +4,7 @@ class AccountsTest < ActionDispatch::IntegrationTest
   test 'pet project limitation' do
     login create(:account, plan: Account::Plan::PET_PROJECT)
     visit dashboard_path
-    find('a', text: 'Close').click
+    click_on 'Close'
     click_link 'roles_users' # table number 6 is off limit
     assert_selector '.modal', text: 'This table is not accessible'
     save_screenshot 'pet_project_limitation_modal.png'
