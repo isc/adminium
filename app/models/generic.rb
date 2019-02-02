@@ -185,8 +185,6 @@ class Generic
   end
 
   def table_sizes table_list
-    table_list ||= tables
-    return [] if table_list.try(:empty?)
     query =
       if mysql?
         cond = "AND table_name in (#{table_list.map {|t| "'#{t}'"}.join(', ')})" if table_list.present?
@@ -201,7 +199,7 @@ class Generic
             Sequel.lit('pg_total_relation_size(pg_class.oid)'), Sequel.lit('pg_relation_size(pg_class.oid)'))
           .where(where_hash)
       end
-    query.map(&:values).sort_by(&:first).each {|row| row[0] = row[0].to_sym }
+    query.map(&:values).index_by(&:first)
   end
 
   def table_counts table_list

@@ -21,7 +21,7 @@ class GenericTest < ActiveSupport::TestCase
   test 'table_sizes' do
     table_sizes = @generic.table_sizes expected_tables
     assert_equal(expected_tables.size - 5, table_sizes.size)
-    assert_equal [3], table_sizes.map(&:length).uniq
+    assert_equal [3], table_sizes.values.map(&:length).uniq
   end
 
   test 'foreign keys' do

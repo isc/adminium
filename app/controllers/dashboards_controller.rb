@@ -3,11 +3,11 @@ class DashboardsController < ApplicationController
 
   def show
     @db_size = @generic.db_size
-    @table_list = @permissions.map {|key, value| key if value['read']}.compact if @permissions
+    @table_list = @permissions ? @permissions.map {|key, value| key if value['read']}.compact : @generic.tables
     @table_sizes = @generic.table_sizes @table_list
     @table_counts = @generic.table_counts @table_list
     @widgets = current_account.widgets
-    @widgets = @widgets.find_all {|w| @table_list.include? w.table} if @table_list
+    @widgets = @widgets.find_all { |w| @table_list.include? w.table }
     @comments = @generic.table_comments(@table_list).index_by { |r| r[:relname] }
   end
 
