@@ -330,7 +330,7 @@ class ResourcesController < ApplicationController
   def process_conditions params_key
     return if params[params_key].blank?
     params[params_key].to_unsafe_h.map do |k, v|
-      v = nil if v == 'null'
+      v = nil if v.in? %w(nil null)
       if v.is_a? Hash
         flash.now[:error] = "Invalid <i>#{params_key}</i> parameter value."
         params[params_key].delete k
