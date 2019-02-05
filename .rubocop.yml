@@ -8,6 +8,10 @@ Rails:
   Enabled: true
 Rails/DynamicFindBy:
   Enabled: false
+Rails/Output:
+  Enabled: false
+Rails/FilePath:
+  Enabled: false
 Metrics/LineLength:
   Max: 120
 Metrics/BlockLength:
