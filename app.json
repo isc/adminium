@@ -8,7 +8,8 @@
         { "url": "https://github.com/heroku/heroku-buildpack-google-chrome" }
       ],
       "env": {
-        "DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL": true
+        "DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL": true,
+        "REMOTE_REPORTER_URL": "http://test-failures.herokuapp.com/867a5de4a32757d08569575eaf78ab"
       },
       "scripts": {
         "test": "./ci.sh"

@@ -17,6 +17,7 @@ require 'capybara/rails'
 require 'capybara-screenshot/minitest'
 require 'mocha/setup'
 require 'rack_session_access/capybara'
+require 'test_failures_reporter'
 
 DatabaseCleaner.strategy = :truncation
 Capybara.default_driver = ENV['DISABLE_HEADLESS'] ? :selenium_chrome : :selenium_chrome_headless
@@ -26,6 +27,8 @@ Capybara::Screenshot.register_filename_prefix_formatter(:minitest) do |test_case
   test_name = test_case.respond_to?(:name) ? test_case.name : test_case.__name__
   "failed-test-screenshot-#{test_name}"
 end
+
+Minitest::Reporters.use!(TestFailuresReporter.new) if ENV['REMOTE_REPORTER_URL'].present?
 
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods

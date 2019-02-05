@@ -3,9 +3,7 @@
 require 'socket'
 require 'json'
 
-class Minitest::Reporters::TestFailuresReporter < Minitest::Reporters::BaseReporter
-  include RemoteReporterUtils
-
+class TestFailuresReporter < Minitest::Reporters::BaseReporter
   def start
     puts "Visit #{ENV['REMOTE_REPORTER_URL'].sub('http:', 'https:')}/builds/#{build_id} for details on failures."
     super
@@ -29,8 +27,8 @@ class Minitest::Reporters::TestFailuresReporter < Minitest::Reporters::BaseRepor
   def build_payload(kind)
     @build_payload ||= {
       build: build_id,
-      commit_sha: ENV['HEROKU_TEST_RUN_COMMIT_VERSION'],
-      branch: ENV['HEROKU_TEST_RUN_BRANCH'],
+      commit_sha: ENV['HEROKU_TEST_RUN_COMMIT_VERSION'] || `git rev-parse HEAD`.strip,
+      branch: ENV['HEROKU_TEST_RUN_BRANCH'] || `git rev-parse --abbrev-ref HEAD`.strip,
       kind: kind
     }
   end
