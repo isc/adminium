@@ -271,8 +271,10 @@ class ResourcesController < ApplicationController
     end
     array_columns = resource.columns[:search].select {|c| resource.array_column?(c)}
     if array_columns.any?
-      search_array = @generic.db.literal Sequel.pg_array(params[:search].split(' '), :text)
-      conds += array_columns.map {|column| Sequel.lit "\"#{column}\"::text[] @> #{search_array}"}
+      search_array = Sequel.pg_array(params[:search].split(' '), :text)
+      conds += array_columns.map do |column|
+        Sequel.pg_array_op(Sequel.cast(qualify(params[:table], column), 'text[]')).contains(search_array)
+      end
     end
     uuid_columns = resource.columns[:search].select {|c| resource.uuid_column?(c)}
     if uuid_columns.any? && params[:search].match(/\A[a-f\d\-]+\Z/)

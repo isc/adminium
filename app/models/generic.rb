@@ -3,7 +3,7 @@ require 'sequel'
 
 # So that Sequel::Postgres::PGArray used in ResourcesHelper is loaded
 # even though we didn't connect to a Postgres database yet.
-Sequel.extension :pg_array, :pg_hstore, :pg_json_ops
+Sequel.extension :pg_array, :pg_array_ops, :pg_hstore, :pg_json_ops
 Sequel.extension :named_timezones
 Sequel.tzinfo_disambiguator = proc {|_datetime, periods| periods.first}
 
