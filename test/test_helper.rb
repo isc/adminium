@@ -49,7 +49,7 @@ class ActionDispatch::IntegrationTest
 
   def login account = nil
     account ||= create :account
-    page.set_rack_session account: account.id
+    post '/test_setup', params: { session: { account: account.id } }
     account
   end
 

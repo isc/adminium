@@ -71,6 +71,12 @@ class SessionsController < ApplicationController
     redirect_to root_url, notice: 'Signed out!'
   end
 
+  def test_setup
+    return unless Rails.env.test?
+    params[:session].each { |key, value| session[key] = value }
+    render json: session
+  end
+
   private
 
   def track_sign_on account, kind

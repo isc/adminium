@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   post '/auth/:provider/callback' => 'sessions#create'
   get '/auth/:provider/callback' => 'sessions#create'
   get '/signout' => 'sessions#destroy', as: :signout
+  post '/test_setup' => 'sessions#test_setup'
 
   resources :resources, path: '/resources/:table', constraints: {id: /.*/} do
     collection do
