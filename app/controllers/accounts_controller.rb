@@ -51,9 +51,9 @@ class AccountsController < ApplicationController
 
   def update
     if params[:db_key] && session[:db_urls].present?
-      db_url = session[:db_urls].detect {|url| url[:key] == params[:db_key]}
+      db_url = session[:db_urls].detect { |url| url['key'] == params[:db_key] }
       params[:account] ||= {}
-      params[:account][:db_url] = db_url[:value]
+      params[:account][:db_url] = db_url['value']
       params[:account][:db_url_setup_method] = current_account.db_url_setup_method.presence || 'oauth'
     else
       params[:account][:db_url_setup_method] = 'web'
