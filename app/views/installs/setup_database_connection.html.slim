@@ -25,10 +25,10 @@ h3.text-center
         .list-group
           - @db_urls.each do |db|
             = form_for current_account, html: {class: 'list-group-item'} do |f|
-              = hidden_field_tag 'db_key', db[:key]
+              = hidden_field_tag 'db_key', db['key']
               = hidden_field_tag :install, 1
-              = f.submit db[:key], class: 'btn btn-info'
-              =< db[:value][0..15] + "******************"
+              = f.submit db['key'], class: 'btn btn-info'
+              =< db['value'][0..15] + "******************"
 
 .modal#modal-install-manually tabindex="-1"
   .modal-dialog.modal-lg
