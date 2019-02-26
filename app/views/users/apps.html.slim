@@ -11,5 +11,7 @@
 li.divider
 - if @apps.length > 0
   li= link_to "See all my apps", user_path
-li= link_to 'Edit account', edit_account_path
+li= link_to 'Account settings', edit_account_path
+li= link_to 'Roles and permissions', roles_path
+li= link_to 'Collaborators', collaborators_path
 li= link_to 'Sign out', signout_path

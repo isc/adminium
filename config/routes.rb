@@ -51,7 +51,7 @@ Rails.application.routes.draw do
     post :cancel_tips, on: :member
     get :upgrade
   end
-  resources :roles, except: %i(index show)
+  resources :roles, except: %i(show)
   resource :dashboard, only: :show do
     get :settings
     get :bloat

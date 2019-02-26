@@ -26,18 +26,16 @@ class AccountsTest < ActionDispatch::IntegrationTest
     click_button 'Update Account'
     assert_text 'Changes saved'
     assert has_field?('Database URL', with: new_db_url)
-    fill_in 'Database URL', with: 'stable screenshot'
-    save_screenshot 'account_settings.png'
-    click_on 'Display settings'
     assert has_field?('Per page', with: 25)
     fill_in 'Per page', with: 150
     select 'less than a minute ago'
     select '2019-01-09'
-    click_on 'Save settings'
+    click_on 'Update Account'
     assert_text 'Changes saved'
-    click_on 'Display settings'
     assert has_field?('Per page', with: 150)
     assert has_select?('Datetime format', selected: 'less than a minute ago')
+    fill_in 'Database URL', with: 'stable screenshot'
+    save_screenshot 'account_settings.png'
     visit resources_path(:users)
     assert_text 'less than a minute ago'
     assert_text '2017-08-02'

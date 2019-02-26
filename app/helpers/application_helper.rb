@@ -114,7 +114,8 @@ module ApplicationHelper
   end
 
   def settings_button title
-    content_tag :a, class: 'btn navbar-btn btn-default', data: {toggle: 'modal', placement: 'bottom'}, href: '#settings', title: title, rel: 'tooltip' do
+    content_tag :a, class: 'btn navbar-btn btn-default', data: {toggle: 'modal', placement: 'bottom'},
+      href: '#settings', title: title, rel: 'tooltip' do
       content_tag :i, nil, class: 'fa fa-cog'
     end
   end

@@ -5,22 +5,7 @@ class AccountsController < ApplicationController
   skip_before_action :connect_to_db
   skip_before_action :require_account, only: :create
 
-  def edit
-    @active_pane = params[:pane] || 'database_connection'
-    @account = current_account
-    @heroku_collaborators = []
-    @roles = @account.roles.order(:name).to_a if @account.enterprise?
-    @account_collaborators = @account.collaborators.includes(:roles).order(:email)
-    if current_user&.heroku_provider?
-      @heroku_collaborators = heroku_api.collaborator.list(current_account.name)
-      real_heroku_collaborators = @account.collaborators.where(kind: 'heroku').pluck(:email)
-      @heroku_collaborators.delete_if do |heroku_collaborator|
-        real_heroku_collaborators.include? heroku_collaborator['user']['email']
-      end
-    end
-  rescue Excon::Errors::Error
-    @heroku_collaborators = []
-  end
+  def edit; end
 
   def create
     heroku_api.addon.create(params[:name], plan: "adminium:#{params[:plan] || 'petproject'}")

@@ -1,94 +1,38 @@
 .page-header
   h3
-    'Edit account
+    'Account settings
     br
-    small= " #{@account.plan.humanize} plan"
-  - if @account.pet_project?
+    small= " #{current_account.plan.humanize} plan"
+  - if current_account.pet_project?
     p.alert.alert-warning
       ' You are currently on the free plan meant for pet projects which is limited to the 5 first tables of your schema.
       br
       = link_to 'Upgrade', current_account.upgrade_link, class: 'btn btn-warning'
       '  to the startup plan ($10 per month) to access your full schema with Adminium.
-= tabs do |tabs|
-  - tabs.pane 'Database connection', active: (@active_pane == 'database_connection') do
-    .row
-      .col-lg-8
-        = simple_form_for @account, html: {class: 'form-horizontal'} do |f|
-          - if @account.errors.any?
-            .alert.alert-danger
-              h4
-                = pluralize @account.errors.count, 'error'
-                = " prohibited your account from being saved:"
-              ul
-                - @account.errors.full_messages.each do |msg|
-                  li= msg
-          - if @account.id == ENV['DEMO_ACCOUNT_ID']
-            .form-group
-              label.control-label.optional.col-sm-3 Database url
-              .col-sm-9
-                input.form-control disabled="disabled" value="NOT EDITABLE IN THE DEMO"
-                p.help-block This is where you will set your own database connection string, encrypted and securely stored.
-          - else
-            = f.input :db_url, required: true, input_html: {title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database'}
-          = f.input :application_time_zone, input_html: {class: 'timezone_select2'}
-          = f.input :database_time_zone, input_html: {class: 'timezone_select2'}
-          .form-group
-            .col-sm-offset-3.col-sm-9= f.button :submit, class: 'btn-primary'
-  - tabs.pane 'Collaborators', active: (@active_pane == 'collaborators') do
-    - if @account.enterprise?
-      .alert.alert-info
-        p You can use a Google account to log in to this account and authorize collaborators to log in as well.
-      .row
-        .col-md-6
-          = simple_form_for @account.collaborators.build(kind: 'google_oauth2'), html: {class: 'form-horizontal'} do |f|
-            = hidden_field_tag :pane, 'collaborators'
-            = f.input :email, placeholder: 'Google account email', type: 'email', required: true
-            = f.input :is_administrator, as: :radio_buttons
-            = f.input :kind, as: :hidden
-            .form-group
-              .col-sm-offset-3.col-sm-9
-                'or has the following roles
-                = link_to '(create a new role)', new_role_path
-            - if @roles.present?
-              = f.association :roles, as: :check_boxes, collection: @roles.map {|r| [r.name, r.id]}
-            .form-group
-              .col-sm-offset-3.col-sm-9
-                = f.submit 'Add a collaborator', class: 'btn btn-primary', data: {disable_with: 'Sending...'}
-        .col-md-6
-          - if @account_collaborators.present? || @heroku_collaborators.present?
-            .row
-              table.table.col-md-6#collaborators data-delete-url="#{collaborator_path(':id')}"
-                thead
-                  tr
-                    th
-                    th
-                    th Roles
-                    th
-                - @heroku_collaborators.each do |collaborator|
-                  tr
-                    td= image_tag "logos/heroku-icon.png", alt: "Heroku Collaborator"
-                    td= collaborator['email']
-                    td
-                      ' administrator
-                      = "(#{collaborator["role"]})" if collaborator['role']
-                    td
-                      = link_to content_tag(:i, nil, class: 'fa fa-pencil'), new_collaborator_path(email: collaborator['email']), remote: true,  data: {toggle: 'modal', target: "#modal-window", backdrop: true, keyboard: true}, title: 'Edit this collaborator roles', rel: 'tooltip' if collaborator['role'] != 'owner'
-                - @account_collaborators.each do |collaborator|
-                  - next if collaborator.new_record?
-                  tr
-                    td= image_tag "logos/#{collaborator.kind}-icon.png", alt: "#{collaborator.kind.capitalize} Collaborator"
-                    td
-                      - unless collaborator.user_id
-                        i.fa.fa-question> rel="tooltip" title="Hasn't logged in yet"
-                      = collaborator.name
-                    td= collaborator.human_roles
-                    td
-                      => link_to content_tag(:i, nil, class: 'fa fa-pencil'), edit_collaborator_path(collaborator), remote: true,  data: {toggle: 'modal', target: "#modal-window", backdrop: true, keyboard: true}, title: 'Edit this collaborator roles', rel: 'tooltip'
-                      = link_to content_tag(:i, nil, class: 'fa fa-trash'), collaborator, method: :delete, remote: true, class: 'trash_collaborator', title: 'Remove all access for this collaborator', rel: 'tooltip', data: { confirm: 'Sure?' }
-    - else
-      = upgrade_to_enterprise_notice
-
-  - tabs.pane 'Roles and permissions', active: (@active_pane == 'roles') do
-    = render 'roles'
-  - tabs.pane 'Display settings' do
-    = render 'display_settings'
+.row
+  .col-lg-8
+    = simple_form_for current_account, html: {class: 'form-horizontal'} do |f|
+      - if current_account.errors.any?
+        .alert.alert-danger
+          h4
+            = pluralize current_account.errors.count, 'error'
+            = " prohibited your account from being saved:"
+          ul
+            - current_account.errors.full_messages.each do |msg|
+              li= msg
+      - if current_account.id == ENV['DEMO_ACCOUNT_ID']
+        .form-group
+          label.control-label.optional.col-sm-3 Database url
+          .col-sm-9
+            input.form-control disabled="disabled" value="NOT EDITABLE IN THE DEMO"
+            p.help-block This is where you will set your own database connection string, encrypted and securely stored.
+      - else
+        = f.input :db_url, required: true, input_html: {title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database'}
+      = f.input :application_time_zone, input_html: {class: 'timezone_select2'}
+      = f.input :database_time_zone, input_html: {class: 'timezone_select2'}
+      = f.input :per_page, input_html: { step: 25, min: 25, max: 200, type: :number },
+        hint: 'number of rows displayed per page by default'
+      = f.input :datetime_format, collection: datetime_display_options(kind: :datetime), include_blank: false
+      = f.input :date_format, collection: datetime_display_options(kind: :date), include_blank: false
+      .form-group
+        .col-sm-offset-3.col-sm-9= f.button :submit, class: 'btn-primary'

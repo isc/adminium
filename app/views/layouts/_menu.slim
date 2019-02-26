@@ -12,7 +12,7 @@ ul.nav.navbar-nav.navbar-right
           a Loading...
         li.divider
         - if admin? && current_account
-          li class=active_or_not('accounts') = link_to 'Edit account', edit_account_path
+          li class=active_or_not('accounts') = link_to 'Account settings', edit_account_path
         li= link_to 'Sign out', signout_path
   li.dropdown
     a.dropdown-toggle data-toggle="dropdown" href="#"
