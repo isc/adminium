@@ -33,10 +33,6 @@ module ApplicationHelper
     end
   end
 
-  def active_or_not controller_name
-    'active' if controller_name == controller.controller_name
-  end
-
   def display_search search
     return unless search
     search.conditions.map do |f|

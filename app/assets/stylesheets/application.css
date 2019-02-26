@@ -23,9 +23,6 @@ body.landing {
 .navbar-left .select2-container {
   width: 270px;
 }
-.nav.nav-tabs {
-  margin-bottom: 30px;
-}
 .dashboards.show .deactivated {
   opacity: 0.5;
 }
