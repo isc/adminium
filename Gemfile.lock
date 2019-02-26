@@ -62,7 +62,7 @@ GEM
     binary_search (0.3.0)
     binding_of_caller (0.8.0)
       debug_inspector (>= 0.0.1)
-    bootsnap (1.4.0)
+    bootsnap (1.4.1)
       msgpack (~> 1.0)
     bootstrap-components-helpers (1.0.1)
       actionpack (>= 4.0.0)
