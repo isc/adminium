@@ -1,4 +1,8 @@
 class RolesController < ApplicationController
+  def index
+    @roles = current_account.roles.order(:name).to_a if current_account.enterprise?
+  end
+
   def new
     @role = current_account.roles.build permissions: {}
   end
@@ -11,7 +15,7 @@ class RolesController < ApplicationController
   def create
     @role = current_account.roles.build role_params
     if @role.save
-      redirect_to edit_account_path(pane: 'roles'), flash: {success: 'Role successfully created'}
+      redirect_to roles_url, flash: {success: 'Role successfully created'}
     else
       render :new
     end
@@ -20,7 +24,7 @@ class RolesController < ApplicationController
   def update
     @role = current_account.roles.find params[:id]
     if @role.update role_params
-      redirect_to edit_account_path(pane: 'roles'), flash: {success: 'Role successfully updated'}
+      redirect_to roles_url, flash: {success: 'Role successfully updated'}
     else
       render :new
     end
@@ -29,7 +33,7 @@ class RolesController < ApplicationController
   def destroy
     @role = current_account.roles.find params[:id]
     @role.destroy
-    redirect_to edit_account_path(pane: 'roles'), flash: {success: 'Role successfully destroyed'}
+    redirect_to roles_url, flash: {success: 'Role successfully destroyed'}
   end
 
   private

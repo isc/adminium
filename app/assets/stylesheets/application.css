@@ -23,9 +23,6 @@ body.landing {
 .navbar-left .select2-container {
   width: 270px;
 }
-.nav-tabs {
-  margin-bottom: 15px;
-}
 .dashboards.show .deactivated {
   opacity: 0.5;
 }
@@ -37,9 +34,6 @@ i.fa.subtle {
 }
 i.fa.subtle:hover {
   opacity: 1;
-}
-.tab-pane {
-  padding-top: 30px;
 }
 .popover {
   overflow: hidden;

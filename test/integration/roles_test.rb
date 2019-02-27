@@ -3,7 +3,9 @@ require 'test_helper'
 class RolesTest < ActionDispatch::IntegrationTest
   test 'role creation and edition' do
     login create(:account, plan: Account::Plan::ENTERPRISE)
-    visit edit_account_path
+    visit dashboard_path
+    click_on 'Close' # Tips modal
+    click_on 'Signed in as'
     click_link 'Roles and permissions'
     click_link 'Create your first role'
     fill_in 'Name', with: 'Users read only'
@@ -11,6 +13,7 @@ class RolesTest < ActionDispatch::IntegrationTest
     save_screenshot 'role_creation.png'
     click_button 'Create Role'
     assert_text 'Role successfully created'
+    save_screenshot 'roles_and_permissions.png'
     click_link 'Users read only'
     assert find('input[name="role[permissions][users][create]"]').checked?
     click_on 'Add a collaborator'

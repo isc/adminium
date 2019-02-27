@@ -29,10 +29,10 @@
       h3 Add-on Install
       p In order to provide you with an administration interface for your data, Adminium needs to be able to connect to your database.
       p Adminium will store an encrypted version of the <code>DATABASE_URL</code> of your application in the Adminium database. Removing the add-on from your application will delete that info from the Adminium database.
-      
+
       p The easiest way to do that is by using our Heroku's OAuth integration which will be used to read the <code>DATABASE_URL</code> configuration variable of your app.
       p You can also configure your database URL manually.
-      
+
       h4 Manual installation
       p== "Visit the #{link_to "adminium page", 'https://elements.heroku.com/addons/adminium', target: '_blank'} on Heroku's marketplace and select a plan and your project."
       h5 Find your Heroku Postgres database URL
@@ -61,8 +61,8 @@
       p
         'If your account is on the Enterprise plan, you can also go directly to
         = link_to 'the Adminium website', 'https://www.adminium.io'
-        '  and login through a Google account once you have declared collaborators in your
-        = link_to 'account settings', edit_account_path
+        '  and login through a Google account once you have
+        = link_to 'declared collaborators', collaborators_path
         '.
         h4 Heroku oauth Authentification and scopes
         p
@@ -70,13 +70,13 @@
          = link_to "Heroku's oauth API", "https://blog.heroku.com/archives/2013/7/22/oauth-for-platform-api-in-public-beta", target: "_blank"
          '  to verify your identity and list your apps.
         p We ask for the <code>write-protected</code> scope to access your DATABASE_URL configuration variable to connect to your database, and allow you to upgrade or downgrade your addon plan at any time.
-           
+
     - Account::TIPS.each do |tip|
       - tip_body = render partial: "/docs/tips/#{tip}"
       section.feature-description.well(id=tip)
         h3== @tip_title
         = tip_body
-    
+
     section.well#schema_search_path
       h3 How can I access PostgreSQL schemas other than public ?
       p In PostgreSQL, tables are searched by default in a schema named "public".
@@ -84,10 +84,9 @@
       pre postgresql://user:pass@host/database?search_path=my_custom_schema
       p You can also specify multiple schema names by separating them with a comma :
       pre postgresql://user:pass@host/database?search_path=my_custom_schema,public
-    
+
     section.well#plugin_comparison
       h3 How similar / different is Adminium from gems such as rails_admin or active_admin ?
       p It is similar in purpose to rails_admin and active_admin.
       p It is however different in how it operates and thus allows different things. Rails admin and active admin are gems to be used with a Rails 3 application whereas Adminium is an Heroku add-on which can be used with any Heroku application, no matter the Rails version, the framework or even the language.
       p It also differs in the way it is configured ; rails / active admin use DSLs and thus require to write code and deploy the application to modify the configuration of the admin, whereas all the configuration in Adminium is done via the interface independently of the lifecycle of the target application and also allowing non technical users to be in charge of it.
-
