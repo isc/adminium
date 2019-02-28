@@ -19,34 +19,37 @@
             = f.submit 'Add a collaborator', class: 'btn btn-primary', data: {disable_with: 'Sending...'}
     .col-md-6
       - if @account_collaborators.present? || @heroku_collaborators.present?
-        .row
-          table.table.col-md-6#collaborators data-delete-url="#{collaborator_path(':id')}"
-            thead
-              tr
-                th
-                th
-                th Roles
-                th
-            - @heroku_collaborators.each do |collaborator|
-              tr
-                td= image_tag "logos/heroku-icon.png", alt: "Heroku Collaborator"
-                td= collaborator['email']
-                td
-                  ' administrator
-                  = "(#{collaborator["role"]})" if collaborator['role']
-                td
-                  = link_to content_tag(:i, nil, class: 'fa fa-pencil'), new_collaborator_path(email: collaborator['email']), remote: true,  data: {toggle: 'modal', target: "#modal-window", backdrop: true, keyboard: true}, title: 'Edit this collaborator roles', rel: 'tooltip' if collaborator['role'] != 'owner'
-            - @account_collaborators.each do |collaborator|
-              - next if collaborator.new_record?
-              tr
-                td= image_tag "logos/#{collaborator.kind}-icon.png", alt: "#{collaborator.kind.capitalize} Collaborator"
-                td
-                  - unless collaborator.user_id
-                    i.fa.fa-question> rel="tooltip" title="Hasn't logged in yet"
-                  = collaborator.name
-                td= collaborator.human_roles
-                td
-                  => link_to content_tag(:i, nil, class: 'fa fa-pencil'), edit_collaborator_path(collaborator), remote: true,  data: {toggle: 'modal', target: "#modal-window", backdrop: true, keyboard: true}, title: 'Edit this collaborator roles', rel: 'tooltip'
-                  = link_to content_tag(:i, nil, class: 'fa fa-trash'), collaborator, method: :delete, remote: true, class: 'trash_collaborator', title: 'Remove all access for this collaborator', rel: 'tooltip', data: { confirm: 'Sure?' }
+        table.table#collaborators data-delete-url="#{collaborator_path(':id')}"
+          thead
+            tr
+              th
+              th
+              th Roles
+              th
+          - @heroku_collaborators.each do |collaborator|
+            tr
+              td= image_tag "logos/heroku-icon.png", alt: "Heroku Collaborator"
+              td= collaborator['email']
+              td
+                ' administrator
+                = "(#{collaborator["role"]})" if collaborator['role']
+              td
+                = link_to content_tag(:i, nil, class: 'fa fa-pencil'), new_collaborator_path(email: collaborator['email']), remote: true,  data: {toggle: 'modal', target: "#modal-window", backdrop: true, keyboard: true}, title: 'Edit this collaborator roles', rel: 'tooltip' if collaborator['role'] != 'owner'
+          - @account_collaborators.each do |collaborator|
+            - next if collaborator.new_record?
+            tr
+              td= image_tag "logos/#{collaborator.kind}-icon.png", alt: "#{collaborator.kind.capitalize} Collaborator"
+              td
+                - unless collaborator.user_id
+                  i.fa.fa-question> rel="tooltip" title="Hasn't logged in yet"
+                = collaborator.name
+              td
+                - if collaborator.is_administrator
+                  ' Administrator
+                - else
+                  = safe_join collaborator.roles.map { |role| link_to role.name, [:edit, role] }, ', '
+              td
+                => link_to content_tag(:i, nil, class: 'fa fa-pencil'), edit_collaborator_path(collaborator), remote: true,  data: {toggle: 'modal', target: "#modal-window", backdrop: true, keyboard: true}, title: 'Edit this collaborator roles', rel: 'tooltip'
+                = link_to content_tag(:i, nil, class: 'fa fa-trash'), collaborator, method: :delete, remote: true, class: 'trash_collaborator', title: 'Remove all access for this collaborator', rel: 'tooltip', data: { confirm: 'Sure?' }
 - else
   = upgrade_to_enterprise_notice

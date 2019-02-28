@@ -30,9 +30,4 @@ class Collaborator < ApplicationRecord
   def mail_collaborator
     CollaboratorMailer.notify_collaboration(self, domain).deliver_later if kind == 'google_oauth2'
   end
-
-  def human_roles
-    return 'Administrator' if is_administrator
-    roles.map(&:name).join(', ') if roles.present?
-  end
 end
