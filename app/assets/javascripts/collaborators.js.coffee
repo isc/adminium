@@ -1,7 +1,4 @@
 $ ->
-  $(document).on 'ajax:complete', 'a.trash_collaborator', ->
-    $(this).closest('tr').remove()
-
   $("input[name=all_actions]").click ->
     scope = $(this).closest("tr").find("input:not(:first)")
     scope.prop('checked', this.checked)

@@ -39,7 +39,7 @@ class CollaboratorsController < ApplicationController
 
   def destroy
     current_account.collaborators.destroy params[:id]
-    head :no_content
+    redirect_to collaborators_url, success: 'Collaborator removed'
   end
 
   private
