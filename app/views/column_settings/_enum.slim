@@ -1,5 +1,6 @@
 label.checkbox-inline
-  = check_box_tag 'is_enum', 'checked', @enum, data: {values_url: values_setting_path(resource.table, column_name: params[:column])}
+  = check_box_tag 'is_enum', 'checked', @enum,
+    data: { values_url: values_setting_path(resource.table, column_name: params[:column]) }
   'Check if this column represents a specific set of values
 
 .alert.alert-info.loading_enum.hidden

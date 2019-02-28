@@ -17,8 +17,8 @@ module PieChartBuilder
     enum = determine_enum table_name, column_name
     @data.map! do |row|
       key, count = row.values
-      v = enum[key] || enum[key.to_s] || {'label' => key, 'color' => new_color}
-      [v['label'], count, key, v['color'] || new_color]
+      v = enum[key] || enum[key.to_s] || {'label' => key.to_s, 'color' => new_color}
+      [v['label'], count, key && key.to_s, v['color'] || new_color]
     end
 
     respond_to do |format|
