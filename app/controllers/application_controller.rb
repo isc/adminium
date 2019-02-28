@@ -11,6 +11,7 @@ class ApplicationController < ActionController::Base
   around_action :tag_current_account
 
   helper_method :current_account, :current_user, :admin?, :current_account?, :resource_for
+  add_flash_types :success, :error
 
   private
 
@@ -62,12 +63,11 @@ class ApplicationController < ActionController::Base
   end
 
   def require_admin
-    redirect_to dashboard_url, flash: {error: 'You need administrator privileges to access this page.'} unless admin?
+    redirect_to dashboard_url, error: 'You need administrator privileges to access this page.' unless admin?
   end
 
   def table_not_found exception
-    redirect_to dashboard_url,
-      flash: { error: "The table <b>#{ERB::Util.h exception.table_name}</b> cannot be found." }
+    redirect_to dashboard_url, error: "The table <b>#{ERB::Util.h exception.table_name}</b> cannot be found."
   end
 
   def cleanup_generic
@@ -77,7 +77,7 @@ class ApplicationController < ActionController::Base
   def global_db_error exception
     msg = "There was a database error, it might be a problem with your database URL.
       The error was : <pre>#{exception.message}</pre>"
-    redirect_to edit_account_url, flash: { error: msg }
+    redirect_to edit_account_url, error: msg
   end
 
   def statement_timeouts exception
@@ -131,7 +131,7 @@ class ApplicationController < ActionController::Base
     return if user_can? action_name, table
     respond_to do |format|
       format.html do
-        redirect_to dashboard_url, flash: {error: "You haven't the permission to perform #{action_name} on #{table}"}
+        redirect_to dashboard_url, error: "You haven't the permission to perform #{action_name} on #{table}"
       end
       format.js { head :forbidden }
     end

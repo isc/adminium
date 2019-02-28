@@ -18,7 +18,7 @@ class CollaboratorsController < ApplicationController
 
   def create
     current_account.collaborators.create! collaborator_params.merge(domain: request.host)
-    redirect_to collaborators_url, flash: {success: 'Collaborator added'}
+    redirect_to collaborators_url, success: 'Collaborator added'
   end
 
   def new
@@ -34,7 +34,7 @@ class CollaboratorsController < ApplicationController
   def update
     collaborator = current_account.collaborators.find params[:id]
     collaborator.update collaborator_params
-    redirect_to collaborators_url, notice: "Changes on #{collaborator.name} saved"
+    redirect_to collaborators_url, success: "Changes on #{collaborator.name} saved"
   end
 
   def destroy

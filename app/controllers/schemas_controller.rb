@@ -51,7 +51,7 @@ class SchemasController < ApplicationController
   rescue Sequel::Error => e
     flash[:error] = "Destroying the table failed: #{e.message}"
   ensure
-    redirect_to dashboard_path, flash: {success: "Table #{ERB::Util.h params[:id]} has been dropped."}
+    redirect_to dashboard_path, success: "Table #{ERB::Util.h params[:id]} has been dropped."
   end
 
   private
@@ -59,10 +59,9 @@ class SchemasController < ApplicationController
   def rename_table
     @generic.db.rename_table Sequel.identifier(params[:id]), Sequel.identifier(params[:table_name])
     redirect_to schema_path(params[:table_name]),
-      flash: {success: "Table #{params[:id]} has been renamed to #{params[:table_name]}."}
+      success: "Table #{params[:id]} has been renamed to #{params[:table_name]}."
   rescue Sequel::Error => e
-    flash[:error] = "Renaming the table failed: #{e.message}"
-    redirect_to schema_path(params[:id])
+    redirect_to schema_path(params[:id]), error: "Renaming the table failed: #{e.message}"
   end
 
   def remove_column

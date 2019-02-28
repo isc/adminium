@@ -6,8 +6,7 @@ class SearchesController < ApplicationController
     if search.save
       redirect_to resources_path(params[:id], asearch: params[:name])
     else
-      redirect_back fallback_location: resources_path(params[:id]),
-                    flash: { error: search.errors.full_messages.join(', ') }
+      redirect_back fallback_location: resources_path(params[:id]), error: search.errors.full_messages.join(', ')
     end
   end
 

@@ -96,7 +96,7 @@ class ResourcesController < ApplicationController
   def create
     pk_value = resource.insert item_params
     params[:id] = pk_value
-    after_save_redirection flash: {success: "#{object_name} successfully created."}
+    after_save_redirection success: "#{object_name} successfully created."
   rescue Sequel::Error, Resource::ValidationError => e
     flash.now[:error] = e.message.html_safe
     @item = item_params
@@ -108,7 +108,7 @@ class ResourcesController < ApplicationController
     resource.update_item params[:id], item_params
     respond_to do |format|
       format.html do
-        after_save_redirection flash: {success: "#{object_name} successfully updated."}
+        after_save_redirection success: "#{object_name} successfully updated."
       end
       format.json do
         column_name = item_params.keys.first.to_sym
@@ -134,23 +134,23 @@ class ResourcesController < ApplicationController
 
   def destroy
     resource.delete params[:id]
-    options = {flash: {success: "#{object_name} successfully destroyed."}}
+    options = { success: "#{object_name} successfully destroyed." }
     if params[:redirect] == 'index'
       redirect_to resources_path(params[:table]), options
     else
       redirect_back fallback_location: resources_path(params[:table]), **options
     end
   rescue Sequel::Error => e
-    redirect_back fallback_location: resources_path(params[:table]), flash: {error: e.message}
+    redirect_back fallback_location: resources_path(params[:table]), error: e.message
   end
 
   def bulk_destroy
     params[:item_ids].map! {|id| id.split(',')} if resource.composite_primary_key?
     resource.delete params[:item_ids]
     redirect_back fallback_location: resources_path(params[:table]),
-                  flash: {success: "#{params[:item_ids].size} #{resource.human_name.pluralize} successfully destroyed"}
+                  success: "#{params[:item_ids].size} #{resource.human_name.pluralize} successfully destroyed"
   rescue Sequel::Error => e
-    redirect_back fallback_location: resources_path(params[:table]), flash: {error: e.message}
+    redirect_back fallback_location: resources_path(params[:table]), error: e.message
   end
 
   def bulk_edit
@@ -171,8 +171,7 @@ class ResourcesController < ApplicationController
 
   def bulk_update
     count = resource.update_multiple_items params[:record_ids], (item_params || {})
-    redirect_back fallback_location: resources_path(params[:table]),
-                  flash: {success: "#{count || 0} rows have been updated"}
+    redirect_back fallback_location: resources_path(params[:table]), success: "#{count || 0} rows have been updated"
   end
 
   def test_threads
@@ -227,7 +226,8 @@ class ResourcesController < ApplicationController
       format.js {render json: {message: message}}
     end
   rescue Sequel::DatabaseError => e
-    redirect_to resources_path(params[:table]), flash: {error: "Couldn't fetch record with id <b>#{ERB::Util.h params[:id]}</b>.<br>#{ERB::Util.h e.message}".html_safe}
+    redirect_to resources_path(params[:table]),
+      error: "Couldn't fetch record with id <b>#{ERB::Util.h params[:id]}</b>.<br>#{ERB::Util.h e.message}".html_safe
   end
 
   def check_per_page_setting
@@ -588,14 +588,14 @@ class ResourcesController < ApplicationController
   end
 
   def table_access_limitation
-    return unless current_account.pet_project?
+    # return unless current_account.pet_project?
     @generic.table params[:table] # possibly triggers the table not found exception
     return if @generic.system_table?(params[:table]) || @generic.user_tables.index(params[:table].to_sym) < 5
     notice = "You are currently on the free plan meant for pet projects which is limited to five tables of your schema.<br/><a href=\"#{current_account.upgrade_link}\" class=\"btn btn-warning\">Upgrade</a> to the startup plan ($10 per month) to access your full schema with Adminium.".html_safe
     if request.xhr?
       render json: {widget: view_context.content_tag(:div, notice, class: 'alert alert-warning'), id: params[:widget_id]}
     else
-      redirect_to dashboard_url, flash: { alert: notice }
+      redirect_to dashboard_url, alert: notice
     end
   end
 

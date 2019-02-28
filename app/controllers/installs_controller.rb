@@ -17,14 +17,12 @@ class InstallsController < ApplicationController
   end
 
   def send_email_team
-    redirect_opts = {}
     if params[:emails]&.any?
       CollaboratorMailer.welcome_heroku_collaborator(params[:emails], current_account, current_user).deliver_later
     end
-  rescue => ex
-    notify_airbrake(ex)
-    redirect_opts = {flash: {error: 'Sorry but we failed to send the email to everyone :('}}
-  ensure
-    redirect_to dashboard_path, redirect_opts
+    redirect_to dashboard_path
+  rescue => exception
+    notify_airbrake exception
+    redirect_to dashboard_path, error: 'Sorry but we failed to send the email to everyone :('
   end
 end
