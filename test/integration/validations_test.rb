@@ -32,6 +32,7 @@ class ValidationsTest < ActionDispatch::IntegrationTest
     click_link 'Validations'
     find('i.remove').click
     click_on 'Save settings'
+    assert_text 'Settings successfully saved'
     click_link_with_title 'Create a new row'
     fill_in 'First name', with: 'Rob'
     click_on 'Save'
