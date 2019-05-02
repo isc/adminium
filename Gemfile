@@ -41,7 +41,6 @@ end
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'kensa'
   gem 'listen'
   gem 'populator'
   gem 'rack-mini-profiler'
