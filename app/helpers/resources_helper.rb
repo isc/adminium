@@ -107,9 +107,9 @@ module ResourcesHelper
   def display_belongs_to item, key, value, resource
     assoc = resource.belongs_to_association key
     if assoc[:polymorphic]
-      assoc_type = item[key.to_s.gsub(/_id/, '_type').to_sym]
+      assoc_type = item[key.to_s.gsub(/_id$/, '_type').to_sym]
       return value if assoc_type.blank?
-      referenced_table = assoc_type.to_s.tableize
+      referenced_table = assoc_type.to_s.tableize.tr('/', '_')
       begin
         foreign_resource = resource_for referenced_table
       rescue Generic::TableNotFoundException
