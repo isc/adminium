@@ -40,6 +40,7 @@ class AccountsController < ApplicationController
       params[:account] ||= {}
       params[:account][:db_url] = db_url['value']
       params[:account][:db_url_setup_method] = current_account.db_url_setup_method.presence || 'oauth'
+      session.delete :db_urls
     else
       params[:account][:db_url_setup_method] = 'web'
     end
