@@ -49,7 +49,7 @@ module PieChartBuilder
          false => {'color' => '#777', 'label' => options['boolean_false'] || 'False'}}
       elsif (assoc = resource.belongs_to_association(name))
         referenced_resource = resource_for assoc[:referenced_table] if assoc[:referenced_table]
-        if referenced_resource&.label_column
+        if referenced_resource&.label_column && user_can?('show', assoc[:referenced_table])
           values = @data.map {|row| row[assoc[:foreign_key]]}
           referenced_resource.query.where(assoc[:primary_key] => values)
             .select(assoc[:primary_key], Sequel.identifier(referenced_resource.label_column)).to_a
