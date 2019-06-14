@@ -1,4 +1,5 @@
 class CollaboratorsController < ApplicationController
+  before_action :require_admin
   skip_before_action :connect_to_db
 
   def index
