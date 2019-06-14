@@ -1,4 +1,7 @@
 class RolesController < ApplicationController
+  before_action :require_admin
+  skip_before_action :connect_to_db, except: %i(new edit)
+
   def index
     @roles = current_account.roles.order(:name).to_a if current_account.enterprise?
   end
