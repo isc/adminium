@@ -297,8 +297,6 @@ GEM
     selenium-webdriver (3.141.0)
       childprocess (~> 0.5)
       rubyzip (~> 1.2, >= 1.2.2)
-    sendgrid (1.2.4)
-      json
     sequel (5.6.0)
     sequel_pg (1.12.2)
       pg (>= 0.18.0)
@@ -405,7 +403,6 @@ DEPENDENCIES
   sass-rails
   select2-rails
   selenium-webdriver
-  sendgrid
   sequel
   sequel_pg
   simple_form
