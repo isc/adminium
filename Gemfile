@@ -25,7 +25,6 @@ gem 'redis', require: ['redis', 'redis/connection/hiredis']
 gem 'rest-client'
 gem 'sass-rails'
 gem 'select2-rails'
-gem 'sendgrid'
 gem 'sequel'
 gem 'sequel_pg', require: 'sequel'
 gem 'simple_form'
