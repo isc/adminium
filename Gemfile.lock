@@ -131,6 +131,8 @@ GEM
     hiredis (0.6.3)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
+    httparty (0.15.7)
+      multi_xml (>= 0.5.2)
     i18n (1.6.0)
       concurrent-ruby (~> 1.0)
     io-like (0.3.0)
@@ -371,6 +373,7 @@ DEPENDENCIES
   figaro
   font-awesome-rails
   hiredis
+  httparty
   jquery-rails
   json
   launchy
