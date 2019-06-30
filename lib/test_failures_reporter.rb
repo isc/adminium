@@ -1,8 +1,5 @@
 # frozen_string_literal: true
 
-require 'socket'
-require 'json'
-
 class TestFailuresReporter < Minitest::Reporters::BaseReporter
   def start
     puts "Visit #{ENV['REMOTE_REPORTER_URL']}/builds/#{build_id} for details on failures."
@@ -15,7 +12,9 @@ class TestFailuresReporter < Minitest::Reporters::BaseReporter
       %i(message location backtrace).each { |method| payload["failure_#{method}"] = test.failure.send(method) }
       payload['failure_location'].remove!("#{Rails.root}/")
     end
-    remote_report payload, 'rails'
+    @test_reports ||= []
+    @test_reports.push payload.merge(build_payload('rails'))
+    send_report if @last_send.nil? || (@last_send < 60.seconds.ago)
   end
 
   def report
@@ -35,12 +34,6 @@ class TestFailuresReporter < Minitest::Reporters::BaseReporter
 
   def build_id
     @build_id ||= ENV['HEROKU_TEST_RUN_ID'] || SecureRandom.uuid
-  end
-
-  def remote_report(test_payload, kind)
-    @test_reports ||= []
-    @test_reports.push test_payload.merge(build_payload(kind))
-    send_report if @last_send.nil? || (@last_send < 60.seconds.ago)
   end
 
   def send_report
