@@ -55,7 +55,7 @@ class Generic
       next unless (name.to_s.ends_with? '_id') && (info[:type] == :integer)
       owner = name.to_s.gsub(/_id$/, '')
       owner_table = owner.tableize.to_sym
-      if tables.include? owner_table
+      if tables.include?(owner_table) && schema(owner_table).any? { |c, d| c == :id && d[:type] == :integer }
         @associations |= [{foreign_key: name, primary_key: :id, referenced_table: owner_table, table: table}]
       elsif schema(table).map(&:first).include? "#{owner}_type".to_sym
         @associations |= [{foreign_key: name, primary_key: :id, referenced_table: nil, table: table, polymorphic: true}]
