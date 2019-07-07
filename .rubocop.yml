@@ -12,6 +12,8 @@ Rails/Output:
   Enabled: false
 Rails/FilePath:
   Enabled: false
+Rails/SkipsModelValidations:
+  Enabled: false
 Metrics/LineLength:
   Max: 120
 Metrics/BlockLength:
