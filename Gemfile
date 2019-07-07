@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-ruby '2.4.2'
+ruby '2.5.3'
 
 gem 'airbrake'
 gem 'attr_encrypted'
