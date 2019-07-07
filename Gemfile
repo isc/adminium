@@ -71,7 +71,6 @@ group :test do
   gem 'simplecov', require: false
 end
 group :development, :test do
-  gem 'pry-byebug'
   gem 'pry-rails'
   gem 'rubocop'
 end
