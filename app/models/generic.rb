@@ -113,7 +113,7 @@ class Generic
     @tables = postgresql? ? @db.send(:pg_class_relname, %w(r v m), {}) : (@db.tables + @db.views)
     @tables -= %i(ar_internal_metadata)
     @tables.sort!
-    @account.update_attribute :tables_count, @tables.size if @account.tables_count != @tables.size
+    @account.update_column :tables_count, @tables.size if @account.tables_count != @tables.size
     @tables.concat PG_SYSTEM_TABLES - %i(pg_stat_statements) if postgresql?
     @tables
   end
@@ -196,7 +196,7 @@ class Generic
         db[:pg_class]
           .join(:pg_namespace, oid: :relnamespace)
           .select(:relname,
-            Sequel.lit('pg_total_relation_size(pg_class.oid)'), Sequel.lit('pg_relation_size(pg_class.oid)'))
+                  Sequel.lit('pg_total_relation_size(pg_class.oid)'), Sequel.lit('pg_relation_size(pg_class.oid)'))
           .where(where_hash)
       end
     query.map(&:values).index_by(&:first)
