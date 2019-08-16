@@ -32,6 +32,10 @@ Layout/SpaceInsideHashLiteralBraces:
   Enabled: false
 Layout/SpaceInsideBlockBraces:
   Enabled: false
+Layout/AlignArguments:
+  Enabled: false
+Layout/AlignHash:
+  Enabled: false
 Style/MethodDefParentheses:
   Enabled: false
 Layout/AlignParameters:
