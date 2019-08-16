@@ -123,9 +123,10 @@ h4
       = form_tag schema_path(params[:table]), method: :put, class: 'form-inline' do
         input type="hidden" name="truncate"
         input.form-control> type="text" name="table_name_confirmation" required="true" placeholder="Type the name of the table to confirm"
-        label.control-label>
-          input> type="checkbox" name="restart" value="true"
-          | Restart identity
+        - if @generic.postgresql?
+          label.control-label>
+            input> type="checkbox" name="restart" value="true"
+            | Restart identity
         = submit_tag "Truncate the table", class: "btn btn-danger"
 
   .modal#add-column tabindex="-1"
