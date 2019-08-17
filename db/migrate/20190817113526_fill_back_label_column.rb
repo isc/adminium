@@ -1,4 +1,5 @@
 class FillBackLabelColumn < ActiveRecord::Migration[5.2]
+  disable_ddl_transaction!
   def change
     TableConfiguration.reset_column_information
     Account.not_deleted.where.not(encrypted_db_url: nil).find_each do |account|
