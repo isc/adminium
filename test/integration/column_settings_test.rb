@@ -20,6 +20,20 @@ class ColumnSettingsTest < ActionDispatch::IntegrationTest
     assert_equal resource_path(:groups, group), current_path
   end
 
+  test 'custom column belongs_to which is a foreign_key to another belongs_to' do
+    group = FixtureFactory.new(:group, name: 'Adminators').factory
+    FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, group_id: group.id).factory.id)
+    stub_resource_columns listing: %w(user_id.group_id)
+    visit resources_path(:comments)
+    find('th[data-column-name="group_id"]').hover
+    find('th .fa-cog').click
+    open_accordion 'Association discovery', selector: 'label', text: 'Label column'
+    select 'name', from: 'Label column'
+    click_button 'Save settings'
+    click_on 'Adminators'
+    assert_equal resource_path(:groups, group), current_path
+  end
+
   test 'change visibility from column settings' do
     FixtureFactory.new :user
     visit column_setting_path(:users, column: 'pseudo', view: 'listing')

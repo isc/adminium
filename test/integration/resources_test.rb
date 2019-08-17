@@ -273,19 +273,6 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_equal %w(zob bob), all('table.items-list tr td:last-child').map(&:text)
   end
 
-  test 'custom column belongs_to which is a foreign_key to another belongs_to' do
-    group = FixtureFactory.new(:group, name: 'Adminators').factory
-    FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, group_id: group.id).factory.id)
-    stub_resource_columns listing: %w(user_id.group_id)
-    generic = Generic.new @account
-    resource = Resource.new generic, :groups
-    resource.label_column = 'name'
-    resource.save
-    generic.cleanup
-    visit resources_path(:comments)
-    assert_equal 'Adminators', find("td.foreignkey a[href=\"#{resource_path(:groups, group)}\"]").text
-  end
-
   test 'destroy from show' do
     user = FixtureFactory.new(:user).factory
     visit resource_path(:users, user)

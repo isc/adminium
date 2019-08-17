@@ -148,4 +148,8 @@ class ApplicationController < ActionController::Base
     }
     @permissions[table.to_s] && @permissions[table.to_s][action_to_perm[action_name.to_s]]
   end
+
+  def table_configuration_for table
+    current_account.table_configuration_for table
+  end
 end

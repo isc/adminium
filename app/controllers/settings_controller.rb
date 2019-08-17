@@ -6,7 +6,6 @@ class SettingsController < ApplicationController
     end
     table_configuration.update! table_configuration_params if table_configuration.present?
     resource.per_page = params[:per_page] if params[:per_page]
-    resource.label_column = params[:label_column].presence if params.key? :label_column
     resource.default_order = params[:default_order].join(' ') if params[:default_order].present?
     resource.save
     redirect_back fallback_location: resources_path(resource.table), success: 'Settings successfully saved'
@@ -47,7 +46,7 @@ class SettingsController < ApplicationController
   private
 
   def table_configuration
-    current_account.table_configurations.find_or_create_by(table: resource.table)
+    table_configuration_for(resource.table)
   end
 
   def table_configuration_params
@@ -55,6 +54,7 @@ class SettingsController < ApplicationController
     if params[:polymorphic_associations]
       res[:polymorphic_associations] = params[:polymorphic_associations].delete_if(&:empty?).map {|p| JSON.parse(p)}
     end
+    res[:label_column] = params[:label_column].presence if params[:label_column]
     res[:validations] = params[:validations].delete_if(&:empty?) if params[:validations]
     res
   end
