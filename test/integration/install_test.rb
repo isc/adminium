@@ -7,7 +7,7 @@ class InstallTest < ActionDispatch::IntegrationTest
     login
     visit setup_database_connection_install_path
     assert_text 'Adminium has been successfully provisioned'
-    save_screenshot 'setup_database_connection.png'
+    save_screenshot 'setup_database_connection'
   end
 
   test 'get some collaborators' do
@@ -18,7 +18,7 @@ class InstallTest < ActionDispatch::IntegrationTest
     page.set_rack_session user: create(:user, provider: 'heroku', email: 'j@m.com').id
     visit invite_team_install_path
     assert_text 'Get everyone on board'
-    save_screenshot 'invite_team.png'
+    save_screenshot 'invite_team'
     perform_enqueued_jobs do
       assert_difference 'ActionMailer::Base.deliveries.length' do
         click_button 'Send a welcome email to the team'
