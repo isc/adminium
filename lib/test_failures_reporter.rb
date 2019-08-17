@@ -1,11 +1,8 @@
 # frozen_string_literal: true
 
-require 'socket'
-require 'json'
-
 class TestFailuresReporter < Minitest::Reporters::BaseReporter
   def start
-    puts "Visit #{ENV['REMOTE_REPORTER_URL'].sub('http:', 'https:')}/builds/#{build_id} for details on failures."
+    puts "Visit #{ENV['REMOTE_REPORTER_URL']}/builds/#{build_id} for details on failures."
     super
   end
 
@@ -15,7 +12,9 @@ class TestFailuresReporter < Minitest::Reporters::BaseReporter
       %i(message location backtrace).each { |method| payload["failure_#{method}"] = test.failure.send(method) }
       payload['failure_location'].remove!("#{Rails.root}/")
     end
-    remote_report payload, 'rails'
+    @test_reports ||= []
+    @test_reports.push payload.merge(build_payload('rails'))
+    send_report if @last_send.nil? || (@last_send < 60.seconds.ago)
   end
 
   def report
@@ -37,36 +36,9 @@ class TestFailuresReporter < Minitest::Reporters::BaseReporter
     @build_id ||= ENV['HEROKU_TEST_RUN_ID'] || SecureRandom.uuid
   end
 
-  def remote_report(payload, kind)
-    @test_reports ||= []
-    payload = [payload] unless payload.is_a?(Array)
-    return if payload.empty?
-    @test_reports += payload.map { |test| test.merge(build_payload(kind)) }
-    send_report if @last_send.nil? || (Time.now.to_i - @last_send >= 60)
-  end
-
   def send_report
-    fire_and_forget_json_post(ENV['REMOTE_REPORTER_URL'], tests: @test_reports)
+    HTTParty.post ENV['REMOTE_REPORTER_URL'], body: { tests: @test_reports }
     @test_reports = []
-    @last_send = Time.now.to_i
-  end
-
-  def fire_and_forget_json_post(url, body)
-    parsed_url = URI.parse(url)
-    body = body.to_json
-    headers = [
-      "POST #{parsed_url.request_uri} HTTP/1.1",
-      "Host: #{parsed_url.host}#{":#{parsed_url.port}" if parsed_url.port != 80}",
-      'Connection: Close',
-      'Content-Type: application/json',
-      "Content-Length: #{body.bytesize}"
-    ]
-    socket = TCPSocket.open(parsed_url.host, parsed_url.port)
-    headers.each { |header| socket.puts "#{header}\r\n" }
-    socket.puts "\r\n#{body}"
-    socket.close
-  rescue StandardError => error
-    puts("Error while communicating with RemoteReporter: #{error.message}")
-    puts(error.backtrace.join("\n"))
+    @last_send = Time.current
   end
 end

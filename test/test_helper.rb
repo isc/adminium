@@ -73,6 +73,12 @@ class ActionDispatch::IntegrationTest
     Resource.any_instance.stubs(:columns).returns value
   end
 
+  def save_screenshot name
+    assert_no_selector '.tooltip'
+    assert_no_selector '.collapsing'
+    super "#{name}.png"
+  end
+
   teardown do
     Capybara.reset!
   end

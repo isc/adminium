@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-ruby '2.4.2'
+ruby '2.5.3'
 
 gem 'airbrake'
 gem 'attr_encrypted'
@@ -11,6 +11,7 @@ gem 'bootstrap-wysihtml5-rails'
 gem 'figaro'
 gem 'font-awesome-rails'
 gem 'hiredis'
+gem 'httparty'
 gem 'jquery-rails'
 gem 'json'
 gem 'newrelic_rpm'
@@ -25,7 +26,6 @@ gem 'redis', require: ['redis', 'redis/connection/hiredis']
 gem 'rest-client'
 gem 'sass-rails'
 gem 'select2-rails'
-gem 'sendgrid'
 gem 'sequel'
 gem 'sequel_pg', require: 'sequel'
 gem 'simple_form'
@@ -70,7 +70,6 @@ group :test do
   gem 'webdrivers'
 end
 group :development, :test do
-  gem 'pry-byebug'
   gem 'pry-rails'
   gem 'rubocop'
 end

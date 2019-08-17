@@ -5,7 +5,7 @@
       "buildpacks": [
         { "url": "heroku/ruby" },
         { "url": "heroku/nodejs" },
-        { "url": "https://github.com/heroku/heroku-buildpack-google-chrome" }
+        { "url": "heroku/google-chrome" }
       ],
       "env": {
         "DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL": true,

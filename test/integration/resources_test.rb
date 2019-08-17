@@ -16,11 +16,11 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit resources_path(:users)
     assert_selector 'table.items-list'
     assert_selector 'th a', text: 'First name'
-    save_screenshot 'resources_index.png'
+    save_screenshot 'resources_index'
     click_link_with_title 'Listing settings'
     open_accordion 'Displayed columns', selector: 'label', text: 'Check / uncheck all'
     within('#listing_columns_list') { uncheck 'First name' }
-    save_screenshot 'listing_settings_modal.png'
+    save_screenshot 'listing_settings_modal'
     click_button 'Save settings'
     assert_no_selector 'th a', text: 'First name'
   end
@@ -63,7 +63,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_text 'Haliday'
     assert_text 'Deep'
     assert_no_text 'Carey'
-    save_screenshot 'resources_index_with_search.png'
+    save_screenshot 'resources_index_with_search'
 
     fill_in 'search_input', with: 'Johnny singer'
     find('form.navbar-left button').click
@@ -151,7 +151,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     click_link_with_title 'Create a new row'
     # FIXME: not ideal support for polymorphic belongs_to in the form at the moment
     assert_selector 'input[type=number][name="comments[commentable_id]"]'
-    save_screenshot 'resources_new.png'
+    save_screenshot 'resources_new'
   end
 
   test 'save new' do
@@ -170,7 +170,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_selector '.alert.alert-danger'
     assert_text 'New User'
     assert has_field?('Age', with: '123123123183829384728832')
-    save_screenshot 'resources_update_failed.png'
+    save_screenshot 'resources_update_failed'
   end
 
   test 'failed save due to invalid cast' do
@@ -289,7 +289,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test 'destroy from show' do
     user = FixtureFactory.new(:user).factory
     visit resource_path(:users, user)
-    save_screenshot 'resources_show.png'
+    save_screenshot 'resources_show'
     accept_alert { click_link_with_title 'Destroy' }
     assert_selector '.alert-success', text: 'successfully destroyed'
     visit resource_path(:users, user)
@@ -355,7 +355,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     visit resources_path(:users)
     click_link_with_title 'Export rows'
     assert_selector '.modal'
-    save_screenshot 'export.png'
+    save_screenshot 'export'
     click_button 'Export records to CSV'
     # FIXME: https://collectiveidea.com/blog/archives/2012/01/27/testing-file-downloads-with-capybara-and-chromedriver
     assert_text 'bobleponge'
@@ -452,7 +452,9 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     fill_in 'Age', with: 55
     all('.empty_string_btn')[0].click # click on empty string button for last name column
     all('.null_btn')[2].click # click null button for role column
-    save_screenshot 'resources_bulk_edit.png'
+    find_field('Last name').click # to avoid having the tooltips in the screenshot
+    assert_no_selector '.tooltip'
+    save_screenshot 'resources_bulk_edit'
     click_on 'Update 2 Users'
     assert_no_text 'Johnson'
     assert_selector 'td[data-column-name="role"]', text: 'null'

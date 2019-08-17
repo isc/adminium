@@ -7,14 +7,14 @@ module StatChartBuilder
     @items = resource.query
     dataset_filtering
     @items_for_stats = @items
-    %i(max min avg sum count).each_with_index do |calculation, i|
-      clause = Sequel.function(calculation, column)
-      @items = i.zero? ? @items.select(clause) : @items.select_append(clause)
+    @items = @items.select(Sequel.as(Sequel.function(:count, Sequel.function(:distinct, column)), 'distinct'))
+    %i(max min avg sum count).each do |calculation|
+      clause = Sequel.as(Sequel.function(calculation, column), calculation)
+      @items = @items.select_append(clause)
     end
-    @items = @items.select_append(Sequel.as(Sequel.function(:count, Sequel.function(:distinct, column)), 'distinct'))
     @data_hash = @items.all.first
     count = @data_hash[:count]
-    if count > 0
+    if count.positive?
       value = @items_for_stats.order(column).limit(1, count / 2).select(column).first
       @data_hash[:median] = value[params[:column].to_sym]
     end

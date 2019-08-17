@@ -18,7 +18,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
     assert_text 'Wednesday'
     actual = evaluate_script 'data_for_graph.chart_data'
     assert_equal [2, 1], actual.map(&:second)
-    save_screenshot 'time_chart_periodic_grouping.png'
+    save_screenshot 'time_chart_periodic_grouping'
   end
 
   test 'display pie chart on boolean' do
@@ -29,7 +29,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
     expected = [['True', 2, true, '#07be25'], ['Not set', 1, nil, '#DDD'], ['False', 1, false, '#777']]
     actual = evaluate_script 'data_for_graph.chart_data'
     assert expected, actual
-    save_screenshot 'percentage_chart_boolean.png'
+    save_screenshot 'percentage_chart_boolean'
   end
 
   test 'display pie chart on enums' do
@@ -53,7 +53,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
       ['new_role_3', 1, 'new_role_3', '#AAA']
     ]
     assert_equal expected, actual
-    save_screenshot 'percentage_chart_enum.png'
+    save_screenshot 'percentage_chart_enum'
   end
 
   test 'display pie chart on foreign key with label column' do
@@ -113,7 +113,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
       .each do |metric|
         assert_text metric
       end
-    save_screenshot 'stat_chart.png'
+    save_screenshot 'stat_chart'
   end
 
   private
