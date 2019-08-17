@@ -3,7 +3,7 @@ class Resource
   VALIDATES_UNIQUENESS_OF = 'validates_uniqueness_of'.freeze
   VALIDATORS = [VALIDATES_PRESENCE_OF, VALIDATES_UNIQUENESS_OF].freeze
 
-  attr_accessor :default_order, :enum_values, :label_column, :export_col_sep, :export_skip_header, :table
+  attr_accessor :default_order, :enum_values, :export_col_sep, :export_skip_header, :table, :datas
   delegate :validations, to: :table_configuration
 
   def initialize generic, table
@@ -16,7 +16,7 @@ class Resource
     if value.nil?
       @column, @columns, @enum_values = {}, {}, []
     else
-      datas = JSON.parse(value).symbolize_keys!
+      @datas = JSON.parse(value).symbolize_keys!
       @columns = datas[:columns].symbolize_keys!
       @column = datas[:column] || {}
       if datas[:default_order].present? && column_names.include?(datas[:default_order].to_s.split(' ').first.to_sym)
@@ -24,12 +24,15 @@ class Resource
       end
       @per_page = datas[:per_page] || @generic.account.per_page
       @enum_values = datas[:enum_values] || []
-      @label_column = datas[:label_column] if column_names.include? datas[:label_column].try(:to_sym)
       @export_skip_header = datas[:export_skip_header]
       @export_col_sep = datas[:export_col_sep]
     end
     @default_order ||= default_primary_keys_order
     set_missing_columns_conf
+  end
+
+  def label_column
+    table_configuration.label_column if column_names.include? table_configuration.label_column&.to_sym
   end
 
   def default_primary_keys_order
@@ -104,8 +107,7 @@ class Resource
 
   def save
     settings = {
-      columns: @columns, column: @column,
-      default_order: @default_order, enum_values: @enum_values, label_column: @label_column,
+      columns: @columns, column: @column, default_order: @default_order, enum_values: @enum_values,
       export_col_sep: @export_col_sep, export_skip_header: @export_skip_header
     }
     settings[:per_page] = @per_page if @generic.account.per_page != @per_page
@@ -117,7 +119,7 @@ class Resource
   end
 
   def table_configuration
-    @table_configuration ||= @generic.account.table_configurations.find_or_create_by(table: @table)
+    @table_configuration ||= @generic.account.table_configuration_for(@table)
   end
 
   def csv_options= options

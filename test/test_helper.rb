@@ -64,6 +64,7 @@ class ActionDispatch::IntegrationTest
 
   def open_accordion pane_label, selector:, text:
     click_link pane_label while all(selector, text: text, minimum: 0).size.zero?
+    assert_no_selector '.collapsing'
   end
 
   def stub_resource_columns value
@@ -75,7 +76,6 @@ class ActionDispatch::IntegrationTest
 
   def save_screenshot name
     assert_no_selector '.tooltip'
-    assert_no_selector '.collapsing'
     super "#{name}.png"
   end
 

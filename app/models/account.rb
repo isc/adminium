@@ -83,7 +83,6 @@ class Account < ApplicationRecord
   end
 
   def upgrade_link
-    # "https://api.heroku.com/v3/resources/adminium+#{{Plan::PET_PROJECT => Plan::STARTUP, Plan::STARTUP => Plan::ENTERPRISE}[plan]}?selected=#{name}"
     'https://addons.heroku.com/adminium'
   end
 
@@ -102,6 +101,10 @@ class Account < ApplicationRecord
 
   def reactivate attributes
     update attributes.merge(deleted_at: nil, api_key: generate_api_key)
+  end
+
+  def table_configuration_for table
+    table_configurations.find_or_create_by! table: table
   end
 
   private

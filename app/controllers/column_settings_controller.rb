@@ -13,9 +13,7 @@ class ColumnSettingsController < ApplicationController
     resource.update_column_options params[:column].to_sym, params[:column_options]
     resource.update_enum_values params[:column], params[:enum_data]&.values
     if params[:label_column]
-      resource = resource_for params[:label_column][:table]
-      resource.label_column = params[:label_column][:label_column]
-      resource.save
+      table_configuration_for(params[:label_column][:table]).update! label_column: params[:label_column][:label_column]
     end
     redirect_back fallback_location: resources_path(params[:id])
   end

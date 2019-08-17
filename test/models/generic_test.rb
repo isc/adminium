@@ -29,11 +29,13 @@ class GenericTest < ActiveSupport::TestCase
   end
 
   test 'associations' do
-    assert @generic.associations.include?(foreign_key: :user_profile_id, referenced_table: :user_profiles, primary_key: :id, table: :users)
+    assert @generic.associations.include?(foreign_key: :user_profile_id, referenced_table: :user_profiles,
+      primary_key: :id, table: :users)
   end
 
   test 'polymorphic associations' do
-    assert @generic.associations.include?(foreign_key: :commentable_id, referenced_table: nil, primary_key: :id, table: :comments, polymorphic: true)
+    assert @generic.associations.include?(foreign_key: :commentable_id, referenced_table: nil, primary_key: :id,
+      table: :comments, polymorphic: true)
   end
 
   def expected_tables

@@ -34,13 +34,13 @@ task reset_adminium_demo_account: :environment do
   payments_settings.update_column_options 'created_at', 'rename' => '', 'format' => 'time_ago_in_words'
 
   users_settings = Resource.new generic, :users
-  users_settings.label_column = 'pseudo'
+  users_settings.table_configuration.update! label_column: 'pseudo'
   users_settings.columns[:listing] = %w(id pseudo email partner_id has_many/payments)
   users_settings.save
 
   partners_settings = Resource.new generic, :partners
   partners_settings.columns[:listing] = %w(id name has_many/users created_at)
-  partners_settings.label_column = 'name'
+  partners_settings.table_configuration.update! label_column: 'name'
   partners_settings.save
   generic.cleanup
 end

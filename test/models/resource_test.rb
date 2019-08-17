@@ -17,12 +17,10 @@ class ResourceTest < ActiveSupport::TestCase
 
   test 'sanitize label_colum when loading' do
     resource = Resource.new @generic, :users
-    resource.label_column = 'deprecated_column'
-    resource.save
+    resource.table_configuration.update! label_column: 'deprecated_column'
     resource = Resource.new @generic, :users
     assert_nil resource.label_column
-    resource.label_column = 'pseudo'
-    resource.save
+    resource.table_configuration.update! label_column: 'pseudo'
     resource = Resource.new @generic, :users
     assert_equal 'pseudo', resource.label_column
   end
