@@ -13,7 +13,7 @@ class FillBackLabelColumn < ActiveRecord::Migration[5.2]
           resource.save
         end
         generic.cleanup
-      rescue Sequel::DatabaseConnectionError, URI::InvalidURIError, Sequel::Error => e
+      rescue Sequel::DatabaseConnectionError, URI::InvalidURIError, Sequel::Error, StandardError => e
         puts e
       end
     end
