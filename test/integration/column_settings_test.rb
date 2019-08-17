@@ -13,7 +13,7 @@ class ColumnSettingsTest < ActionDispatch::IntegrationTest
     find('th .fa-cog').click
     open_accordion 'Association discovery', selector: 'label', text: 'Label column'
     select 'name', from: 'Label column'
-    save_screenshot 'column_settings_modal.png'
+    save_screenshot 'column_settings_modal'
     click_button 'Save settings'
     assert_no_selector '.modal'
     click_link 'Admins'

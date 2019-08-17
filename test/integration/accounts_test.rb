@@ -7,7 +7,7 @@ class AccountsTest < ActionDispatch::IntegrationTest
     click_on 'Close'
     click_link 'roles_users' # table number 6 is off limit
     assert_selector '.modal', text: 'This table is not accessible'
-    save_screenshot 'pet_project_limitation_modal.png'
+    save_screenshot 'pet_project_limitation_modal'
     visit resources_path(:roles_users)
     assert_equal dashboard_path, current_path
     assert_text 'to the startup plan ($10 per month)'
@@ -35,7 +35,7 @@ class AccountsTest < ActionDispatch::IntegrationTest
     assert has_field?('Per page', with: 150)
     assert has_select?('Datetime format', selected: 'less than a minute ago')
     fill_in 'Database URL', with: 'stable screenshot'
-    save_screenshot 'account_settings.png'
+    save_screenshot 'account_settings'
     visit resources_path(:users)
     assert_text 'less than a minute ago'
     assert_text '2017-08-02'

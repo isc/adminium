@@ -8,7 +8,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
   test 'view dashboard' do
     visit dashboard_path
     assert_text 'Welcome on board'
-    save_screenshot 'welcome_modal.png'
+    save_screenshot 'welcome_modal'
     click_on 'Close'
     assert_text 'Database size'
     click_link 'pg_stat_activity'
@@ -29,7 +29,7 @@ class DashboardTest < ActionDispatch::IntegrationTest
     click_on 'Close'
     assert_no_selector '.modal'
     assert_selector '.alert', text: 'No data to chart'
-    save_screenshot 'dashboard_with_widget.png'
+    save_screenshot 'dashboard_with_widget'
   end
 
   test 'catching database url errors' do
