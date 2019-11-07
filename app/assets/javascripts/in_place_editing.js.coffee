@@ -11,11 +11,11 @@ class InPlaceEditing
     if not td.find('i.fa-pencil').length and td.attr('data-mode') isnt 'editing'
       $("<i class='fa fa-pencil cell-action' title='Edit this value' >").appendTo(td)
 
-  textEditionMode: -> $('<textarea>')
   integerEditionMode: -> $('<input type="number">')
   floatEditionMode: -> $('<input type="number" step="any">')
   dateEditionMode: -> $('<input type="date">')
-  defaultEditionMode: -> $('<input type=text>')
+  defaultEditionMode: (raw_value) ->
+    if raw_value.match("\n") then $('<textarea>') else $('<input type=text>')
   datetimeEditionMode: (td, name, raw_value) =>
     [date, time] = raw_value?.split(' ') or ['', '']
     $('<span>')
@@ -54,7 +54,7 @@ class InPlaceEditing
     input = if this["#{type}EditionMode"]
       this["#{type}EditionMode"](td, name, raw_value)
     else
-      @defaultEditionMode()
+      @defaultEditionMode(raw_value)
     input.prependTo(td.find('.controls'))
     input.val(raw_value) unless input.val()
     if input.prop('tagName') is 'SPAN'
