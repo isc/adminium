@@ -24,20 +24,15 @@ DatabaseCleaner.strategy = :truncation
 chrome_bin = ENV.fetch('GOOGLE_CHROME_SHIM', nil)
 Selenium::WebDriver::Chrome.path = chrome_bin if chrome_bin
 
-Capybara.register_driver :heroku_chrome do |app|
+Capybara.register_driver :heroku_compatible_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
-  options.add_argument('headless')
+  options.add_argument('headless') unless ENV['DISABLE_HEADLESS']
   options.add_argument('no-sandbox')
   options.add_argument('disable-dev-shm-usage')
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
-Capybara.default_driver =
-  if chrome_bin
-    :heroku_chrome
-  else
-    ENV['DISABLE_HEADLESS'] ? :selenium_chrome : :selenium_chrome_headless
-  end
+Capybara.default_driver = :heroku_compatible_chrome
 Capybara.server = :puma, { Silent: true }
 
 Capybara::Screenshot.register_filename_prefix_formatter(:minitest) do |test_case|
@@ -92,7 +87,7 @@ class ActionDispatch::IntegrationTest
   end
 
   def save_screenshot name
-    assert_no_selector '.tooltip'
+    assert_no_selector '.tooltip, .collapsing'
     super "#{name}.png"
   end
 
