@@ -22,10 +22,14 @@ require 'test_failures_reporter'
 DatabaseCleaner.strategy = :truncation
 
 chrome_bin = ENV.fetch('GOOGLE_CHROME_SHIM', nil)
-chrome_opts = chrome_bin ? { 'chromeOptions' => { 'binary' => chrome_bin } } : {}
+Selenium::WebDriver::Chrome.path = chrome_bin if chrome_bin
+
 Capybara.register_driver :heroku_chrome do |app|
-  Capybara::Selenium::Driver.new(app, browser: :chrome,
-    desired_capabilities: Selenium::WebDriver::Remote::Capabilities.chrome(chrome_opts))
+  options = Selenium::WebDriver::Chrome::Options.new
+  options.add_argument('headless')
+  options.add_argument('no-sandbox')
+  options.add_argument('disable-dev-shm-usage')
+  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 
 Capybara.default_driver =
