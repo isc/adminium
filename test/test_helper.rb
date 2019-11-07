@@ -20,7 +20,20 @@ require 'rack_session_access/capybara'
 require 'test_failures_reporter'
 
 DatabaseCleaner.strategy = :truncation
-Capybara.default_driver = ENV['DISABLE_HEADLESS'] ? :selenium_chrome : :selenium_chrome_headless
+
+chrome_bin = ENV.fetch('GOOGLE_CHROME_SHIM', nil)
+chrome_opts = chrome_bin ? { 'chromeOptions' => { 'binary' => chrome_bin } } : {}
+Capybara.register_driver :heroku_chrome do |app|
+  Capybara::Selenium::Driver.new(app, browser: :chrome,
+    desired_capabilities: Selenium::WebDriver::Remote::Capabilities.chrome(chrome_opts))
+end
+
+Capybara.default_driver =
+  if chrome_bin
+    :heroku_chrome
+  else
+    ENV['DISABLE_HEADLESS'] ? :selenium_chrome : :selenium_chrome_headless
+  end
 Capybara.server = :puma, { Silent: true }
 
 Capybara::Screenshot.register_filename_prefix_formatter(:minitest) do |test_case|
