@@ -33,6 +33,7 @@ class ValidationsTest < ActionDispatch::IntegrationTest
     assert_selector 'td', text: 'Validates uniqueness of'
     find('i.remove').click
     assert_no_selector 'td', text: 'Validates uniqueness of'
+    assert_no_selector '.collapsing'
     click_on 'Save settings'
     assert_text 'Settings successfully saved'
     click_link_with_title 'Create a new row'
