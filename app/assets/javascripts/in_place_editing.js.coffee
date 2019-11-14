@@ -15,7 +15,7 @@ class InPlaceEditing
   floatEditionMode: -> $('<input type="number" step="any">')
   dateEditionMode: -> $('<input type="date">')
   defaultEditionMode: (raw_value) ->
-    if raw_value.match("\n") then $('<textarea>') else $('<input type=text>')
+    if raw_value?.match("\n") then $('<textarea>') else $('<input type=text>')
   datetimeEditionMode: (td, name, raw_value) =>
     [date, time] = raw_value?.split(' ') or ['', '']
     $('<span>')
