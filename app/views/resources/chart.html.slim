@@ -3,7 +3,7 @@
     .modal-header
       a.close data-dismiss="modal" ×
       h4.modal-title
-        == "#{params[:type].underscore.humanize} for column #{params[:column]} "
+        = "#{params[:type].underscore.humanize} for column #{params[:column]} "
         - if @widget
           i.fa.fa-star title="This view is on your dashboard" rel="tooltip" data-placement="right"
         - else

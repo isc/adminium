@@ -2,7 +2,7 @@
   .modal-content
     .modal-header
       a.close data-dismiss="modal" ×
-      h4.modal-title== "Settings for column #{params[:column]}"
+      h4.modal-title= "Settings for column #{params[:column]}"
     = form_tag column_settings_path, method: :post, class: 'form-horizontal' do
       input type="hidden" name="id" value=params[:id]
       input type="hidden" name="column" value=params[:column]
@@ -33,7 +33,7 @@
                 label.checkbox-inline
                   = check_box_tag 'column_options[serialized]', 'checked', @serialized
                   'Check this if your data represents a serialized Ruby Core Class
-              
+
             - if resource.possible_enum_column column
               = accordion.pane "Enumerable data" do
                 = render partial: "/column_settings/enum"
