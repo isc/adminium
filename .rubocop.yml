@@ -1,3 +1,6 @@
+inherit_gem:
+  rubocop-rails_config:
+    - config/rails.yml
 AllCops:
   TargetRubyVersion: 2.4
   Exclude:
@@ -14,7 +17,7 @@ Rails/FilePath:
   Enabled: false
 Rails/SkipsModelValidations:
   Enabled: false
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
 Metrics/BlockLength:
   Enabled: false
@@ -32,13 +35,13 @@ Layout/SpaceInsideHashLiteralBraces:
   Enabled: false
 Layout/SpaceInsideBlockBraces:
   Enabled: false
-Layout/AlignArguments:
+Layout/ArgumentAlignment:
   Enabled: false
-Layout/AlignHash:
+Layout/HashAlignment:
   Enabled: false
 Style/MethodDefParentheses:
   Enabled: false
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   Enabled: false
 Style/ClassAndModuleChildren:
   Enabled: false
@@ -48,6 +51,8 @@ Style/ParallelAssignment:
   Enabled: false
 Style/FrozenStringLiteralComment:
   Enabled: false
+Style/StringLiterals:
+  EnforcedStyle: single_quotes
 Style/PercentLiteralDelimiters:
   Enabled: false
 Style/RescueModifier:

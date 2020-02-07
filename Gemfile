@@ -72,4 +72,5 @@ end
 group :development, :test do
   gem 'pry-rails'
   gem 'rubocop'
+  gem 'rubocop-rails_config'
 end

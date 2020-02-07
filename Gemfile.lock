@@ -270,6 +270,16 @@ GEM
       rainbow (>= 2.2.2, < 4.0)
       ruby-progressbar (~> 1.7)
       unicode-display_width (>= 1.4.0, < 1.7)
+    rubocop-performance (1.5.2)
+      rubocop (>= 0.71.0)
+    rubocop-rails (2.4.2)
+      rack (>= 1.1)
+      rubocop (>= 0.72.0)
+    rubocop-rails_config (0.9.1)
+      railties (>= 3.0)
+      rubocop (~> 0.77)
+      rubocop-performance (~> 1.3)
+      rubocop-rails (~> 2.0)
     ruby-progressbar (1.10.1)
     rubyzip (2.0.0)
     sass-rails (6.0.0)
@@ -394,6 +404,7 @@ DEPENDENCIES
   redis
   rest-client
   rubocop
+  rubocop-rails_config
   sass-rails
   select2-rails
   sequel
