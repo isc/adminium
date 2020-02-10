@@ -45,7 +45,7 @@ class RolesController < ApplicationController
   private
 
     def log_events
-      base = { username: current_user.name, role: "#{@role.name} (id:#{@role.id})" }
+      base = { account: current_account.name, username: current_user&.name, role: "#{@role.name} (id:#{@role.id})" }
       return logger.warn base.merge(action: 'destroy-role').to_json if action_name == 'destroy'
       if @role.saved_change_to_permissions?
         logger.warn base.merge(action: 'update-role-permissions',
