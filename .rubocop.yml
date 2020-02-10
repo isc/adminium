@@ -65,3 +65,5 @@ Lint/Debugger:
   Enabled: false
 Naming/PredicateName:
   Enabled: false
+Layout/EmptyLinesAroundAccessModifier:
+  EnforcedStyle: around
