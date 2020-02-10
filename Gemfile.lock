@@ -114,6 +114,7 @@ GEM
     get_process_mem (0.2.3)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
+    hashdiff (1.0.0)
     hashie (3.6.0)
     heroics (0.0.17)
       erubis (~> 2.0)
@@ -374,6 +375,7 @@ DEPENDENCIES
   factory_bot_rails
   figaro
   font-awesome-rails
+  hashdiff
   hiredis
   httparty
   jquery-rails
