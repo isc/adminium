@@ -15,7 +15,7 @@ require 'rails/test_help'
 require 'test_database_schema.rb'
 require 'capybara/rails'
 require 'capybara-screenshot/minitest'
-require 'mocha/setup'
+require 'mocha/minitest'
 require 'rack_session_access/capybara'
 require 'test_failures_reporter'
 
