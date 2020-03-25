@@ -26,6 +26,10 @@ module Sequel
           where{pg_attribute[:attnum] > 0}.
           # where{{pg_class[:oid]=>oid}}.
           order{pg_attribute[:attnum]}
+
+        if server_version > 100000
+          ds = ds.select_append{pg_attribute[:attidentity]}
+        end
         ds = filter_schema ds, opts # addition
         @schemas = ds.map do |row| # modification
           row[:default] = nil if blank_object?(row[:default])
@@ -40,8 +44,9 @@ module Sequel
           end
           row[:type] = schema_column_type(row[:db_type])
           row[:ruby_default] = column_schema_to_ruby_default(row[:default], row[:type])
+          identity = row.delete(:attidentity)
           if row[:primary_key]
-            row[:auto_increment] = !!(row[:default] =~ /\Anextval/io)
+            row[:auto_increment] = !!(row[:default] =~ /\A(?:nextval)/i) || identity == 'a' || identity == 'd'
           end
           [m.call(row.delete(:name)), row]
         end.group_by {|name, row| "\"#{row.delete(:relname)}\""} # addition
