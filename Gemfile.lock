@@ -300,7 +300,7 @@ GEM
       childprocess (>= 0.5, < 4.0)
       rubyzip (>= 1.2.2)
     sequel (5.30.0)
-    sequel_pg (1.12.4)
+    sequel_pg (1.12.5)
       pg (>= 0.18.0, != 1.2.0)
       sequel (>= 4.38.0)
     simple_form (5.0.2)
