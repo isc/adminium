@@ -44,8 +44,8 @@ script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"
     - modal.body do
       p.s.before Please wait a second...
       .s.success
-        h4 Table {{table_name}} created !
-        p What do you want to do next ?
+        h4 Table {{table_name}} created!
+        p What do you want to do next?
         = link_to "See the schema", "/schemas/{{table_name}}", class: "btn btn-primary btn-large"
         '
         = link_to "Add your first record", "/resources/{{table_name}}/new", class: "btn btn-primary btn-large"

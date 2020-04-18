@@ -23,7 +23,7 @@ class BulkActions
     $('.bulk-destroy').on 'click', =>
       return false if $('.bulk-destroy').attr('disabled')
       items = $("#{@checkbox_selector}:checked")
-      return false unless confirm "Are you sure you want to trash the #{items.length} selected items ?"
+      return false unless confirm "Are you sure you want to trash the #{items.length} selected items?"
       for item in items
         item_id = $(item).closest('tr').data('item-id')
         $('<input>').attr('type': 'hidden', 'name': 'item_ids[]').val(item_id).appendTo('#bulk-destroy-form')
