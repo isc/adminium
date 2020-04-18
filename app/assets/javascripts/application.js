@@ -5,6 +5,7 @@
 //= require jquery-ui-1.11.4.custom.min
 //= require sh_main.min
 //= require sh_ruby.min
+//= require sh_javascript.min
 //= require bootstrap-wysihtml5
 //= require jquery.csv-0.8.1.min
 //= require select2
