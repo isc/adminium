@@ -21,7 +21,7 @@ class Heroku::ResourcesController < ApplicationController
 
   def update
     account = Account.find_by! api_key: params[:id]
-    account.update! plan: params.require(:plan)
+    account.update_attribute :plan, params.require(:plan)
     render plain: 'ok'
   end
 
