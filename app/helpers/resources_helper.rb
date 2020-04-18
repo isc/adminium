@@ -67,6 +67,8 @@ module ResourcesHelper
     elsif value.present? && resource.columns[:serialized].include?(key)
       content = value.present? ? (YAML.safe_load(value).inspect rescue value) : value
       css_class, content = 'serialized', content_tag(:pre, content, class: 'sh_ruby')
+    elsif value.present? && resource.column_info(key)[:db_type].in?(%w(json jsonb))
+      css_class, content = 'json', content_tag(:pre, value, class: 'sh_javascript')
     elsif item[key] && (assoc_info = resource.foreign_key_array?(key))
       content = display_foreign_key_array assoc_info[:referenced_table], item[key]
     else
