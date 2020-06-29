@@ -213,7 +213,7 @@ GEM
     puma_worker_killer (0.1.1)
       get_process_mem (~> 0.2)
       puma (>= 2.7, < 5)
-    rack (2.2.2)
+    rack (2.2.3)
     rack-mini-profiler (2.0.1)
       rack (>= 1.2.0)
     rack-test (1.1.0)
