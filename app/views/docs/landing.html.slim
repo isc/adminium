@@ -11,7 +11,6 @@ html lang="en"
     meta name="description" content="Administration interface for your database as a service"
     meta name="keywords" content="Adminium, database, administration, interface, export, heroku, add-on"
     meta name="viewport" content="width=device-width, initial-scale=1.0"
-    meta name="twitter:widgets:csp" content="on"
     link href="images/favicon.ico" rel="shortcut icon"
   body.landing
     .container
@@ -74,14 +73,6 @@ html lang="en"
             ' There is a lot more! Check out
             = link_to 'the docs', docs_path
             '.
-      .container.testimonials
-        .row
-          .col-md-5.col-md-offset-1
-            <blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">I love <a href="https://twitter.com/hashtag/adminium?src=hash">#adminium</a> for <a href="https://twitter.com/HerokuPostgres">@HerokuPostgres</a>! Great tool to admin your db. <a href="https://t.co/9zoJCMEn6t">https://t.co/9zoJCMEn6t</a></p>&mdash; Steven Wagner (@TenaciousSteven) <a href="https://twitter.com/TenaciousSteven/status/319505393732710400">April 3, 2013</a></blockquote>
-            <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
-          .col-md-5
-            <blockquote class="twitter-tweet" lang="en"><p lang="en" dir="ltr">Thx to <a href="https://twitter.com/admi_nium">@admi_nium</a> for an awesome <a href="https://twitter.com/hashtag/herokuaddon?src=hash">#herokuaddon</a> and saving us a bunch of time on our backend admin dev, allowing us to focus on customer UX!</p>&mdash; Paul Sobocinski (@sobes) <a href="https://twitter.com/sobes/status/341271654988644353">June 2, 2013</a></blockquote>
-            <script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
 
     .container-fluid.technos
       .container
@@ -106,7 +97,6 @@ html lang="en"
           p All plans come with full support. You can upgrade or downgrade anytime.
     .container
       footer
-        p.text-center= render partial: 'twitter_widget'
         p.text-center= link_to "&copy; #{Date.today.year} Cluscrive".html_safe, "http://cluscrive.fr", target: '_blank'
     = javascript_include_tag 'application'
     = render 'layouts/uservoice' if Rails.env.production?
