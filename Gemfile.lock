@@ -306,7 +306,7 @@ GEM
     sequel_pg (1.13.0)
       pg (>= 0.18.0, != 1.2.0)
       sequel (>= 4.38.0)
-    simple_form (5.0.2)
+    simple_form (5.0.3)
       actionpack (>= 5.0)
       activemodel (>= 5.0)
     simplecov (0.18.5)
