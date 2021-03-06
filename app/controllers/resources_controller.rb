@@ -141,7 +141,7 @@ class ResourcesController < ApplicationController
       redirect_back fallback_location: resources_path(params[:table]), **options
     end
   rescue Sequel::Error => e
-    redirect_back fallback_location: resources_path(params[:table]), error: e.message
+    redirect_back fallback_location: resources_path(params[:table]), error: error_message(e)
   end
 
   def bulk_destroy
@@ -150,7 +150,7 @@ class ResourcesController < ApplicationController
     redirect_back fallback_location: resources_path(params[:table]),
                   success: "#{params[:item_ids].size} #{resource.human_name.pluralize} successfully destroyed"
   rescue Sequel::Error => e
-    redirect_back fallback_location: resources_path(params[:table]), error: e.message
+    redirect_back fallback_location: resources_path(params[:table]), error: error_message(e)
   end
 
   def bulk_edit
@@ -172,6 +172,8 @@ class ResourcesController < ApplicationController
   def bulk_update
     count = resource.update_multiple_items params[:record_ids], (item_params || {})
     redirect_back fallback_location: resources_path(params[:table]), success: "#{count || 0} rows have been updated"
+  rescue Sequel::UniqueConstraintViolation => e
+    redirect_back fallback_location: resources_path(params[:table]), error: error_message(e)
   end
 
   def test_threads
@@ -712,5 +714,9 @@ class ResourcesController < ApplicationController
         true
       end
     end
+  end
+
+  def error_message(exception)
+    view_context.simple_format(exception.wrapped_exception.message)
   end
 end
