@@ -38,7 +38,7 @@ class SessionsController < ApplicationController
   end
 
   def login_heroku_app
-    adminium_addon = heroku_api.addon.list.detect {|addon| addon['id'] == params[:id]}
+    adminium_addon = heroku_api.addon.list.detect {|addon| addon['id'] == params.require(:id)}
     if adminium_addon
       @account = Account.find_by! heroku_uuid: params[:id]
       session[:account] = @account.id
