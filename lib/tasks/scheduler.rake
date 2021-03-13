@@ -16,7 +16,7 @@ task reset_adminium_demo_account: :environment do
   account.table_widgets.create! table: 'users', order: 'created_at desc'
   account.table_widgets.create! table: 'partners'
   generic = Generic.new(account)
-  generic.db.tables.each { |table| generic.db.drop_table table unless table.in? %i(payments users partners) }
+  generic.db.user_tables.each { |table| generic.db.drop_table table unless table.in? %i(payments users partners) }
   payments_settings = Resource.new generic, :payments
   payments_settings.enum_values = [
     {'column_name' => 'status', 'values' => {
