@@ -24,12 +24,21 @@ DatabaseCleaner.strategy = :truncation
 chrome_bin = ENV.fetch('GOOGLE_CHROME_SHIM', nil)
 Selenium::WebDriver::Chrome.path = chrome_bin if chrome_bin
 
+DOWNLOAD_DIR = Dir.mktmpdir
+
 Capybara.register_driver :heroku_compatible_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
   options.add_argument('headless') unless ENV['DISABLE_HEADLESS']
   options.add_argument('no-sandbox')
   options.add_argument('disable-dev-shm-usage')
-  Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+  driver = Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
+  # Setting the downloadPath through a profile doesn't work at the moment when in headless mode
+  # Workaround found here:
+  # https://stackoverflow.com/questions/48810757/setting-default-download-directory-and-headless-chrome
+  bridge = driver.browser.send(:bridge)
+  bridge.http.call(:post, "/session/#{bridge.session_id}/chromium/send_command", cmd: 'Page.setDownloadBehavior',
+    params: { behavior: 'allow', downloadPath: DOWNLOAD_DIR })
+  driver
 end
 
 Capybara.default_driver = :heroku_compatible_chrome
@@ -89,6 +98,23 @@ class ActionDispatch::IntegrationTest
   def save_screenshot name
     assert_no_selector '.tooltip, .collapsing'
     super "#{name}.png"
+  end
+
+  def clear_download_dir
+    Dir.children(DOWNLOAD_DIR).each { |entry| File.unlink("#{DOWNLOAD_DIR}/#{entry}") }
+  end
+
+  def assert_downloaded_file filename, expected_content = nil
+    downloaded_file = File.expand_path(filename, DOWNLOAD_DIR)
+    actual_content = File.open(downloaded_file, &:read)
+    if expected_content
+      assert_equal expected_content, actual_content
+    else
+      yield actual_content
+    end
+  rescue Errno::ENOENT
+    sleep 0.4
+    retry
   end
 
   teardown do

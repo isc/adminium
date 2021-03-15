@@ -344,8 +344,11 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     assert_selector '.modal'
     save_screenshot 'export'
     click_button 'Export records to CSV'
-    # FIXME: https://collectiveidea.com/blog/archives/2012/01/27/testing-file-downloads-with-capybara-and-chromedriver
-    assert_text 'bobleponge'
+    assert_downloaded_file 'users.csv' do |content|
+      rows = CSV.parse content
+      assert_equal 2, rows.size
+      assert_equal 'bobleponge', rows[1][1]
+    end
   end
 
   test 'show with belongs_to association' do
@@ -566,13 +569,15 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
 
   test 'link to download for binary column' do
-    uploaded_file = FixtureFactory.new(:uploaded_file, filename: 'test.txt', data: 'A' * 37).factory
+    file_data = 'A' * 37
+    uploaded_file = FixtureFactory.new(:uploaded_file, filename: 'test.txt', data: file_data).factory
     visit resources_path(:uploaded_files)
     click_link 'Download (37 Bytes)'
-    # FIXME: https://collectiveidea.com/blog/archives/2012/01/27/testing-file-downloads-with-capybara-and-chromedriver
-    # assert_equal uploaded_file.data, page.body
+    assert_downloaded_file 'test.txt', file_data
+    clear_download_dir
     visit resource_path(:uploaded_files, uploaded_file)
     click_link 'Download (37 Bytes)'
-    # assert_equal uploaded_file.data, page.body
+    assert_downloaded_file 'test.txt', file_data
+    clear_download_dir
   end
 end
