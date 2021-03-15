@@ -53,7 +53,6 @@
                   = safe_join collaborator.roles.map { |role| link_to role.name, [:edit, role] }, ', '
               td
                 => link_to content_tag(:i, nil, class: 'fa fa-pencil'), edit_collaborator_path(collaborator),
-                  remote: true,  data: {toggle: 'modal', target: "#modal-window", backdrop: true, keyboard: true},
                   title: 'Edit this collaborator roles', rel: 'tooltip'
                 = link_to content_tag(:i, nil, class: 'fa fa-trash'), collaborator, method: :delete, rel: 'tooltip',
                   title: 'Remove all access for this collaborator', data: { confirm: 'Sure?' }

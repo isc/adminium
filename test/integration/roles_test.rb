@@ -23,7 +23,7 @@ class RolesTest < ActionDispatch::IntegrationTest
     click_on 'Add a collaborator'
     assert_text 'Collaborator added'
     click_link_with_title 'Edit this collaborator roles'
-    within('.modal') { fill_in 'Email', with: 'john@mail.net' }
+    fill_in 'Email', with: 'john@mail.net'
     click_on 'Update Collaborator'
     assert_text 'Changes on john@mail.net saved'
     assert_no_text 'john@mail.com'
