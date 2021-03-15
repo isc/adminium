@@ -24,7 +24,8 @@ DatabaseCleaner.strategy = :truncation
 chrome_bin = ENV.fetch('GOOGLE_CHROME_SHIM', nil)
 Selenium::WebDriver::Chrome.path = chrome_bin if chrome_bin
 
-DOWNLOAD_DIR = Dir.mktmpdir
+DOWNLOAD_DIR = '/tmp/adminium-tests-download-dir'
+FileUtils.mkdir_p DOWNLOAD_DIR
 
 Capybara.register_driver :heroku_compatible_chrome do |app|
   options = Selenium::WebDriver::Chrome::Options.new
