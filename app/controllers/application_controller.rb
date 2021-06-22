@@ -54,7 +54,10 @@ class ApplicationController < ActionController::Base
   end
 
   def current_collaborator
-    @collaborator ||= Collaborator.find(session[:collaborator]) if session[:collaborator]
+    return nil unless session[:collaborator]
+    @collaborator ||= Collaborator.find_by(id: session[:collaborator])
+    return @collaborator if @collaborator
+    session[:collaborator] = session[:account] = nil
   end
 
   def admin?
