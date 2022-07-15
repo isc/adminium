@@ -1,4 +1,5 @@
-REDIS = Redis.new url: Figaro.env.redis_url, db: (1 if Rails.env.test?)
+REDIS = Redis.new url: Figaro.env.redis_url, db: (1 if Rails.env.test?),
+  ssl_params: { verify_mode: OpenSSL::SSL::VERIFY_NONE }
 
 Rails.application.config.middleware.use OmniAuth::Builder do
   client_options = Figaro.env.proxy_url.present? ? { connection_opts: { proxy: Figaro.env.proxy_url } } : {}
