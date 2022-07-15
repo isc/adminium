@@ -218,7 +218,7 @@ GEM
       get_process_mem (~> 0.2)
       puma (>= 2.7, < 5)
     racc (1.6.0)
-    rack (2.2.3)
+    rack (2.2.4)
     rack-mini-profiler (2.3.2)
       rack (>= 1.2.0)
     rack-test (1.1.0)
