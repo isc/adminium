@@ -123,7 +123,6 @@ GEM
       moneta
       multi_json (>= 1.9.2)
       netrc
-    hiredis (0.6.3)
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -393,7 +392,6 @@ DEPENDENCIES
   figaro
   font-awesome-rails
   hashdiff
-  hiredis
   httparty
   jquery-rails
   json
