@@ -202,7 +202,7 @@ GEM
     parallel (1.21.0)
     parser (3.0.2.0)
       ast (~> 2.4.1)
-    pg (1.2.3)
+    pg (1.4.2)
     platform-api (0.8.0)
       heroics (~> 0.0.17)
     populator (1.0.0)
