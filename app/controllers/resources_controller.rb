@@ -340,7 +340,7 @@ class ResourcesController < ApplicationController
       end
       if v && resource.date_column?(k.to_sym)
         v = v.split(' ').first if grouping == 'daily'
-        v = application_time_zone.parse v
+        v = application_time_zone.parse v if grouping.in? %w(hourly minutely)
         [time_chart_aggregate(qualify(params[:table], k)), v]
       else
         if k['.']
