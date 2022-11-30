@@ -45,7 +45,7 @@ module TimeChartBuilder
     if periodic_grouping?
       column.extract grouping
     else
-      aggregate = {'daily' => 'day'}[grouping] || grouping.gsub('ly', '')
+      aggregate = grouping == 'daily' ? 'day' : grouping.gsub('ly', '')
       Sequel.function(:date_trunc, aggregate, column)
     end
   end
