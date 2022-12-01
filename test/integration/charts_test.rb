@@ -118,9 +118,9 @@ class ChartsTest < ActionDispatch::IntegrationTest
 
   private
 
-  def display_chart table, column, svg: true
-    visit resources_path(table) if table
-    find("th[data-column-name=\"#{column}\"] i.time-chart").click
-    assert_selector '#chart_div svg' if svg
-  end
+    def display_chart table, column, svg: true
+      visit resources_path(table) if table
+      find("th[data-column-name=\"#{column}\"] i.time-chart").click
+      assert_selector '#chart_div svg' if svg
+    end
 end
