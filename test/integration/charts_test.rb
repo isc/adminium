@@ -2,7 +2,7 @@ require 'test_helper'
 
 class ChartsTest < ActionDispatch::IntegrationTest
   def setup
-    login
+    @account = login
   end
 
   test 'display default timechart then periodic grouping' do
@@ -19,6 +19,22 @@ class ChartsTest < ActionDispatch::IntegrationTest
     actual = evaluate_script 'data_for_graph.chart_data'
     assert_equal [2, 1], actual.map(&:second)
     save_screenshot 'time_chart_periodic_grouping'
+  end
+
+  test 'time charts and application_time_zone' do
+    @account.update database_time_zone: 'UTC', application_time_zone: 'Paris'
+    travel_to '2022-12-01 21:00'
+    FixtureFactory.new(:user, pseudo: 'John', created_at: '2022-12-01 08:30 UTC')
+    display_chart :users, :created_at
+    first('rect[fill="#7d72bd"][height="223"]').click
+    assert_text 'Where daily created_at is Dec 01'
+    assert_text 'John'
+    display_chart :users, :created_at
+    select 'Hourly'
+    assert_text '9am'
+    first('rect[fill="#7d72bd"][height="111"]').click
+    assert_text 'Where hourly created_at is 9am'
+    assert_text 'John'
   end
 
   test 'display pie chart on boolean' do
