@@ -322,7 +322,7 @@ GEM
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     sequel (5.30.0)
-    sequel_pg (1.14.0)
+    sequel_pg (1.17.0)
       pg (>= 0.18.0, != 1.2.0)
       sequel (>= 4.38.0)
     simple_form (5.1.0)
