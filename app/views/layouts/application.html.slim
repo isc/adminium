@@ -33,6 +33,17 @@ html lang="en" ng-app=""
     .container-fluid
       .row
         .col-md-12
+          .alert.alert-warning
+            b
+               u Important notice:
+            p Dear valued users,
+            p We're rreaching out with a heavy heart to inform you that our service will be shutting down permanently, effective from October 1th, 2023.
+            p We understand the inconvenience this may cause and sincerely apologize for any disruption. We want to express our deepest gratitude for your trust, support, and dedication to our service launched more than 10 years ago.
+            p Your understanding in this matter is greatly appreciated.
+            p Should you have any queries or concerns, please feel freee to reach out to us at contact@cluscrive.fr.
+            
+      .row
+        .col-md-12
           - flash.each do |k, v|
             .alert.alert-dismissible class="alert-#{flash_class k}"
               a.close data-dismiss="alert" href="#" ×
