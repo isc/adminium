@@ -4,7 +4,7 @@ class DocsTest < ActionDispatch::IntegrationTest
   test 'browsing landing and documentation page' do
     visit root_path
     save_screenshot 'landing_page'
-    click_link 'the docs'
+    click_link 'Documentation'
     save_screenshot 'documentation_index'
   end
 
