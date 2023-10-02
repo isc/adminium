@@ -232,12 +232,6 @@ class ResourcesControllerTest < ActionController::TestCase
     @expected_response_code = :redirect
   end
 
-  def test_pet_project_limitation_for_xhr_request
-    @account.update plan: Account::Plan::PET_PROJECT
-    get :index, params: {table: 'roles_users'}, xhr: true
-    assert_equal %w(widget id), JSON.parse(@response.body).keys
-  end
-
   def test_no_unnecessary_eager_fetching
     FixtureFactory.new :user
     setup_resource

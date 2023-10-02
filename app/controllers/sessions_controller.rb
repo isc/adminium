@@ -1,21 +1,7 @@
 class SessionsController < ApplicationController
   skip_before_action :connect_to_db
-  skip_before_action :require_account, only: %i(create create_from_heroku login_heroku_app destroy)
+  skip_before_action :require_account, only: %i(create destroy)
   skip_before_action :verify_authenticity_token, only: %i(create create_from_heroku)
-
-  def create_from_heroku
-    session[:heroku_access_token] = request.env['omniauth.auth']['credentials']['token']
-    unless session[:user]
-      user_infos = request.env['omniauth.auth']['extra'].to_h
-      user = User.find_by_provider_and_uid('heroku', user_infos['id']) || User.create_with_heroku(user_infos)
-      session[:user] = user.id
-    end
-    if current_account && !current_account.db_url?
-      redirect_to setup_database_connection_install_path
-    else
-      redirect_to user_path
-    end
-  end
 
   def create
     auth = request.env['omniauth.auth']
