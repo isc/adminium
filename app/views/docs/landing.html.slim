@@ -24,77 +24,30 @@ html lang="en"
           h4 Database backend as a service
         .col-md-6.text-right
           .btn-group
-            = link_to "Live Demo", start_demo_docs_path, class: 'btn'
             = link_to "Documentation", docs_path, class: 'btn'
-            = link_to "Pricing", "#pricing", class: 'btn'
           a.btn.btn-default href="#login" data-toggle="modal"
             i.fa.fa-user
             '  Log In
             span style="color:#BBB; margin:0px 8px;" |
             '  Sign Up
+    .container
+      .row.alert.alert-danger
+        h3 Important notice
+        p Dear valued users,
+        p We're reaching out with a heavy heart to inform you that our service will be shutting down permanently, effective from October 10, 2023.
+        p We understand the inconvenience this may cause and sincerely apologize for any disruption. We want to express our deepest gratitude for your trust, support, and dedication to our service launched more than 10 years ago.
+        p Your understanding in this matter is greatly appreciated.
+        p Should you have any queries or concerns, please feel free to reach out to us at contact@cluscrive.fr.
+          
+      .row.alert.alert-info
+        | Hey! Check out this new service from a friend of ours!
+        br
+        b
+          = link_to 'https://azimutt.app', 'https://azimutt.app', target: '_blank'
     .container.intro
-      h3.text-center Enjoy a full fledged database backend. No coding involved.
       .row.big-screenshot
-        = link_to start_demo_docs_path do
-          = image_tag 'docs/screenshot.jpg', class: 'col-md-8 col-md-offset-2 img-responsive img-thumbnail'
-          div Try the live demo
+        = image_tag 'docs/screenshot.jpg', class: 'col-md-8 col-md-offset-2 img-responsive img-thumbnail'
 
-    .container-fluid
-      .container
-        h3.text-center Some of our features
-        .row
-          = image_tag 'advanced_search.png', class: 'col-md-offset-2 col-md-3 img-responsive img-thumbnail'
-          .col-md-5
-            h4 Filters and search
-            p Perform search on all your table columns or configure which fields are searchable. For complex queries, including date range for example, you can easily build custom queries and save them for later access.
-        hr
-        .row
-          .col-md-5.col-md-offset-2
-            h4 Table relationships navigation
-            p Do you follow standard conventions or have foreign keys defined? Relationships between your tables will be automatically discovered so you can easily explore and manage your data without ever thinking about primary keys.
-          = image_tag 'associations.png', class: 'col-md-3 img-responsive img-thumbnail'
-        hr
-        .row
-          = image_tag 'collaborators.png', class: 'col-md-offset-2 col-md-3 img-responsive img-thumbnail'
-          .col-md-5
-            h4 Collaborators
-            p
-              'Want your client or coworkers to have access to Adminium?
-              br
-              'You can invite them to your project. Moreover, you can assign them roles and configure precisely on which tables they can see, edit or create data.
-        hr
-        .row
-          .col-md-5.col-md-offset-2
-            h4 Enum values
-            p You can map values from your database to human-readable labels for better rendering and easier filtering or edition.
-          = image_tag 'enums.png', class: 'col-md-3 img-responsive img-thumbnail'
-        .row
-          h3.text-center
-            ' There is a lot more! Check out
-            = link_to 'the docs', docs_path
-            '.
-
-    .container-fluid.technos
-      .container
-        .row
-          .col-md-5.col-md-offset-1.text-center
-            = image_tag 'logos/postgresql.png', class: 'postgresql-logo'
-            = image_tag 'logos/mysql.png', class: 'mysql-logo'
-            br
-            'Works with PostgreSQL and MySQL.
-          .col-md-5.text-center
-            = image_tag 'logos/heroku.png'
-            br
-            'Available on Heroku as an add-on.
-
-    .container#pricing
-      .row
-        h3.col-md-offset-3.col-md-6.text-center Simple pricing, affordable for all
-      .row= render 'pricing', install_button: false
-      .row.text-center
-        .col-md-6.col-md-offset-3
-          a.btn.btn-block.btn-success.btn-lg href="/install" Install the add-on on your Heroku apps
-          p All plans come with full support. You can upgrade or downgrade anytime.
     .container
       footer
         p.text-center= link_to "&copy; #{Date.today.year} Cluscrive".html_safe, "http://cluscrive.fr", target: '_blank'
