@@ -10,7 +10,6 @@ class Account < ApplicationRecord
   has_many :time_chart_widgets, dependent: :destroy
   has_many :pie_chart_widgets, dependent: :destroy
   has_many :stat_chart_widgets, dependent: :destroy
-  has_many :sign_ons, dependent: :destroy
   has_many :searches, dependent: :destroy
   has_many :table_configurations, dependent: :destroy
 

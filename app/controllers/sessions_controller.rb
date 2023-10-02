@@ -30,7 +30,6 @@ class SessionsController < ApplicationController
       session[:account] = account.id
       session[:user] = user.id
       session[:collaborator] = collaborator.id
-      track_sign_on account, SignOn::Kind::GOOGLE
       redirect_to root_url, notice: "Signed in as #{user.name} to #{current_account.name}."
     else
       redirect_to root_url, notice: 'Your Google account is not associated to any Enterprise Adminium account.'
@@ -48,7 +47,6 @@ class SessionsController < ApplicationController
       end
       collaborator = current_user.collaborators.where(account_id: current_account.id).first
       session[:collaborator] = collaborator&.id
-      track_sign_on current_account, SignOn::Kind::HEROKU_OAUTH
       redirect_to root_url, notice: "Signed in to #{current_account.name}."
     else
       redirect_to user_path, error:
@@ -61,7 +59,6 @@ class SessionsController < ApplicationController
     if collaborator&.account&.enterprise?
       session[:account] = collaborator.account_id
       session[:collaborator] = collaborator.id
-      track_sign_on collaborator.account, SignOn::Kind::GOOGLE
     end
     redirect_to dashboard_url
   end
@@ -69,12 +66,5 @@ class SessionsController < ApplicationController
   def destroy
     session.clear
     redirect_to root_url, notice: 'Signed out!'
-  end
-
-  private
-
-  def track_sign_on account, kind
-    SignOn.create account_id: account.id, plan: account.plan,
-                  remote_ip: request.remote_ip, kind: kind, user_id: session[:user]
   end
 end

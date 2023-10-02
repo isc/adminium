@@ -38,12 +38,10 @@ class SessionsControllerTest < ActionController::TestCase
     account = create :account, heroku_uuid: '37', name: app_name
     user = create :user, provider: 'heroku'
     session[:user] = user.id
-    assert_difference 'SignOn.count' do
-      get :login_heroku_app, params: {id: '37'}
-      assert_redirected_to root_url
-      assert_equal account.id, session[:account]
-      assert_nil session[:collaborator]
-    end
+    get :login_heroku_app, params: {id: '37'}
+    assert_redirected_to root_url
+    assert_equal account.id, session[:account]
+    assert_nil session[:collaborator]
   end
 
   private

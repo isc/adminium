@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_08_135037) do
+ActiveRecord::Schema.define(version: 2023_10_02_154323) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,16 +78,6 @@ ActiveRecord::Schema.define(version: 2022_12_08_135037) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["account_id"], name: "index_searches_on_account_id"
-  end
-
-  create_table "sign_ons", force: :cascade do |t|
-    t.integer "account_id"
-    t.string "plan"
-    t.string "remote_ip"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer "kind"
-    t.integer "user_id"
   end
 
   create_table "table_configurations", force: :cascade do |t|

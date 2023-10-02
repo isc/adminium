@@ -34,7 +34,6 @@ class Heroku::ResourcesController < ApplicationController
     app = Account.find_by! api_key: params[:id]
     app.update_column :name, params[:app] if app.name != params[:app]
     session[:account] = app.id
-    SignOn.create account_id: app.id, plan: app.plan, remote_ip: request.remote_ip, kind: SignOn::Kind::HEROKU
     redirect_to dashboard_url
   end
 
