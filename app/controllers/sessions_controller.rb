@@ -1,6 +1,4 @@
 class SessionsController < ApplicationController
-  include AppInstall
-
   skip_before_action :connect_to_db
   skip_before_action :require_account, only: %i(create create_from_heroku login_heroku_app destroy)
   skip_before_action :verify_authenticity_token, only: %i(create create_from_heroku)
@@ -13,9 +11,6 @@ class SessionsController < ApplicationController
       session[:user] = user.id
     end
     if current_account && !current_account.db_url?
-      detect_app_name
-      set_owner_email
-      current_account.save!
       redirect_to setup_database_connection_install_path
     else
       redirect_to user_path
