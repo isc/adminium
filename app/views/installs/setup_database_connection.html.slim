@@ -37,12 +37,6 @@ h3.text-center
         a.close data-dismiss="modal" ×
         h4.modal-title Connecting to your database
       .modal-body
-        h5 Command line setup
-        p In your application root, run the following commands :
-        pre= "heroku plugins:install git://github.com/isc/heroku-adminium\nheroku adminium\n"
-        .pull-right
-          == clippy "heroku plugins:install git://github.com/isc/heroku-adminium %26%26 heroku adminium"
-        hr
         h5 Browser setup
         = render "db_url_form"
         hr
