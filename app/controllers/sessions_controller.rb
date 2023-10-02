@@ -16,7 +16,7 @@ class SessionsController < ApplicationController
       detect_app_name
       set_owner_email
       current_account.save!
-      redirect_to configure_db_url('oauth') ? dashboard_path : setup_database_connection_install_path
+      redirect_to setup_database_connection_install_path
     else
       redirect_to user_path
     end
@@ -33,24 +33,6 @@ class SessionsController < ApplicationController
       redirect_to root_url, notice: "Signed in as #{user.name} to #{current_account.name}."
     else
       redirect_to root_url, notice: 'Your Google account is not associated to any Enterprise Adminium account.'
-    end
-  end
-
-  def login_heroku_app
-    adminium_addon = heroku_api.addon.list.detect {|addon| addon['id'] == params.require(:id)}
-    if adminium_addon
-      @account = Account.find_by! heroku_uuid: params[:id]
-      session[:account] = @account.id
-      unless current_account.owner_email?
-        set_owner_email
-        current_account.save # DB URL might be out of date and fail validation
-      end
-      collaborator = current_user.collaborators.where(account_id: current_account.id).first
-      session[:collaborator] = collaborator&.id
-      redirect_to root_url, notice: "Signed in to #{current_account.name}."
-    else
-      redirect_to user_path, error:
-        'You are not authorized to access this app because it looks like you are not a collaborator of this app !'
     end
   end
 

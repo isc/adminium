@@ -8,9 +8,6 @@ class Widget
     @setupDeletion()
 
   setupCreationFromDashboard: ->
-    if $('#plan').text() is 'petproject'
-      for option, i in $('#widget_table').find('option') when i > 5
-        $(option).attr('disabled', 'disabled')
     $('#widget_table').change (e) =>
       @fillColumnsSelection e.target.value
     $('input[name="widget[type]"]').click (e) =>

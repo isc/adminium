@@ -6,10 +6,3 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   provider :google_oauth2, Figaro.env.google_oauth_client_id, Figaro.env.google_oauth_client_secret,
     scope: ['userinfo.email'], access_type: 'online', client_options: client_options
 end
-
-if Figaro.env.use_heroku_omniauth
-  Rails.application.config.middleware.use OmniAuth::Builder do
-    provider :heroku, Figaro.env.heroku_oauth_id, Figaro.env.heroku_oauth_secret,
-      scope: 'identity, write-protected', fetch_info: true
-  end
-end

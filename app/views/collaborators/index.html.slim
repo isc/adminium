@@ -18,7 +18,7 @@
           .col-sm-offset-3.col-sm-9
             = f.submit 'Add a collaborator', class: 'btn btn-primary', data: {disable_with: 'Sending...'}
     .col-md-6
-      - if @account_collaborators.present? || @heroku_collaborators.present?
+      - if @account_collaborators.present?
         table.table
           thead
             tr
@@ -26,18 +26,6 @@
               th
               th Roles
               th
-          - @heroku_collaborators.each do |collaborator|
-            tr
-              td= image_tag "logos/heroku-icon.png", alt: "Heroku Collaborator"
-              td= collaborator['email']
-              td
-                ' administrator
-                = "(#{collaborator["role"]})" if collaborator['role']
-              td
-                = link_to content_tag(:i, nil, class: 'fa fa-pencil'),
-                  new_collaborator_path(email: collaborator['email']), remote: true,
-                  data: {toggle: 'modal', target: "#modal-window", backdrop: true, keyboard: true},
-                  title: 'Edit this collaborator roles', rel: 'tooltip' if collaborator['role'] != 'owner'
           - @account_collaborators.each do |collaborator|
             - next if collaborator.new_record?
             tr

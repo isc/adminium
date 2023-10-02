@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   rescue_from Generic::TableNotFoundException, with: :table_not_found
   rescue_from Sequel::DatabaseError, with: :statement_timeouts
   rescue_from Sequel::DatabaseConnectionError, with: :global_db_error
-  before_action :ensure_proper_subdomain
   before_action :require_account
   before_action :connect_to_db
   after_action :cleanup_generic
@@ -61,8 +60,7 @@ class ApplicationController < ActionController::Base
   end
 
   def admin?
-    (session[:account] && current_user.nil?) || current_collaborator&.is_administrator ||
-      (current_user&.heroku_provider? && current_collaborator.nil?)
+    (session[:account] && current_user.nil?) || current_collaborator&.is_administrator
   end
 
   def require_admin
@@ -105,18 +103,6 @@ class ApplicationController < ActionController::Base
   def resource_for table
     @resources ||= {}
     @resources[table.to_sym] ||= Resource.new @generic, table
-  end
-
-  def ensure_proper_subdomain
-    if !Rails.env.production? || request.host_with_port['doctolib'] ||
-       request.host_with_port['adminium-staging.herokuapp']
-      return
-    end
-    redirect_to host: 'www.adminium.io' if request.host_with_port != 'www.adminium.io'
-  end
-
-  def heroku_api
-    @api ||= PlatformAPI.connect_oauth(session[:heroku_access_token]) if session[:heroku_access_token]
   end
 
   def valid_db_url?

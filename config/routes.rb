@@ -37,9 +37,7 @@ Rails.application.routes.draw do
     end
   end
   resource :install do
-    get :invite_team
     get :setup_database_connection
-    post :send_email_team
   end
   resource :sessions, only: [] do
     get :switch_account
@@ -47,7 +45,6 @@ Rails.application.routes.draw do
   end
   resource :account, only: %i(create edit update) do
     get :db_url_presence, on: :member
-    get :update_db_url_from_heroku_api, on: :collection
     post :cancel_tips, on: :member
     get :upgrade
   end

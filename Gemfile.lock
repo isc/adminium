@@ -96,8 +96,6 @@ GEM
       unf (>= 0.0.5, < 1.0.0)
     encryptor (3.0.0)
     erubi (1.11.0)
-    erubis (2.7.0)
-    excon (0.71.0)
     execjs (2.7.0)
     factory_bot (6.2.1)
       activesupport (>= 5.0.0)
@@ -117,12 +115,6 @@ GEM
       activesupport (>= 4.2.0)
     hashdiff (1.0.1)
     hashie (5.0.0)
-    heroics (0.0.17)
-      erubis (~> 2.0)
-      excon
-      moneta
-      multi_json (>= 1.9.2)
-      netrc
     http-accept (1.7.0)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -167,7 +159,6 @@ GEM
       minitest (>= 5.0)
       ruby-progressbar
     mocha (1.13.0)
-    moneta (0.8.1)
     msgpack (1.6.0)
     multi_json (1.13.1)
     multi_xml (0.6.0)
@@ -194,9 +185,6 @@ GEM
       jwt (>= 2.0)
       omniauth (>= 1.1.1)
       omniauth-oauth2 (>= 1.6)
-    omniauth-heroku (0.3.0)
-      omniauth (~> 1.2)
-      omniauth-oauth2 (~> 1.2)
     omniauth-oauth2 (1.6.0)
       oauth2 (~> 1.1)
       omniauth (~> 1.9)
@@ -204,8 +192,6 @@ GEM
     parser (3.1.2.0)
       ast (~> 2.4.1)
     pg (1.2.3)
-    platform-api (0.8.0)
-      heroics (~> 0.0.17)
     populator (1.0.0)
     pry (0.12.2)
       coderay (~> 1.1.0)
@@ -412,9 +398,7 @@ DEPENDENCIES
   nokogiri
   omniauth
   omniauth-google-oauth2
-  omniauth-heroku
   pg
-  platform-api
   populator
   pry-rails
   puma

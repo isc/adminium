@@ -1,7 +1,3 @@
-task fetch_owner_emails: :environment do
-  Account.fetch_missing_owner_emails
-end
-
 task reset_adminium_demo_account: :environment do
   account_id = ENV['DEMO_ACCOUNT_ID']
   return if account_id.nil?

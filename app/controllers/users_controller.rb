@@ -29,14 +29,6 @@ class UsersController < ApplicationController
   def detect_apps
     @apps, @installed_apps = [], []
     return unless current_user
-    if current_user.heroku_provider?
-      @apps = heroku_api.app.list.sort_by {|app| app['name'] }
-      addons = heroku_api.addon.list.select {|addon| addon['addon_service']['name'] == 'adminium'}
-      current_user.update total_heroku_apps: @apps.length
-      @installed_apps = Account.where(deleted_at: nil, name: addons.map {|addon| addon['app']['name']}).order(:name)
-      @apps.delete_if {|app| addons.map {|addon| addon['app']['id']}.include? app['id']}
-    else
-      @installed_apps = current_user.enterprise_accounts
-    end
+    @installed_apps = current_user.enterprise_accounts
   end
 end
