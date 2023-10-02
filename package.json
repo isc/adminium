@@ -4,9 +4,6 @@
   "repository": "git@github.com:isc/adminium.git",
   "author": "Ivan Schneider <contact@ivanschneider.fr>",
   "private": true,
-  "dependencies": {
-    "argos-cli": "^0.0.9"
-  },
   "devDependencies": {
     "@argos-ci/cli": "^0.6.0"
   }
