@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_10_02_154323) do
+ActiveRecord::Schema.define(version: 2023_10_03_072702) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -38,7 +38,6 @@ ActiveRecord::Schema.define(version: 2023_10_02_154323) do
     t.string "db_url_setup_method"
     t.string "encrypted_db_url_salt"
     t.string "encrypted_db_url_iv"
-    t.string "heroku_uuid"
     t.integer "per_page", default: 25, null: false
     t.string "date_format", default: "long", null: false
     t.string "datetime_format", default: "long", null: false

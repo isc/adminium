@@ -41,7 +41,6 @@ Rails.application.routes.draw do
   end
   resource :sessions, only: [] do
     get :switch_account
-    get :login_heroku_app
   end
   resource :account, only: %i(create edit update) do
     get :db_url_presence, on: :member
