@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_10_03_072702) do
+ActiveRecord::Schema.define(version: 2023_10_03_112005) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -28,7 +28,6 @@ ActiveRecord::Schema.define(version: 2023_10_03_072702) do
     t.datetime "updated_at"
     t.integer "tables_count"
     t.datetime "deleted_at"
-    t.text "plan_migrations"
     t.datetime "last_tip_at"
     t.string "last_tip_identifier"
     t.boolean "tips_opt_in", default: true

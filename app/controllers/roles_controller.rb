@@ -3,7 +3,7 @@ class RolesController < ApplicationController
   skip_before_action :connect_to_db, except: %i(new edit)
 
   def index
-    @roles = current_account.roles.order(:name).to_a if current_account.enterprise?
+    @roles = current_account.roles.order(:name).to_a
   end
 
   def new

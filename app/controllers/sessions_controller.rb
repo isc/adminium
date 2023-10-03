@@ -19,7 +19,7 @@ class SessionsController < ApplicationController
 
   def switch_account
     collaborator = current_user.collaborators.find_by(account_id: params[:account_id])
-    if collaborator&.account&.enterprise?
+    if collaborator&.account
       session[:account] = collaborator.account_id
       session[:collaborator] = collaborator.id
     end

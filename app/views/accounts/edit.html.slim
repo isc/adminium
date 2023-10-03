@@ -3,12 +3,6 @@
     'Account settings
     br
     small= " #{current_account.plan.humanize} plan"
-  - if current_account.pet_project?
-    p.alert.alert-warning
-      ' You are currently on the free plan meant for pet projects which is limited to the 5 first tables of your schema.
-      br
-      = link_to 'Upgrade', current_account.upgrade_link, class: 'btn btn-warning'
-      '  to the startup plan ($10 per month) to access your full schema with Adminium.
 .row
   .col-lg-8
     = simple_form_for current_account, html: {class: 'form-horizontal'} do |f|

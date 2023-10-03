@@ -1,7 +1,6 @@
 class Account < ApplicationRecord
-  serialize :plan_migrations
   before_create :setup_api_key
-  before_save :fill_adapter, :track_plan_migration
+  before_save :fill_adapter
   has_many :collaborators, dependent: :destroy
   has_many :users, through: :collaborators
   has_many :roles, dependent: :destroy
@@ -42,30 +41,6 @@ class Account < ApplicationRecord
 
   def valid_db_url?
     db_url.present?
-  end
-
-  def pet_project?
-    plan == Plan::PET_PROJECT
-  end
-
-  def startup?
-    plan == Plan::STARTUP
-  end
-
-  def free_plan?
-    pet_project? || complimentary?
-  end
-
-  def enterprise?
-    (plan == Plan::ENTERPRISE) || complimentary?
-  end
-
-  def complimentary?
-    plan == Plan::COMPLIMENTARY
-  end
-
-  def upgrade_link
-    'https://addons.heroku.com/adminium'
   end
 
   def flag_as_deleted!
@@ -110,11 +85,5 @@ class Account < ApplicationRecord
 
   def fill_adapter
     self.adapter = db_url.split(':').first if db_url? && encrypted_db_url_changed?
-  end
-
-  def track_plan_migration
-    self.plan_migrations ||= []
-    last_plan = plan_migrations.last[:plan] if plan_migrations.last
-    plan_migrations.push migrated_at: Time.current, plan: plan if last_plan.nil? || last_plan != plan
   end
 end

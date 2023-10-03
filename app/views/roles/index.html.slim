@@ -1,24 +1,21 @@
 .page-header: h3 Roles and permissions
 .row
-  - if current_account.enterprise?
-    - if @roles.present?
-      .col-md-6
-        table.table.table-striped.table-condensed
-          tbody
-            - @roles.each do |role|
-              tr
-                td= link_to role.name, edit_role_path(role)
-                td
-                  = pluralize role.collaborators.count, "collaborator"
-                td= link_to role_path(role), method: 'delete', data: {confirm: 'Are you sure?'} do
-                  i.fa.fa-trash
-      .col-md-6= link_to 'Create a new role', new_role_path, class: 'btn btn-primary'
-    - else
-      .col-md-12
-        .alert.alert-info
-          h4 What is a role?
-          p You probably want to share adminium with your collaborators, but you may not want them to see every tables, or edit or delete rows.
-          p Create as many roles as you want for each group of users and assign one or more roles to any user.
-          p= link_to 'Create your first role', new_role_path, class: 'btn btn-primary'
+  - if @roles.present?
+    .col-md-6
+      table.table.table-striped.table-condensed
+        tbody
+          - @roles.each do |role|
+            tr
+              td= link_to role.name, edit_role_path(role)
+              td
+                = pluralize role.collaborators.count, "collaborator"
+              td= link_to role_path(role), method: 'delete', data: {confirm: 'Are you sure?'} do
+                i.fa.fa-trash
+    .col-md-6= link_to 'Create a new role', new_role_path, class: 'btn btn-primary'
   - else
-    .col-md-12= upgrade_to_enterprise_notice
+    .col-md-12
+      .alert.alert-info
+        h4 What is a role?
+        p You probably want to share adminium with your collaborators, but you may not want them to see every tables, or edit or delete rows.
+        p Create as many roles as you want for each group of users and assign one or more roles to any user.
+        p= link_to 'Create your first role', new_role_path, class: 'btn btn-primary'

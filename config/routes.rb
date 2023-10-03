@@ -45,7 +45,6 @@ Rails.application.routes.draw do
   resource :account, only: %i(create edit update) do
     get :db_url_presence, on: :member
     post :cancel_tips, on: :member
-    get :upgrade
   end
   resources :roles, except: %i(show)
   resource :dashboard, only: :show do

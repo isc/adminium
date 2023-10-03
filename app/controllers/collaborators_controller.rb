@@ -4,7 +4,7 @@ class CollaboratorsController < ApplicationController
 
   def index
     @account_collaborators = @account.collaborators.includes(:roles).order(:email)
-    @roles = current_account.roles.order(:name).to_a if current_account.enterprise?
+    @roles = current_account.roles.order(:name).to_a
   end
 
   def create
