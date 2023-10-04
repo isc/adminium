@@ -44,10 +44,6 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.8.1)
       public_suffix (>= 2.0.2, < 6.0)
-    airbrake (13.0.3)
-      airbrake-ruby (~> 6.0)
-    airbrake-ruby (6.2.0)
-      rbtree3 (~> 0.5)
     ansi (1.5.0)
     arel (9.0.0)
     ast (2.4.2)
@@ -248,7 +244,6 @@ GEM
     rb-fsevent (0.11.0)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    rbtree3 (0.7.0)
     redis (4.5.1)
     regexp_parser (2.6.1)
     rest-client (2.1.0)
@@ -369,7 +364,6 @@ PLATFORMS
   x86_64-darwin-20
 
 DEPENDENCIES
-  airbrake
   attr_encrypted
   better_errors
   binary_search

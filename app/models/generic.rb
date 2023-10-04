@@ -34,7 +34,6 @@ class Generic
             discover_associations_through_conventions table
           rescue Sequel::Error => e
             # A table with no columns generates a Sequel::Error for instance
-            Airbrake.notify e
           end
         end
         @associations

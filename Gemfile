@@ -2,7 +2,6 @@ source 'http://rubygems.org'
 
 ruby '2.7.4'
 
-gem 'airbrake'
 gem 'attr_encrypted'
 gem 'binary_search', require: 'binary_search/pure'
 gem 'bootsnap'
