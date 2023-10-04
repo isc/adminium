@@ -1,7 +1,7 @@
 class SessionsController < ApplicationController
   skip_before_action :connect_to_db
   skip_before_action :require_account, only: %i(create destroy)
-  skip_before_action :verify_authenticity_token, only: %i(create create_from_heroku)
+  skip_before_action :verify_authenticity_token, only: %i(create)
 
   def create
     auth = request.env['omniauth.auth']

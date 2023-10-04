@@ -1,6 +1,5 @@
 Rails.application.routes.draw do
   get '/ping' => 'ping#ping'
-  get '/auth/heroku/callback' => 'sessions#create_from_heroku'
   get '/install' => 'docs#install'
   post '/auth/:provider/callback' => 'sessions#create'
   get '/auth/:provider/callback' => 'sessions#create'
@@ -54,10 +53,6 @@ Rails.application.routes.draw do
   resources :collaborators
   resource :user, only: :show do
     get :apps
-  end
-  namespace :heroku do
-    resources :resources, only: %i(create destroy update show)
-    resources :accounts, only: :update
   end
   post 'sso/login' => 'heroku/resources#sso_login'
   get 'test/threads' => 'resources#test_threads'

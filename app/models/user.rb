@@ -15,19 +15,6 @@ class User < ApplicationRecord
     end
   end
 
-  def self.create_with_heroku infos
-    create! do |user|
-      user.provider = 'heroku'
-      user.uid = infos['id']
-      user.email = infos['email']
-      user.name = infos['name']
-    end
-  end
-
-  def heroku_provider?
-    provider == 'heroku'
-  end
-
   private
 
   def match_collaborators
