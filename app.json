@@ -3,6 +3,9 @@
   "description": "A database backend user interface compatible with Postgresql and Mysql",
   "addons": ["heroku-redis:mini", "heroku-postgresql:mini"],
   "stack": "heroku-20",
+  "scripts": {
+    "postdeploy": "bundle exec rake db:schema:load"
+  },
   "environments": {
     "test": {
       "addons": ["heroku-redis:in-dyno", "heroku-postgresql:in-dyno"],
