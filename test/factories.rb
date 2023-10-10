@@ -4,7 +4,7 @@ FactoryBot.define do
   end
 
   factory :user do
-    sequence(:email) { |n| "john.doe#{n}@example.com" }
+    sequence(:email) { |n| "joe#{n}@mail.com" }
   end
 
   factory :collaborator do
