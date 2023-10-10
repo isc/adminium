@@ -15,7 +15,7 @@ class SchemasControllerTest < ActionController::TestCase
     collaborator = create :collaborator, is_administrator: false
     @generic.cleanup
     session[:user_id] = collaborator.user.id
-    session[:collaborator] = collaborator.id
+    session[:collaborator_id] = collaborator.id
     @generic = Generic.new @account
     request.env['HTTP_REFERER'] = '/'
     get :new
@@ -27,7 +27,7 @@ class SchemasControllerTest < ActionController::TestCase
     collaborator = create :collaborator, is_administrator: true
     @generic.cleanup
     session[:user_id] = collaborator.user.id
-    session[:collaborator] = collaborator.id
+    session[:collaborator_id] = collaborator.id
     get :new
     assert_response :success
   end

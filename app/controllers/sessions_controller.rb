@@ -43,8 +43,8 @@ class SessionsController < ApplicationController
       session[:user_id] = user.id
       collaborator = user.collaborators.first
       if collaborator
-        session[:collaborator] = collaborator.id
-        session[:account] = collaborator.account_id
+        session[:collaborator_id] = collaborator.id
+        session[:account_id] = collaborator.account_id
       end
 
       render json: { status: "ok" }, status: :ok
@@ -58,8 +58,8 @@ class SessionsController < ApplicationController
   def switch_account
     collaborator = current_user.collaborators.find_by(account_id: params[:account_id])
     if collaborator&.account
-      session[:account] = collaborator.account_id
-      session[:collaborator] = collaborator.id
+      session[:account_id] = collaborator.account_id
+      session[:collaborator_if] = collaborator.id
     end
     redirect_to dashboard_url
   end

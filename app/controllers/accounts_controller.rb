@@ -8,8 +8,8 @@ class AccountsController < ApplicationController
     account = Account.create! params.require(:account).permit(:name)
     collaborator = current_user.collaborators.create! account: account,
       user: current_user, is_administrator: true, email: current_user.email
-    session[:account] = account.id
-    session[:collaborator] = collaborator.id
+    session[:account_id] = account.id
+    session[:collaborator_id] = collaborator.id
     redirect_to dashboard_path
   end
 

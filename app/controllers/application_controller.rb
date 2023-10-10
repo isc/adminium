@@ -38,7 +38,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_account
-    @account ||= Account.find session[:account] if session[:account]
+    @account ||= Account.find session[:account_id] if session[:account_id]
   rescue ActiveRecord::RecordNotFound
     session.delete :account
     nil
@@ -49,10 +49,10 @@ class ApplicationController < ActionController::Base
   end
 
   def current_collaborator
-    return nil unless session[:collaborator]
-    @collaborator ||= Collaborator.find_by(id: session[:collaborator])
+    return nil unless session[:collaborator_id]
+    @collaborator ||= Collaborator.find_by(id: session[:collaborator_id])
     return @collaborator if @collaborator
-    session[:collaborator] = session[:account] = nil
+    session[:collaborator_id] = session[:account_id] = nil
   end
 
   def admin?
@@ -106,7 +106,7 @@ class ApplicationController < ActionController::Base
   end
 
   def tag_current_account
-    logger.tagged("Account: #{session[:account] || 'No account'}|User: #{session[:user_id] || 'No user'}") {yield}
+    logger.tagged("Account: #{session[:account_id] || 'No account'}|User: #{session[:user_id] || 'No user'}") {yield}
   end
 
   def check_permissions

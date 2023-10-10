@@ -6,7 +6,7 @@ class DocsController < ApplicationController
   end
 
   def landing
-    return redirect_to dashboard_url if session[:account]
+    return redirect_to dashboard_url if session[:account_id]
     render layout: false
   end
 

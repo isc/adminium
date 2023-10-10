@@ -64,9 +64,9 @@ class ActionController::TestCase
   def create_account_and_login
     collaborator = create :collaborator
     account = collaborator.account
-    session[:account] = account.id
+    session[:account_id] = account.id
     session[:user_id] = collaborator.user_id
-    session[:collaborator] = collaborator.id
+    session[:collaborator_id] = collaborator.id
     account
   end
 end
