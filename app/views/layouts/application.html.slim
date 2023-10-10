@@ -60,8 +60,6 @@ html lang="en" ng-app=""
       .container
         .footer-inner
           = footer
-    javascript:
-      adminium_account = #{{current_account? ? current_account.to_json(only: ['name']) : 'null'}}
     - if Rails.env.development?
       javascript:
         environment = 'development'

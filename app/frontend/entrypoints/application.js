@@ -41,7 +41,10 @@ function postForm(e, callback) {
 
 $('body.registrations.new form').on('submit', (e) => {
     postForm(e, (credentialOptions => {
-        Credential.create(encodeURI('/registration/callback'), credentialOptions)
+        if (credentialOptions.errors)
+            $('.alert').removeClass('hide').text(credentialOptions.errors)
+        else
+            Credential.create(encodeURI('/registration/callback'), credentialOptions)
     }))
     return false
 })
