@@ -77,7 +77,7 @@ class ActionDispatch::IntegrationTest
 
   def login
     collaborator = create :collaborator
-    page.set_rack_session account: collaborator.account_id, collaborator: collaborator.id, user_id: collaborator.user_id
+    page.set_rack_session account_id: collaborator.account_id, collaborator_id: collaborator.id, user_id: collaborator.user_id
     collaborator.account
   end
 

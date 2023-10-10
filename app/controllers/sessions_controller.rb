@@ -59,7 +59,7 @@ class SessionsController < ApplicationController
     collaborator = current_user.collaborators.find_by(account_id: params[:account_id])
     if collaborator&.account
       session[:account_id] = collaborator.account_id
-      session[:collaborator_if] = collaborator.id
+      session[:collaborator_id] = collaborator.id
     end
     redirect_to dashboard_url
   end

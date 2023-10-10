@@ -40,7 +40,7 @@ class ApplicationController < ActionController::Base
   def current_account
     @account ||= Account.find session[:account_id] if session[:account_id]
   rescue ActiveRecord::RecordNotFound
-    session.delete :account
+    session.delete :account_id
     nil
   end
 
