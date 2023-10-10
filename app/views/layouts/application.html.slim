@@ -17,9 +17,6 @@ html lang="en" ng-app=""
       link rel="apple-touch-icon" sizes="#{size}x#{size}" href="/images/ios-icons/touch-icon-#{size}.png"
     link href="/images/favicon.ico" rel="shortcut icon"
   body class="#{controller.controller_name} #{controller.action_name}"
-    - if session[:account]
-      div#plan style="display:none" = current_account.plan
-    = render '/layouts/demo'
     nav.navbar.navbar-inverse.navbar-fixed-top
       .container-fluid
         .navbar-header
@@ -40,7 +37,7 @@ html lang="en" ng-app=""
           = yield
     = yield :modal
     = javascript_include_tag 'application'
-    = render '/layouts/uservoice' if Rails.env.production?
+    = vite_javascript_tag 'application'
     .modal#modal-window tabindex="-1"
       .modal-dialog
         .modal-content
@@ -64,7 +61,7 @@ html lang="en" ng-app=""
         .footer-inner
           = footer
     javascript:
-      adminium_account = #{{current_account? ? current_account.to_json(only: ['plan', 'name']) : 'null'}}
+      adminium_account = #{{current_account? ? current_account.to_json(only: ['name']) : 'null'}}
     - if Rails.env.development?
       javascript:
         environment = 'development'

@@ -1,8 +1,6 @@
 FactoryBot.define do
   factory :account do
-    owner_email { 'john.doe@email.com' }
     db_url { Rails.configuration.test_database_conn_spec }
-    plan { Account::Plan::STARTUP }
   end
 
   factory :user do

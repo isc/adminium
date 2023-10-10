@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   rescue_from Generic::TableNotFoundException, with: :table_not_found
   rescue_from Sequel::DatabaseError, with: :statement_timeouts
   rescue_from Sequel::DatabaseConnectionError, with: :global_db_error
+  before_action :require_user
   before_action :require_account
   before_action :connect_to_db
   after_action :cleanup_generic
@@ -14,20 +15,16 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def require_account
-    if Rails.env.development?
-      %i(user collaborator account).each do |key|
-        session[key] ||= 1
-      end
-    end
-    redirect_to docs_url unless current_account
+  def require_user
+    redirect_to new_session_path unless current_user
   end
 
-  def require_user
-    redirect_to root_path unless session[:user]
+  def require_account
+    return redirect_to new_account_path if Account.none?
   end
 
   def connect_to_db
+    return unless current_account
     if current_account.db_url.present?
       @generic = Generic.new current_account
       @tables = @generic.tables
@@ -37,19 +34,18 @@ class ApplicationController < ActionController::Base
   end
 
   def current_account?
-    session[:account] ||= 2 if Rails.env.development?
     current_account.present?
   end
 
   def current_account
-    @account ||= Account.not_deleted.find session[:account] if session[:account]
+    @account ||= Account.find session[:account] if session[:account]
   rescue ActiveRecord::RecordNotFound
     session.delete :account
     nil
   end
 
   def current_user
-    @user ||= User.find session[:user] if session[:user]
+    @user ||= User.find session[:user_id] if session[:user_id]
   end
 
   def current_collaborator
@@ -60,11 +56,11 @@ class ApplicationController < ActionController::Base
   end
 
   def admin?
-    (session[:account] && current_user.nil?) || current_collaborator&.is_administrator
+    current_collaborator&.is_administrator
   end
 
   def require_admin
-    redirect_to dashboard_url, error: 'You need administrator privileges to access this page.' unless admin?
+    redirect_to dashboard_url, error: 'You need administrator privileges to access this page.' unless admin? || Account.none?
   end
 
   def table_not_found exception
@@ -110,7 +106,7 @@ class ApplicationController < ActionController::Base
   end
 
   def tag_current_account
-    logger.tagged("Account: #{session[:account] || 'No account'}|User: #{session[:user] || 'No user'}") {yield}
+    logger.tagged("Account: #{session[:account] || 'No account'}|User: #{session[:user_id] || 'No user'}") {yield}
   end
 
   def check_permissions
@@ -140,5 +136,10 @@ class ApplicationController < ActionController::Base
 
   def table_configuration_for table
     current_account.table_configuration_for table
+  end
+
+  def relying_party
+    @relying_party ||=
+      WebAuthn::RelyingParty.new(origin: ENV['WEBAUTHN_ORIGIN'] || 'http://localhost:3000', name: 'Adminium')
   end
 end

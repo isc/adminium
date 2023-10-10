@@ -10,31 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_10_03_112005) do
+ActiveRecord::Schema.define(version: 2023_10_10_124539) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "accounts", force: :cascade do |t|
-    t.string "plan"
-    t.string "api_key"
-    t.string "heroku_id"
-    t.string "callback_url"
     t.string "name"
-    t.string "owner_email"
     t.text "encrypted_db_url"
     t.string "adapter"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer "tables_count"
-    t.datetime "deleted_at"
     t.datetime "last_tip_at"
     t.string "last_tip_identifier"
     t.boolean "tips_opt_in", default: true
     t.string "application_time_zone", default: "UTC", null: false
     t.string "database_time_zone", default: "UTC", null: false
-    t.string "source"
-    t.string "db_url_setup_method"
     t.string "encrypted_db_url_salt"
     t.string "encrypted_db_url_iv"
     t.integer "per_page", default: 25, null: false
@@ -45,11 +36,10 @@ ActiveRecord::Schema.define(version: 2023_10_03_112005) do
   create_table "collaborators", force: :cascade do |t|
     t.integer "user_id"
     t.integer "account_id"
-    t.string "email", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean "is_administrator", default: false, null: false
-    t.string "kind"
+    t.string "email"
     t.index ["account_id"], name: "index_collaborators_on_account_id"
     t.index ["user_id"], name: "index_collaborators_on_user_id"
   end
@@ -58,6 +48,17 @@ ActiveRecord::Schema.define(version: 2023_10_03_112005) do
     t.integer "role_id"
     t.integer "collaborator_id"
     t.index ["role_id", "collaborator_id"], name: "index_collaborators_roles_on_role_id_and_collaborator_id"
+  end
+
+  create_table "credentials", force: :cascade do |t|
+    t.string "external_id"
+    t.string "public_key"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "sign_count", default: 0, null: false
+    t.index ["external_id"], name: "index_credentials_on_external_id", unique: true
+    t.index ["user_id"], name: "index_credentials_on_user_id"
   end
 
   create_table "roles", force: :cascade do |t|
@@ -90,13 +91,12 @@ ActiveRecord::Schema.define(version: 2023_10_03_112005) do
   end
 
   create_table "users", force: :cascade do |t|
-    t.string "provider"
-    t.string "uid"
     t.string "name"
     t.string "email"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer "total_heroku_apps"
+    t.string "webauthn_id"
+    t.index ["webauthn_id"], name: "index_users_on_webauthn_id", unique: true
   end
 
   create_table "widgets", force: :cascade do |t|

@@ -1,8 +1,5 @@
 .page-header
-  h3
-    'Account settings
-    br
-    small= " #{current_account.plan.humanize} plan"
+  h3 Account settings
 .row
   .col-lg-8
     = simple_form_for current_account, html: {class: 'form-horizontal'} do |f|
@@ -14,14 +11,7 @@
           ul
             - current_account.errors.full_messages.each do |msg|
               li= msg
-      - if current_account.id == ENV['DEMO_ACCOUNT_ID']
-        .form-group
-          label.control-label.optional.col-sm-3 Database url
-          .col-sm-9
-            input.form-control disabled="disabled" value="NOT EDITABLE IN THE DEMO"
-            p.help-block This is where you will set your own database connection string, encrypted and securely stored.
-      - else
-        = f.input :db_url, required: true, input_html: {title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database'}
+      = f.input :db_url, required: true, input_html: {title: 'Only MySQL and PostgreSQL are supported for now. Thus your db url has to be of the form postgres://user:pass@host/database or mysql://user:pass@host/database'}
       = f.input :application_time_zone, input_html: {class: 'timezone_select2'}
       = f.input :database_time_zone, input_html: {class: 'timezone_select2'}
       = f.input :per_page, input_html: { step: 25, min: 25, max: 200, type: :number },

@@ -2,8 +2,6 @@
   .col-md-3
     .well
       ul.nav.nav-list
-        li
-          a href="#demo" Sandbox account
         li.nav-header Setup
         li
           a href="#installation" Add-on Install
@@ -38,30 +36,6 @@
       h4 Integration
       p
         'Adminium doesn’t need to integrate at a code-level and thus isn’t tied to a particular language. It can be used with any app hosted on Heroku, be it Ruby, Node.js, Clojure, Java, Python, or Scala, as long as it makes use of a PostgreSQL or MySQL database.
-    section#access.well
-      h3#access Accessing Adminium Interface
-      p
-        'Sign in and log in in with
-        = link_to "Heroku's oauth API", "#heroku_oauth"
-        '  on adminium.io will list your apps and allow you to easily provision the Adminium Heroku addon on your app. Once logged in with this method, you can easily switch between your apps.
-      p The interface can also be accessed via the CLI, but in this case, you will have only access to this application.
-      pre= "heroku addons:open adminium"
-      p
-        'Or by visiting the
-        == link_to "Heroku apps web interface", "https://dashboard.heroku.com/apps", target: '_blank'
-        '  , selecting your application and then selecting Adminium from the add-ons menu.
-      p
-        'If your account is on the Enterprise plan, you can also go directly to
-        = link_to 'the Adminium website', 'https://www.adminium.io'
-        '  and login through a Google account once you have
-        = link_to 'declared collaborators', collaborators_path
-        '.
-        h4 Heroku oauth Authentification and scopes
-        p
-         'We rely on
-         = link_to "Heroku's oauth API", "https://blog.heroku.com/archives/2013/7/22/oauth-for-platform-api-in-public-beta", target: "_blank"
-         '  to verify your identity and list your apps.
-        p We ask for the <code>write-protected</code> scope to access your DATABASE_URL configuration variable to connect to your database, and allow you to upgrade or downgrade your addon plan at any time.
 
     - Account::TIPS.each do |tip|
       - tip_body = render partial: "/docs/tips/#{tip}"

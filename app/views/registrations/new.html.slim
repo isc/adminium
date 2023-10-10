@@ -1,0 +1,6 @@
+h2 Sign up
+
+= form_with scope: :registration, url: registration_path do |form|
+    => form.email_field :email, placeholder: "Email", required: true, autocapitalize: "none"
+    = form.submit "Sign up", class: "btn btn-primary"
+= link_to 'Sign in', new_session_path

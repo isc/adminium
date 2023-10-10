@@ -2,8 +2,7 @@ require 'test_helper'
 
 class SettingsControllerTest < ActionController::TestCase
   def setup
-    @account = create :account, plan: 'startup'
-    session[:account] = @account.id
+    @account = create_account_and_login
     @fixtures = []
   end
 

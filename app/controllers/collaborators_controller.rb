@@ -3,7 +3,7 @@ class CollaboratorsController < ApplicationController
   skip_before_action :connect_to_db
 
   def index
-    @account_collaborators = @account.collaborators.includes(:roles).order(:email)
+    @account_collaborators = current_account.collaborators.includes(:roles).order(:email)
     @roles = current_account.roles.order(:name).to_a
   end
 
@@ -13,8 +13,8 @@ class CollaboratorsController < ApplicationController
   end
 
   def new
-    user = User.find_by email: params[:email], provider: 'heroku'
-    @collaborator = current_account.collaborators.build user: user, is_administrator: true, kind: 'heroku', email: params[:email]
+    user = User.find_by email: params[:email]
+    @collaborator = current_account.collaborators.build user: user, is_administrator: true, email: params[:email]
     render action: 'edit'
   end
 
@@ -36,6 +36,6 @@ class CollaboratorsController < ApplicationController
   private
 
   def collaborator_params
-    params.require(:collaborator).permit :kind, :is_administrator, :email, role_ids: []
+    params.require(:collaborator).permit :is_administrator, :email, role_ids: []
   end
 end

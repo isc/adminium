@@ -1,20 +1,22 @@
 class AccountsController < ApplicationController
   before_action :require_admin
-  skip_before_action :connect_to_db
+  skip_before_action :connect_to_db, :require_account
+
+  def new; end
+
+  def create
+    account = Account.create! params.require(:account).permit(:name)
+    collaborator = current_user.collaborators.create! account: account,
+      user: current_user, is_administrator: true, email: current_user.email
+    session[:account] = account.id
+    session[:collaborator] = collaborator.id
+    redirect_to dashboard_path
+  end
 
   def edit; end
 
   def update
-    if params[:db_key] && session[:db_urls].present?
-      db_url = session[:db_urls].detect { |url| url['key'] == params[:db_key] }
-      params[:account] ||= {}
-      params[:account][:db_url] = db_url['value']
-      params[:account][:db_url_setup_method] = current_account.db_url_setup_method.presence || 'oauth'
-      session.delete :db_urls
-    else
-      params[:account][:db_url_setup_method] = 'web'
-    end
-    if (current_account.id.to_s == ENV['DEMO_ACCOUNT_ID']) || current_account.update(account_params)
+    if current_account.update(account_params)
       if params[:install]
         redirect_to dashboard_path
       else
@@ -38,7 +40,6 @@ class AccountsController < ApplicationController
 
   def account_params
     params.require(:account)
-      .permit(:db_url, :db_url_setup_method, :application_time_zone, :database_time_zone,
-        :per_page, :date_format, :datetime_format)
+      .permit(:db_url, :application_time_zone, :database_time_zone, :per_page, :date_format, :datetime_format)
   end
 end

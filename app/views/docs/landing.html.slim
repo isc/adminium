@@ -25,24 +25,10 @@ html lang="en"
         .col-md-6.text-right
           .btn-group
             = link_to "Documentation", docs_path, class: 'btn'
-          a.btn.btn-default href="#login" data-toggle="modal"
-            i.fa.fa-user
-            '  Log In
-            span style="color:#BBB; margin:0px 8px;" |
-            '  Sign Up
+          => link_to 'Sign in', new_session_path, class: 'btn btn-default'
+          = link_to 'Sign up', new_registration_path, class: 'btn btn-default'
     .container.intro
       .row.big-screenshot
         = image_tag 'docs/screenshot.jpg', class: 'col-md-8 col-md-offset-2 img-responsive img-thumbnail'
 
     = javascript_include_tag 'application'
-    = render 'layouts/uservoice' if Rails.env.production?
-    = modal 'Log In or Sign Up', id: 'login', skip_footer: true do |modal|
-      - modal.body do
-        .row.text-center
-          .col-md-6
-            = link_to "/auth/heroku", class: 'btn btn-default btn-block' do
-              = image_tag 'logos/heroku.png'
-          .col-md-6
-            = link_to '/auth/google_oauth2', class: 'btn btn-default btn-block' do
-              = image_tag 'logos/google.png'
-            p.text-muted Available only to collaborators of Enterprise accounts.

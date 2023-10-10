@@ -60,14 +60,25 @@ class ActiveSupport::TestCase
   end
 end
 
+class ActionController::TestCase
+  def create_account_and_login
+    collaborator = create :collaborator
+    account = collaborator.account
+    session[:account] = account.id
+    session[:user_id] = collaborator.user_id
+    session[:collaborator] = collaborator.id
+    account
+  end
+end
+
 class ActionDispatch::IntegrationTest
   include Capybara::DSL
   include Capybara::Screenshot::MiniTestPlugin
 
-  def login account = nil
-    account ||= create :account
-    page.set_rack_session account: account.id
-    account
+  def login
+    collaborator = create :collaborator
+    page.set_rack_session account: collaborator.account_id, collaborator: collaborator.id, user_id: collaborator.user_id
+    collaborator.account
   end
 
   def click_link_with_title title

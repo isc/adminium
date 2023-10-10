@@ -4,9 +4,10 @@ class InstallTest < ActionDispatch::IntegrationTest
   include ActiveJob::TestHelper
 
   test 'missing db url page' do
-    login
-    visit setup_database_connection_install_path
-    assert_text 'Adminium has been successfully provisioned'
+    account = login
+    account.update! db_url: nil
+    visit dashboard_path
+    assert_text 'Connecting to your database'
     save_screenshot 'setup_database_connection'
   end
 end

@@ -1,6 +1,6 @@
 ul.nav.navbar-nav.navbar-right
   - if current_user.nil? && current_account.nil?
-    li= link_to 'Sign in', '/auth/google_oauth2'
+    li= link_to 'Sign in', '#'
   - else
     li.dropdown
       a.apps-list.dropdown-toggle data-toggle="dropdown" href="#"
@@ -20,7 +20,4 @@ ul.nav.navbar-nav.navbar-right
     a.dropdown-toggle data-toggle="dropdown" href="#"
       i.fa.fa-question-circle
     ul.dropdown-menu
-      li.uservoice-trigger
-        a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="support" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-forum-id="155803" Report a bug
-        a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="feedback" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-forum-id="155803" Submit a feature request
       li= link_to 'Docs', docs_path

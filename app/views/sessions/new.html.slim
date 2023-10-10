@@ -1,0 +1,6 @@
+h2 Sign in
+.alert.alert-danger.hide
+= form_with scope: :session, url: session_path do |form|
+    => form.email_field :email, placeholder: "Email", required: true, autocapitalize: "none"
+    = form.submit "Sign in", class: "btn btn-primary"
+= link_to 'Sign up', new_registration_path

@@ -1,5 +1,4 @@
 class Account < ApplicationRecord
-  before_create :setup_api_key
   before_save :fill_adapter
   has_many :collaborators, dependent: :destroy
   has_many :users, through: :collaborators
@@ -22,29 +21,11 @@ class Account < ApplicationRecord
   attr_encrypted :db_url, key: Rails.application.secrets.encryption_key, algorithm: 'aes-256-cbc',
                           v2_gcm_iv: true, mode: :per_attribute_iv_and_salt
 
-  scope :deleted, -> {where plan: Plan::DELETED}
-  scope :not_deleted, -> {where.not plan: Plan::DELETED}
 
   TIPS = %w(basic_search editing enumerable export_import displayed_record advanced_search serialized relationships time_charts keyboard_shortcuts time_zones).freeze
 
-  class Plan
-    PET_PROJECT = 'petproject'.freeze
-    STARTUP = 'startup'.freeze
-    ENTERPRISE = 'enterprise'.freeze
-    COMPLIMENTARY = 'complimentary'.freeze
-    DELETED = 'deleted'.freeze
-  end
-
-  def to_param
-    api_key
-  end
-
   def valid_db_url?
     db_url.present?
-  end
-
-  def flag_as_deleted!
-    update! db_url: nil, api_key: nil, plan: Plan::DELETED, deleted_at: Time.current
   end
 
   def displayed_next_tip
@@ -56,23 +37,11 @@ class Account < ApplicationRecord
     tip
   end
 
-  def reactivate attributes
-    update attributes.merge(deleted_at: nil, api_key: generate_api_key)
-  end
-
   def table_configuration_for table
     table_configurations.find_or_create_by! table: table
   end
 
   private
-
-  def setup_api_key
-    self.api_key = generate_api_key
-  end
-
-  def generate_api_key
-    SecureRandom.hex[0..8]
-  end
 
   def db_url_validation
     return if db_url.blank? || errors[:db_url].any?
