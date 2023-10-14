@@ -34,6 +34,7 @@ end
 
 Capybara.default_driver = :heroku_compatible_chrome
 Capybara.server = :puma, { Silent: true }
+Capybara.server_host = 'localhost'
 
 Capybara::Screenshot.register_filename_prefix_formatter(:minitest) do |test_case|
   test_name = test_case.respond_to?(:name) ? test_case.name : test_case.__name__

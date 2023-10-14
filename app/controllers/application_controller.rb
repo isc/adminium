@@ -139,7 +139,10 @@ class ApplicationController < ActionController::Base
   end
 
   def relying_party
-    @relying_party ||=
-      WebAuthn::RelyingParty.new(origin: ENV['WEBAUTHN_ORIGIN'] || 'http://localhost:3000', name: 'Adminium')
+    @relying_party ||= WebAuthn::RelyingParty.new(origin: relying_party_origin, name: 'Adminium')
+  end
+
+  def relying_party_origin
+    Rails.env.test? ? Capybara.current_session.server.base_url : (ENV['WEBAUTHN_ORIGIN'] || 'http://localhost:3000')
   end
 end
