@@ -52,8 +52,6 @@ Rails.application.configure do
   # Use a real queuing backend for Active Job (and separate queues per environment)
   # config.active_job.queue_adapter     = :resque
   # config.active_job.queue_name_prefix = "adminium_#{Rails.env}"
-  config.action_mailer.perform_caching = false
-  config.action_mailer.asset_host = Figaro.env.mailer_asset_host
 
   # Ignore bad email addresses and do not raise email delivery errors.
   # Set this to true and configure the email server for immediate delivery to raise delivery errors.
@@ -82,10 +80,3 @@ Rails.application.configure do
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 end
-
-ActionMailer::Base.smtp_settings = {}
-%i(user_name password address domain port authentication enable_starttls_auto).each do |x|
-  value = Figaro.env.send "smtp_#{x}"
-  ActionMailer::Base.smtp_settings[x.to_sym] = (value == 'true' ? true : (value == 'false' ? false : value)) if value.present?
-end
-ActionMailer::Base.delivery_method = :smtp

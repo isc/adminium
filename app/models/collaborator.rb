@@ -4,7 +4,7 @@ class Collaborator < ApplicationRecord
   validates :email, presence: true,
                     format: {with: /([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})/i}
   has_and_belongs_to_many :roles
-  attr_accessor :domain
+  before_create :generate_token
 
   # FIXME: check table existence
   def permissions
@@ -19,5 +19,10 @@ class Collaborator < ApplicationRecord
 
   def name
     user&.name || email
+  end
+
+  private
+  def generate_token
+    self.token = SecureRandom.urlsafe_base64(16)
   end
 end

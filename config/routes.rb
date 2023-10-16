@@ -27,22 +27,20 @@ Rails.application.routes.draw do
   resources :searches
   resources :column_settings
   resources :docs, only: :index do
-    collection do
-      get :keyboard_shortcuts
-    end
+    get :keyboard_shortcuts, on: :collection
   end
   resource :install do
     get :setup_database_connection
   end
-  resource :session, only: [:new, :create, :destroy] do
+  resource :session, only: %i(new create destroy) do
     post :callback
     get :switch_account
   end
-  resource :registration, only: [:new, :create] do
+  resource :user, only: :show
+  resource :registration, only: %i(new create) do
     post :callback
   end
   resource :account, only: %i(new create edit update) do
-    get :db_url_presence, on: :member
     post :cancel_tips, on: :member
   end
   resources :roles, except: %i(show)
@@ -51,7 +49,5 @@ Rails.application.routes.draw do
     get :bloat
   end
   resources :collaborators
-  get 'test/threads' => 'resources#test_threads'
-  get '/.well-known/acme-challenge/:id' => 'docs#letsencrypt'
   root to: 'docs#landing'
 end

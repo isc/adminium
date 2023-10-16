@@ -1,5 +1,4 @@
 class DashboardsController < ApplicationController
-  before_action :require_account
   before_action :fetch_permissions
 
   def show

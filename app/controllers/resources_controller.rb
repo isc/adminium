@@ -175,11 +175,6 @@ class ResourcesController < ApplicationController
     redirect_back fallback_location: resources_path(params[:table]), error: error_message(e)
   end
 
-  def test_threads
-    Account.find_by_sql 'select pg_sleep(10)'
-    render json: @generic.table('accounts').first.inspect
-  end
-
   def chart
     case params[:type]
     when 'TimeChart'

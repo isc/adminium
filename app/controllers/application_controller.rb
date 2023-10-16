@@ -16,11 +16,14 @@ class ApplicationController < ActionController::Base
   private
 
   def require_user
+    session[:collaborator_token] = params[:collaborator_token] if params[:collaborator_token]
     redirect_to new_session_path unless current_user
   end
 
   def require_account
     return redirect_to new_account_path if Account.none?
+    handle_collaborator_token
+    redirect_to user_path unless session[:account_id]
   end
 
   def connect_to_db
@@ -144,5 +147,14 @@ class ApplicationController < ActionController::Base
 
   def relying_party_origin
     Rails.env.test? ? Capybara.current_session.server.base_url : (ENV['WEBAUTHN_ORIGIN'] || 'http://localhost:3000')
+  end
+
+  def handle_collaborator_token
+    return unless token = session.delete(:collaborator_token)
+    collaborator = Collaborator.where(user_id: nil).find_by token: token
+    return unless collaborator
+    collaborator.update! user_id: session[:user_id]
+    session[:account_id] = collaborator.account_id
+    session[:collaborator_id] = collaborator.id
   end
 end

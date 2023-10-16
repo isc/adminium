@@ -32,10 +32,6 @@ class AccountsController < ApplicationController
     render json: current_account.save
   end
 
-  def db_url_presence
-    render json: current_account.db_url?
-  end
-
   private
 
   def account_params

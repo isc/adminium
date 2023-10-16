@@ -8,8 +8,9 @@ class CollaboratorsController < ApplicationController
   end
 
   def create
-    current_account.collaborators.create! collaborator_params.merge(domain: request.host)
-    redirect_to collaborators_url, success: 'Collaborator added'
+    collaborator = current_account.collaborators.create! collaborator_params
+    invite_url = dashboard_url(collaborator_token: collaborator.token)
+    redirect_to collaborators_url, success: "Collaborator added. Invite her/him with the following link: #{invite_url}"
   end
 
   def new

@@ -49,12 +49,6 @@ module ApplicationHelper
     new_params
   end
 
-  def setup_mailto_href account
-    res = 'mailto:?'
-    res << "subject=#{URI.encode("Need your help setting up Adminium for #{account.name}")}"
-    res << "&body=#{URI.encode "Hi there,\n\nCan you please help me setup the Adminium add-on for #{account.name}? You need to login to Heroku, select the app and click on Adminium in the resources to get to the instructions.\n\nThanks a lot,"}"
-  end
-
   def head_title
     if @full_title
       content_tag :title, @full_title
@@ -72,10 +66,6 @@ module ApplicationHelper
     else
       default == '' ? 'Empty String' : default
     end
-  end
-
-  def support_link msg
-    '<a href="javascript:void(0)" data-uv-lightbox="classic_widget" data-uv-mode="full" data-uv-primary-color="#cc6d00" data-uv-link-color="#007dbf" data-uv-default-mode="support" data-uv-forum-id="155803">' + msg + '</a>'
   end
 
   def table_list

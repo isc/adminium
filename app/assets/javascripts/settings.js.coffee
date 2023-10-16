@@ -2,7 +2,6 @@ $ ->
   $('#welcome-modal').modal()
   $('.sortable').sortable()
   setupValidations()
-  setupDbUrlPresence()
   $('#db-url-modal').modal()
   masterCheckboxes()
 
@@ -31,13 +30,6 @@ setupValidations = ->
     addToTable '#validations_pane', [validator.text(), column_name.text()]
     addToHiddenParams '#validations_pane', 'validations', validator:validator.val(), column_name:column_name.val()
     false
-
-setupDbUrlPresence = ->
-  return unless $('.heroku-connection-instructions').length
-  setInterval ->
-    $.get '/account/db_url_presence', (data) ->
-      window.location = '/dashboard?step=done' if data
-  , 6000
 
 masterCheckboxes = ->
   $('.master_checkbox input').on 'change', ->
