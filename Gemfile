@@ -14,7 +14,7 @@ gem 'jquery-rails'
 gem 'json'
 gem 'nokogiri'
 gem 'pg'
-gem 'rails'
+gem 'rails', '5.2.8.1'
 gem 'redis'
 gem 'sass-rails'
 gem 'select2-rails'
@@ -38,7 +38,6 @@ group :development do
   gem 'listen'
   gem 'rb-fsevent', require: false
   gem 'spring'
-  gem 'xray-rails'
 end
 group :production do
   gem 'puma'
