@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-ruby '3.0.2'
+ruby '3.0.6'
 
 gem 'attr_encrypted'
 gem 'binary_search', require: 'binary_search/pure'
