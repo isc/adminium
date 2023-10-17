@@ -2,7 +2,7 @@ require 'test_helper'
 
 class RolesTest < ActionDispatch::IntegrationTest
   test 'role creation and edition' do
-    login create(:account, plan: Account::Plan::ENTERPRISE)
+    login
     visit dashboard_path
     click_on 'Close' # Tips modal
     click_on 'Signed in as'
@@ -22,7 +22,9 @@ class RolesTest < ActionDispatch::IntegrationTest
     save_screenshot 'account_collaborators'
     click_on 'Add a collaborator'
     assert_text 'Collaborator added'
-    click_link_with_title 'Edit this collaborator roles'
+    within(find('tr', text: 'john@mail.com')) do
+      click_link_with_title 'Edit this collaborator roles'
+    end
     fill_in 'Email', with: 'john@mail.net'
     click_on 'Update Collaborator'
     assert_text 'Changes on john@mail.net saved'

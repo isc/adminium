@@ -6,8 +6,8 @@ Rails.configuration.test_database_conn_spec =
     conn_spec[-1] = 'adminium-fixture'
     conn_spec.join('/')
   else
-    conn_spec = ActiveRecord::Base.configurations["fixture-#{test_adapter}"]
-    "#{conn_spec['adapter']}://#{conn_spec['username']}@#{conn_spec['host']}/#{conn_spec['database']}"
+    conn_spec = ActiveRecord::Base.configurations.find_db_config("fixture-#{test_adapter}").configuration_hash
+    "#{conn_spec[:adapter]}://#{conn_spec[:username]}@#{conn_spec[:host]}/#{conn_spec[:database]}"
   end
 
 ActiveRecord::Base.establish_connection Rails.configuration.test_database_conn_spec
@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 30) do
     t.date :start_date, :end_date, :delete_on
     t.text :description
     t.datetime :some_datetime
-    t.string :alpha_2, :alpha_2, :file
+    t.string :alpha_2, :alpha_3, :file
     t.integer :range_1, :range_2
     t.boolean :digital
     t.hstore :metadata
@@ -104,4 +104,4 @@ class UploadedFileFromTest < ApplicationRecord
   self.table_name = 'uploaded_files'
 end
 
-ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations[Rails.env]
+ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations.find_db_config(Rails.env)

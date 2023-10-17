@@ -5,12 +5,6 @@ class Navigation
     @itemList()
     @tableSelection()
     @searchBar()
-    $('.apps-list').on 'mouseenter click', @fetchAppList
-
-  fetchAppList: ->
-    return if $('.apps-list').data('fetched')
-    $('.apps-list').data('fetched', true)
-    $.get '/user/apps', (data) -> $('ul.accounts-menu').html(data)
 
   tableSelection: ->
     @selector = '#table_select'

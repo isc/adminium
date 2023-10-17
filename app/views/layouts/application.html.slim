@@ -17,9 +17,6 @@ html lang="en" ng-app=""
       link rel="apple-touch-icon" sizes="#{size}x#{size}" href="/images/ios-icons/touch-icon-#{size}.png"
     link href="/images/favicon.ico" rel="shortcut icon"
   body class="#{controller.controller_name} #{controller.action_name}"
-    - if session[:account]
-      div#plan style="display:none" = current_account.plan
-    = render '/layouts/demo'
     nav.navbar.navbar-inverse.navbar-fixed-top
       .container-fluid
         .navbar-header
@@ -33,18 +30,6 @@ html lang="en" ng-app=""
     .container-fluid
       .row
         .col-md-12
-          .alert.alert-warning
-            b
-               u Important notice:
-            p Dear valued users,
-            p We're reaching out with a heavy heart to inform you that our service will be shutting down permanently, effective from October 10, 2023.
-            p We understand the inconvenience this may cause and sincerely apologize for any disruption. We want to express our deepest gratitude for your trust, support, and dedication to our service launched more than 10 years ago.
-            p Your understanding in this matter is greatly appreciated.
-            p Should you have any queries or concerns, please feel free to reach out to us at contact@cluscrive.fr.
-            p Have you given <a href="https://www.basedash.com/">Basedash</a> a try? We are not affiliated at all with them but it seems to be a quite adequate replacement for Adminium.
-            
-      .row
-        .col-md-12
           - flash.each do |k, v|
             .alert.alert-dismissible class="alert-#{flash_class k}"
               a.close data-dismiss="alert" href="#" ×
@@ -52,7 +37,7 @@ html lang="en" ng-app=""
           = yield
     = yield :modal
     = javascript_include_tag 'application'
-    = render '/layouts/uservoice' if Rails.env.production?
+    = vite_javascript_tag 'application'
     .modal#modal-window tabindex="-1"
       .modal-dialog
         .modal-content
@@ -75,8 +60,6 @@ html lang="en" ng-app=""
       .container
         .footer-inner
           = footer
-    javascript:
-      adminium_account = #{{current_account? ? current_account.to_json(only: ['plan', 'name']) : 'null'}}
     - if Rails.env.development?
       javascript:
         environment = 'development'

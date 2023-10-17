@@ -15,7 +15,7 @@ class SchemasTest < ActionDispatch::IntegrationTest
   test 'readonly schema page' do
     role = create :role
     collaborator = create :collaborator, account: @account, is_administrator: false, roles: [role]
-    page.set_rack_session user: collaborator.user_id, collaborator: collaborator.id
+    page.set_rack_session user_id: collaborator.user_id, collaborator_id: collaborator.id
     visit schema_path(:users)
     assert_text "You haven't the permission to perform show on users"
     role.update permissions: {'users' => {'read' => '1'}}

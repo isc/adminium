@@ -1,19 +1,5 @@
-smtp_user_name: <%= ENV['SENDGRID_USERNAME'] %>
-smtp_password: <%= ENV['SENDGRID_PASSWORD'] %>
-smtp_address: smtp.sendgrid.net
-smtp_domain: heroku.com
-smtp_port: "587"
-smtp_authentication: plain
-smtp_enable_starttls_auto:
-
 redis_url: <%= ENV['HEROKU_REDIS_AQUA_URL'] || ENV['REDIS_URL'] || 'redis://localhost:6379/4' %>
 
-mailer_asset_host: "http://adminium.io"
-
 secret_key_base: 295bd6471d8490964b71d7881ddfc772e73afe61fed718cf24ce36a3f8b3be265713ccb3f00e342e2f9b0171c10966b7fa516224f75009efbac788f58b6a84a0
-
-use_heroku_omniauth: "true"
-heroku_oauth_id: "e7f8380e-7f68-4ce4-acd0-776e7408a304"
-heroku_oauth_secret: "9e9cb609-34c9-4e66-9006-8be043faa681"
 
 encryption_key: ca371613f2b73afd03b4519ad1741cdaafc7e161ad5ff4b6b5ec482c9d579cf0885b293c590387533a222726fb35ebfa064a591ed6c081b514bfe65eead82247

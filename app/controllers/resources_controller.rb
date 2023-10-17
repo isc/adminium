@@ -5,7 +5,6 @@ class ResourcesController < ApplicationController
   include EvolutionChartBuilder
   include Import
 
-  before_action :table_access_limitation, except: :search
   before_action :check_permissions
   before_action :dates_from_params
   before_action :fetch_item, only: %i(show edit download update)
@@ -174,11 +173,6 @@ class ResourcesController < ApplicationController
     redirect_back fallback_location: resources_path(params[:table]), success: "#{count || 0} rows have been updated"
   rescue Sequel::UniqueConstraintViolation => e
     redirect_back fallback_location: resources_path(params[:table]), error: error_message(e)
-  end
-
-  def test_threads
-    Account.find_by_sql 'select pg_sleep(10)'
-    render json: @generic.table('accounts').first.inspect
   end
 
   def chart
@@ -587,18 +581,6 @@ class ResourcesController < ApplicationController
              else
                @items.limit(@page_size, (@current_page - 1) * @page_size)
              end
-  end
-
-  def table_access_limitation
-    return unless current_account.pet_project?
-    @generic.table params[:table] # possibly triggers the table not found exception
-    return if @generic.system_table?(params[:table]) || @generic.user_tables.index(params[:table].to_sym) < 5
-    notice = "You are currently on the free plan meant for pet projects which is limited to five tables of your schema.<br/><a href=\"#{current_account.upgrade_link}\" class=\"btn btn-warning\">Upgrade</a> to the startup plan ($10 per month) to access your full schema with Adminium.".html_safe
-    if request.xhr?
-      render json: {widget: view_context.content_tag(:div, notice, class: 'alert alert-warning'), id: params[:widget_id]}
-    else
-      redirect_to dashboard_url, alert: notice
-    end
   end
 
   def join_belongs_to foreign_key

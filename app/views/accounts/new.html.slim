@@ -1,0 +1,5 @@
+h2 Create a database connection
+
+= form_for Account.new, url: account_path, html: { class: 'form-inline' } do |f|
+    => f.text_field :name, class: 'form-control', placeholder: 'Database name'
+    = f.submit 'Create', class: 'btn btn-primary'

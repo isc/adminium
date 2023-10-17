@@ -2,8 +2,7 @@ require 'test_helper'
 
 class ResourcesControllerTest < ActionController::TestCase
   def setup
-    @account = create :account, plan: 'startup'
-    session[:account] = @account.id
+    @account = create_account_and_login
     @fixtures = ['Michel', 'Martin', nil].each_with_index.map do |pseudo, index|
       FixtureFactory.new(:user, pseudo: pseudo, admin: false, age: (17 + index),
                                 activated_at: (2 * (index - 1)).week.ago)
@@ -86,11 +85,9 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   def test_index_without_statements
-    @account.update tables_count: 37
     get :index, params: {table: 'users'}
     items = assigns[:items]
     assert_equal 4, items.count
-    assert_equal 10, @account.reload.tables_count
   end
 
   def test_json_response
@@ -230,12 +227,6 @@ class ResourcesControllerTest < ActionController::TestCase
     assert_raise(ActiveRecord::RecordNotFound) { @fixtures[1].reload! }
     assert_nothing_raised { @fixtures[2].reload! }
     @expected_response_code = :redirect
-  end
-
-  def test_pet_project_limitation_for_xhr_request
-    @account.update plan: Account::Plan::PET_PROJECT
-    get :index, params: {table: 'roles_users'}, xhr: true
-    assert_equal %w(widget id), JSON.parse(@response.body).keys
   end
 
   def test_no_unnecessary_eager_fetching

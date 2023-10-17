@@ -3,28 +3,19 @@ class CollaboratorsController < ApplicationController
   skip_before_action :connect_to_db
 
   def index
-    @heroku_collaborators = []
-    @account_collaborators = @account.collaborators.includes(:roles).order(:email)
-    if current_user&.heroku_provider?
-      @heroku_collaborators = heroku_api.collaborator.list(current_account.name)
-      real_heroku_collaborators = @account.collaborators.where(kind: 'heroku').pluck(:email)
-      @heroku_collaborators.delete_if do |heroku_collaborator|
-        real_heroku_collaborators.include? heroku_collaborator['user']['email']
-      end
-    end
-    @roles = current_account.roles.order(:name).to_a if current_account.enterprise?
-  rescue Excon::Errors::Error
-    @heroku_collaborators = []
+    @account_collaborators = current_account.collaborators.includes(:roles).order(:email)
+    @roles = current_account.roles.order(:name).to_a
   end
 
   def create
-    current_account.collaborators.create! collaborator_params.merge(domain: request.host)
-    redirect_to collaborators_url, success: 'Collaborator added'
+    collaborator = current_account.collaborators.create! collaborator_params
+    invite_url = dashboard_url(collaborator_token: collaborator.token)
+    redirect_to collaborators_url, success: "Collaborator added. Invite her/him with the following link: #{invite_url}"
   end
 
   def new
-    user = User.find_by email: params[:email], provider: 'heroku'
-    @collaborator = current_account.collaborators.build user: user, is_administrator: true, kind: 'heroku', email: params[:email]
+    user = User.find_by email: params[:email]
+    @collaborator = current_account.collaborators.build user: user, is_administrator: true, email: params[:email]
     render action: 'edit'
   end
 
@@ -46,6 +37,6 @@ class CollaboratorsController < ApplicationController
   private
 
   def collaborator_params
-    params.require(:collaborator).permit :kind, :is_administrator, :email, role_ids: []
+    params.require(:collaborator).permit :is_administrator, :email, role_ids: []
   end
 end

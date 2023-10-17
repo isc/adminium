@@ -1,0 +1,10 @@
+.page-header
+  h3
+    'Sign up
+    small= link_to ' or Sign in', new_session_path
+.row
+  .col-lg-8
+    .alert.alert-danger.hide
+    = form_with scope: :registration, url: registration_path, html: { class: 'form-inline' } do |f|
+        => f.email_field :email, placeholder: "Email", required: true, autocapitalize: "none", class: 'form-control'
+        = f.button 'Sign up', class: 'btn btn-primary'

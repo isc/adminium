@@ -1,3 +1,2 @@
-web: bundle exec unicorn -p $PORT -c ./config/unicorn.rb
+web: bundle exec puma -C config/puma.rb
 console: bundle exec rails c
-release: bundle exec rake db:migrate

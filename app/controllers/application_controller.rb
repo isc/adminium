@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   rescue_from Generic::TableNotFoundException, with: :table_not_found
   rescue_from Sequel::DatabaseError, with: :statement_timeouts
   rescue_from Sequel::DatabaseConnectionError, with: :global_db_error
-  before_action :ensure_proper_subdomain
+  before_action :require_user
   before_action :require_account
   before_action :connect_to_db
   after_action :cleanup_generic
@@ -15,20 +15,19 @@ class ApplicationController < ActionController::Base
 
   private
 
-  def require_account
-    if Rails.env.development?
-      %i(user collaborator account).each do |key|
-        session[key] ||= 1
-      end
-    end
-    redirect_to docs_url unless current_account
+  def require_user
+    session[:collaborator_token] = params[:collaborator_token] if params[:collaborator_token]
+    redirect_to new_session_path unless current_user
   end
 
-  def require_user
-    redirect_to root_path unless session[:user]
+  def require_account
+    return redirect_to new_account_path if Account.none?
+    handle_collaborator_token
+    redirect_to user_path unless session[:account_id]
   end
 
   def connect_to_db
+    return unless current_account
     if current_account.db_url.present?
       @generic = Generic.new current_account
       @tables = @generic.tables
@@ -38,35 +37,33 @@ class ApplicationController < ActionController::Base
   end
 
   def current_account?
-    session[:account] ||= 2 if Rails.env.development?
     current_account.present?
   end
 
   def current_account
-    @account ||= Account.not_deleted.find session[:account] if session[:account]
+    @account ||= Account.find session[:account_id] if session[:account_id]
   rescue ActiveRecord::RecordNotFound
-    session.delete :account
+    session.delete :account_id
     nil
   end
 
   def current_user
-    @user ||= User.find session[:user] if session[:user]
+    @user ||= User.find session[:user_id] if session[:user_id]
   end
 
   def current_collaborator
-    return nil unless session[:collaborator]
-    @collaborator ||= Collaborator.find_by(id: session[:collaborator])
+    return nil unless session[:collaborator_id]
+    @collaborator ||= Collaborator.find_by(id: session[:collaborator_id])
     return @collaborator if @collaborator
-    session[:collaborator] = session[:account] = nil
+    session[:collaborator_id] = session[:account_id] = nil
   end
 
   def admin?
-    (session[:account] && current_user.nil?) || current_collaborator&.is_administrator ||
-      (current_user&.heroku_provider? && current_collaborator.nil?)
+    current_collaborator&.is_administrator
   end
 
   def require_admin
-    redirect_to dashboard_url, error: 'You need administrator privileges to access this page.' unless admin?
+    redirect_to dashboard_url, error: 'You need administrator privileges to access this page.' unless admin? || Account.none?
   end
 
   def table_not_found exception
@@ -107,24 +104,12 @@ class ApplicationController < ActionController::Base
     @resources[table.to_sym] ||= Resource.new @generic, table
   end
 
-  def ensure_proper_subdomain
-    if !Rails.env.production? || request.host_with_port['doctolib'] ||
-       request.host_with_port['adminium-staging.herokuapp']
-      return
-    end
-    redirect_to host: 'www.adminium.io' if request.host_with_port != 'www.adminium.io'
-  end
-
-  def heroku_api
-    @api ||= PlatformAPI.connect_oauth(session[:heroku_access_token]) if session[:heroku_access_token]
-  end
-
   def valid_db_url?
     current_account&.valid_db_url?
   end
 
   def tag_current_account
-    logger.tagged("Account: #{session[:account] || 'No account'}|User: #{session[:user] || 'No user'}") {yield}
+    logger.tagged("Account: #{session[:account_id] || 'No account'}|User: #{session[:user_id] || 'No user'}") {yield}
   end
 
   def check_permissions
@@ -154,5 +139,22 @@ class ApplicationController < ActionController::Base
 
   def table_configuration_for table
     current_account.table_configuration_for table
+  end
+
+  def relying_party
+    @relying_party ||= WebAuthn::RelyingParty.new(origin: relying_party_origin, name: 'Adminium')
+  end
+
+  def relying_party_origin
+    Rails.env.test? ? Capybara.current_session.server.base_url : (ENV['WEBAUTHN_ORIGIN'] || 'http://localhost:3000')
+  end
+
+  def handle_collaborator_token
+    return unless token = session.delete(:collaborator_token)
+    collaborator = Collaborator.where(user_id: nil).find_by token: token
+    return unless collaborator
+    collaborator.update! user_id: session[:user_id]
+    session[:account_id] = collaborator.account_id
+    session[:collaborator_id] = collaborator.id
   end
 end

@@ -25,41 +25,10 @@ html lang="en"
         .col-md-6.text-right
           .btn-group
             = link_to "Documentation", docs_path, class: 'btn'
-          a.btn.btn-default href="#login" data-toggle="modal"
-            i.fa.fa-user
-            '  Log In
-            span style="color:#BBB; margin:0px 8px;" |
-            '  Sign Up
-    .container
-      .row.alert.alert-danger
-        h3 Important notice
-        p Dear valued users,
-        p We're reaching out with a heavy heart to inform you that our service will be shutting down permanently, effective from October 10, 2023.
-        p We understand the inconvenience this may cause and sincerely apologize for any disruption. We want to express our deepest gratitude for your trust, support, and dedication to our service launched more than 10 years ago.
-        p Your understanding in this matter is greatly appreciated.
-        p Should you have any queries or concerns, please feel free to reach out to us at contact@cluscrive.fr.
-          
-      .row.alert.alert-info
-        | Hey! Check out this new service from a friend of ours!
-        br
-        b
-          = link_to 'https://azimutt.app', 'https://azimutt.app', target: '_blank'
+          => link_to 'Sign in', new_session_path, class: 'btn btn-default'
+          = link_to 'Sign up', new_registration_path, class: 'btn btn-default'
     .container.intro
       .row.big-screenshot
         = image_tag 'docs/screenshot.jpg', class: 'col-md-8 col-md-offset-2 img-responsive img-thumbnail'
 
-    .container
-      footer
-        p.text-center= link_to "&copy; #{Date.today.year} Cluscrive".html_safe, "http://cluscrive.fr", target: '_blank'
     = javascript_include_tag 'application'
-    = render 'layouts/uservoice' if Rails.env.production?
-    = modal 'Log In or Sign Up', id: 'login', skip_footer: true do |modal|
-      - modal.body do
-        .row.text-center
-          .col-md-6
-            = link_to "/auth/heroku", class: 'btn btn-default btn-block' do
-              = image_tag 'logos/heroku.png'
-          .col-md-6
-            = link_to '/auth/google_oauth2', class: 'btn btn-default btn-block' do
-              = image_tag 'logos/google.png'
-            p.text-muted Available only to collaborators of Enterprise accounts.

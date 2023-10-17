@@ -1,67 +1,65 @@
 class SessionsController < ApplicationController
-  include AppInstall
+  skip_before_action :connect_to_db, :require_account
+  skip_before_action :require_user, only: %i(new create destroy callback)
+  skip_before_action :verify_authenticity_token, only: %i(create)
 
-  skip_before_action :connect_to_db
-  skip_before_action :require_account, only: %i(create create_from_heroku login_heroku_app destroy)
-  skip_before_action :verify_authenticity_token, only: %i(create create_from_heroku)
-
-  def create_from_heroku
-    session[:heroku_access_token] = request.env['omniauth.auth']['credentials']['token']
-    unless session[:user]
-      user_infos = request.env['omniauth.auth']['extra'].to_h
-      user = User.find_by_provider_and_uid('heroku', user_infos['id']) || User.create_with_heroku(user_infos)
-      session[:user] = user.id
-    end
-    if current_account && !current_account.db_url?
-      detect_app_name
-      set_owner_email
-      current_account.save!
-      redirect_to configure_db_url('oauth') ? dashboard_path : setup_database_connection_install_path
-    else
-      redirect_to user_path
-    end
-  end
+  def new; end
 
   def create
-    auth = request.env['omniauth.auth']
-    user = User.find_by_provider_and_uid(auth.provider, auth.uid) || User.create_with_omniauth(auth)
-    if (account = user.enterprise_accounts.first)
-      collaborator = user.collaborators.find_by(account: account)
-      session[:account] = account.id
-      session[:user] = user.id
-      session[:collaborator] = collaborator.id
-      track_sign_on account, SignOn::Kind::GOOGLE
-      redirect_to root_url, notice: "Signed in as #{user.name} to #{current_account.name}."
+    user = User.find_by(email: params[:session][:email])
+
+    if user
+      get_options = relying_party.options_for_authentication(
+        allow: user.credentials.pluck(:external_id),
+        user_verification: "required"
+      )
+
+      session[:current_authentication] = { challenge: get_options.challenge, email: user.email }
+
+      respond_to do |format|
+        format.json { render json: get_options }
+      end
     else
-      redirect_to root_url, notice: 'Your Google account is not associated to any Enterprise Adminium account.'
+      respond_to do |format|
+        format.json { render json: { error: "User doesn't exist." }, status: :unprocessable_entity }
+      end
     end
   end
 
-  def login_heroku_app
-    adminium_addon = heroku_api.addon.list.detect {|addon| addon['id'] == params.require(:id)}
-    if adminium_addon
-      @account = Account.find_by! heroku_uuid: params[:id]
-      session[:account] = @account.id
-      unless current_account.owner_email?
-        set_owner_email
-        current_account.save # DB URL might be out of date and fail validation
+  def callback
+    user = User.find_by(email: session["current_authentication"]["email"])
+    raise "user #{session["current_authentication"]["email"]} never initiated sign up" unless user
+
+    begin
+      verified_webauthn_credential, stored_credential = relying_party.verify_authentication(
+        params,
+        session["current_authentication"]["challenge"],
+        user_verification: true,
+      ) do |webauthn_credential|
+        user.credentials.find_by(external_id: Base64.strict_encode64(webauthn_credential.raw_id))
       end
-      collaborator = current_user.collaborators.where(account_id: current_account.id).first
-      session[:collaborator] = collaborator&.id
-      track_sign_on current_account, SignOn::Kind::HEROKU_OAUTH
-      redirect_to root_url, notice: "Signed in to #{current_account.name}."
-    else
-      redirect_to user_path, error:
-        'You are not authorized to access this app because it looks like you are not a collaborator of this app !'
+
+      stored_credential.update!(sign_count: verified_webauthn_credential.sign_count)
+      session[:user_id] = user.id
+      collaborator = user.collaborators.first
+      if collaborator
+        session[:collaborator_id] = collaborator.id
+        session[:account_id] = collaborator.account_id
+      end
+
+      render json: { status: "ok" }, status: :ok
+    rescue WebAuthn::Error => e
+      render json: "Verification failed: #{e.message}", status: :unprocessable_entity
+    ensure
+      session.delete("current_authentication")
     end
   end
 
   def switch_account
     collaborator = current_user.collaborators.find_by(account_id: params[:account_id])
-    if collaborator&.account&.enterprise?
-      session[:account] = collaborator.account_id
-      session[:collaborator] = collaborator.id
-      track_sign_on collaborator.account, SignOn::Kind::GOOGLE
+    if collaborator&.account
+      session[:account_id] = collaborator.account_id
+      session[:collaborator_id] = collaborator.id
     end
     redirect_to dashboard_url
   end
@@ -69,12 +67,5 @@ class SessionsController < ApplicationController
   def destroy
     session.clear
     redirect_to root_url, notice: 'Signed out!'
-  end
-
-  private
-
-  def track_sign_on account, kind
-    SignOn.create account_id: account.id, plan: account.plan,
-                  remote_ip: request.remote_ip, kind: kind, user_id: session[:user]
   end
 end

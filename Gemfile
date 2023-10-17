@@ -1,35 +1,29 @@
 source 'http://rubygems.org'
 
-ruby '2.7.4'
+ruby '3.0.2'
 
-gem 'airbrake'
 gem 'attr_encrypted'
 gem 'binary_search', require: 'binary_search/pure'
-gem 'bootsnap'
+gem 'bootsnap', require: false
 gem 'bootstrap-components-helpers'
 gem 'bootstrap-wysihtml5-rails'
 gem 'figaro'
 gem 'font-awesome-rails'
-gem 'hashdiff'
 gem 'httparty'
 gem 'jquery-rails'
 gem 'json'
-gem 'newrelic_rpm'
 gem 'nokogiri'
-gem 'omniauth'
-gem 'omniauth-google-oauth2'
-gem 'omniauth-heroku'
 gem 'pg'
-gem 'platform-api'
-gem 'rails'
+gem 'rails', '~> 6.0'
 gem 'redis'
-gem 'rest-client'
 gem 'sass-rails'
 gem 'select2-rails'
 gem 'sequel'
 gem 'sequel_pg', require: 'sequel'
 gem 'simple_form'
 gem 'slim-rails'
+gem 'vite_rails'
+gem 'webauthn'
 
 group :mysql_support do
   gem 'mysql2'
@@ -42,18 +36,13 @@ group :development do
   gem 'better_errors'
   gem 'binding_of_caller'
   gem 'listen'
-  gem 'populator'
-  gem 'rack-mini-profiler'
   gem 'rb-fsevent', require: false
   gem 'spring'
-  gem 'xray-rails'
 end
 group :production do
   gem 'puma'
   gem 'puma_worker_killer'
   gem 'rack-timeout'
-  gem 'unicorn'
-  gem 'unicorn-worker-killer'
 end
 group :test do
   gem 'capybara'

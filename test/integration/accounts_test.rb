@@ -1,18 +1,6 @@
 require 'test_helper'
 
 class AccountsTest < ActionDispatch::IntegrationTest
-  test 'pet project limitation' do
-    login create(:account, plan: Account::Plan::PET_PROJECT)
-    visit dashboard_path
-    click_on 'Close'
-    click_link 'roles_users' # table number 6 is off limit
-    assert_selector '.modal', text: 'This table is not accessible'
-    save_screenshot 'pet_project_limitation_modal'
-    visit resources_path(:roles_users)
-    assert_equal dashboard_path, current_path
-    assert_text 'to the startup plan ($10 per month)'
-  end
-
   test 'update account settings' do
     travel_to '2019-01-09 20:59'
     account = login

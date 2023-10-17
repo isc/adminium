@@ -1,11 +1,8 @@
 Rails.application.routes.draw do
   get '/ping' => 'ping#ping'
-  get '/auth/heroku/callback' => 'sessions#create_from_heroku'
   get '/install' => 'docs#install'
-  post '/auth/:provider/callback' => 'sessions#create'
-  get '/auth/:provider/callback' => 'sessions#create'
   get '/signout' => 'sessions#destroy', as: :signout
-
+  
   resources :resources, path: '/resources/:table', constraints: {id: /.*/} do
     collection do
       get 'page/:page', action: :index
@@ -30,26 +27,21 @@ Rails.application.routes.draw do
   resources :searches
   resources :column_settings
   resources :docs, only: :index do
-    collection do
-      get :start_demo
-      get :stop_demo
-      get :keyboard_shortcuts
-    end
+    get :keyboard_shortcuts, on: :collection
   end
   resource :install do
-    get :invite_team
     get :setup_database_connection
-    post :send_email_team
   end
-  resource :sessions, only: [] do
+  resource :session, only: %i(new create destroy) do
+    post :callback
     get :switch_account
-    get :login_heroku_app
   end
-  resource :account, only: %i(create edit update) do
-    get :db_url_presence, on: :member
-    get :update_db_url_from_heroku_api, on: :collection
+  resource :user, only: :show
+  resource :registration, only: %i(new create) do
+    post :callback
+  end
+  resource :account, only: %i(new create edit update) do
     post :cancel_tips, on: :member
-    get :upgrade
   end
   resources :roles, except: %i(show)
   resource :dashboard, only: :show do
@@ -57,15 +49,5 @@ Rails.application.routes.draw do
     get :bloat
   end
   resources :collaborators
-  resource :user, only: :show do
-    get :apps
-  end
-  namespace :heroku do
-    resources :resources, only: %i(create destroy update show)
-    resources :accounts, only: :update
-  end
-  post 'sso/login' => 'heroku/resources#sso_login'
-  get 'test/threads' => 'resources#test_threads'
-  get '/.well-known/acme-challenge/:id' => 'docs#letsencrypt'
   root to: 'docs#landing'
 end

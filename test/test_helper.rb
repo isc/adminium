@@ -31,9 +31,14 @@ Capybara.register_driver :heroku_compatible_chrome do |app|
   options.add_argument('disable-dev-shm-usage')
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
+Capybara::Screenshot.register_driver(:heroku_compatible_chrome) do |driver, path|
+  driver.browser.save_screenshot path
+end
+
 
 Capybara.default_driver = :heroku_compatible_chrome
 Capybara.server = :puma, { Silent: true }
+Capybara.server_host = 'localhost'
 
 Capybara::Screenshot.register_filename_prefix_formatter(:minitest) do |test_case|
   test_name = test_case.respond_to?(:name) ? test_case.name : test_case.__name__
@@ -60,14 +65,25 @@ class ActiveSupport::TestCase
   end
 end
 
+class ActionController::TestCase
+  def create_account_and_login
+    collaborator = create :collaborator
+    account = collaborator.account
+    session[:account_id] = account.id
+    session[:user_id] = collaborator.user_id
+    session[:collaborator_id] = collaborator.id
+    account
+  end
+end
+
 class ActionDispatch::IntegrationTest
   include Capybara::DSL
   include Capybara::Screenshot::MiniTestPlugin
 
-  def login account = nil
-    account ||= create :account
-    page.set_rack_session account: account.id
-    account
+  def login
+    collaborator = create :collaborator
+    page.set_rack_session account_id: collaborator.account_id, collaborator_id: collaborator.id, user_id: collaborator.user_id
+    collaborator.account
   end
 
   def click_link_with_title title
@@ -124,6 +140,6 @@ class FixtureFactory
   def self.with_fixture_connection
     ActiveRecord::Base.establish_connection Rails.configuration.test_database_conn_spec
     yield
-    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
+    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations.find_db_config('test')
   end
 end

@@ -2,8 +2,7 @@ require 'test_helper'
 
 class SchemasControllerTest < ActionController::TestCase
   def setup
-    @account = create :account, plan: 'startup'
-    session[:account] = @account.id
+    @account = create_account_and_login
     @generic = Generic.new @account
   end
 
@@ -15,8 +14,8 @@ class SchemasControllerTest < ActionController::TestCase
   def test_not_admin_not_allowed
     collaborator = create :collaborator, is_administrator: false
     @generic.cleanup
-    session[:user] = collaborator.user.id
-    session[:collaborator] = collaborator.id
+    session[:user_id] = collaborator.user.id
+    session[:collaborator_id] = collaborator.id
     @generic = Generic.new @account
     request.env['HTTP_REFERER'] = '/'
     get :new
@@ -27,8 +26,8 @@ class SchemasControllerTest < ActionController::TestCase
   def test_admin_collaborators_allowed
     collaborator = create :collaborator, is_administrator: true
     @generic.cleanup
-    session[:user] = collaborator.user.id
-    session[:collaborator] = collaborator.id
+    session[:user_id] = collaborator.user.id
+    session[:collaborator_id] = collaborator.id
     get :new
     assert_response :success
   end

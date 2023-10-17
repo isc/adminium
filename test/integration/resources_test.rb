@@ -29,7 +29,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     user = create :user
     role = create :role
     collaborator = create :collaborator, user: user, account: @account, is_administrator: false, roles: [role]
-    page.set_rack_session user: user.id, collaborator: collaborator.id
+    page.set_rack_session user_id: user.id, collaborator_id: collaborator.id
     visit resources_path(:users)
     assert_text "You haven't the permission to perform index on users"
     role.update permissions: {'users' => {'read' => '1'}}
@@ -233,7 +233,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     user = create :user
     role = create :role, permissions: {'comments' => {'read' => '1'}, 'users' => {'read' => '1'}}
     collaborator = create :collaborator, user: user, account: @account, is_administrator: false, roles: [role]
-    page.set_rack_session user: user.id, collaborator: collaborator.id
+    page.set_rack_session user_id: user.id, collaborator_id: collaborator.id
     visit resources_path(:comments)
     assert_selector 'td', text: 'bob'
     assert_selector 'a', text: 'Robert'
@@ -488,7 +488,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     ActiveRecord::Base.connection.execute(
       "update users set column_with_time_zone = '2012-10-09 05:00:00 +1000' where id = #{user.id}"
     )
-    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
+    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations.find_db_config('test')
     visit resources_path(:users)
     cell = find('td[data-column-name="activated_at"]')
     assert_equal '2012-10-09 05:00:00', cell['data-raw-value']

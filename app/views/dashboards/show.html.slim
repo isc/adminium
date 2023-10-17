@@ -50,7 +50,7 @@
         td.total_table_count data-value='0' 0
     tbody
       - (@table_list - Generic::PG_SYSTEM_TABLES).each_with_index do |table, index|
-        tr class=((current_account&.pet_project? && index >= 5) ? 'deactivated' : '')
+        tr
           td
             = link_to schema_path(table), rel: 'tooltip', title: 'Schema'
               i.fa.fa-table>
@@ -78,26 +78,6 @@
       =< link_to 'Database settings', settings_dashboard_path
       |  -
       =< link_to 'Database bloat', bloat_dashboard_path
-
-#upgrade_from_pet_project.modal tabindex="-1"
-  .modal-dialog
-    .modal-content
-      .modal-header
-        a.close data-dismiss="modal" ×
-        h4.modal-title
-          i.fa.fa-lock
-          '  This table is not accessible! Why?
-      .modal-body.text-center
-        p
-          'You are actually on the free <b>Pet Project plan</b>.
-          br
-          'This means you can only access the <b>5 first tables</b> of your database.
-          br
-          'To access <b>all</b> your tables, you must upgrade to our <b>Startup Plan</b>.
-          hr
-          = link_to "Upgrade to Startup Plan ($10/month)", upgrade_account_path(plan: :startup), class: 'btn btn-success'
-      .modal-footer
-        a.btn.btn-default data-dismiss="modal" Maybe later…
 
 #new_widget.modal tabindex="-1"
   .modal-dialog
