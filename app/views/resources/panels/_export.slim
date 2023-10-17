@@ -15,23 +15,22 @@
               = render 'resources/panels/extra_columns', resource: resource
             = accordion.pane 'CSV file options' do
               .form-group
-                - guessed_encoding = (Rails.configuration.database_configuration[Rails.env]['encoding'].presence rescue 'UTF-8') || 'UTF-8'
-                label.control-label.col-sm-3 for="csv_options_encoding_to"= t('export.csv.encoding_to')
+                label.control-label.col-sm-3 for="csv_options_encoding_to" Encoding to
                 .col-sm-9
                   = select_tag 'csv_options[encoding_to]', options_for_select(["UTF-8", "UTF-16LE", "UTF-16BE", "UTF-32LE", "UTF-32BE", "UTF-7", "ISO-8859-1", "ISO-8859-15", "IBM-850", "MacRoman", "Windows-1252", "ISO-8859-3", "IBM-852", "ISO-8859-2", "MacCE", "Windows-1250", "IBM-855", "ISO-8859-5", "ISO-IR-111", "KOI8-R", "MacCyrillic", "Windows-1251", "CP-866", "KOI-U", "MacUkranian", "GB2312", "GBK", "GB18030", "HZ", "ISO-2022-CN", "Big5", "Big5-HKSCS", "EUC-TW", "EUC-JP", "ISO-2022-JP", "Shift_JIS", "EUC-KR", "UHC", "JOHAB", "ISO-2022-KR"]), class: 'form-control'
-                  p.help-block= t('export.csv.encoding_to_help', name: guessed_encoding)
+                  p.help-block Choose your output encoding.
 
               .form-group
-                label.control-label.col-sm-3 for="csv_options_skip_header"= t('export.csv.skip_header')
+                label.control-label.col-sm-3 for="csv_options_skip_header" Skip header
                 .col-sm-9
                   = check_box_tag 'csv_options[skip_header]', 'checked', resource.export_skip_header
-                  p.help-block= t('export.csv.skip_header_help')
+                  p.help-block Do not output a header (no fields description).
 
               .form-group
-                label.control-label.col-sm-3 for="csv_options_generator_col_sep"= t('export.csv.col_sep')
+                label.control-label.col-sm-3 for="csv_options_col_sep" Column separator
                 .col-sm-9
                   = select_tag 'csv_options[col_sep]', options_for_select({"<comma> ','" => ',', "<semicolon> ';'" => ';', '<tabs>' => "\t" }, resource.export_col_sep), class: 'form-control'
-                  p.help-block= t('export.csv.col_sep_help', value: t('export.csv.default_col_sep'))
+                  p.help-block Choose the character output between columns.
 
 
         .modal-footer
