@@ -488,7 +488,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     ActiveRecord::Base.connection.execute(
       "update users set column_with_time_zone = '2012-10-09 05:00:00 +1000' where id = #{user.id}"
     )
-    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
+    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations.find_db_config('test')
     visit resources_path(:users)
     cell = find('td[data-column-name="activated_at"]')
     assert_equal '2012-10-09 05:00:00', cell['data-raw-value']

@@ -1,10 +1,10 @@
 source 'http://rubygems.org'
 
-ruby '2.7.8'
+ruby '3.0.2'
 
 gem 'attr_encrypted'
 gem 'binary_search', require: 'binary_search/pure'
-gem 'bootsnap'
+gem 'bootsnap', require: false
 gem 'bootstrap-components-helpers'
 gem 'bootstrap-wysihtml5-rails'
 gem 'figaro'
@@ -14,7 +14,7 @@ gem 'jquery-rails'
 gem 'json'
 gem 'nokogiri'
 gem 'pg'
-gem 'rails', '5.2.8.1'
+gem 'rails', '~> 6.0'
 gem 'redis'
 gem 'sass-rails'
 gem 'select2-rails'
@@ -43,8 +43,6 @@ group :production do
   gem 'puma'
   gem 'puma_worker_killer'
   gem 'rack-timeout'
-  gem 'unicorn'
-  gem 'unicorn-worker-killer'
 end
 group :test do
   gem 'capybara'

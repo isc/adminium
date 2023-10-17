@@ -68,8 +68,8 @@ class SetupTest < ActionDispatch::IntegrationTest
   end
 
   def add_virtual_authenticator
-    options = { protocol: :ctap2, transport: :internal, resident_key: false, user_verification: true, user_verified: true }
-    page.driver.browser.add_virtual_authenticator ::Selenium::WebDriver::VirtualAuthenticatorOptions.new(options)
+    options = { protocol: :ctap2, transport: :internal, hasResidentKey: false, hasUserVerification: true, isUserVerified: true }
+    page.driver.browser.add_virtual_authenticator options
   end
 
   def build_last_invite_url

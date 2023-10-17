@@ -31,6 +31,10 @@ Capybara.register_driver :heroku_compatible_chrome do |app|
   options.add_argument('disable-dev-shm-usage')
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
+Capybara::Screenshot.register_driver(:heroku_compatible_chrome) do |driver, path|
+  driver.browser.save_screenshot path
+end
+
 
 Capybara.default_driver = :heroku_compatible_chrome
 Capybara.server = :puma, { Silent: true }
@@ -136,6 +140,6 @@ class FixtureFactory
   def self.with_fixture_connection
     ActiveRecord::Base.establish_connection Rails.configuration.test_database_conn_spec
     yield
-    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations['test']
+    ActiveRecord::Base.establish_connection ActiveRecord::Base.configurations.find_db_config('test')
   end
 end

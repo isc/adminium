@@ -4,3 +4,16 @@
 //= link application.js
 //= link docs/screenshot.jpg
 //= link docs/search_input.png
+//= link docs/inline_editing.png
+//= link docs/full_page_editing.png
+//= link docs/bulk_editing.png
+//= link docs/import.png
+//= link docs/enumerable.png
+//= link docs/enumerable_header.png
+//= link docs/enumerable_pie.png
+//= link docs/import_export.png
+//= link docs/customization.png
+//= link docs/advanced_search_form.png
+//= link docs/advanced_search.png
+//= link docs/serialized.png
+//= link docs/time_chart.png
