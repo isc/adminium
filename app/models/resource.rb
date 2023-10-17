@@ -3,8 +3,8 @@ class Resource
   VALIDATES_UNIQUENESS_OF = 'validates_uniqueness_of'.freeze
   VALIDATORS = [VALIDATES_PRESENCE_OF, VALIDATES_UNIQUENESS_OF].freeze
 
-  attr_accessor :default_order, :enum_values, :export_col_sep, :export_skip_header, :table, :datas
-  delegate :validations, to: :table_configuration
+  attr_accessor :default_order, :enum_values, :table, :datas
+  delegate :validations, :export_col_sep, :export_skip_header, to: :table_configuration
 
   def initialize generic, table
     @generic, @table = generic, table.to_sym
@@ -24,8 +24,6 @@ class Resource
       end
       @per_page = datas[:per_page] || @generic.account.per_page
       @enum_values = datas[:enum_values] || []
-      @export_skip_header = datas[:export_skip_header]
-      @export_col_sep = datas[:export_col_sep]
     end
     @default_order ||= default_primary_keys_order
     set_missing_columns_conf
@@ -106,12 +104,10 @@ class Resource
   end
 
   def save
-    settings = {
-      columns: @columns, column: @column, default_order: @default_order, enum_values: @enum_values,
-      export_col_sep: @export_col_sep, export_skip_header: @export_skip_header
-    }
+    settings = { columns: @columns, column: @column, default_order: @default_order, enum_values: @enum_values }
     settings[:per_page] = @per_page if @generic.account.per_page != @per_page
     REDIS.set settings_key, settings.to_json
+    table_configuration.save!
   end
 
   def settings_key
@@ -123,8 +119,8 @@ class Resource
   end
 
   def csv_options= options
-    @export_skip_header = options.key?(:skip_header)
-    @export_col_sep = options[:col_sep] if options.key? :col_sep
+    table_configuration.export_skip_header = options.key?(:skip_header)
+    table_configuration.export_col_sep = options[:col_sep] if options.key? :col_sep
   end
 
   def per_page= per_page
