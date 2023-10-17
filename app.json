@@ -2,7 +2,7 @@
   "name": "Adminium",
   "description": "A database backend user interface compatible with Postgresql and Mysql",
   "addons": ["heroku-redis:mini", "heroku-postgresql:mini"],
-  "stack": "heroku-20",
+  "stack": "heroku-22",
   "scripts": {
     "postdeploy": "bundle exec rake db:schema:load"
   },
