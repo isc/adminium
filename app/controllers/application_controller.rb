@@ -142,11 +142,7 @@ class ApplicationController < ActionController::Base
   end
 
   def relying_party
-    @relying_party ||= WebAuthn::RelyingParty.new(origin: relying_party_origin, name: 'Adminium')
-  end
-
-  def relying_party_origin
-    Rails.env.test? ? Capybara.current_session.server.base_url : (ENV['WEBAUTHN_ORIGIN'] || 'http://localhost:3000')
+    @relying_party ||= WebAuthn::RelyingParty.new(origin: request.base_url, name: 'Adminium')
   end
 
   def handle_collaborator_token

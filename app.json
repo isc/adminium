@@ -6,12 +6,6 @@
   "scripts": {
     "postdeploy": "bundle exec rake db:schema:load"
   },
-  "env": {
-	  "WEBAUTHN_ORIGIN":{
-        "description": "This value needs to match `window.location.origin` evaluated by the User Agent during WebAuthn registration and authentication ceremonies.",
-        "value": ""
-	  }
-  },
   "environments": {
     "test": {
       "addons": ["heroku-redis:in-dyno", "heroku-postgresql:in-dyno"],
