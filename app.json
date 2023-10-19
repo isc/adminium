@@ -5,22 +5,5 @@
   "stack": "heroku-20",
   "scripts": {
     "postdeploy": "bundle exec rake db:schema:load"
-  },
-  "environments": {
-    "test": {
-      "addons": ["heroku-redis:in-dyno", "heroku-postgresql:in-dyno"],
-      "buildpacks": [
-        { "url": "heroku/ruby" },
-        { "url": "heroku/nodejs" },
-        { "url": "heroku/google-chrome" }
-      ],
-      "env": {
-        "DATABASE_CLEANER_ALLOW_REMOTE_DATABASE_URL": true,
-        "REMOTE_REPORTER_URL": "http://test-failures.herokuapp.com/867a5de4a32757d08569575eaf78ab"
-      },
-      "scripts": {
-        "test": "./ci.sh"
-      }
-    }
   }
 }
