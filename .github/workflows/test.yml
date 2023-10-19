@@ -22,10 +22,10 @@ jobs:
           POSTGRES_PASSWORD: postgres
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
+      - uses: actions/setup-node@v3
+      - run: yarn install
       - uses: actions/checkout@v4
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - uses: actions/setup-node@v3
-      - run: yarn install && bin/rake assets:precompile
-      - run: bundle exec rails db:setup && bundle exec rake
+      - run: bundle exec rails db:setup && bin/rake assets:precompile && bundle exec rake
