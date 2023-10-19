@@ -31,4 +31,4 @@ jobs:
       - run: bundle exec rails db:setup && bundle exec rake assets:precompile && bundle exec rake
       - name: Upload screenshots to argos-ci.com
         continue-on-error: true
-        run: argos upload tmp/capybara
+        run: yarn exec argos upload tmp/capybara
