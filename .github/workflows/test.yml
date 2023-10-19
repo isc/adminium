@@ -28,4 +28,4 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - run: bundle exec rails db:setup && bin/rake assets:precompile && bundle exec rake
+      - run: bundle exec rails db:setup && bundle exec rake assets:precompile && bundle exec rake
