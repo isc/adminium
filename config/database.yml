@@ -5,6 +5,7 @@ defaults: &defaults
   min_messages: warning
   host: localhost
   username: <%= ENV['USER'] %>
+  password: postgres
 
 development:
   <<: *defaults
