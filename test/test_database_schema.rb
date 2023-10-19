@@ -1,14 +1,8 @@
 test_adapter = ENV['adapter'] || ENV['ADAPTER'] || 'postgres'
+ActiveRecord::Base.connection.execute 'create database "adminium-fixture"' if ENV['CI']
+conn_spec = ActiveRecord::Base.configurations.find_db_config("fixture-#{test_adapter}").configuration_hash
 Rails.configuration.test_database_conn_spec =
-  if ENV['CI']
-    ActiveRecord::Base.connection.execute 'create database "adminium-fixture"'
-    conn_spec = ENV['DATABASE_URL'].split('/')
-    conn_spec[-1] = 'adminium-fixture'
-    conn_spec.join('/')
-  else
-    conn_spec = ActiveRecord::Base.configurations.find_db_config("fixture-#{test_adapter}").configuration_hash
-    "#{conn_spec[:adapter]}://#{conn_spec[:username]}@#{conn_spec[:host]}/#{conn_spec[:database]}"
-  end
+  "#{conn_spec[:adapter]}://#{conn_spec[:username]}@#{conn_spec[:host]}/#{conn_spec[:database]}"
 
 ActiveRecord::Base.establish_connection Rails.configuration.test_database_conn_spec
 ActiveRecord::Schema.verbose = false
