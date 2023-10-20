@@ -80,6 +80,10 @@ class ActionDispatch::IntegrationTest
   include Capybara::DSL
   include Capybara::Screenshot::MiniTestPlugin
 
+  setup do
+    FactoryBot.rewind_sequences # in order to have stable screenshots
+  end
+
   def login
     collaborator = create :collaborator
     page.set_rack_session account_id: collaborator.account_id, collaborator_id: collaborator.id, user_id: collaborator.user_id

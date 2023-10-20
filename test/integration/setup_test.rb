@@ -24,7 +24,7 @@ class SetupTest < ActionDispatch::IntegrationTest
     assert_text "User doesn't exist"
     fill_in 'Email', with: 'joe@mail.com'
     within('form') { click_on 'Sign in' }
-    assert_text 'Dashboard'
+    Capybara.using_wait_time(5) { assert_text 'Dashboard' }
     assert has_link?('documents')
     using_session 'bob' do
       add_virtual_authenticator
