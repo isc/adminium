@@ -1,7 +1,7 @@
 require 'test_helper'
 
 class SetupTest < ActionDispatch::IntegrationTest
-  test 'sign up and setup account' do
+  test 'sign up and setup account then invite collaborators' do
     add_virtual_authenticator
     visit root_path
     click_on 'Sign up'
@@ -65,6 +65,35 @@ class SetupTest < ActionDispatch::IntegrationTest
       assert_text 'Dashboard'
       assert has_link?('documents')
     end
+  end
+
+  test 'sign up and setup two accounts' do
+    add_virtual_authenticator
+    visit root_path
+    click_on 'Sign up'
+    fill_in 'Email', with: 'joe@mail.com'
+    click_on 'Sign up'
+    fill_in 'Database name', with: 'adminium-fixture'
+    click_on 'Create'
+    fill_in 'postgresql://user:password@host/database', with: Rails.configuration.test_database_conn_spec
+    click_on 'Connect'
+    click_on 'Close'
+    assert has_link?('comments')
+    click_on 'Signed in as joe@mail.com'
+    click_on 'New database connection'
+    fill_in 'Database name', with: 'adminium-test'
+    click_on 'Create'
+    spec = ActiveRecord::Base.connection_db_config.configuration_hash
+    url ="#{spec[:adapter]}://#{spec[:username]}:#{spec[:password]}@#{spec[:host]}/#{spec[:database]}"
+    fill_in 'postgresql://user:password@host/database', with: url
+    click_on 'Connect'
+    click_on 'Close'
+    assert has_link?('accounts')
+    assert has_no_link?('comments')
+    click_on 'Signed in as joe@mail.com'
+    click_on 'adminium-fixture'
+    assert has_link?('comments')
+    assert has_no_link?('accounts')
   end
 
   def add_virtual_authenticator
