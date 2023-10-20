@@ -13,10 +13,7 @@ class Account < ApplicationRecord
 
   attribute :db_url
   validates :db_url, format: %r{((mysql2?)|(postgres(ql)?)):\/\/.*}, allow_blank: true
-  # fucked up "unless" below, but otherwise the tests are fucked up
-  # likely because of the transactions being used in tests
-  # and the fact that this validation causes a new connection to be established
-  validate :db_url_validation unless Rails.env.test?
+  validate :db_url_validation
 
   attr_encrypted :db_url, key: Rails.application.secrets.encryption_key, algorithm: 'aes-256-cbc',
                           v2_gcm_iv: true, mode: :per_attribute_iv_and_salt
