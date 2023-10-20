@@ -1,6 +1,6 @@
 source 'http://rubygems.org'
 
-ruby '3.0.6'
+ruby '3.1.4'
 
 gem 'attr_encrypted'
 gem 'binary_search', require: 'binary_search/pure'
@@ -14,7 +14,7 @@ gem 'jquery-rails'
 gem 'json'
 gem 'nokogiri'
 gem 'pg'
-gem 'rails', '~> 6.0'
+gem 'rails', '7.0.8'
 gem 'redis'
 gem 'sass-rails'
 gem 'select2-rails'
