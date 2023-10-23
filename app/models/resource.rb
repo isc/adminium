@@ -3,7 +3,7 @@ class Resource
   VALIDATES_UNIQUENESS_OF = 'validates_uniqueness_of'.freeze
   VALIDATORS = [VALIDATES_PRESENCE_OF, VALIDATES_UNIQUENESS_OF].freeze
 
-  attr_accessor :default_order, :enum_values, :table, :datas
+  attr_accessor :enum_values, :table, :datas
   delegate :validations, :export_col_sep, :export_skip_header, to: :table_configuration
 
   def initialize generic, table
@@ -19,13 +19,9 @@ class Resource
       @datas = JSON.parse(value).symbolize_keys!
       @columns = datas[:columns].symbolize_keys!
       @column = datas[:column] || {}
-      if datas[:default_order].present? && column_names.include?(datas[:default_order].to_s.split(' ').first.to_sym)
-        @default_order = datas[:default_order]
-      end
       @per_page = datas[:per_page] || @generic.account.per_page
       @enum_values = datas[:enum_values] || []
     end
-    @default_order ||= default_primary_keys_order
     set_missing_columns_conf
   end
 
@@ -35,6 +31,15 @@ class Resource
 
   def default_primary_keys_order
     primary_keys.map {|key| "#{key} desc"}.join ',' if primary_keys.any?
+  end
+
+  def default_order
+    return @default_order if @default_order
+    @default_order = table_configuration.default_order
+    if @default_order.present? && column_names.exclude?(default_order.split(' ').first.to_sym)
+      @default_order = nil
+    end
+    @default_order ||= default_primary_keys_order
   end
 
   def default_order_column
@@ -104,7 +109,7 @@ class Resource
   end
 
   def save
-    settings = { columns: @columns, column: @column, default_order: @default_order, enum_values: @enum_values }
+    settings = { columns: @columns, column: @column, enum_values: @enum_values }
     settings[:per_page] = @per_page if @generic.account.per_page != @per_page
     REDIS.set settings_key, settings.to_json
     table_configuration.save!

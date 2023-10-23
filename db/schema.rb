@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_10_17_184959) do
-
+ActiveRecord::Schema[7.0].define(version: 2023_10_23_091541) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -19,9 +18,9 @@ ActiveRecord::Schema.define(version: 2023_10_17_184959) do
     t.string "name"
     t.text "encrypted_db_url"
     t.string "adapter"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.datetime "last_tip_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
+    t.datetime "last_tip_at", precision: nil
     t.string "last_tip_identifier"
     t.boolean "tips_opt_in", default: true
     t.string "application_time_zone", default: "UTC", null: false
@@ -36,8 +35,8 @@ ActiveRecord::Schema.define(version: 2023_10_17_184959) do
   create_table "collaborators", force: :cascade do |t|
     t.integer "user_id"
     t.integer "account_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.boolean "is_administrator", default: false, null: false
     t.string "email"
     t.string "token", null: false
@@ -55,8 +54,8 @@ ActiveRecord::Schema.define(version: 2023_10_17_184959) do
     t.string "external_id"
     t.string "public_key"
     t.bigint "user_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.bigint "sign_count", default: 0, null: false
     t.index ["external_id"], name: "index_credentials_on_external_id", unique: true
     t.index ["user_id"], name: "index_credentials_on_user_id"
@@ -66,8 +65,8 @@ ActiveRecord::Schema.define(version: 2023_10_17_184959) do
     t.string "name"
     t.integer "account_id"
     t.text "permissions"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
   end
 
   create_table "searches", force: :cascade do |t|
@@ -75,8 +74,8 @@ ActiveRecord::Schema.define(version: 2023_10_17_184959) do
     t.string "table"
     t.integer "account_id"
     t.jsonb "conditions"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.index ["account_id"], name: "index_searches_on_account_id"
   end
 
@@ -84,20 +83,21 @@ ActiveRecord::Schema.define(version: 2023_10_17_184959) do
     t.integer "account_id"
     t.string "table"
     t.jsonb "polymorphic_associations", default: []
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at", precision: nil, null: false
+    t.datetime "updated_at", precision: nil, null: false
     t.jsonb "validations", default: [], null: false
     t.string "label_column"
     t.string "export_col_sep"
     t.boolean "export_skip_header"
+    t.string "default_order"
     t.index ["account_id"], name: "index_table_configurations_on_account_id"
   end
 
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "email"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "webauthn_id"
     t.index ["webauthn_id"], name: "index_users_on_webauthn_id", unique: true
   end
@@ -108,8 +108,8 @@ ActiveRecord::Schema.define(version: 2023_10_17_184959) do
     t.string "order"
     t.string "columns"
     t.integer "account_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.datetime "created_at", precision: nil
+    t.datetime "updated_at", precision: nil
     t.string "type"
     t.string "grouping"
   end
