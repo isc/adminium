@@ -402,7 +402,6 @@ DEPENDENCIES
   httparty
   jquery-rails
   json
-  launchy
   listen
   minitest
   minitest-reporters

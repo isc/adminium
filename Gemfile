@@ -49,7 +49,6 @@ group :test do
   gem 'capybara-screenshot'
   gem 'database_cleaner'
   gem 'factory_bot_rails'
-  gem 'launchy'
   gem 'minitest'
   gem 'minitest-reporters'
   gem 'mocha', require: false
