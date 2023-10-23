@@ -571,7 +571,7 @@ class ResourcesController < ApplicationController
     if request.format.html?
       @current_page = (params[:page].presence || 1).to_i
       check_per_page_setting
-      @page_size = [resource.per_page.to_i, 25].max
+      @page_size = [resource.per_page, 25].max
     else
       @current_page, @page_size = 1, 10
     end

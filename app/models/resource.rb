@@ -19,7 +19,6 @@ class Resource
       @datas = JSON.parse(value).symbolize_keys!
       @columns = datas[:columns].symbolize_keys!
       @column = datas[:column] || {}
-      @per_page = datas[:per_page] || @generic.account.per_page
       @enum_values = datas[:enum_values] || []
     end
     set_missing_columns_conf
@@ -110,7 +109,6 @@ class Resource
 
   def save
     settings = { columns: @columns, column: @column, enum_values: @enum_values }
-    settings[:per_page] = @per_page if @generic.account.per_page != @per_page
     REDIS.set settings_key, settings.to_json
     table_configuration.save!
   end
@@ -129,11 +127,11 @@ class Resource
   end
 
   def per_page= per_page
-    @per_page = [per_page.to_i, 25].max
+    table_configuration.per_page = [per_page.to_i, 25].max
   end
 
   def per_page
-    @per_page ||= @generic.account.per_page
+    table_configuration.per_page || @generic.account.per_page
   end
 
   def columns type = nil
