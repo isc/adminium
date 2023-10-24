@@ -3,8 +3,8 @@ class Resource
   VALIDATES_UNIQUENESS_OF = 'validates_uniqueness_of'.freeze
   VALIDATORS = [VALIDATES_PRESENCE_OF, VALIDATES_UNIQUENESS_OF].freeze
 
-  attr_accessor :enum_values, :table, :datas
-  delegate :validations, :export_col_sep, :export_skip_header, to: :table_configuration
+  attr_accessor :table, :datas
+  delegate :validations, :export_col_sep, :export_skip_header, :enum_values, to: :table_configuration
 
   def initialize generic, table
     @generic, @table = generic, table.to_sym
@@ -14,14 +14,18 @@ class Resource
   def load
     value = REDIS.get settings_key
     if value.nil?
-      @column, @columns, @enum_values = {}, {}, []
+      @column, @columns = {}, {}
     else
       @datas = JSON.parse(value).symbolize_keys!
       @columns = datas[:columns].symbolize_keys!
       @column = datas[:column] || {}
-      @enum_values = datas[:enum_values] || []
     end
     set_missing_columns_conf
+  end
+
+  def save
+    REDIS.set settings_key, { columns: @columns, column: @column }.to_json
+    table_configuration.save!
   end
 
   def label_column
@@ -107,12 +111,6 @@ class Resource
     schema.map {|c, _| c}
   end
 
-  def save
-    settings = { columns: @columns, column: @column, enum_values: @enum_values }
-    REDIS.set settings_key, settings.to_json
-    table_configuration.save!
-  end
-
   def settings_key
     "account:#{@generic.account_id}:settings:#{@table}"
   end
@@ -157,13 +155,14 @@ class Resource
 
   def update_enum_values column, enum_data
     return if enum_data.nil?
-    @enum_values.delete_if {|enums| enums['column_name'] == column}
+    table_configuration.enum_values ||= []
+    table_configuration.enum_values.delete_if {|enums| enums['column_name'] == column}
     values = {}
     enum_data.each do |value|
       db_value = value.delete 'value'
       values[db_value] = value if db_value.present? && value['label'].present?
     end
-    @enum_values.push 'column_name' => column, 'values' => values if values.present?
+    table_configuration.enum_values.push 'column_name' => column, 'values' => values if values.present?
     save
   end
 
@@ -320,7 +319,7 @@ class Resource
   end
 
   def enum_values_for column_name
-    enum_value = @enum_values.detect {|value| value['column_name'] == column_name.to_s}
+    enum_value = table_configuration.enum_values&.detect {|value| value['column_name'] == column_name.to_s}
     enum_value && enum_value['values']
   end
 
