@@ -14,17 +14,16 @@ class Resource
   def load
     value = REDIS.get settings_key
     if value.nil?
-      @column, @columns = {}, {}
+      @columns = {}
     else
       @datas = JSON.parse(value).symbolize_keys!
       @columns = datas[:columns].symbolize_keys!
-      @column = datas[:column] || {}
     end
     set_missing_columns_conf
   end
 
   def save
-    REDIS.set settings_key, { columns: @columns, column: @column }.to_json
+    REDIS.set settings_key, { columns: @columns }.to_json
     table_configuration.save!
   end
 
@@ -137,7 +136,7 @@ class Resource
   end
 
   def column_options name
-    @column[name.to_s] || {}
+    table_configuration.column_options[name.to_s] || {}
   end
 
   def update_column_options name, options
@@ -149,7 +148,8 @@ class Resource
       @columns[:serialized].delete name
     end
     @columns[:serialized].uniq!
-    @column[name.to_s] = options
+    table_configuration.column_options_will_change!
+    table_configuration.column_options[name.to_s] = options
     save
   end
 
