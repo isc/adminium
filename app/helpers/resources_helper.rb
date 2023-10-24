@@ -323,7 +323,7 @@ module ResourcesHelper
   end
 
   def generate_chart_path column, type
-    chart_resources_path(params.permit(:table, :search, :asearch, :grouping, where: {}, exclude: {})
+    chart_resources_path(whitelisted_params.slice(:table, :search, :asearch, :grouping, :where, :exclude)
       .merge(column: column, type: type))
   end
 
