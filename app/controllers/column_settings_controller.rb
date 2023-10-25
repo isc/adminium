@@ -4,8 +4,8 @@ class ColumnSettingsController < ApplicationController
 
   def show
     column = params[:column].to_sym
-    @hidden = !resource.columns[params[:view].to_sym].include?(column)
-    @serialized = resource.columns[:serialized].include?(column)
+    @hidden = !resource.columns(params[:view]).include?(column)
+    @serialized = resource.columns(:serialized).include?(column)
     @enum = resource.enum_values_for column
   end
 

@@ -64,7 +64,7 @@ module ResourcesHelper
           class: 'label label-info', style: user_defined_bg
         css_class = 'enum'
       end
-    elsif value.present? && resource.columns[:serialized].include?(key)
+    elsif value.present? && resource.columns(:serialized).include?(key)
       content = value.present? ? (YAML.safe_load(value).inspect rescue value) : value
       css_class, content = 'serialized', content_tag(:pre, content, class: 'sh_ruby')
     elsif value.present? && resource.column_info(key)[:db_type].in?(%w(json jsonb))
@@ -323,7 +323,7 @@ module ResourcesHelper
   end
 
   def generate_chart_path column, type
-    chart_resources_path(params.permit(:table, :search, :asearch, :grouping, where: {}, exclude: {})
+    chart_resources_path(whitelisted_params.slice(:table, :search, :asearch, :grouping, :where, :exclude)
       .merge(column: column, type: type))
   end
 

@@ -58,10 +58,13 @@ class ActiveSupport::TestCase
   end
 
   teardown do
-    REDIS.flushdb
     Rails.cache.clear
     ObjectSpace.each_object(Generic, &:cleanup)
     DatabaseCleaner.clean
+  end
+
+  def setup_resource_columns account, table, value
+    TableConfiguration.find_or_create_by(account_id: account.id, table: table).update column_selection: value
   end
 end
 
@@ -97,13 +100,6 @@ class ActionDispatch::IntegrationTest
   def open_accordion pane_label, selector:, text:
     click_link pane_label while all(selector, text: text, minimum: 0).size.zero?
     assert_no_selector '.collapsing'
-  end
-
-  def stub_resource_columns value
-    %i(serialized show form listing search).each do |key|
-      value[key] = [] unless value.key? key
-    end
-    Resource.any_instance.stubs(:columns).returns value
   end
 
   def save_screenshot name

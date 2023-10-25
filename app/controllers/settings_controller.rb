@@ -1,12 +1,13 @@
 class SettingsController < ApplicationController
   def update
-    %i(listing form show search serialized export).each do |type|
-      param_key = "#{type}_columns".to_sym
-      resource.columns[type] = params[param_key].delete_if(&:empty?) if params.key? param_key
-    end
+    column_selection_update =
+      %i(listing form show search serialized export).map do |type|
+        param_key = "#{type}_columns".to_sym
+        [type, params[param_key].delete_if(&:empty?)] if params.key? param_key
+      end.compact.to_h
+    resource.update_column_selection column_selection_update
     table_configuration.update! table_configuration_params if table_configuration.present?
     resource.per_page = params[:per_page] if params[:per_page]
-    resource.default_order = params[:default_order].join(' ') if params[:default_order].present?
     resource.save
     redirect_back fallback_location: resources_path(resource.table), success: 'Settings successfully saved'
   end
@@ -56,6 +57,7 @@ class SettingsController < ApplicationController
     end
     res[:label_column] = params[:label_column].presence if params[:label_column]
     res[:validations] = params[:validations].delete_if(&:empty?) if params[:validations]
+    res[:default_order] = params[:default_order].join(' ').strip if params[:default_order].present?
     res
   end
 end

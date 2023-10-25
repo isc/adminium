@@ -101,6 +101,6 @@ module ApplicationHelper
   end
 
   def whitelisted_params
-    params.permit(:order, :page, :per_page, :search, :asearch, :grouping, exclude: {}, where: {})
+    params.permit(:table, :order, :page, :per_page, :search, :asearch, :grouping, exclude: {}, where: {})
   end
 end

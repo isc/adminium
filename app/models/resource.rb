@@ -3,30 +3,18 @@ class Resource
   VALIDATES_UNIQUENESS_OF = 'validates_uniqueness_of'.freeze
   VALIDATORS = [VALIDATES_PRESENCE_OF, VALIDATES_UNIQUENESS_OF].freeze
 
-  attr_accessor :default_order, :enum_values, :table, :datas
-  delegate :validations, :export_col_sep, :export_skip_header, to: :table_configuration
+  attr_accessor :table, :datas
+  delegate :validations, :export_col_sep, :export_skip_header, :enum_values, to: :table_configuration
 
   def initialize generic, table
     @generic, @table = generic, table.to_sym
-    load
+    set_missing_columns_conf
   end
 
-  def load
-    value = REDIS.get settings_key
-    if value.nil?
-      @column, @columns, @enum_values = {}, {}, []
-    else
-      @datas = JSON.parse(value).symbolize_keys!
-      @columns = datas[:columns].symbolize_keys!
-      @column = datas[:column] || {}
-      if datas[:default_order].present? && column_names.include?(datas[:default_order].to_s.split(' ').first.to_sym)
-        @default_order = datas[:default_order]
-      end
-      @per_page = datas[:per_page] || @generic.account.per_page
-      @enum_values = datas[:enum_values] || []
-    end
-    @default_order ||= default_primary_keys_order
-    set_missing_columns_conf
+  def save
+    table_configuration.save!
+    table_configuration.column_selection.symbolize_keys!
+    table_configuration.column_selection.each_value { |arr| arr.map(&:to_sym) }
   end
 
   def label_column
@@ -35,6 +23,15 @@ class Resource
 
   def default_primary_keys_order
     primary_keys.map {|key| "#{key} desc"}.join ',' if primary_keys.any?
+  end
+
+  def default_order
+    return @default_order if @default_order
+    @default_order = table_configuration.default_order
+    if @default_order.present? && column_names.exclude?(default_order.split(' ').first.to_sym)
+      @default_order = nil
+    end
+    @default_order ||= default_primary_keys_order
   end
 
   def default_order_column
@@ -103,13 +100,6 @@ class Resource
     schema.map {|c, _| c}
   end
 
-  def save
-    settings = { columns: @columns, column: @column, default_order: @default_order, enum_values: @enum_values }
-    settings[:per_page] = @per_page if @generic.account.per_page != @per_page
-    REDIS.set settings_key, settings.to_json
-    table_configuration.save!
-  end
-
   def settings_key
     "account:#{@generic.account_id}:settings:#{@table}"
   end
@@ -124,48 +114,57 @@ class Resource
   end
 
   def per_page= per_page
-    @per_page = [per_page.to_i, 25].max
+    table_configuration.per_page = [per_page.to_i, 25].max
   end
 
   def per_page
-    @per_page ||= @generic.account.per_page
+    table_configuration.per_page || @generic.account.per_page
   end
 
-  def columns type = nil
-    type ? @columns[type] : @columns
+  def columns type
+    table_configuration.column_selection[type.to_sym]
   end
 
   def column_options name
-    @column[name.to_s] || {}
+    table_configuration.column_options[name.to_s] || {}
   end
 
   def update_column_options name, options
     hidden, view = options.values_at :hide, :view
-    @columns[view.to_sym].delete name if hidden
+    table_configuration.column_selection[view.to_sym].delete name if hidden
     if options[:serialized]
-      @columns[:serialized].push name
+      table_configuration.column_selection[:serialized].push name
     else
-      @columns[:serialized].delete name
+      table_configuration.column_selection[:serialized].delete name
     end
-    @columns[:serialized].uniq!
-    @column[name.to_s] = options
+    table_configuration.column_selection[:serialized].uniq!
+    table_configuration.column_options_will_change!
+    table_configuration.column_options[name.to_s] = options
     save
+  end
+
+  def update_column_selection hash
+    hash.symbolize_keys!
+    hash.values.each { |columns| columns.map!(&:to_sym) }
+    table_configuration.column_selection.merge! hash
   end
 
   def update_enum_values column, enum_data
     return if enum_data.nil?
-    @enum_values.delete_if {|enums| enums['column_name'] == column}
+    table_configuration.enum_values ||= []
+    table_configuration.enum_values.delete_if {|enums| enums['column_name'] == column}
     values = {}
     enum_data.each do |value|
       db_value = value.delete 'value'
       values[db_value] = value if db_value.present? && value['label'].present?
     end
-    @enum_values.push 'column_name' => column, 'values' => values if values.present?
+    table_configuration.enum_values.push 'column_name' => column, 'values' => values if values.present?
     save
   end
 
   def columns_options type, opts = {}
-    return @columns[type] if opts[:only_checked]
+    selection = table_configuration.column_selection
+    return selection[type] if opts[:only_checked]
     names = case type
             when :search
               searchable_column_names
@@ -174,8 +173,8 @@ class Resource
             else
               column_names
             end
-    non_checked = (names - @columns[type]).map {|n| [n, false]}
-    checked = @columns[type].map {|n| [n, true]}
+    non_checked = (names - selection[type]).map {|n| [n, false]}
+    checked = selection[type].map {|n| [n, true]}
     checked + non_checked
   end
 
@@ -258,13 +257,15 @@ class Resource
   end
 
   def set_missing_columns_conf
+    selection = table_configuration.column_selection
+    selection.symbolize_keys!
     %i(listing show form search serialized export).each do |type|
-      if @columns[type]
-        @columns[type].uniq!
-        @columns[type].map!(&:to_sym)
-        @columns[type].delete_if {|name| !valid_association_column?(name) && !(column_names.include? name) }
+      if selection[type]
+        selection[type].uniq!
+        selection[type].map!(&:to_sym)
+        selection[type].delete_if {|name| !valid_association_column?(name) && !(column_names.include? name) }
       else
-        @columns[type] =
+        selection[type] =
           {
             listing: default_columns_conf, show: default_columns_conf,
             form: default_form_columns_conf, export: default_columns_conf,
@@ -317,7 +318,7 @@ class Resource
   end
 
   def enum_values_for column_name
-    enum_value = @enum_values.detect {|value| value['column_name'] == column_name.to_s}
+    enum_value = table_configuration.enum_values&.detect {|value| value['column_name'] == column_name.to_s}
     enum_value && enum_value['values']
   end
 

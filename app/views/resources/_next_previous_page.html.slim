@@ -31,6 +31,6 @@
             = link_to "Go to last page (page #{page_count})", whitelisted_params.merge(page: (page_count))
           li.divider
       li.dropdown-header Rows per page
-      - ([25, 50, 100, 200] + [resource.per_page.to_i]).uniq.sort.each do |per_page|
+      - ([25, 50, 100, 200] + [resource.per_page]).uniq.sort.each do |per_page|
         li(class="#{'active' if resource.per_page == per_page}")
           = link_to per_page, whitelisted_params.merge(per_page: per_page)

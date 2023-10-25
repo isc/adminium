@@ -9,7 +9,7 @@
       options_from_collection_for_select(resource.schema, :first, :first, resource.default_order_column), class: 'select2 form-control'
   .col-sm-3
     = label_tag 'default_order__asc', class: 'radio-inline' do
-      = radio_button_tag 'default_order[]', 'asc', (resource.default_order_direction == 'asc')
+      = radio_button_tag 'default_order[]', '', (resource.default_order_direction == 'asc')
       ' asc
     = label_tag 'default_order__desc', class: 'radio-inline' do
       = radio_button_tag 'default_order[]', 'desc', (resource.default_order_direction == 'desc')

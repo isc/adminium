@@ -49,7 +49,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
   end
 
   test 'display pie chart on enums' do
-    stub_resource_columns listing: %i(role)
+    setup_resource_columns @account, :users, listing: %i(role)
     Resource.any_instance.stubs(:enum_values_for)
       .returns 'admin' => {'label' => 'Chef'}, 'noob' => {'label' => 'Débutant'}
     6.times { FixtureFactory.new(:user, role: nil) }
@@ -101,11 +101,14 @@ class ChartsTest < ActionDispatch::IntegrationTest
   end
 
   test 'display pie chart on enum from belongs_to association' do
-    stub_resource_columns listing: %i(title user_id user_id.role)
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, role: :admin).factory.id)
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, role: :developer).factory.id)
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, role: :admin).factory.id)
     visit resources_path(:comments)
+    click_link_with_title 'Listing settings'
+    click_on 'Displayed columns'
+    select 'role', from: 'Add column'
+    click_on 'Save settings'
     find('th[data-column-name="role"]').hover
     find('i.column_settings').click
     click_link 'Enumerable data'
@@ -120,7 +123,7 @@ class ChartsTest < ActionDispatch::IntegrationTest
   end
 
   test 'display stat chart' do
-    stub_resource_columns listing: %i(role kind)
+    setup_resource_columns @account, :users, listing: %i(role kind)
     2.times { FixtureFactory.new(:user, kind: 5) }
     FixtureFactory.new(:user, kind: 10)
     FixtureFactory.new(:user, kind: nil)

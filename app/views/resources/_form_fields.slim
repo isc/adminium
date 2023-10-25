@@ -1,4 +1,4 @@
-- resource.columns[:form].each do |name|
+- resource.columns(:form).each do |name|
   .form-group
     label.control-label.col-sm-4 for="#{resource.table}_#{name}"
       - if required_constraints && resource.required_column?(name)
