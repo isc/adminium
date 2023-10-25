@@ -4,15 +4,6 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     services:
-      redis:
-        image: redis
-        ports:
-          - 6379:6379
-        options: >-
-          --health-cmd "redis-cli ping"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
       postgres:
         image: postgres:latest
         ports:
@@ -28,7 +19,10 @@ jobs:
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-      - run: bundle exec rails db:setup && bundle exec rake assets:precompile && bundle exec rake
+      - run: bundle exec rails db:setup
+      - run: bundle exec rake assets:precompile
+      - name: Tests
+        run: bundle exec rake
       - name: Upload screenshots to argos-ci.com
         continue-on-error: true
         run: yarn exec argos upload tmp/capybara
