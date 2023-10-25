@@ -40,14 +40,14 @@ nav.navbar.navbar-default
                 a data-toggle="modal" href="#advanced_search" Edit
               li
                 = link_to 'Delete', search_path(params[:table], name: params[:asearch]), method: 'delete'
-      - if resource.columns[:search].any?
+      - if resource.columns(:search).any?
         form.navbar-form.navbar-left
           - request.query_string.to_s.split('&').find_all(&:present?).each do |param|
             - name, value = unescape_name_value_pair param
             - next if name == 'search'
             input type="hidden" name=name value=value
           .input-group
-            input.form-control#search_input> name="search" type='text' value=params[:search] placeholder="search on #{resource.columns[:search].map {|e|e.to_s.humanize}.join(', ').downcase}"
+            input.form-control#search_input> name="search" type='text' value=params[:search] placeholder="search on #{resource.columns(:search).map {|e|e.to_s.humanize}.join(', ').downcase}"
             .input-group-btn
               button.btn.btn-default>
                 i.fa.fa-search

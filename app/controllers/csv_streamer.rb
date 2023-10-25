@@ -10,7 +10,7 @@ class CsvStreamer
   end
 
   def each
-    keys = resource.columns[:export]
+    keys = resource.columns(:export)
     yield keys.map {|k| resource.column_display_name k}.to_csv(col_sep: resource.export_col_sep) unless resource.export_skip_header
     @items.each {|item| yield csv_row(item, keys)}
   end

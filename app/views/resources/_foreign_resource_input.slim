@@ -20,7 +20,7 @@
     = hidden_field_tag input_name, value
   .input-group
     .input-group-addon Search
-    input.form-control(type='search' data-autocomplete-url=search_resources_path(foreign_resource.table, primary_key: assoc[:primary_key]) autocomplete='off' placeholder="#{foreign_resource.columns[:search].map(&:to_s).map(&:humanize).join(', ').downcase}")
+    input.form-control(type='search' data-autocomplete-url=search_resources_path(foreign_resource.table, primary_key: assoc[:primary_key]) autocomplete='off' placeholder="#{foreign_resource.columns(:search).map(&:to_s).map(&:humanize).join(', ').downcase}")
     .input-group-addon
       i.fa.fa-refresh.fa-spin.invisible
   ul.list-unstyled

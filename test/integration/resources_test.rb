@@ -214,7 +214,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     user = FixtureFactory.new(:user).factory
     2.times { FixtureFactory.new :comment, user_id: user.id }
     FixtureFactory.new(:user)
-    stub_resource_columns listing: %i(has_many/comments/user_id)
+    setup_resource_columns @account, :users, listing: %i(has_many/comments/user_id)
     visit resources_path(:users)
     has_many_comments_path = resources_path(:comments, where: {user_id: user.id})
     assert_selector "tr[data-item-id=\"#{user.id}\"] td.hasmany a[href=\"#{has_many_comments_path}\"]", text: '2'
@@ -225,7 +225,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
 
   test 'permissions for custom column belongs_to and label column' do
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'bob', first_name: 'Robert').factory.id)
-    stub_resource_columns listing: %i(user_id user_id.pseudo)
+    setup_resource_columns @account, :comments, listing: %i(user_id user_id.pseudo)
     Resource.any_instance.stubs(:label_column).returns 'first_name'
     visit resources_path(:comments)
     assert_selector 'td', text: 'bob'
@@ -248,7 +248,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
       FixtureFactory.new(:user, pseudo: 'InternGuy', role: 'noob').factory.id)
     FixtureFactory.new(:comment, title: 'You are fired', user_id:
       FixtureFactory.new(:user, pseudo: 'BossMan', role: 'admin').factory.id)
-    stub_resource_columns listing: %w(title user_id.role)
+    setup_resource_columns @account, :comments, listing: %w(title user_id.role)
     Resource.any_instance.stubs(:enum_values_for).returns nil
     Resource.any_instance.stubs(:enum_values_for).with(:role)
       .returns 'admin' => {'label' => 'Chef'}, 'noob' => {'label' => 'Débutant'}
@@ -265,7 +265,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   test 'sort by custom column belongs_to' do
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'bob').factory.id)
     FixtureFactory.new(:comment, user_id: FixtureFactory.new(:user, pseudo: 'zob').factory.id)
-    stub_resource_columns listing: %w(user_id.pseudo)
+    setup_resource_columns @account, :comments, listing: %w(user_id.pseudo)
     Resource.any_instance.stubs(:default_order).returns 'user_id.pseudo'
     visit resources_path(:comments)
     assert_equal %w(bob zob), all('table.items-list tr td:last-child').map(&:text)
@@ -392,7 +392,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     FixtureFactory.new(:comment, comment: 'ComCom', commentable_id: document.id, commentable_type: 'Document').factory
     visit resource_path(:documents, document)
     click_link_with_title 'Show settings'
-    open_accordion 'Polymorphic associations', selector: 'label', text: 'comments as commentable'
+    click_on 'Polymorphic associations'
     check 'comments as commentable'
     click_button 'Save settings'
     click_link '1'
@@ -427,7 +427,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
 
   test 'bulk update and nullify settings' do
     # FIXME: add the time_zone to the mix and it gets stuck for 2 or 3 seconds in default_input_type
-    stub_resource_columns form: %i(last_name first_name age role), listing: %i(last_name first_name age role)
+    setup_resource_columns @account, :users, form: %i(last_name first_name age role), listing: %i(last_name first_name age role)
     names = %w(John Jane)
     Array.new(2) do |i|
       FixtureFactory.new(:user, age: 34, role: 'Developer', last_name: 'Johnson', first_name: names[i]).factory
@@ -451,7 +451,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
 
   test 'edit and display time and date column' do
-    stub_resource_columns form: %i(daily_alarm birthdate), listing: %i(daily_alarm birthdate),
+    setup_resource_columns @account, :users, form: %i(daily_alarm birthdate), listing: %i(daily_alarm birthdate),
                           show: %i(daily_alarm birthdate)
     visit new_resource_path(:users)
     find('#users_daily_alarm_4i').select '08'
@@ -464,7 +464,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
 
   test 'update date time column with time zone configuration' do
     @account.update database_time_zone: 'UTC', application_time_zone: 'Helsinki'
-    stub_resource_columns form: [:activated_at], show: [:activated_at]
+    setup_resource_columns @account, :users, form: [:activated_at], show: [:activated_at]
     user = FixtureFactory.new(:user).factory
     visit edit_resource_path(:users, user.id)
     fill_in 'Activated at', with: '01/01/2013'
@@ -475,13 +475,13 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
 
   test 'field with a database default' do
-    stub_resource_columns form: [:kind]
+    setup_resource_columns @account, :users, form: [:kind]
     visit new_resource_path(:users)
     assert_selector 'input[name="users[kind]"][value="37"]'
   end
 
   test 'display of datetime depending on time zone conf' do
-    stub_resource_columns listing: %i(column_with_time_zone activated_at)
+    setup_resource_columns @account, :users, listing: %i(column_with_time_zone activated_at)
     user = FixtureFactory.new(:user).factory
     ActiveRecord::Base.establish_connection Rails.configuration.test_database_conn_spec
     ActiveRecord::Base.connection.execute "update users set activated_at = '2012-10-09 05:00:00' where id = #{user.id}"
@@ -505,7 +505,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
 
   test 'edit and update a pg array column' do
-    stub_resource_columns form: [:nicknames], show: [:nicknames]
+    setup_resource_columns @account, :users, form: [:nicknames], show: [:nicknames]
     user = FixtureFactory.new(:user).factory
     visit edit_resource_path(:users, user.id)
     click_link 'Plain text area'
@@ -535,7 +535,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
 
   test 'search on a string array column' do
-    stub_resource_columns listing: %i(nicknames pseudo), search: %i(nicknames)
+    setup_resource_columns @account, :users, listing: %i(nicknames pseudo), search: %i(nicknames)
     FixtureFactory.new(:user, nicknames: %w(Bob Bobby Bobulus), pseudo: 'Pierre')
     FixtureFactory.new(:user, nicknames: %w(Bob Rob), pseudo: 'Jacques')
     visit resources_path(:users)
@@ -553,7 +553,7 @@ class ResourcesTest < ActionDispatch::IntegrationTest
 
   test 'hstore show, edit and update' do
     document = FixtureFactory.new(:document, metadata: {size: 123, path: '/tmp/file.txt'}).factory
-    stub_resource_columns form: %i(metadata), show: %i(metadata)
+    setup_resource_columns @account, :documents, form: %i(metadata), show: %i(metadata)
     visit resource_path(:documents, document)
     assert_selector 'th', text: 'path'
     assert_selector 'td', text: '/tmp/file.txt'

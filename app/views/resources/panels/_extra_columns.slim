@@ -1,4 +1,4 @@
 .form-group.custom-column
-  label.control-label.col-sm-4 Add column
+  label.control-label.col-sm-4 for="add_column_table" Add column
   .col-sm-8
     = select_tag 'add_column_table', columns_options_for_resource(resource, has_many: true), include_blank: true, data: {columns_path: columns_settings_path, placeholder: 'Select a column'}, class: 'select-custom-column form-control select2'

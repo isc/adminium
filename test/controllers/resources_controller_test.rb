@@ -105,7 +105,7 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_csv_response_skip_headers_and_time_column
     FixtureFactory.new :user, daily_alarm: '08:37'
-    Resource.any_instance.stubs(:columns).returns(export: [:daily_alarm])
+    setup_resource_columns @account, :users, export: [:daily_alarm]
     Resource.any_instance.stubs(:export_skip_header).returns true
     get :index, params: {table: 'users', order: 'id', format: 'csv'}
     lines = @response.body.split "\n"
@@ -114,7 +114,7 @@ class ResourcesControllerTest < ActionController::TestCase
   end
 
   def test_csv_response_with_belongs_to_column
-    Resource.any_instance.stubs(:columns).returns(export: %i(group_id.name))
+    setup_resource_columns @account, :users, export: %i(group_id.name)
     get :index, params: {table: 'users', format: 'csv', order: 'id'}
     lines = @response.body.split("\n")
     assert_equal 'Admins', lines.last
@@ -122,7 +122,7 @@ class ResourcesControllerTest < ActionController::TestCase
 
   def test_csv_response_with_has_many_count
     FixtureFactory.new(:group)
-    Resource.any_instance.stubs(:columns).returns(export: [:'has_many/users/group_id'])
+    setup_resource_columns @account, :groups, export: [:'has_many/users/group_id']
     get :index, params: {table: 'groups', format: 'csv', order: 'id'}
     lines = @response.body.split("\n")
     assert_equal '1', lines[-2]
@@ -232,7 +232,7 @@ class ResourcesControllerTest < ActionController::TestCase
   def test_no_unnecessary_eager_fetching
     FixtureFactory.new :user
     setup_resource
-    @resource.columns[:listing] = [:group_id]
+    @resource.update_column_selection listing: [:group_id]
     @resource.save
     get :index, params: {table: 'users'}
     # no label column on groups so we don't need to fetch the groups to generate links

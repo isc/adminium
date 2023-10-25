@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_10_24_190209) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_24_191837) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -93,6 +93,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_24_190209) do
     t.integer "per_page"
     t.json "enum_values"
     t.json "column_options", default: {}
+    t.json "column_selection", default: {}
     t.index ["account_id"], name: "index_table_configurations_on_account_id"
   end
 

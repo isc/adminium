@@ -15,11 +15,11 @@ class ResourcesController < ApplicationController
   def search
     @items = resource.query
     params[:order] = resource.label_column if resource.label_column.present?
-    resource.columns[:search] |= [resource.primary_keys, resource.label_column&.to_sym, params[:primary_key].to_sym].flatten.compact
-    apply_search
+    search_columns = resource.columns(:search) | [resource.primary_keys, resource.label_column&.to_sym, params[:primary_key].to_sym].flatten.compact
+    apply_search search_columns
     apply_order
-    @items = @items.select(*(resource.columns[:search].map {|c| Sequel.identifier(c)}))
-    records = @items.limit(37).map {|h| h.slice(*resource.columns[:search]).merge(adminium_label: resource.item_label(h))}
+    @items = @items.select(*(search_columns.map {|c| Sequel.identifier(c)}))
+    records = @items.limit(37).map {|h| h.slice(*search_columns).merge(adminium_label: resource.item_label(h))}
     render json: {results: records, primary_key: params[:primary_key]}
   end
 
@@ -62,9 +62,9 @@ class ResourcesController < ApplicationController
     @strings_and_hstore_cols = item_attributes_type %i(string varchar_array string_array hstore)
     @numbers_cols = item_attributes_type %i(integer float decimal)
     dates_and_times_cols = item_attributes_type %i(date datetime time timestamp)
-    @pks_dates_and_times_cols = (resource.columns[:show] & resource.primary_keys) + dates_and_times_cols
+    @pks_dates_and_times_cols = (resource.columns(:show) & resource.primary_keys) + dates_and_times_cols
     @boolean_and_blob_cols = item_attributes_type %i(boolean blob)
-    @leftover_cols = resource.columns[:show] -
+    @leftover_cols = resource.columns(:show) -
                      @strings_and_hstore_cols - @numbers_cols - @pks_dates_and_times_cols - @boolean_and_blob_cols -
                      resource.belongs_to_associations.map {|assoc| assoc[:foreign_key]}
     @table_configuration = table_configuration_for(resource.table)
@@ -208,7 +208,7 @@ class ResourcesController < ApplicationController
 
   def update_export_settings
     return if params[:export_columns].blank?
-    resource.columns[:export] = params[:export_columns].delete_if(&:empty?).map(&:to_sym)
+    resource.update_column_selection export: params[:export_columns].delete_if(&:empty?).map(&:to_sym)
     resource.csv_options = params[:csv_options]
     resource.save
   end
@@ -252,27 +252,28 @@ class ResourcesController < ApplicationController
     "#{resource.human_name} #<b>#{ERB::Util.h(params[:id] || resource.primary_key_value(@item))}</b>"
   end
 
-  def apply_search
+  def apply_search search_columns = nil
     return if params[:search].blank?
     conds = []
-    number_columns = resource.columns[:search].select {|c| resource.number_column?(c)}
+    search_columns ||= resource.columns(:search)
+    number_columns = search_columns.select {|c| resource.number_column?(c)}
     if number_columns.any? && params[:search].match(/\A\-?\d+\Z/)
       v = params[:search].to_i
       conds += number_columns.map {|column| {qualify(resource.table, column) => v}}
     end
-    text_columns = resource.columns[:search].select {|c| resource.text_column?(c)}
+    text_columns = search_columns.select {|c| resource.text_column?(c)}
     if text_columns.any?
       string_patterns = params[:search].split(' ').map {|pattern| pattern.include?('%') ? pattern : "%#{pattern}%" }
       conds << resource.query.grep(text_columns.map {|c| qualify(resource.table, c)}, string_patterns, case_insensitive: true, all_patterns: true).opts[:where]
     end
-    array_columns = resource.columns[:search].select {|c| resource.array_column?(c)}
+    array_columns = search_columns.select {|c| resource.array_column?(c)}
     if array_columns.any?
       search_array = Sequel.pg_array(params[:search].split(' '), :text)
       conds += array_columns.map do |column|
         Sequel.pg_array_op(Sequel.cast(qualify(params[:table], column), 'text[]')).contains(search_array)
       end
     end
-    uuid_columns = resource.columns[:search].select {|c| resource.uuid_column?(c)}
+    uuid_columns = search_columns.select {|c| resource.uuid_column?(c)}
     if uuid_columns.any? && params[:search].match(/\A[a-f\d\-]+\Z/)
       no_hyphens = params[:search].delete('-')
       cond = if no_hyphens =~ /\A.{32}\Z/
@@ -285,7 +286,7 @@ class ResourcesController < ApplicationController
     if conds.any?
       @items = @items.filter(Sequel::SQL::BooleanExpression.new(:OR, *conds))
     else
-      flash.now[:error] = "The value <b>#{params[:search]}</b> cannot be searched for on the following column(s) : #{resource.columns[:search].join(', ')}."
+      flash.now[:error] = "The value <b>#{params[:search]}</b> cannot be searched for on the following column(s) : #{search_columns.join(', ')}."
     end
   end
 
@@ -604,10 +605,6 @@ class ResourcesController < ApplicationController
     resource.primary_keys.map {|key| qualify(table_alias || resource.table, key)}
   end
 
-  def settings_type
-    request.format.csv? ? :export : :listing
-  end
-
   def after_save_redirection options
     return redirect_back(fallback_location: resources_path(params[:table]), **options) if params[:return_to] == 'back'
     primary_key = resource.primary_key_value(item_params) || params[:id]
@@ -667,7 +664,7 @@ class ResourcesController < ApplicationController
   end
 
   def item_attributes_type types
-    columns = resource.columns[:show]
+    columns = resource.columns(:show)
     columns &= resource.find_all_columns_for_types(*types).map(&:first)
     columns - resource.primary_keys - (resource.belongs_to_associations.map {|assoc| assoc[:foreign_key]})
   end
@@ -688,7 +685,8 @@ class ResourcesController < ApplicationController
   end
 
   def permitted_columns
-    @permitted_columns ||= resource.columns[settings_type].select do |column|
+    settings_type = request.format.csv? ? :export : :listing
+    @permitted_columns ||= resource.columns(settings_type).select do |column|
       if column['.']
         table = resource.belongs_to_association(column.to_s.split('.').first.to_sym)[:referenced_table]
         user_can? 'show', table

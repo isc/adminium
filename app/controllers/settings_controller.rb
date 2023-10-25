@@ -1,9 +1,11 @@
 class SettingsController < ApplicationController
   def update
-    %i(listing form show search serialized export).each do |type|
-      param_key = "#{type}_columns".to_sym
-      resource.columns[type] = params[param_key].delete_if(&:empty?) if params.key? param_key
-    end
+    column_selection_update =
+      %i(listing form show search serialized export).map do |type|
+        param_key = "#{type}_columns".to_sym
+        [type, params[param_key].delete_if(&:empty?)] if params.key? param_key
+      end.compact.to_h
+    resource.update_column_selection column_selection_update
     table_configuration.update! table_configuration_params if table_configuration.present?
     resource.per_page = params[:per_page] if params[:per_page]
     resource.save
