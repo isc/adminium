@@ -14,7 +14,7 @@ class Resource
   def save
     table_configuration.save!
     table_configuration.column_selection.symbolize_keys!
-    table_configuration.column_selection.each_value { |arr| arr.map(&:to_sym) }
+    table_configuration.column_selection.each_value { |arr| arr.map!(&:to_sym) }
   end
 
   def label_column
