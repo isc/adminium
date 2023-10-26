@@ -1,4 +1,5 @@
 class ResourcesController < ApplicationController
+  include ActionController::Live
   include TimeChartBuilder
   include PieChartBuilder
   include StatChartBuilder
@@ -44,9 +45,10 @@ class ResourcesController < ApplicationController
         }
       end
       format.csv do
-        response.headers['Content-Disposition'] = "attachment; filename=#{params[:table]}.csv"
         response.headers['Cache-Control'] = 'no-cache'
-        self.response_body = CsvStreamer.new @fetched_items, @associated_items, resource, @resources
+        send_stream(filename: "#{params[:table]}.csv") do |stream|
+          CsvStreamer.new(@fetched_items, @associated_items, resource, @resources).each {|line| stream.write line }
+        end
       end
     end
   end
