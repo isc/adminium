@@ -29,6 +29,7 @@ Capybara.register_driver :heroku_compatible_chrome do |app|
   options.add_argument('headless') unless ENV['DISABLE_HEADLESS']
   options.add_argument('no-sandbox')
   options.add_argument('disable-dev-shm-usage')
+  options.add_preference(:download, { default_directory: Rails.root.join('tmp') })
   Capybara::Selenium::Driver.new(app, browser: :chrome, options: options)
 end
 Capybara::Screenshot.register_driver(:heroku_compatible_chrome) do |driver, path|
@@ -105,6 +106,15 @@ class ActionDispatch::IntegrationTest
   def save_screenshot name
     assert_no_selector '.tooltip, .collapsing'
     super "#{name}.png"
+  end
+
+  def downloaded_file file_path
+    Timeout.timeout(5) do
+      sleep 0.1
+      File.read(file_path)
+    rescue Errno::ENOENT
+      retry
+    end
   end
 
   teardown do

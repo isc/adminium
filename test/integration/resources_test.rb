@@ -343,9 +343,11 @@ class ResourcesTest < ActionDispatch::IntegrationTest
     click_link_with_title 'Export rows'
     assert_selector '.modal'
     save_screenshot 'export'
+    file_path = Rails.root.join('tmp', 'users.csv')
     click_button 'Export records to CSV'
-    # FIXME: https://collectiveidea.com/blog/archives/2012/01/27/testing-file-downloads-with-capybara-and-chromedriver
-    assert_text 'bobleponge'
+    lines = CSV.parse(downloaded_file(file_path))
+    assert_includes lines.last, 'bobleponge'
+    File.delete file_path
   end
 
   test 'show with belongs_to association' do
@@ -566,13 +568,16 @@ class ResourcesTest < ActionDispatch::IntegrationTest
   end
 
   test 'link to download for binary column' do
-    uploaded_file = FixtureFactory.new(:uploaded_file, filename: 'test.txt', data: 'A' * 37).factory
+    data = 'A' * 37
+    uploaded_file = FixtureFactory.new(:uploaded_file, filename: 'test.txt', data: data).factory
+    file_path = Rails.root.join('tmp', 'test.txt')
     visit resources_path(:uploaded_files)
     click_link 'Download (37 Bytes)'
-    # FIXME: https://collectiveidea.com/blog/archives/2012/01/27/testing-file-downloads-with-capybara-and-chromedriver
-    # assert_equal uploaded_file.data, page.body
+    assert_equal data, downloaded_file(file_path)
+    File.delete file_path
     visit resource_path(:uploaded_files, uploaded_file)
     click_link 'Download (37 Bytes)'
-    # assert_equal uploaded_file.data, page.body
+    assert_equal data, downloaded_file(file_path)
+    File.delete file_path
   end
 end

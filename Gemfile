@@ -1,20 +1,18 @@
 source 'http://rubygems.org'
 
-ruby '3.1.4'
+ruby '3.2.2'
 
 gem 'attr_encrypted'
 gem 'binary_search', require: 'binary_search/pure'
 gem 'bootsnap', require: false
 gem 'bootstrap-components-helpers'
 gem 'bootstrap-wysihtml5-rails'
-gem 'figaro'
 gem 'font-awesome-rails'
 gem 'httparty'
 gem 'jquery-rails'
 gem 'json'
-gem 'nokogiri'
 gem 'pg'
-gem 'rails', '7.0.8'
+gem 'rails'
 gem 'sass-rails'
 gem 'select2-rails'
 gem 'sequel'
