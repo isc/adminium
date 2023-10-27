@@ -15,7 +15,7 @@ class Account < ApplicationRecord
   validates :db_url, format: %r{((mysql2?)|(postgres(ql)?)):\/\/.*}, allow_blank: true
   validate :db_url_validation
 
-  attr_encrypted :db_url, key: Rails.application.secrets.encryption_key, algorithm: 'aes-256-cbc',
+  attr_encrypted :db_url, key: Rails.application.credentials.secret_key_base, algorithm: 'aes-256-cbc',
                           v2_gcm_iv: true, mode: :per_attribute_iv_and_salt
 
 
