@@ -46,9 +46,7 @@ Capybara::Screenshot.register_filename_prefix_formatter(:minitest) do |test_case
   "failed-test-screenshot-#{test_name}"
 end
 
-reporters = [Minitest::Reporters::DefaultReporter.new]
-reporters << TestFailuresReporter.new if ENV['REMOTE_REPORTER_URL'].present?
-Minitest::Reporters.use! reporters
+Minitest::Reporters.use! [Minitest::Reporters::DefaultReporter.new]
 
 class ActiveSupport::TestCase
   include FactoryBot::Syntax::Methods
