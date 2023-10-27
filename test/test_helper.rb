@@ -17,7 +17,6 @@ require 'capybara/rails'
 require 'capybara-screenshot/minitest'
 require 'mocha/minitest'
 require 'rack_session_access/capybara'
-require 'test_failures_reporter'
 
 DatabaseCleaner.strategy = :truncation
 
