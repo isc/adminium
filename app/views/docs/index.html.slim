@@ -7,6 +7,9 @@
           a href="#heroku_button" Heroku Button
           a href="#manual_install" Manual install
         li#features.nav-header Features
+        - Account::TIPS.each do |tip|
+          li
+            a href="##{tip}"= t tip, scope: 'account.tips'
         li.divider
         li.nav-header FAQ
         li
@@ -37,10 +40,9 @@
         'Adminium doesn’t need to integrate at a code-level and thus isn’t tied to a particular language. It can be used with any app, be it Ruby, Node.js, Clojure, Java, Python, or Scala, as long as it makes use of a PostgreSQL or MySQL database.
 
     - Account::TIPS.each do |tip|
-      - tip_body = render partial: "/docs/tips/#{tip}"
-      section.feature-description.well(id=tip)
-        h3== @tip_title
-        = tip_body
+      section.feature-description.well id=tip
+        h3= t tip, scope: 'account.tips'
+        = render partial: "/docs/tips/#{tip}"
 
     section.well#schema_search_path
       h3 How can I access PostgreSQL schemas other than public?

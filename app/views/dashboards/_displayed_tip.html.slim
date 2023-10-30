@@ -1,16 +1,17 @@
-.modal#welcome-modal tabindex="-1"
-  .modal-dialog
-    .modal-content
-      .modal-header
-        a.close data-dismiss="modal" ×
-        h4.modal-title
-          small TIP&nbsp;
-          = @tip_title
-      .modal-body
-        = yield :tip
-      .modal-footer
-        .pull-left
-          'One tip is displayed every day.
-          = link_to 'Click here to stop.', cancel_tips_account_path(current_account), method: 'POST', remote: true, id: 'cancel_tip'
-        .pull-right
-          a.btn.btn-primary.btn-large data-dismiss="modal" href="" Close
+- if tip = current_account.displayed_next_tip
+  .modal#welcome-modal tabindex="-1"
+    .modal-dialog
+      .modal-content
+        .modal-header
+          a.close data-dismiss="modal" ×
+          h4.modal-title
+            small TIP&nbsp;
+            = t tip, scope: 'account.tips'
+        .modal-body
+          = render partial: "/docs/tips/#{tip}"
+        .modal-footer
+          .pull-left
+            'One tip is displayed every day.
+            = link_to 'Click here to stop.', cancel_tips_account_path(current_account), method: 'POST', remote: true, id: 'cancel_tip'
+          .pull-right
+            a.btn.btn-primary.btn-large data-dismiss="modal" href="" Close
