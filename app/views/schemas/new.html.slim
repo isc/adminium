@@ -24,7 +24,7 @@ script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"
               input.form-control name="columns[][name]" type="text" ng-model="column.name"
             td
               select.form-control name="columns[][type]" ng-model="column.type"
-                - %w(integer string datetime text float decimal time date blob boolean).each do |type|
+                - @generic.data_types.each do |type|
                   option value=type = type
             td
               input type="checkbox" name="columns[][primary]" ng-model="column.primary" ng-disabled="column.unique"

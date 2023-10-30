@@ -166,6 +166,8 @@ class SchemasController < ApplicationController
       File
     when :time
       [Time, only_time: true]
+    when :hstore
+      :hstore
     end
   end
 end
