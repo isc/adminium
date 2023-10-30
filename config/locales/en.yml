@@ -13,3 +13,17 @@ en:
     sum: Sum
     count: Count
     distinct: Number of distinct values
+  account:
+    tips:
+      advanced_search: Advanced Searches, Views and Widgets
+      basic_search: Basic Search
+      displayed_record: Customizing the listing page
+      editing: Edition
+      enumerable: Enumerable Columns
+      export_import: Export and Import your data
+      keyboard_shortcuts: Keyboard shortcuts
+      relationships: Relationship Display
+      serialized: Serialized data
+      time_charts: Time charts
+      time_zones: Time zones
+      welcome: Welcome on board!
