@@ -28,7 +28,6 @@ html lang="en"
           => link_to 'Sign in', new_session_path, class: 'btn btn-default'
           = link_to 'Sign up', new_registration_path, class: 'btn btn-default'
     .container.intro
-      .row.big-screenshot
-        = image_tag 'docs/screenshot.jpg', class: 'col-md-8 col-md-offset-2 img-responsive img-thumbnail'
+      .row= image_tag 'docs/screenshot.jpg', class: 'col-md-8 col-md-offset-2 img-responsive img-thumbnail'
 
     = javascript_include_tag 'application'
