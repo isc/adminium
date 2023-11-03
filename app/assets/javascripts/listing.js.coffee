@@ -16,7 +16,6 @@ class BulkActions
       $.get "#{path}?#{item_ids.join('&')}", (data) =>
         $('#bulk-edit-modal').html(data)
         AutocompleteAssociationsForm.setup()
-        initDatepickers()
       false
 
   setupBulkDestroy: ->

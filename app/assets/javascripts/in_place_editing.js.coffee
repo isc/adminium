@@ -62,7 +62,6 @@ class InPlaceEditing
     else
       input.attr('name', name).addClass('form-control').focus()
     input.data('null-value', true) if td.hasClass('nilclass')
-    initDatepickers()
     new EnumerateInput(input, 'open') if type is 'enum'
     new NullifiableInput(input, false, type) unless input.prop('tagName') is 'SPAN'
 

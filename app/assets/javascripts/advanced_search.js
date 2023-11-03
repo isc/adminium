@@ -31,7 +31,6 @@ const setupAdvancedSearch = () => {
       filterDiv = $('<tr>').append(resp).appendTo($('.filters'))
       selectFilter = filterDiv.find('td.operators select').focus()
       updateFilterForm(selectFilter)
-      initDatepickers()
     })
   })
 }
