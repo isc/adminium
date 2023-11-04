@@ -1,7 +1,7 @@
-const makeSortable = (selector) => {
+const makeSortable = selector => {
   const table = $(selector)
   if (!table.length) return
-  table.on('click', 'th', (e) => {
+  table.on('click', 'th', e => {
     order = $(e.currentTarget).data('order') || 'desc'
     orderMul = order === 'desc' ? -1 : 1
     $(e.currentTarget).data('order', order === 'desc' ? 'asc' : 'desc')

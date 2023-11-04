@@ -11,15 +11,19 @@ const addClause = (clauseType, elt) => {
   location.href = updatedHref
 }
 
-const setupCellFilter = (elt) => {
+const setupCellFilter = elt => {
   td = $(elt.currentTarget)
   if (!td.find('i.fa-indent').length) {
-    $('<i class="fa fa-indent cell-action"" title="Select rows with this value">').appendTo(td)
-    $('<i class="fa fa-outdent cell-action"" title="Exclude rows with this value">').appendTo(td)
+    $(
+      '<i class="fa fa-indent cell-action"" title="Select rows with this value">'
+    ).appendTo(td)
+    $(
+      '<i class="fa fa-outdent cell-action"" title="Exclude rows with this value">'
+    ).appendTo(td)
   }
 }
 
 $('.items-list')
   .on('mouseover', 'td[data-raw-value], td.nilclass', setupCellFilter)
-  .on('click', 'td i.fa-indent', (elt) => addClause('where', elt))
-  .on('click', 'td i.fa-outdent', (elt) => addClause('exclude', elt))
+  .on('click', 'td i.fa-indent', elt => addClause('where', elt))
+  .on('click', 'td i.fa-outdent', elt => addClause('exclude', elt))

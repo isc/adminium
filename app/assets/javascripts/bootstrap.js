@@ -13,8 +13,13 @@ const adminiumSelect2Matcher = (params, data) => {
 }
 
 $(() => {
-  $('span[rel=tooltip], button[rel=tooltip], a[rel*=tooltip], i[rel=tooltip]').tooltip({ container: 'body' })
-  $("a.text-more, span.text-more, i.text-more").popover({ trigger: 'hover', html: true })
+  $(
+    'span[rel=tooltip], button[rel=tooltip], a[rel*=tooltip], i[rel=tooltip]'
+  ).tooltip({ container: 'body' })
+  $('a.text-more, span.text-more, i.text-more').popover({
+    trigger: 'hover',
+    html: true
+  })
   sh_highlightDocument()
 })
 

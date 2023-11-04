@@ -1,6 +1,6 @@
 const setupValidations = () => {
   const pane = $('#validations_pane')
-  pane.on('click', '.remove', function(){
+  pane.on('click', '.remove', function () {
     index = $(this).closest('tr').index()
     $(this).closest('tr').remove()
     input = pane.find('.params input').eq(index * 2)
@@ -13,15 +13,33 @@ const setupValidations = () => {
     $('<td>').text(validator.text()).appendTo(tr)
     $('<td>').text(column_name.text()).appendTo(tr)
     $('<td>').append($('<i class="fa fa-minus-circle remove">')).appendTo(tr)
-    pane.find('.params').append($('<input type="hidden">').attr({ name: "validations[][validator]", value: validator.val() }))
-    pane.find('.params').append($('<input type="hidden">').attr({ name: "validations[][column_name]", value: column_name.val() }))
+    pane
+      .find('.params')
+      .append(
+        $('<input type="hidden">').attr({
+          name: 'validations[][validator]',
+          value: validator.val()
+        })
+      )
+    pane
+      .find('.params')
+      .append(
+        $('<input type="hidden">').attr({
+          name: 'validations[][column_name]',
+          value: column_name.val()
+        })
+      )
     return false
   })
 }
 
 const masterCheckboxes = () => {
-  $('.master_checkbox input').on('change', function(){
-    $(this).closest('ul').next().find('input[type="checkbox"]').prop('checked', $(this).prop('checked'))
+  $('.master_checkbox input').on('change', function () {
+    $(this)
+      .closest('ul')
+      .next()
+      .find('input[type="checkbox"]')
+      .prop('checked', $(this).prop('checked'))
   })
 }
 
