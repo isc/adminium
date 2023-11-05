@@ -17,8 +17,8 @@ class EnumerateInput {
   }
 }
 
-$(() => {
-  const editForm = $('body.resources.edit form')
+EnumerateInput.setupForEdit = scope => {
+  const editForm = $(scope)
   if (!editForm.length) return
   Object.keys(adminium_column_options)
     .filter(key => adminium_column_options[key].is_enum)
@@ -26,4 +26,8 @@ $(() => {
       const field = editForm.find(`select[id*=_${key}]`)
       new EnumerateInput(field)
     })
+}
+
+$(() => {
+  EnumerateInput.setupForEdit('body.resources.edit form')
 })
