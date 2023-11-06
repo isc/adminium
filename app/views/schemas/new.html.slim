@@ -37,7 +37,8 @@ script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.7/angular.min.js"
             td
               input.form-control type="text" name="columns[][default]" ng-model="column.default" ng-hide="column.primary || column.unique"
             td
-              i.icon-remove-sign ng-click="remove($index)"
+              button.btn.btn-danger ng-click="remove($index)"
+                i.fa.fa-trash
       a.btn.btn-info ng-click="addColumn()" Add another column
     fieldset.actions.text-center= submit_tag "Create", class: "btn btn-primary"
   = modal 'Creating table {{table_name}}...', id: 'create-table-modal' do |modal|
