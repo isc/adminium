@@ -8,7 +8,6 @@ gem 'bootsnap', require: false
 gem 'bootstrap-components-helpers'
 gem 'bootstrap-wysihtml5-rails'
 gem 'font-awesome-rails'
-gem 'httparty'
 gem 'jquery-rails'
 gem 'json'
 gem 'pg'
