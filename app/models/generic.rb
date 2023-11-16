@@ -128,6 +128,12 @@ class Generic
     db.indexes(Sequel.identifier(table))
   end
 
+  def data_types
+    types = %w(integer string datetime text float decimal time date blob boolean)
+    types.push 'hstore' if postgresql?
+    types
+  end
+
   def detailed_indexes table
     return indexes(table) unless postgresql?
     result = db[:pg_indexes].select(:indexname, :indexdef).where(tablename: table).to_a

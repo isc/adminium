@@ -25,10 +25,6 @@ gem 'webauthn'
 group :mysql_support do
   gem 'mysql2'
 end
-group :assets do
-  gem 'coffee-rails'
-  gem 'uglifier'
-end
 group :development do
   gem 'better_errors'
   gem 'binding_of_caller'

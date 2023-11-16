@@ -1,6 +1,5 @@
 //= require jquery-2.1.4.min
 //= require bootstrap-3.3.6.min
-//= require modernizr-custom
 //= require jquery_ujs
 //= require jquery-ui-1.11.4.custom.min
 //= require sh_main.min
@@ -9,6 +8,5 @@
 //= require bootstrap-wysihtml5
 //= require jquery.csv-0.8.1.min
 //= require select2
-//= require bootstrap-datepicker.min
 //= require clipboard.min
 //= require_tree .

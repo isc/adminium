@@ -6,10 +6,8 @@
  *= require font-awesome
  *= require select2
  *= require select2-bootstrap
- *= require bootstrap-datepicker3.min
  *= require types
  *= require resources
- *= require homepage
  *= require in_place_editing
 */
 

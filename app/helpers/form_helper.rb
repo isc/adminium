@@ -45,7 +45,7 @@ module FormHelper
   end
 
   def datetime_input input_options, input_value, input_name, input_type
-    input_options[:class] = 'datepicker form-control'
+    input_options[:class] = 'form-control'
     res = ''.html_safe
     if %i(date datetime).include? input_type
       input_value = Time.now if input_value.is_a? Sequel::SQL::Constant

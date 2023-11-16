@@ -5,12 +5,13 @@
 .adminium-association
   - if resource.array_column? assoc[:foreign_key]
     = hidden_field_tag "#{input_name}[]" if value
-    .multiple-records.sortable data-input-name="#{input_name}[]"
+    ul.multiple-records.sortable.list-inline data-input-name="#{input_name}[]"
       - if record
         - record.each do |r|
-          label>
-            input> type="checkbox" checked="checked" name="#{input_name}[]" value=r[assoc[:primary_key]]
-            = foreign_resource.item_label r
+          li
+            label
+              input> type="checkbox" checked="checked" name="#{input_name}[]" value=r[assoc[:primary_key]]
+              = foreign_resource.item_label r
   - else
     .input-group.single-record
       input.form-control readonly=true value=(foreign_resource.item_label(record&.first) || value)
