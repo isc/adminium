@@ -3,7 +3,7 @@ td.nilclass,
 td[data-editable] {
   padding-right: 20px !important;
   position: relative;
-  i.cell-action {
+  & i.cell-action {
     opacity: 0;
     cursor: pointer;
     position: absolute;
@@ -24,27 +24,27 @@ td[data-editable] {
   }
 }
 td[data-editable] {
-  form {
+  & form {
     padding: 10px;
-    select,
+    & select,
     input[type="text"],
     .select2-container {
       width: 235px;
     }
-    textarea {
+    & textarea {
       width: 300px;
       height: 100px;
     }
   }
 }
 .form-horizontal {
-  .null_btn,
+  & .null_btn,
   .empty_string_btn {
     bottom: 5px;
   }
 }
 .form-inline {
-  .null_btn,
+  & .null_btn,
   .empty_string_btn {
     bottom: 24px;
   }

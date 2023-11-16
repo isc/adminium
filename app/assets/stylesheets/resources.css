@@ -1,14 +1,14 @@
 .resources.show .item-attributes {
-  div:first-child .table {
+  & div:first-child .table {
     table-layout: fixed;
   }
-  .table {
+  & .table {
     border: 1px solid #ddd;
-    td,
+    & td,
     th {
       border: none;
     }
-    td {
+    & td {
       text-align: left !important;
       overflow: auto;
       form {
@@ -16,7 +16,7 @@
         margin: 0.5%;
       }
     }
-    th {
+    & th {
       position: relative;
       background: #f9f9f9;
       color: #5e6469;
@@ -25,7 +25,7 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      .column_settings {
+      & .column_settings {
         display: none;
         position: absolute;
         left: 4px;
@@ -39,30 +39,30 @@
 }
 
 .column-listing {
-  .list-group-item {
+  & .list-group-item {
     padding: 5px 15px;
   }
-  label {
+  & label {
     margin-bottom: 0;
   }
-  i.fa.fa-arrows-v {
+  & i.fa.fa-arrows-v {
     margin-top: 2px;
   }
 }
 
 .widget {
   margin-bottom: 20px;
-  i.fa-cog {
+  & i.fa-cog {
     display: none;
   }
-  .content {
+  & .content {
     overflow: scroll;
     max-height: 305px;
   }
 }
 #chart_div,
 .stat_chart_widget {
-  .table th:first-child {
+  & .table th:first-child {
     width: 33%;
     border-right: 1px solid #ccc;
     text-align: right;

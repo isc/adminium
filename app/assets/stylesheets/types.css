@@ -64,12 +64,12 @@ td.checkboxes {
 }
 
 .filters {
-  tr:first-child .grouping_kind select {
+  & tr:first-child .grouping_kind select {
     display: none;
   }
-  .grouping_kind {
+  & .grouping_kind {
     border-top: none;
-    select {
+    & select {
       width: 55px;
       margin-top: -20px;
       margin-left: -10px;
@@ -78,16 +78,16 @@ td.checkboxes {
 }
 
 .adminium-association {
-  .input-group {
+  & .input-group {
     margin-bottom: 5px;
   }
-  ul.list-unstyled {
+  & ul.list-unstyled {
     margin-right: 1px;
     border: 1px solid #ccc;
     border-radius: 4px;
     height: 150px;
     overflow: scroll;
-    li {
+    & li {
       padding: 0 5px;
     }
   }
@@ -97,7 +97,7 @@ td.checkboxes {
   position: relative;
   padding: 15px 8px;
   text-align: center;
-  a {
+  & a {
     white-space: nowrap;
   }
   &:not(:hover) i:not(.active):not(.time-chart) {
@@ -106,7 +106,7 @@ td.checkboxes {
   &:not(:hover) i.time-chart {
     opacity: 0.3;
   }
-  i,
+  & i,
   a.sort-up,
   a.sort-down {
     cursor: pointer;
@@ -114,25 +114,25 @@ td.checkboxes {
     width: 14px;
     height: 14px;
   }
-  .column_settings {
+  & .column_settings {
     top: 2px;
     right: 2px;
   }
-  .time-chart {
+  & .time-chart {
     bottom: 2px;
     right: 2px;
   }
-  a.sort-up {
+  & a.sort-up {
     top: 2px;
     left: 2px;
   }
-  a.sort-down {
+  & a.sort-down {
     bottom: 16px;
     left: 2px;
   }
 }
 table.table.items-list {
-  td.actions,
+  & td.actions,
   th.actions {
     vertical-align: middle;
     text-align: right;
