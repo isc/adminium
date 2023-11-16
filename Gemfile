@@ -18,6 +18,7 @@ gem 'sequel'
 gem 'sequel_pg', require: 'sequel'
 gem 'simple_form'
 gem 'slim-rails'
+gem 'sprockets-rails'
 gem 'vite_rails'
 gem 'webauthn'
 
